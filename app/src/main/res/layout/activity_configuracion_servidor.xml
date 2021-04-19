@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".configuracion.ConfiguracionServidor">
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="202dp"
+        android:layout_height="192dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logocorpoapp" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="36dp"
+        android:text="INGRESA LA DIRECCION IP DEL SERVIDOR"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/edtOct1"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:focusable="auto"
+        android:gravity="center_horizontal"
+        android:inputType="number|text"
+        android:maxLength="3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <EditText
+        android:id="@+id/edtOct2"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:focusable="auto"
+        android:gravity="center_horizontal"
+        android:inputType="number|text"
+        android:maxLength="3"
+        app:layout_constraintStart_toEndOf="@+id/edtOct1"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <EditText
+        android:id="@+id/edtOct3"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:focusable="auto"
+        android:gravity="center_horizontal"
+        android:inputType="number|text"
+        android:maxLength="3"
+        app:layout_constraintStart_toEndOf="@+id/edtOct2"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <EditText
+        android:id="@+id/edtOct4"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:focusable="auto"
+        android:gravity="center_horizontal"
+        android:inputType="number|text"
+        android:maxLength="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/edtOct3"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <Button
+        android:id="@+id/btnEnviar"
+        android:layout_width="190dp"
+        android:layout_height="43dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/b3"
+        android:text="VerificarDatos"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtOct2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
