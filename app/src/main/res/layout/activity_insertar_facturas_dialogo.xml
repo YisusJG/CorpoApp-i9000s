@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutDialogContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:padding="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutDialog"
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:background="@drawable/dialog_background"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-4dp"
+        tools:layout_editor_absoluteY="5dp"
+        >
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fondo_titulo_alerta_inserta_dato"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageIcon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintBottom_toBottomOf="@+id/textTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textTitle"
+            app:tint="@color/white" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/textMessage"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:gravity="center"-->
+        <!--            android:layout_marginBottom="80dp"-->
+        <!--            android:textColor="@color/colorTextPrimary"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/textTitle"/>-->
+
+        <EditText
+            android:id="@+id/textInsertarDato"
+            android:layout_width="247dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:inputType="number"
+            android:maxLength="29"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextPrimary"
+
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textTitle" />
+
+        <Button
+            android:id="@+id/btnAgregaRastreo"
+            android:layout_width="68dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorPrimary"
+            android:text="Agregar"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInsertarDato" />
+
+        <ListView
+            android:id="@+id/listViewRastreo"
+            android:layout_width="386dp"
+            android:layout_height="204dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            app:layout_constraintTop_toBottomOf="@+id/btnAgregaRastreo"
+            app:layout_constraintVertical_bias="0.253"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="76dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorPrimary"
+            android:text="Scanear"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/btnAgregaRastreo"
+            app:layout_constraintTop_toBottomOf="@+id/textInsertarDato" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btncancelarFactura"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/button_neutral_background"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
+        app:layout_constraintEnd_toStartOf="@+id/btnEnviarFactura"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutDialog"/>
+
+    <Button
+        android:id="@+id/btnEnviarFactura"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/boton_aceptar_dato"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btncancelarFactura"
+        app:layout_constraintEnd_toStartOf="@+id/btnImprimirFactura"
+        app:layout_constraintTop_toBottomOf="@+id/layoutDialog"/>
+    <Button
+        android:id="@+id/btnImprimirFactura"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/boton_aceptar_dato"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnEnviarFactura"
+        app:layout_constraintTop_toBottomOf="@+id/layoutDialog"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

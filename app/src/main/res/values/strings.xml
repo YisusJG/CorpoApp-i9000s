@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CorpoApp</string>
+    <string name="titulo_correcto">CORRECTO</string>
+    <string name="aceptar">ACEPTAR</string>
+    <string name="titulo_aviso">AVISO</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="titulo_error">ERROR</string>
 </resources>

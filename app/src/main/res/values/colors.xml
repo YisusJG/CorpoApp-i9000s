@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#144731</color>
+
+    <color name="colorSucces">#4BB543</color>
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorError">#CC0000</color>
+    <color name="colorWarning">#FFCC00</color>
+    <color name="colorInsertarDato">#17a2b8</color>
+    <color name="colorNeutral">#434343</color>
 </resources>
