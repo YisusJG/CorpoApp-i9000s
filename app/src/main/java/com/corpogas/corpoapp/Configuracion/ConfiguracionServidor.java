@@ -50,7 +50,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
         this.setTitle("Configuracion Inicial Servidor");
         getMacAddress();
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        boolean verdad = data.checkDataBase("/data/data/com.copogas.corpoapp/databases/ConfiguracionEstacion.db");
+        boolean verdad = data.checkDataBase("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db");
         if(verdad == true){
             String tipo = data.getTipoEstacion();
             if (tipo.equals("CORPOGAS")){
