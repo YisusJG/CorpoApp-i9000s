@@ -490,4 +490,27 @@
 
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/toolbardrawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#082653" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white">
+
+        <include
+            layout="@layout/main_nav_drawer"/>
+
+    </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

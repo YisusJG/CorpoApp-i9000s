@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp;
+package com.corpogas.corpoapp.ConexionInternet;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
