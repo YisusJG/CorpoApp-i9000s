@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.configuracion;
+package com.corpogas.corpoapp.SplashEmpresas;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.corpogas.corpoapp.R;
 
-public class ConfiguracionServidor extends AppCompatActivity {
+public class SplashGulf extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_configuracion_servidor);
+        setContentView(R.layout.activity_splash_gulf);
     }
 }
