@@ -24,6 +24,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_CONFIGURACION_ESTACION);
         db.execSQL(TBL_ENCABEZADO_ESTACION);
         db.execSQL(TBL_DATOS_TARJETERO);
+        db.execSQL(TBL_ACTUALIZADOR_APP);
     }
 
     @Override
@@ -31,6 +32,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_CONFIGURACION_ESTACION);
         db.execSQL(SQL_DELETE_ENCABEZADO);
         db.execSQL(SQL_DELETE_DATOS_TARJETERO);
+        db.execSQL(SQL_DELETE_ACTUALIZADOR_APP);
         onCreate(db);
 
     }
@@ -68,6 +70,14 @@ public class SQLiteBD extends SQLiteOpenHelper {
         values.put(Datosempresa.TIPO, tipo);
 
         long newRowId = base.insert(Datosempresa.NOMBRE_TABLA, null, values);
+    }
+
+    public String getempresaid(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT empresaid FROM configuracionestacion", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
     }
 
     public String getIdEstacion(){
@@ -119,6 +129,10 @@ public class SQLiteBD extends SQLiteOpenHelper {
         String idempresa = cursor.getString(0);
         return idempresa;
     }
+
+    public void execSQL(String sqlDeleteConfiguracionEstacion) {
+    }
+
     public static class Datosempresa implements BaseColumns {
         public static final String NOMBRE_TABLA = "configuracionestacion";
         public static final String IDEMPRESA = "idempresa";
@@ -146,7 +160,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
                     Datosempresa.NUMEROINTERNO + " TEXT," +
                     Datosempresa.TIPO + " TEXT)";
 
-    private static final String SQL_DELETE_CONFIGURACION_ESTACION =
+    public static final String SQL_DELETE_CONFIGURACION_ESTACION =
             "DROP TABLE IF EXISTS " + Datosempresa.NOMBRE_TABLA;
 
     public static class Datosencabezado implements BaseColumns{
@@ -183,7 +197,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
                     Datosencabezado.CP + " TEXT," +
                     Datosencabezado.RFC + " TEXT)";
 
-    private static final String SQL_DELETE_ENCABEZADO =
+    public static final String SQL_DELETE_ENCABEZADO =
             "DROP TABLE IF EXISTS " + Datosencabezado.NOMBRE_TABLA_ENCABEZADO;
 
 
@@ -206,14 +220,6 @@ public class SQLiteBD extends SQLiteOpenHelper {
         values.put(Datosencabezado.RFC, rfc);
 
         long newRowId = base.insert(Datosencabezado.NOMBRE_TABLA_ENCABEZADO, null, values);
-    }
-
-    public String getempresaid(){
-        SQLiteDatabase base = getReadableDatabase();
-        Cursor cursor = base.rawQuery("SELECT empresaid FROM tblencabezado", null);
-        cursor.moveToFirst();
-        String tipo = cursor.getString(0);
-        return tipo;
     }
 
     public String getRazonSocial(){
@@ -306,7 +312,8 @@ public class SQLiteBD extends SQLiteOpenHelper {
     public static class DatosTarjetero implements BaseColumns{
         public static final String NOMBRE_TABLA_TARJETERO = "tblnumerotarjetero";
         public static final String DIRECCION_MAC = "direccionmac";
-        public static final String PROPIEDAD_CONEXION = "propiedadconexion";
+        //public static final String PROPIEDAD_CONEXION = "propiedadconexion";
+        public static final String LECTOR_HUELA = "lectorhuella";
         public static final String ID_TARJETERO = "idtarjetero";
     }
 
@@ -314,17 +321,19 @@ public class SQLiteBD extends SQLiteOpenHelper {
             "CREATE TABLE " + DatosTarjetero.NOMBRE_TABLA_TARJETERO + " ("+
                     DatosTarjetero._ID + " TEXT PRIMARY KEY," +
                     DatosTarjetero.DIRECCION_MAC + " TEXT," +
-                    DatosTarjetero.PROPIEDAD_CONEXION + " TEXT, "  +
+                    //DatosTarjetero.PROPIEDAD_CONEXION + " TEXT, "  +
+                    DatosTarjetero.LECTOR_HUELA + " TEXT, "  +
                     DatosTarjetero.ID_TARJETERO + " TEXT )";
 
-    private static final String SQL_DELETE_DATOS_TARJETERO =
+    public static final String SQL_DELETE_DATOS_TARJETERO =
             "DROP TABLE IF EXISTS " + DatosTarjetero.NOMBRE_TABLA_TARJETERO;
 
-    public void InsertarDatosNumeroTarjetero(String direccionmac, String propiedadconexion, String idtarjetero){
+    public void InsertarDatosNumeroTarjetero(String direccionmac, String lectorhuella, String idtarjetero){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosTarjetero.DIRECCION_MAC, direccionmac);
-        values.put(DatosTarjetero.PROPIEDAD_CONEXION, propiedadconexion);
+//        values.put(DatosTarjetero.PROPIEDAD_CONEXION, propiedadconexion);
+        values.put(DatosTarjetero.LECTOR_HUELA, lectorhuella);
         values.put(DatosTarjetero.ID_TARJETERO, idtarjetero);
 
         long newRowId = base.insert(DatosTarjetero.NOMBRE_TABLA_TARJETERO,null,values);
@@ -332,7 +341,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     public String getDireccionMac(){
         SQLiteDatabase base = getReadableDatabase();
-        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM direccionmac", null);
+        Cursor cursor = base.rawQuery("SELECT tblnumero tarjetero FROM direccionmac", null);
         cursor.moveToFirst();
         String dato = cursor.getString(0);
         return dato;
@@ -353,7 +362,96 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return dato;
     }
 
+    public String getLectorHuella(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT lectorhuella FROM tblnumerotarjetero", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
 
+
+
+//-------------------------------actualizar el apk------------------------------------------------
+
+    public static class DatosActualizacionApp implements BaseColumns{
+        public static final String NOMBRE_TABLA_ACTUALIZADOR_APP = "ApplicationUpdate";
+        public static final String version = "version";
+        public static final String filName = "fileName";
+        public static final String deviceModel = "deviceModel";
+    }
+
+    private static final String TBL_ACTUALIZADOR_APP =
+            "CREATE TABLE " + DatosActualizacionApp.NOMBRE_TABLA_ACTUALIZADOR_APP + " ("+
+                    DatosActualizacionApp._ID + " TEXT PRIMARY KEY," +
+                    DatosActualizacionApp.version + " TEXT," +
+                    DatosActualizacionApp.filName + " TEXT, "  +
+                    DatosActualizacionApp.deviceModel + " TEXT )";
+
+    public static final String SQL_DELETE_ACTUALIZADOR_APP =
+            "DROP TABLE IF EXISTS " + DatosActualizacionApp.NOMBRE_TABLA_ACTUALIZADOR_APP;
+
+
+
+
+    public void InsertarActualizcionApp(String version,String fileName, String deviceModel){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosActualizacionApp.version, version);
+        values.put(DatosActualizacionApp.filName, fileName);
+        values.put(DatosActualizacionApp.deviceModel, deviceModel);
+
+        long newRowId = base.insert(DatosActualizacionApp.NOMBRE_TABLA_ACTUALIZADOR_APP,null,values);
+    }
+
+    public String getVersionApk(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT version FROM ApplicationUpdate", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getFileNameApk(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT fileName FROM ApplicationUpdate", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getDeviceModelApk(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT deviceModel FROM ApplicationUpdate", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+//    public String getActualizaAppId(){
+//        SQLiteDatabase base = getReadableDatabase();
+//        Cursor cursor = base.rawQuery("SELECT _id FROM ApplicationUpdate", null);
+//        cursor.moveToFirst();
+//        String tipo = cursor.getString(0);
+//        return tipo;
+//    }
+
+
+    public boolean updateVersionAPP(String version,String fileName, String deviceModel){
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatosActualizacionApp.version,version);
+        contentValues.put(DatosActualizacionApp.filName,fileName);
+//        contentValues.put(DatosActualizacionApp.deviceModel,deviceModel);
+        int cantidad = base.update(DatosActualizacionApp.NOMBRE_TABLA_ACTUALIZADOR_APP, contentValues, DatosActualizacionApp.deviceModel + " = ? " ,
+                new String[]{deviceModel});
+        if(cantidad!=0)
+        {
+            return  true;
+        }else{
+            return false;
+        }
+    }
 //   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
 }
 

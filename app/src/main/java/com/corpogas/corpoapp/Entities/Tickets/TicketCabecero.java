@@ -1,5 +1,7 @@
 package com.corpogas.corpoapp.Entities.Tickets;
 
+import com.corpogas.corpoapp.Entities.Empresas.Company;
+import com.corpogas.corpoapp.Entities.Empresas.CompanyAddress;
 import com.corpogas.corpoapp.Entities.Empresas.Empresa;
 import com.corpogas.corpoapp.Entities.Empresas.EmpresaDomicilio;
 
@@ -9,25 +11,25 @@ public class TicketCabecero implements Serializable {
     /// <summary>
     /// Empresa a la que pertenece la estacion de donde se emite el ticket
     /// </summary>
-    private Empresa Empresa;
+    private Company Empresa;
     /// <summary>
     /// Domicilio de la empresa
     /// </summary>
-    private EmpresaDomicilio Domicilio;
+    private CompanyAddress Domicilio;
 
-    public com.corpogas.corpoapp.Entities.Empresas.Empresa getEmpresa() {
+    public Company getEmpresa() {
         return Empresa;
     }
 
-    public void setEmpresa(com.corpogas.corpoapp.Entities.Empresas.Empresa empresa) {
+    public void setEmpresa(Company empresa) {
         Empresa = empresa;
     }
 
-    public EmpresaDomicilio getDomicilio() {
+    public CompanyAddress getDomicilio() {
         return Domicilio;
     }
 
-    public void setDomicilio(EmpresaDomicilio domicilio) {
+    public void setDomicilio(CompanyAddress domicilio) {
         Domicilio = domicilio;
     }
 }

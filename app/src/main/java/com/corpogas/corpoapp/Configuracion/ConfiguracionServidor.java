@@ -15,14 +15,18 @@ import com.corpogas.corpoapp.Entities.Empresas.Empresa;
 import com.corpogas.corpoapp.Entities.Empresas.Grupo;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
+import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.Sucursal;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
+import com.corpogas.corpoapp.Entities.UpdateApp.ApplicationUpdate;
+import com.corpogas.corpoapp.Entities.UpdateApp.ApplicationUpdateDetail;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
 
+import java.io.IOException;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +45,8 @@ public class ConfiguracionServidor extends AppCompatActivity{
     Estacion estacion;
     Ticket ticket;
     Conexion conexionApi;
-
+    ConfiguracionAplicacion configuracionAplicacionApi;
+    ApplicationUpdate applicationUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,12 +125,12 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void ConectarIP() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/api/")
+                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        EndPoints iEstacionesIp = retrofit.create(EndPoints.class);
-        Call<Estacion> call = iEstacionesIp.getEstacioApi(oct1,oct2,oct3,oct4);
+        EndPoints conectarIp = retrofit.create(EndPoints.class);
+        Call<Estacion> call = conectarIp.getEstacioApi(oct1,oct2,oct3,oct4);
         call.enqueue(new Callback<Estacion>() {
             @Override
             public void onResponse(Call<Estacion> call, Response<Estacion> response) {
@@ -184,20 +189,21 @@ public class ConfiguracionServidor extends AppCompatActivity{
             String siic = estacion.getSiic();
             Long sucursalid = estacion.getSucursalId();
 
-            String correo = estacion.getSucursal().getCorreo();
-            Long empresaid  = estacion.getSucursal().getEmpresaId();
+            String correo = estacion.getSucursal().getEmail();
+            Long empresaid  = estacion.getSucursal().getCompanyId();
             String ip = estacion.getSucursal().getIp();
-            String nombre = estacion.getSucursal().getNombre();
-            String numerofranquicia = estacion.getSucursal().getNumeroFranquicia();
-            String numinterno = estacion.getSucursal().getNumeroInterno();
+            String nombre = estacion.getSucursal().getAlias();
+            String numerofranquicia = estacion.getSucursal().getFranchiseNumber();
+            String numinterno = estacion.getSucursal().getBranchNumber();
 
-            String descripcion =estacion.getSucursal().getEmpresa().getGrupo().getDescripcion();
+            String descripcion =estacion.getSucursal().getCompany().getGroup().getName();
 
             SQLiteBD data = new SQLiteBD(getApplicationContext());
             data.InsertarDatosEstacion(id.toString(),sucursalid.toString(),siic,correo,empresaid.toString(),ip,nombre,numerofranquicia,numinterno, descripcion);
 
-            guardarDatosEncabezado(empresaid);
+            guardarDatosEncabezado(sucursalid);
             obtenerNumeroTarjetero(sucursalid);
+            getActualizaAPP();
 
             if (descripcion.equals("CORPOGAS")){
                 String titulo = "Inicio de Configuración";
@@ -266,51 +272,85 @@ public class ConfiguracionServidor extends AppCompatActivity{
         }
     }
 
-    private void obtenerNumeroTarjetero(final long sucursalid) {
-
-        Conexion conexion = new Conexion(sucursalid,7,mac);
-
+    private void getActualizaAPP() {
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/api/")
+                .baseUrl("http://sso.corpogas.com.mx/StationsService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        EndPoints iEstacionesIp = retrofit.create(EndPoints.class);
-        Call<Conexion> call = iEstacionesIp.getConexionApi(conexion);
-        call.enqueue(new Callback<Conexion>() {
+        EndPoints actualizaApp = retrofit.create(EndPoints.class);
+        Call<ApplicationUpdate> call = actualizaApp.getActializaApp(data.getempresaid());
+        call.enqueue(new Callback<ApplicationUpdate>() {
             @Override
-            public void onResponse(Call<Conexion> call, Response<Conexion> response) {
-                if(!response.isSuccessful()){
+            public void onResponse(Call<ApplicationUpdate> call, Response<ApplicationUpdate> response) {
+                if(!response.isSuccessful())
+                {
+//                    mJsonTxtView.setText("Codigo: "+ response.code());
                     return;
                 }
-                conexionApi = response.body();
-                String direccionmac =  conexionApi.getDireccionMac();//respons.getString("DireccionMac");
-                String propiedadconexion = conexionApi.getPropiedadConexion(); //respons.getString("PropiedadConexion");
-                long id = conexionApi.getId();  //respons.getString("Id");
-
-                SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
-                data.InsertarDatosNumeroTarjetero(direccionmac,propiedadconexion, String.valueOf(id));
+                applicationUpdate = response.body();
+                for(ApplicationUpdateDetail item: applicationUpdate.getApplicationUpdateDetails())
+                {
+                    data.InsertarActualizcionApp(item.getVersion(),item.getFileName(),item.getDeviceModel());
+                }
 
             }
 
             @Override
-            public void onFailure(Call<Conexion> call, Throwable t) {
+            public void onFailure(Call<ApplicationUpdate> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+    private void obtenerNumeroTarjetero(final long sucursalid) {
+
+//        Conexion conexion = new Conexion(sucursalid,7,mac);
+        ConfiguracionAplicacion configuracionAplicacion = new ConfiguracionAplicacion(sucursalid,0,3,"",mac,0,false,true,0);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
+        Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion);
+        call.enqueue(new Callback<ConfiguracionAplicacion>() {
+            @Override
+            public void onResponse(Call<ConfiguracionAplicacion> call, Response<ConfiguracionAplicacion> response) {
+                if(!response.isSuccessful()) {
+                    return;
+                }
+                configuracionAplicacionApi = response.body();
+                String direccionmac =  configuracionAplicacionApi.getDireccionMac();//respons.getString("DireccionMac");
+                boolean banderaHuella = configuracionAplicacionApi.isLectorHuella(); //respons.getString("PropiedadConexion");
+                long id = configuracionAplicacionApi.getId();  //respons.getString("Id");
+
+                SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
+                data.InsertarDatosNumeroTarjetero(direccionmac,String.valueOf(banderaHuella), String.valueOf(id));
+
+            }
+
+            @Override
+            public void onFailure(Call<ConfiguracionAplicacion> call, Throwable t) {
                 Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void guardarDatosEncabezado(long empresaid) {
+    private void guardarDatosEncabezado(long sucursalid) {
         //Utilizamos el metodo Get para obtener el encabezado para los tickets
         //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/api/")
+                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        EndPoints iEstacionesIp = retrofit.create(EndPoints.class);
-        Call<Ticket> call = iEstacionesIp.getTicketsApi(empresaid);
+        EndPoints guardaDatosEncabezado = retrofit.create(EndPoints.class);
+        Call<Ticket> call = guardaDatosEncabezado.getTicketsApi(sucursalid);
         call.enqueue(new Callback<Ticket>() {
             @Override
             public void onResponse(Call<Ticket> call, Response<Ticket> response) {
@@ -321,20 +361,20 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 }
                 ticket = response.body();
 
-                String calle =  ticket.getCabecero().getDomicilio().getCalle();   //domicilio1.getString("Calle");
-                String cp = ticket.getCabecero().getDomicilio().getCodigoPostal();//domicilio1.getString("CodigoPostal");
-                String colonia = ticket.getCabecero().getDomicilio().getColonia();//domicilio1.getString("Colonia");
-                long empresaid = ticket.getCabecero().getDomicilio().getEmpresaId();//domicilio1.getString("EmpresaId");
-                String estado = ticket.getCabecero().getDomicilio().getEstado();//domicilio1.getString("Estado");
-                String localidad = ticket.getCabecero().getDomicilio().getLocalidad();//domicilio1.getString("Localidad");
-                String municipio = ticket.getCabecero().getDomicilio().getMunicipio();//domicilio1.getString("Municipio");
-                String numeroexterior = ticket.getCabecero().getDomicilio().getNumeroExterior();//domicilio1.getString("NumeroExterior");
-                String numerointerior = ticket.getCabecero().getDomicilio().getNumeroInterior();//domicilio1.getString("NumeroInterior");
-                String pais = ticket.getCabecero().getDomicilio().getPais();//domicilio1.getString("Pais");
+                String calle =  ticket.getCabecero().getDomicilio().getStreet();   //domicilio1.getString("Calle");
+                String cp = ticket.getCabecero().getDomicilio().getZipCode();//domicilio1.getString("CodigoPostal");
+                String colonia = ticket.getCabecero().getDomicilio().getColony();//domicilio1.getString("Colonia");
+                long empresaid = ticket.getCabecero().getDomicilio().getCompanyId();//domicilio1.getString("EmpresaId");
+                String estado = ticket.getCabecero().getDomicilio().getState();//domicilio1.getString("Estado");
+                String localidad = ticket.getCabecero().getDomicilio().getLocality();//domicilio1.getString("Localidad");
+                String municipio = ticket.getCabecero().getDomicilio().getMunicipality();//domicilio1.getString("Municipio");
+                String numeroexterior = ticket.getCabecero().getDomicilio().getStreetNumber();//domicilio1.getString("NumeroExterior");
+                String numerointerior = ticket.getCabecero().getDomicilio().getSuiteNumber();//domicilio1.getString("NumeroInterior");
+                String pais = ticket.getCabecero().getDomicilio().getCountry();//domicilio1.getString("Pais");
 
-                String razonsocial = ticket.getCabecero().getEmpresa().getRazonSocial();  //empresa1.getString("RazonSocial");
+                String razonsocial = ticket.getCabecero().getEmpresa().getCommercialName();  //empresa1.getString("RazonSocial");
                 String rfc2 = ticket.getCabecero().getEmpresa().getRfc();//empresa1.getString("Rfc");
-                long rfc1 = ticket.getCabecero().getEmpresa().getTipoRegimenFiscalId(); //empresa1.getString("TipoRegimenFiscalId");
+                long rfc1 = ticket.getCabecero().getEmpresa().getTaxRegimeId(); //empresa1.getString("TipoRegimenFiscalId");
                 String regimenfiscal = null;
                 if (rfc1 == 1){
                     regimenfiscal = "REGIMEN GENERAL DE LEY PERSONAS MORALES";

@@ -1,5 +1,8 @@
 package com.corpogas.corpoapp.Entities.Estaciones;
 
+import com.corpogas.corpoapp.Entities.Sucursales.Branch;
+import com.corpogas.corpoapp.Entities.Sucursales.Sucursal;
+
 import java.io.Serializable;
 
 public class Estacion implements Serializable {
@@ -13,7 +16,7 @@ public class Estacion implements Serializable {
     /// Relacion con la entidad de Sucursal del esquema Sucursales
     /// Llave foranea
     /// </summary>
-    private com.corpogas.corpoapp.Entities.Sucursales.Sucursal Sucursal;
+    private Branch Sucursal;
 
     /// <summary>
     /// Numero del permiso de la estacion ante la Cre
@@ -55,11 +58,11 @@ public class Estacion implements Serializable {
         SucursalId = sucursalId;
     }
 
-    public com.corpogas.corpoapp.Entities.Sucursales.Sucursal getSucursal() {
+    public Branch getSucursal() {
         return Sucursal;
     }
 
-    public void setSucursal(com.corpogas.corpoapp.Entities.Sucursales.Sucursal sucursal) {
+    public void setSucursal(Branch sucursal) {
         Sucursal = sucursal;
     }
 

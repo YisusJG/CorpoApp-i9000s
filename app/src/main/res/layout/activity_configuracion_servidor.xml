@@ -112,6 +112,7 @@
         android:layout_marginTop="56dp"
         android:background="@drawable/b3"
         android:text="VerificarDatos"
+        android:visibility="invisible"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
