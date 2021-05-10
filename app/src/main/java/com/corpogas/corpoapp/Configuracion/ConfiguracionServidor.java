@@ -72,6 +72,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                     if (tipo.equals("PEMEX")){
                         Intent intent = new Intent(getApplicationContext(), Splash.class);
                         startActivity(intent);
+
                         finish();
                     }
                 }

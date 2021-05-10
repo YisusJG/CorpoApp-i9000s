@@ -11,8 +11,8 @@ import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import com.szzcs.corpoapp.BuildConfig
-import com.szzcs.corpoapp.R
+import com.corpogas.corpoapp.BuildConfig
+import com.corpogas.corpoapp.R
 import java.io.File
 
 class DownloadController(private val context: Context, private val url: String, private val fileName:String) {

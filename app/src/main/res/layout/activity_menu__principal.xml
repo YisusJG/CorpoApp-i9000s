@@ -74,21 +74,21 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:id="@+id/btnImgVentas"-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:src="@drawable/ventastotal"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-                        <com.airbnb.lottie.LottieAnimationView
+                        <ImageView
                             android:id="@+id/btnImgVentas"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="venta_gasolina2.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:src="@drawable/combustibles"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgVentas"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="venta_gasolina2.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -121,21 +121,21 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgTickets"-->
-                        <!--                        android:src="@drawable/ventas"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgTickets"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="tickets.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgTickets"
+                            android:src="@drawable/tickets"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgTickets"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="tickets.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -168,21 +168,21 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgMonederos"-->
-                        <!--                        android:src="@drawable/monederoselectronicos2"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgMonederos"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="tarjetas.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgMonederos"
+                            android:src="@drawable/monederos"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgMonederos"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="tarjetas.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -216,22 +216,22 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgProductos"-->
-                        <!--                        android:src="@drawable/aceites"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgProductos"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="productos_gasolinera3.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgProductos"
+                            android:src="@drawable/productos"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgProductos"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="productos_gasolinera3.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -264,21 +264,21 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgCortes"-->
-                        <!--                        android:src="@drawable/cortes"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgCortes"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="cortes2.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgCortes"
+                            android:src="@drawable/cortes"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgCortes"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="cortes2.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -312,21 +312,21 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgPendientes"-->
-                        <!--                        android:src="@drawable/pendientes"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgPendientes"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="pendientes.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgPendientes"
+                            android:src="@drawable/pendientes"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgPendientes"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="pendientes.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -359,21 +359,21 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgGastos"-->
-                        <!--                        android:src="@drawable/gastos"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgGastos"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="gastos.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgGastos"
+                            android:src="@drawable/gastos"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgGastos"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="gastos.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -407,22 +407,22 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <!--                    <ImageView-->
-                        <!--                        android:onClick="onClickMenuPrincipal"-->
-                        <!--                        android:id="@+id/btnImgReimpresiones"-->
-                        <!--                        android:src="@drawable/ventas"-->
-                        <!--                        android:layout_width="80dp"-->
-                        <!--                        android:layout_height="80dp"/>-->
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgReimpresiones"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="tickets.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgReimpresiones"
+                            android:src="@drawable/reimpresiones"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgReimpresiones"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="tickets.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -455,16 +455,23 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/btnImgFacturacion"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="factura.json"
-                            app:lottie_imageAssetsFolder="assets"
-                            app:lottie_loop="true" />
+                            android:id="@+id/btnImgFacturacion"
+                            android:src="@drawable/facturacion"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+
+
+                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
+                        <!--                            android:id="@+id/btnImgFacturacion"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:onClick="onClickMenuPrincipal"-->
+                        <!--                            app:lottie_autoPlay="false"-->
+                        <!--                            app:lottie_fileName="factura.json"-->
+                        <!--                            app:lottie_imageAssetsFolder="assets"-->
+                        <!--                            app:lottie_loop="true" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
