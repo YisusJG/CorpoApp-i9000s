@@ -1,6 +1,6 @@
 package com.corpogas.corpoapp.Entities.Sistemas;
 
-import com.corpogas.corpoapp.Entities.Sucursales.Sucursal;
+import com.corpogas.corpoapp.Entities.Sucursales.Branch;
 
 public class Conexion {
     /// <summary>
@@ -13,7 +13,7 @@ public class Conexion {
     /// Relacion con la entidad de Sucursal del esquema Sucursales
     /// Llave foranea
     /// </summary>
-    private Sucursal Sucursal;
+    private Branch Sucursal;
 
     /// <summary>
     /// Identificador de la entidad TipoDispositivo
@@ -77,11 +77,11 @@ public class Conexion {
         SucursalId = sucursalId;
     }
 
-    public Sucursal getSucursal() {
+    public Branch getSucursal() {
         return Sucursal;
     }
 
-    public void setSucursal(Sucursal sucursal) {
+    public void setSucursal(Branch sucursal) {
         Sucursal = sucursal;
     }
 

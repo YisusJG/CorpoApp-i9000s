@@ -18,7 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
-import com.corpogas.corpoapp.Entities.UpdateApp.ApplicationUpdate
+import com.corpogas.corpoapp.Entities.Sucursales.Update
 import com.corpogas.corpoapp.Menu_Principal
 import com.corpogas.corpoapp.Modales.Modales
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints
@@ -47,7 +47,7 @@ class Menu_Principal : AppCompatActivity() {
     private val imgFoto: ImageSwitcher? = null
     var imagen: ImageView? = null
     var ImageDisplay: Boolean? = null
-    var applicationUpdate: ApplicationUpdate? = null
+    var applicationUpdate: Update? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
@@ -101,13 +101,13 @@ class Menu_Principal : AppCompatActivity() {
         private get() {
             val data = SQLiteBD(applicationContext)
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://sso.corpogas.com.mx/StationsService/")
+                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService_Entities/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val actualizaApp = retrofit.create(EndPoints::class.java)
-            val call = actualizaApp.getActializaApp(data.getempresaid())
-            call.enqueue(object : Callback<ApplicationUpdate?> {
-                override fun onResponse(call: Call<ApplicationUpdate?>, response: Response<ApplicationUpdate?>) {
+            val call = actualizaApp.getActializaApp(data.idSucursal)
+            call.enqueue(object : Callback<Update?> {
+                override fun onResponse(call: Call<Update?>, response: Response<Update?>) {
                     var version = ""
                     var fileName = ""
                     var deviceModel =""
@@ -116,7 +116,7 @@ class Menu_Principal : AppCompatActivity() {
                         return
                     }
                     applicationUpdate = response.body()
-                    for (item in applicationUpdate!!.getApplicationUpdateDetails()) {
+                    for (item in applicationUpdate!!.UpdateDetails) {
                         version = item.getVersion()
                         fileName = item.getFileName()
                         deviceModel = item.getDeviceModel()
@@ -151,7 +151,7 @@ class Menu_Principal : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<ApplicationUpdate?>, t: Throwable) {
+                override fun onFailure(call: Call<Update?>, t: Throwable) {
                     Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
                 }
             })

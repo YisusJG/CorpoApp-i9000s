@@ -1,7 +1,6 @@
 package com.corpogas.corpoapp.Entities.Estaciones;
 
 import com.corpogas.corpoapp.Entities.Sucursales.Branch;
-import com.corpogas.corpoapp.Entities.Sucursales.Sucursal;
 
 import java.io.Serializable;
 

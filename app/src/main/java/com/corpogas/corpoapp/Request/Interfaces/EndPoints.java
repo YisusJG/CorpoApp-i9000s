@@ -3,8 +3,8 @@ package com.corpogas.corpoapp.Request.Interfaces;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
+import com.corpogas.corpoapp.Entities.Sucursales.Update;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
-import com.corpogas.corpoapp.Entities.UpdateApp.ApplicationUpdate;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,8 +15,8 @@ import retrofit2.http.Path;
 public interface EndPoints {
 
 //    METODOS GET
-    @GET("api/applicationUpdate/branchId/{branchId}/lastUpdates")
-    Call<ApplicationUpdate> getActializaApp(@Path("branchId") String sucursalId);
+    @GET("api/actualizaciones/sucursalId/{sucursalId}/lastUpdates")
+    Call<Update> getActializaApp(@Path("sucursalId") String sucursalId);
 
     @GET("api/estaciones/ip/{octeto1}/{octeto2}/{octeto3}/{octeto4}")
     Call<Estacion> getEstacioApi(@Path("octeto1") String octeto1, @Path("octeto2") String octeto2, @Path("octeto3") String octeto3, @Path("octeto4") String octeto4);

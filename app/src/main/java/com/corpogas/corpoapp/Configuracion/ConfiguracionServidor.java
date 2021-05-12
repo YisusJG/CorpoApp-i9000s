@@ -11,22 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.corpogas.corpoapp.Entities.Empresas.Empresa;
-import com.corpogas.corpoapp.Entities.Empresas.Grupo;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
-import com.corpogas.corpoapp.Entities.Sucursales.Sucursal;
+import com.corpogas.corpoapp.Entities.Sucursales.Update;
+import com.corpogas.corpoapp.Entities.Sucursales.UpdateDetail;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
-import com.corpogas.corpoapp.Entities.UpdateApp.ApplicationUpdate;
-import com.corpogas.corpoapp.Entities.UpdateApp.ApplicationUpdateDetail;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
 
-import java.io.IOException;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +42,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
     Ticket ticket;
     Conexion conexionApi;
     ConfiguracionAplicacion configuracionAplicacionApi;
-    ApplicationUpdate applicationUpdate;
+    Update applicationUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,22 +272,22 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void getActualizaAPP() {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://sso.corpogas.com.mx/StationsService/")
+                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints actualizaApp = retrofit.create(EndPoints.class);
-        Call<ApplicationUpdate> call = actualizaApp.getActializaApp(data.getempresaid());
-        call.enqueue(new Callback<ApplicationUpdate>() {
+        Call<Update> call = actualizaApp.getActializaApp(data.getIdSucursal());
+        call.enqueue(new Callback<Update>() {
             @Override
-            public void onResponse(Call<ApplicationUpdate> call, Response<ApplicationUpdate> response) {
+            public void onResponse(Call<Update> call, Response<Update> response) {
                 if(!response.isSuccessful())
                 {
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                     return;
                 }
                 applicationUpdate = response.body();
-                for(ApplicationUpdateDetail item: applicationUpdate.getApplicationUpdateDetails())
+                for(UpdateDetail item: applicationUpdate.getUpdateDetails())
                 {
                     data.InsertarActualizcionApp(item.getVersion(),item.getFileName(),item.getDeviceModel());
                 }
@@ -299,7 +295,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
             }
 
             @Override
-            public void onFailure(Call<ApplicationUpdate> call, Throwable t) {
+            public void onFailure(Call<Update> call, Throwable t) {
                 Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
