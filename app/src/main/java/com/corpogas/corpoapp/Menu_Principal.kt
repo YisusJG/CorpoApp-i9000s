@@ -388,6 +388,9 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgTickets -> {
             }
             R.id.btnImgMonederos -> {
+                intent = Intent(applicationContext, PruebasEndPoint::class.java)
+                startActivity(intent)
+
             }
             R.id.btnImgProductos -> {
             }

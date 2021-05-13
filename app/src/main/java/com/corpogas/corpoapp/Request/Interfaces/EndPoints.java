@@ -1,10 +1,14 @@
 package com.corpogas.corpoapp.Request.Interfaces;
 
+import com.corpogas.corpoapp.Entities.Catalogos.Bin;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,6 +34,9 @@ public interface EndPoints {
 
     @POST("api/ConfiguracionAplicaciones/ValidarConexion")
     Call<ConfiguracionAplicacion> getConexionApi(@Body ConfiguracionAplicacion configuracionAplicacion);
+
+    @POST("api/bines/obtieneBinTarjeta/sucursalId/{sucursalId}")
+    Call<RespuestaApi<Bin>> getBin(@Path("sucursalId") String sucursalId, @Body JSONObject bin);
 
 }
 
