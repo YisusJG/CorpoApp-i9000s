@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp">
-        <activity android:name=".PruebasEndPoint"></activity>
+        <activity android:name=".LecturaTarjetas.MonederosElectronicos"></activity>
+        <activity android:name=".PruebasEndPoint" />
         <activity android:name=".Menu_Principal" />
         <activity android:name=".SplashEmpresas.SplashGulf" />
         <activity android:name=".SplashEmpresas.Splash" />

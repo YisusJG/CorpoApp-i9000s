@@ -19,6 +19,7 @@ import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Sucursales.Update
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
 import com.corpogas.corpoapp.Menu_Principal
 import com.corpogas.corpoapp.Modales.Modales
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints
@@ -388,7 +389,7 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgTickets -> {
             }
             R.id.btnImgMonederos -> {
-                intent = Intent(applicationContext, PruebasEndPoint::class.java)
+                intent = Intent(applicationContext, MonederosElectronicos::class.java)
                 startActivity(intent)
 
             }
