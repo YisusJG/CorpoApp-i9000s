@@ -2,7 +2,9 @@ package com.corpogas.corpoapp.Entities.Sistemas;
 
 import com.corpogas.corpoapp.Entities.Sucursales.Branch;
 
-public class Conexion {
+import java.io.Serializable;
+
+public class Conexion implements Serializable {
     /// <summary>
     /// Identificador de la entidad Sucursal
     /// NOTA: Id de la tabla(este es computado)

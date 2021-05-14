@@ -1,6 +1,8 @@
 package com.corpogas.corpoapp.Entities.Catalogos;
 
-public class PaymentMethod {
+import java.io.Serializable;
+
+public class PaymentMethod implements Serializable {
 
     /// <summary>
     /// Identificador de la entidad SatPaymentMethod
@@ -59,4 +61,76 @@ public class PaymentMethod {
     /// Valor usado para mapearlo en la base de datos anterior
     /// </summary>
     public int MappingValue;
+
+    public long getSatPaymentMethodId() {
+        return SatPaymentMethodId;
+    }
+
+    public void setSatPaymentMethodId(long satPaymentMethodId) {
+        SatPaymentMethodId = satPaymentMethodId;
+    }
+
+    public com.corpogas.corpoapp.Entities.Catalogos.SatPaymentMethod getSatPaymentMethod() {
+        return SatPaymentMethod;
+    }
+
+    public void setSatPaymentMethod(com.corpogas.corpoapp.Entities.Catalogos.SatPaymentMethod satPaymentMethod) {
+        SatPaymentMethod = satPaymentMethod;
+    }
+
+    public String getShortDescription() {
+        return ShortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        ShortDescription = shortDescription;
+    }
+
+    public String getLongDescription() {
+        return LongDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        LongDescription = longDescription;
+    }
+
+    public int getPrintsAllowed() {
+        return PrintsAllowed;
+    }
+
+    public void setPrintsAllowed(int printsAllowed) {
+        PrintsAllowed = printsAllowed;
+    }
+
+    public boolean isBillable() {
+        return IsBillable;
+    }
+
+    public void setBillable(boolean billable) {
+        IsBillable = billable;
+    }
+
+    public boolean isAutorization() {
+        return Autorization;
+    }
+
+    public void setAutorization(boolean autorization) {
+        Autorization = autorization;
+    }
+
+    public boolean isFrontVisible() {
+        return IsFrontVisible;
+    }
+
+    public void setFrontVisible(boolean frontVisible) {
+        IsFrontVisible = frontVisible;
+    }
+
+    public int getMappingValue() {
+        return MappingValue;
+    }
+
+    public void setMappingValue(int mappingValue) {
+        MappingValue = mappingValue;
+    }
 }

@@ -1,6 +1,8 @@
 package com.corpogas.corpoapp.Entities.Classes;
 
-public class ErrorAlertaHttp {
+import java.io.Serializable;
+
+public class ErrorAlertaHttp implements Serializable {
 
     /// <summary>
     /// Mensaje de error para el usuario

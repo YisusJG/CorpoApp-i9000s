@@ -1,6 +1,9 @@
 package com.corpogas.corpoapp.Entities.Catalogos;
 
-public class Bin {
+import java.io.Serializable;
+import java.util.List;
+
+public class Bin implements Serializable {
 
     public long Id;
 
@@ -41,4 +44,70 @@ public class Bin {
     /// Bandera que indica si el registro es de un numero de tarjeta
     /// </summary>
     public boolean NumeroTarjeta;
+
+
+    public List<String> Pistas;
+
+    public Bin(List<String> pistas) {
+        Pistas = pistas;
+    }
+
+
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public long getTipoMonederoId() {
+        return TipoMonederoId;
+    }
+
+    public void setTipoMonederoId(long tipoMonederoId) {
+        TipoMonederoId = tipoMonederoId;
+    }
+
+    public ElectronicWalletType getTipoMonedero() {
+        return TipoMonedero;
+    }
+
+    public void setTipoMonedero(ElectronicWalletType tipoMonedero) {
+        TipoMonedero = tipoMonedero;
+    }
+
+    public String getMascara() {
+        return Mascara;
+    }
+
+    public void setMascara(String mascara) {
+        Mascara = mascara;
+    }
+
+    public int getPista() {
+        return Pista;
+    }
+
+    public void setPista(int pista) {
+        Pista = pista;
+    }
+
+    public boolean isNumeroTarjeta() {
+        return NumeroTarjeta;
+    }
+
+    public void setNumeroTarjeta(boolean numeroTarjeta) {
+        NumeroTarjeta = numeroTarjeta;
+    }
+
+
+    public List<String> getPistas() {
+        return Pistas;
+    }
+
+    public void setPistas(List<String> pistas) {
+        Pistas = pistas;
+    }
 }

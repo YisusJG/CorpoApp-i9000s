@@ -36,7 +36,7 @@ public interface EndPoints {
     Call<ConfiguracionAplicacion> getConexionApi(@Body ConfiguracionAplicacion configuracionAplicacion);
 
     @POST("api/bines/obtieneBinTarjeta/sucursalId/{sucursalId}")
-    Call<RespuestaApi<Bin>> getBin(@Path("sucursalId") String sucursalId, @Body JSONObject bin);
+    Call<RespuestaApi<Bin>> getBin(@Path("sucursalId") String sucursalId, @Body Bin bin);
 
 }
 

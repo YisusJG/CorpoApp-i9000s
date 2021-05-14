@@ -1,6 +1,16 @@
 package com.corpogas.corpoapp.Entities.Catalogos;
 
-public class SatPaymentMethod {
+import java.io.Serializable;
+
+public class SatPaymentMethod implements Serializable {
 
     public String Description;
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
 }

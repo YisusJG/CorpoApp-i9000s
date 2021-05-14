@@ -17,6 +17,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,16 +45,26 @@ public class PruebasEndPoint extends AppCompatActivity {
         btnPeticionBin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONArray datos = new JSONArray();
-                final JSONObject jsonObject = new JSONObject();
-                datos.put("400000025010000199997000");
-                datos.put("400000025010000199997000");
-                datos.put("");
-                try {
-                    jsonObject.put("Pistas",datos);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                List<String> pistas= new ArrayList<String>();
+                pistas.add("400000025010000199997000");
+                pistas.add("400000025010000199997000");
+                pistas.add("");
+
+
+                Bin bin = new Bin(pistas);
+
+
+
+//                JSONArray datos = new JSONArray();
+//                final JSONObject jsonObject = new JSONObject();
+//                datos.put("400000025010000199997000");
+//                datos.put("400000025010000199997000");
+//                datos.put("");
+//                try {
+//                    jsonObject.put("Pistas",datos);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 
                 //        Conexion conexion = new Conexion(sucursalid,7,mac);
 //                Bin bin = new Bin("Pistas",);
@@ -61,7 +74,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin("497",jsonObject);
+                Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin("497",bin);
                 call.enqueue(new Callback<RespuestaApi<Bin>>() {
 
                     @Override

@@ -1,6 +1,8 @@
 package com.corpogas.corpoapp.Entities.Classes;
 
-public class AlertaHttp {
+import java.io.Serializable;
+
+public class AlertaHttp implements Serializable {
 
     /// <summary>
     /// Estructura principal den mensaje
