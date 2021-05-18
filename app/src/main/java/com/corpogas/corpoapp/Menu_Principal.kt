@@ -404,6 +404,8 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgReimpresiones -> {
             }
             R.id.btnImgFacturacion -> {
+                intent = Intent(applicationContext, PruebasEndPoint::class.java)
+                startActivity(intent)
             }
         }
     }

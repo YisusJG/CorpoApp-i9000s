@@ -1,14 +1,22 @@
 package com.corpogas.corpoapp.Request.Interfaces;
 
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
+import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
+import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
+import com.corpogas.corpoapp.Entities.Tarjetas.Puntada;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
+import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -28,6 +36,15 @@ public interface EndPoints {
     @GET("api/tickets/cabecero/sucursalId/{sucursalId}")
     Call<Ticket> getTicketsApi(@Path("sucursalId") long estacionId);
 
+    @GET("api/accesoUsuarios/sucursal/{sucursalId}/clave/{clave}")
+    Call<RespuestaApi<AccesoUsuario>> getAccesoUsuario(@Path("sucursalId") String sucursalId, @Path("clave") String clave);
+
+    @GET("api/sucursalFormaPagos/sucursal/{sucursalId}")
+    Call<List<BranchPaymentMethod>> getFormaPagos(@Path("sucursalId") String sucursalId);
+
+    @GET("api/Empleados/clave/{clave}")
+    Call<RespuestaApi<Empleado>> getDatosEmpleado(@Path("clave") String clave);
+
 
 
 //   METODOS POST
@@ -37,6 +54,17 @@ public interface EndPoints {
 
     @POST("api/bines/obtieneBinTarjeta/sucursalId/{sucursalId}")
     Call<RespuestaApi<Bin>> getBin(@Path("sucursalId") String sucursalId, @Body Bin bin);
+
+    @POST("api/puntadas/actualizaPuntos/clave/{clave}")
+    Call<RespuestaApi<Puntada>> getActualizaPuntos(@Path("clave") String clave, @Body Puntada puntada);
+
+    @POST("api/tickets/generar")
+    Call<Ticket<TicketRequest>> getGenerarTicket(@Body TicketRequest ticketRequest);
+
+
+
+
+
 
 }
 

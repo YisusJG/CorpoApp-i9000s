@@ -1,6 +1,8 @@
 package com.corpogas.corpoapp.Entities.Tickets;
 
-public class Ticket {
+import java.io.Serializable;
+
+public class Ticket<T> implements Serializable {
     /// <summary>
     /// Encabezado del ticket
     /// </summary>
@@ -8,15 +10,15 @@ public class Ticket {
     /// <summary>
     /// Cuerpo del ticket
     /// </summary>
-//    private TicketDetalle Detalle;
+    private TicketDetalle Detalle;
     /// <summary>
     /// En caso de ocurrir algun error, se muestra en esta propiedad
     /// </summary>
-//    private TicketResultado Resultado;
+    private TicketResultado Resultado;
     /// <summary>
     /// Pie del ticket
     /// </summary>
-//    private TicketPie Pie;
+    private TicketPie Pie;
 
 
     public TicketCabecero getCabecero() {
@@ -26,4 +28,16 @@ public class Ticket {
     public void setCabecero(TicketCabecero cabecero) {
         Cabecero = cabecero;
     }
+
+    public TicketDetalle getDetalle() { return Detalle; }
+
+    public void setDetalle(TicketDetalle detalle) { Detalle = detalle; }
+
+    public TicketResultado getResultado() { return Resultado; }
+
+    public void setResultado(TicketResultado resultado) { Resultado = resultado; }
+
+    public TicketPie getPie() { return Pie; }
+
+    public void setPie(TicketPie pie) { Pie = pie; }
 }

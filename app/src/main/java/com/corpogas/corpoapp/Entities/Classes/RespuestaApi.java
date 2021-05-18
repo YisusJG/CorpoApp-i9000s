@@ -50,7 +50,5 @@ public class RespuestaApi<T> implements Serializable {
         return AlertaHttp;
     }
 
-    public void setAlertaHttp(com.corpogas.corpoapp.Entities.Classes.AlertaHttp alertaHttp) {
-        AlertaHttp = alertaHttp;
-    }
+    public void setAlertaHttp(com.corpogas.corpoapp.Entities.Classes.AlertaHttp alertaHttp) { AlertaHttp = alertaHttp; }
 }
