@@ -390,6 +390,7 @@ class Menu_Principal : AppCompatActivity() {
             }
             R.id.btnImgMonederos -> {
                 intent = Intent(applicationContext, MonederosElectronicos::class.java)
+                intent.putExtra("Enviadodesde", "menuprincipal")
                 startActivity(intent)
 
             }

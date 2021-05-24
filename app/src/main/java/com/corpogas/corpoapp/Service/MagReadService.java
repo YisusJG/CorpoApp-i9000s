@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class MagReadService {
     
     public final static int MESSAGE_OPEN_MAG = 1;
@@ -14,6 +16,7 @@ public class MagReadService {
     public final static int MESSAGE_READ_MAG = 3;
     public final static int MESSAGE_CHECK_OK = 4;
     public final static String CARD_TRACK1 = "track1";
+    public final static String CARD_TRACKS = "tracks";
     public final static String CARD_NUMBER = "number";
     public final static String CARD_TRACK2 = "track2";
     public final static String CARD_TRACK3 = "track3";
@@ -88,6 +91,7 @@ public class MagReadService {
         }
 
         public void run() {
+
             if (magManager != null) {
                 int ret = magManager.open();
                 if (ret != 0) {
@@ -115,25 +119,33 @@ public class MagReadService {
                     }
                 }
                 StringBuffer trackOne = new StringBuffer();
+                ArrayList<String> string = new ArrayList<>();
                 byte[] stripInfo = new byte[1024];
                 int allLen = magManager.getAllStripInfo(stripInfo);
                 if (allLen > 0) {
                     int len = stripInfo[1];
                     if (len != 0)
                         trackOne.append(" track1: " + new String(stripInfo, 2, len));
+                        String track1 =  new String(stripInfo, 2, len);
+                        string.add(track1);
+
                     int len2 = stripInfo[3 + len];
                     if (len2 != 0)
                         trackOne.append(" \ntrack2: " + new String(stripInfo, 4 + len, len2));
+                         String track2 =  new String(stripInfo, 4 + len, len2);
+                         string.add(track2);
                     int len3 = stripInfo[5 + len+len2];
                     if (len3 != 0 && len3 < 1024)
                         trackOne.append(" \ntrack3: " + new String(stripInfo, 6 + len + len2, len3));
-               
+                        String track3 = new String(stripInfo, 6 + len + len2, len3);
+                        string.add(track3);
                     if(!trackOne.toString().equals("")) {
                         trackOne.append("\n");
                         mHandler.removeMessages(MESSAGE_CHECK_FAILE);
                         Message msg = mHandler.obtainMessage(MESSAGE_READ_MAG);
                         Log.d("MagManager", trackOne.toString());
                         Bundle bundle = new Bundle();
+                        bundle.putStringArrayList(CARD_TRACKS,string);
                         bundle.putString(CARD_TRACK1, trackOne.toString());
                         msg.setData(bundle);
                         mHandler.sendMessage(msg);

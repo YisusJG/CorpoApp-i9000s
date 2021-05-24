@@ -75,21 +75,6 @@ public class PruebasEndPoint extends AppCompatActivity {
                 pistas.add("");
 
                 Bin bin = new Bin(pistas);
-
-//                JSONArray datos = new JSONArray();
-//                final JSONObject jsonObject = new JSONObject();
-
-//                datos.put("400000025010000199997000");
-//                datos.put("400000025010000199997000");
-//                datos.put("");
-//                try {
-//                    jsonObject.put("Pistas",datos);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-
-                //        Conexion conexion = new Conexion(sucursalid,7,mac);
-//                Bin bin = new Bin("Pistas",);
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
                         .addConverterFactory(GsonConverterFactory.create())
