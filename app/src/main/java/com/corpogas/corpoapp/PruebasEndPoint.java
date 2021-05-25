@@ -41,7 +41,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
     SQLiteBD data;
 
-    Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago, btnPeticionEmpleado;
+    Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago, btnPeticionEmpleado, btnPeticionProductosProcedencia;
 
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -49,6 +49,7 @@ public class PruebasEndPoint extends AppCompatActivity {
     RespuestaApi<Empleado> respuestaApiEmpleado;
     Ticket<TicketRequest> respuestaTicketRequest;
     List<BranchPaymentMethod> respuestaListaSucursalFormasPago;
+    RespuestaApi<List<ProductoTarjetero>> respuestaApiProductoTarjetero;
 
 
 
@@ -269,6 +270,35 @@ public class PruebasEndPoint extends AppCompatActivity {
                     }
                 });
 
+            }
+        });
+
+        btnPeticionProductosProcedencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints productosProcedencia = retrofit.create(EndPoints.class);
+                Call<RespuestaApi<List<ProductoTarjetero>>> call = productosProcedencia.getProductosProcedencia("497","1");
+                call.enqueue(new Callback<RespuestaApi<List<ProductoTarjetero>>>() {
+
+
+                    @Override
+                    public void onResponse(Call<RespuestaApi<List<ProductoTarjetero>>> call, Response<RespuestaApi<List<ProductoTarjetero>>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiProductoTarjetero = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<List<ProductoTarjetero>>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

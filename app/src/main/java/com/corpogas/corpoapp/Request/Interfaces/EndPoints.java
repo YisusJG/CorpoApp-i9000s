@@ -3,6 +3,7 @@ package com.corpogas.corpoapp.Request.Interfaces;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
@@ -16,6 +17,7 @@ import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,6 +47,9 @@ public interface EndPoints {
     @GET("api/Empleados/clave/{clave}")
     Call<RespuestaApi<Empleado>> getDatosEmpleado(@Path("clave") String clave);
 
+    @GET("api/ventaProductos/sucursal/{sucursalId}/posicionCargaId/{posicionCargaId}")
+    Call<RespuestaApi<List<ProductoTarjetero>>> getProductosProcedencia(@Path("sucursalId") String sucursalId, @Path("posicionCargaId") String posicionCargaId);
+
 
 
 //   METODOS POST
@@ -61,6 +66,8 @@ public interface EndPoints {
     @POST("api/tickets/generar")
     Call<Ticket<TicketRequest>> getGenerarTicket(@Body TicketRequest ticketRequest);
 
+//    @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
+//    Call<RespuestaApi<Transaccion>>
 
 
 

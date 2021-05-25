@@ -65,4 +65,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnPeticionFormasPago" />
+
+    <Button
+        android:id="@+id/btnPeticionProductosProcedencia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Button ProductosProcedencia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPeticionEmpleado" />
 </androidx.constraintlayout.widget.ConstraintLayout>
