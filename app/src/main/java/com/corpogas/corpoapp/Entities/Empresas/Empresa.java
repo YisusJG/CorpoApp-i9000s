@@ -73,11 +73,11 @@ public class Empresa implements Serializable {
         GrupoId = grupoId;
     }
 
-    public com.corpogas.corpoapp.Entities.Empresas.Grupo getGrupo() {
+    public Grupo getGrupo() {
         return Grupo;
     }
 
-    public void setGrupo(com.corpogas.corpoapp.Entities.Empresas.Grupo grupo) {
+    public void setGrupo(Grupo grupo) {
         Grupo = grupo;
     }
 
@@ -85,9 +85,7 @@ public class Empresa implements Serializable {
         return TipoRegimenFiscalId;
     }
 
-    public void setTipoRegimenFiscalId(long tipoRegimenFiscalId) {
-        TipoRegimenFiscalId = tipoRegimenFiscalId;
-    }
+    public void setTipoRegimenFiscalId(long tipoRegimenFiscalId) { TipoRegimenFiscalId = tipoRegimenFiscalId; }
 
     public double getLatitud() {
         return Latitud;

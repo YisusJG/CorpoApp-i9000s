@@ -53,4 +53,40 @@ public class Posicion implements Serializable {
     /// Dicho listado corresponde a los datos existentes en la tabla Islas
     /// </summary>
     public List<MangueraPorPosicion> Mangueras;
+
+    public long getPosicionCargaId() { return PosicionCargaId; }
+
+    public void setPosicionCargaId(long posicionCargaId) { PosicionCargaId = posicionCargaId; }
+
+    public long getNumeroInterno() { return NumeroInterno; }
+
+    public void setNumeroInterno(long numeroInterno) { NumeroInterno = numeroInterno; }
+
+    public boolean isDisponible() { return Disponible; }
+
+    public void setDisponible(boolean disponible) { Disponible = disponible; }
+
+    public boolean isPendienteCobro() { return PendienteCobro; }
+
+    public void setPendienteCobro(boolean pendienteCobro) { PendienteCobro = pendienteCobro; }
+
+    public long getOperativa() { return Operativa; }
+
+    public void setOperativa(long operativa) { Operativa = operativa; }
+
+    public String getDescripcionOperativa() { return DescripcionOperativa; }
+
+    public void setDescripcionOperativa(String descripcionOperativa) { DescripcionOperativa = descripcionOperativa; }
+
+    public String getDescripcion() { return Descripcion; }
+
+    public void setDescripcion(String descripcion) { Descripcion = descripcion; }
+
+    public boolean isPermiteProductos() { return PermiteProductos; }
+
+    public void setPermiteProductos(boolean permiteProductos) { PermiteProductos = permiteProductos; }
+
+    public List<MangueraPorPosicion> getMangueras() {  return Mangueras; }
+
+    public void setMangueras(List<MangueraPorPosicion> mangueras) { Mangueras = mangueras; }
 }

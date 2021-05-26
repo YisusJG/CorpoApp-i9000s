@@ -93,7 +93,5 @@ public class Estacion implements Serializable {
         return TablaCubicaciones;
     }
 
-    public void setTablaCubicaciones(boolean tablaCubicaciones) {
-        TablaCubicaciones = tablaCubicaciones;
-    }
+    public void setTablaCubicaciones(boolean tablaCubicaciones) { TablaCubicaciones = tablaCubicaciones; }
 }

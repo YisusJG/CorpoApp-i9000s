@@ -14,6 +14,7 @@ import com.corpogas.corpoapp.Entities.Sucursales.Update;
 import com.corpogas.corpoapp.Entities.Tarjetas.Puntada;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
+import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 
 import org.json.JSONObject;
 
@@ -50,6 +51,11 @@ public interface EndPoints {
     @GET("api/ventaProductos/sucursal/{sucursalId}/posicionCargaId/{posicionCargaId}")
     Call<RespuestaApi<List<ProductoTarjetero>>> getProductosProcedencia(@Path("sucursalId") String sucursalId, @Path("posicionCargaId") String posicionCargaId);
 
+    @GET("api/tickets/validaPendienteCobro/sucursalId/{sucursalId}/posicionCargaId/{posicionCargaId}")
+    Call<RespuestaApi<Boolean>> getTicketPendienteCobro(@Path("sucursalId") String sucursalId,@Path("posicionCargaId") String posicionCargaId);
+
+    @GET("api/despachos/autorizaDespacho/posicionCargaId/{posicionCargaId}/usuarioId/{usuarioId}")
+    Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") String posicionCargaId, @Path("usuarioId") String usuarioId);
 
 
 //   METODOS POST
@@ -66,12 +72,8 @@ public interface EndPoints {
     @POST("api/tickets/generar")
     Call<Ticket<TicketRequest>> getGenerarTicket(@Body TicketRequest ticketRequest);
 
-//    @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
-//    Call<RespuestaApi<Transaccion>>
-
-
-
-
+    @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
+    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") String posicionCarga, @Path("usuarioId") String usuarioId);
 
 }
 

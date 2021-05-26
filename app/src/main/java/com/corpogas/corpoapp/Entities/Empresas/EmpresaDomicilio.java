@@ -96,13 +96,11 @@ public class EmpresaDomicilio implements Serializable {
         EmpresaId = empresaId;
     }
 
-    public com.corpogas.corpoapp.Entities.Empresas.Empresa getEmpresa() {
+    public Empresa getEmpresa() {
         return Empresa;
     }
 
-    public void setEmpresa(com.corpogas.corpoapp.Entities.Empresas.Empresa empresa) {
-        Empresa = empresa;
-    }
+    public void setEmpresa(Empresa empresa) { Empresa = empresa; }
 
     public long getTipoDomicilioId() {
         return TipoDomicilioId;

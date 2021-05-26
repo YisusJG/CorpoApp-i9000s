@@ -30,4 +30,24 @@ public class MangueraPorPosicion implements Serializable {
     /// Nombre del combustible
     /// </summary>
     public String DescripcionCombustible;
+
+    public long getMangueraId() { return MangueraId; }
+
+    public void setMangueraId(long mangueraId) { MangueraId = mangueraId; }
+
+    public long getNumeroInterno() { return NumeroInterno; }
+
+    public void setNumeroInterno(long numeroInterno) { NumeroInterno = numeroInterno; }
+
+    public long getEstacionCombustibleId() { return EstacionCombustibleId; }
+
+    public void setEstacionCombustibleId(long estacionCombustibleId) { EstacionCombustibleId = estacionCombustibleId; }
+
+    public long getNumeroInternoEstacionCombustible() { return NumeroInternoEstacionCombustible; }
+
+    public void setNumeroInternoEstacionCombustible(long numeroInternoEstacionCombustible) { NumeroInternoEstacionCombustible = numeroInternoEstacionCombustible; }
+
+    public String getDescripcionCombustible() { return DescripcionCombustible; }
+
+    public void setDescripcionCombustible(String descripcionCombustible) { DescripcionCombustible = descripcionCombustible; }
 }

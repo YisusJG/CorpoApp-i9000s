@@ -22,6 +22,7 @@ import com.corpogas.corpoapp.Entities.Tarjetas.Puntada;
 import com.corpogas.corpoapp.Entities.Tickets.DiccionarioParcialidades;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
+import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
 
 import org.json.JSONArray;
@@ -41,7 +42,9 @@ public class PruebasEndPoint extends AppCompatActivity {
 
     SQLiteBD data;
 
-    Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago, btnPeticionEmpleado, btnPeticionProductosProcedencia;
+    Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago,
+           btnPeticionEmpleado, btnPeticionProductosProcedencia, btnPeticiongetPostFinalizaVenta,btnPeticionTicketPendienteCobro,
+           btnPeticionAutorizaDespacho;
 
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -50,6 +53,9 @@ public class PruebasEndPoint extends AppCompatActivity {
     Ticket<TicketRequest> respuestaTicketRequest;
     List<BranchPaymentMethod> respuestaListaSucursalFormasPago;
     RespuestaApi<List<ProductoTarjetero>> respuestaApiProductoTarjetero;
+    RespuestaApi<Transaccion> respuestaApiTransaccion;
+    RespuestaApi<Boolean> respuestaApiTicketPendienteCobro;
+    RespuestaApi<Boolean> respuestaApiAutorizaDespacho;
 
 
 
@@ -67,6 +73,10 @@ public class PruebasEndPoint extends AppCompatActivity {
         btnPeticionGeneraTicket = (Button) findViewById(R.id.btnPeticionGeneraTicket);
         btnPeticionFormasPago = (Button) findViewById(R.id.btnPeticionFormasPago);
         btnPeticionEmpleado = (Button) findViewById(R.id.btnPeticionEmpleado);
+        btnPeticionProductosProcedencia = (Button) findViewById(R.id.btnPeticionProductosProcedencia);
+        btnPeticiongetPostFinalizaVenta = (Button) findViewById(R.id.btnPeticiongetPostFinalizaVenta);
+        btnPeticionTicketPendienteCobro = (Button) findViewById(R.id.btnPeticionTicketPendienteCobro);
+        btnPeticionAutorizaDespacho = (Button) findViewById(R.id.btnPeticionAutorizaDespacho);
         btnPeticionBin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,6 +309,95 @@ public class PruebasEndPoint extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+
+        });
+
+        btnPeticiongetPostFinalizaVenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
+                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta("497","1","104");
+                call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
+
+
+                    @Override
+                    public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiTransaccion = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<Transaccion>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        btnPeticionTicketPendienteCobro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints TicketPendienteCobro = retrofit.create(EndPoints.class);
+                Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro("497","1");
+                call.enqueue(new Callback<RespuestaApi<Boolean>>() {
+
+
+                    @Override
+                    public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiTicketPendienteCobro = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<Boolean>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        btnPeticionAutorizaDespacho.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints AutorizaDespacho = retrofit.create(EndPoints.class);
+                Call<RespuestaApi<Boolean>> call = AutorizaDespacho.getAutorizaDespacho("1","100049486");
+                call.enqueue(new Callback<RespuestaApi<Boolean>>() {
+
+
+                    @Override
+                    public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiAutorizaDespacho = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<Boolean>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
     }

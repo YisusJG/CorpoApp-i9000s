@@ -6,11 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".PruebasEndPoint">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
     <Button
         android:id="@+id/btnPeticionBin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Button Bin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,59 +30,70 @@
         android:id="@+id/btnPeticionAccesoUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Button AccesoUsuario"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPeticionBin" />
+         />
 
     <Button
         android:id="@+id/btnPeticionAcumulaPuntos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Button AcumulaPuntosPuntada"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPeticionAccesoUsuario" />
+
+        />
 
     <Button
         android:id="@+id/btnPeticionGeneraTicket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+
         android:text="Button GeneraTicket"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPeticionAcumulaPuntos" />
+       />
 
     <Button
         android:id="@+id/btnPeticionFormasPago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+
         android:text="Button FormasPago"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPeticionGeneraTicket" />
+         />
 
     <Button
         android:id="@+id/btnPeticionEmpleado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+
         android:text="Button Empleado"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPeticionFormasPago" />
+         />
 
     <Button
         android:id="@+id/btnPeticionProductosProcedencia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Button ProductosProcedencia"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPeticionEmpleado" />
+         />
+
+    <Button
+        android:id="@+id/btnPeticiongetPostFinalizaVenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button PostFinalizaVenta"
+        />
+
+        <Button
+            android:id="@+id/btnPeticionTicketPendienteCobro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button TicketPendienteCobro"
+             />
+
+            <Button
+                android:id="@+id/btnPeticionAutorizaDespacho"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button AutorizaDespacho" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

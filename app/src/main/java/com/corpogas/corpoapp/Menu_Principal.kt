@@ -424,7 +424,7 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgFacturacion -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                intent = Intent(applicationContext, PruebasEndPoint::class.java)
                 startActivity(intent)
 //                intent = Intent(applicationContext, PruebasEndPoint::class.java)
 //                startActivity(intent)
