@@ -19,6 +19,7 @@ public class Empleado implements Serializable {
     public String ApellidoMaterno;
     public String NombreCompleto;
     public List<Huella> Huellas;
+    public long Id;
 
     /// <summary>
     /// Clave para accesar a aplicaciones
@@ -103,4 +104,12 @@ public class Empleado implements Serializable {
     public String getNumeroEmpleado() { return NumeroEmpleado; }
 
     public void setNumeroEmpleado(String numeroEmpleado) { NumeroEmpleado = numeroEmpleado; }
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
 }

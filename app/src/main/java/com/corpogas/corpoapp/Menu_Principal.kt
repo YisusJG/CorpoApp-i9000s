@@ -17,12 +17,14 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
+import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Sucursales.Update
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
 import com.corpogas.corpoapp.Menu_Principal
 import com.corpogas.corpoapp.Modales.Modales
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints
+import com.corpogas.corpoapp.VentaCombustible.Ventas
 import com.google.android.material.snackbar.Snackbar
 import com.szzcs.corpoapp.ActualizadorAPP.*
 import retrofit2.Call
@@ -385,28 +387,47 @@ class Menu_Principal : AppCompatActivity() {
         var intent: Intent
         when (v.id) {
             R.id.btnImgVentas -> {
+                intent = Intent(applicationContext, Ventas::class.java)
+//                intent.putExtra("device_name", m_deviceName)
+                startActivity(intent)
             }
             R.id.btnImgTickets -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
             }
             R.id.btnImgMonederos -> {
-                intent = Intent(applicationContext, MonederosElectronicos::class.java)
-                intent.putExtra("Enviadodesde", "menuprincipal")
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
                 startActivity(intent)
+//                intent = Intent(applicationContext, MonederosElectronicos::class.java)
+//                intent.putExtra("Enviadodesde", "menuprincipal")
+//                startActivity(intent)
 
             }
             R.id.btnImgProductos -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
             }
             R.id.btnImgCortes -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
             }
             R.id.btnImgPendientes -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
             }
             R.id.btnImgGastos -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
             }
             R.id.btnImgReimpresiones -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
             }
             R.id.btnImgFacturacion -> {
-                intent = Intent(applicationContext, PruebasEndPoint::class.java)
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
                 startActivity(intent)
+//                intent = Intent(applicationContext, PruebasEndPoint::class.java)
+//                startActivity(intent)
             }
         }
     }
