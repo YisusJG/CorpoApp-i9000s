@@ -125,7 +125,7 @@ class Menu_Principal : AppCompatActivity() {
                         deviceModel = item.getDeviceModel()
                     }
 //                    var actualizaDatosApp = data!!.updateVersionAPP("1.0","CorpoApp.apk",deviceModel)  //descomentar si deseas actualizar la tabla para hacer la prueba de actualizacion
-                    if (data!!.versionApk != version && data!!.fileNameApk != fileName) {
+                    if (data!!.versionApk != version && data!!.fileNameApk != fileName && data!!.deviceModelApk == deviceModel) {
                         val apkUrl = "http://sso.corpogas.com.mx/StationUpdates/I9000S/"+fileName
                         downloadController = DownloadController(this@Menu_Principal, apkUrl, fileName)
 

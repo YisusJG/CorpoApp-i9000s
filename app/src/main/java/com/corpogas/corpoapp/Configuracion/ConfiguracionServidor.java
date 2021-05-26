@@ -289,7 +289,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 applicationUpdate = response.body();
                 for(UpdateDetail item: applicationUpdate.getUpdateDetails())
                 {
-                    data.InsertarActualizcionApp(item.getVersion(),item.getFileName(),item.getDeviceModel());
+                    data.InsertarActualizcionApp(item.getVersion(),item.getFileName(),"I9000S");
                 }
 
             }
