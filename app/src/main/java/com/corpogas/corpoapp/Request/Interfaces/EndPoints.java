@@ -4,8 +4,10 @@ import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
+import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
+import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
@@ -56,6 +58,12 @@ public interface EndPoints {
 
     @GET("api/despachos/autorizaDespacho/posicionCargaId/{posicionCargaId}/usuarioId/{usuarioId}")
     Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") String posicionCargaId, @Path("usuarioId") String usuarioId);
+
+    @GET("api/Islas/productos/sucursal/{sucursalId}/posicionCargaId/{id}")
+    Call<Isla> getPosicionCargaProductosSucursal(@Path("sucursalId") String sucursalId, @Path("id") String id);
+
+    @GET("api/estacionCombustibles/sucursal/{sucursalId}")
+    Call<RespuestaApi<List<Combustible>>>  getCombustiblesPorSucursalId(@Path("sucursalId") String sucursalId);
 
 
 //   METODOS POST

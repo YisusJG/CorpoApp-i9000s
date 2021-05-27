@@ -13,6 +13,7 @@ import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
@@ -44,7 +45,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
     Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago,
            btnPeticionEmpleado, btnPeticionProductosProcedencia, btnPeticiongetPostFinalizaVenta,btnPeticionTicketPendienteCobro,
-           btnPeticionAutorizaDespacho;
+           btnPeticionAutorizaDespacho, btnPeticionPosicionCargaProductosSucursal;
 
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -56,6 +57,7 @@ public class PruebasEndPoint extends AppCompatActivity {
     RespuestaApi<Transaccion> respuestaApiTransaccion;
     RespuestaApi<Boolean> respuestaApiTicketPendienteCobro;
     RespuestaApi<Boolean> respuestaApiAutorizaDespacho;
+    Isla respuestaApiPosicionCargaProductosSucursal;
 
 
 
@@ -77,6 +79,7 @@ public class PruebasEndPoint extends AppCompatActivity {
         btnPeticiongetPostFinalizaVenta = (Button) findViewById(R.id.btnPeticiongetPostFinalizaVenta);
         btnPeticionTicketPendienteCobro = (Button) findViewById(R.id.btnPeticionTicketPendienteCobro);
         btnPeticionAutorizaDespacho = (Button) findViewById(R.id.btnPeticionAutorizaDespacho);
+        btnPeticionPosicionCargaProductosSucursal = (Button) findViewById(R.id.btnPeticionPosicionCargaProductosSucursal);
         btnPeticionBin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -397,6 +400,37 @@ public class PruebasEndPoint extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+            }
+        });
+
+        btnPeticionPosicionCargaProductosSucursal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
+                Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal("497","2211");
+                call.enqueue(new Callback<Isla>() {
+
+
+                    @Override
+                    public void onResponse(Call<Isla> call, Response<Isla> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiPosicionCargaProductosSucursal = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Isla> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
             }
         });

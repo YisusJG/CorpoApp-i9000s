@@ -79,18 +79,25 @@
         android:text="Button PostFinalizaVenta"
         />
 
-        <Button
-            android:id="@+id/btnPeticionTicketPendienteCobro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button TicketPendienteCobro"
-             />
+    <Button
+        android:id="@+id/btnPeticionTicketPendienteCobro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button TicketPendienteCobro"
+        />
+
+    <Button
+        android:id="@+id/btnPeticionAutorizaDespacho"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button AutorizaDespacho" />
 
             <Button
-                android:id="@+id/btnPeticionAutorizaDespacho"
+
+                android:id="@+id/btnPeticionPosicionCargaProductosSucursal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Button AutorizaDespacho" />
+                android:text="Button PosicionCargaProductosSucursal" />
 
         </LinearLayout>
 
