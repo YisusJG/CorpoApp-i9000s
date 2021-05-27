@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ public class ProcesoVenta extends AppCompatActivity {
     RespuestaApi<Boolean> respuestaApiAutorizaDespacho;
     RespuestaApi<Boolean> respuestaApiTicketPendienteCobro;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
+    ProgressDialog bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +84,12 @@ public class ProcesoVenta extends AppCompatActivity {
 
 
     public void posicionCargaFinaliza(){
-
+        bar = new ProgressDialog(ProcesoVenta.this);
+        bar.setTitle("Cargando Posiciones de Carga");
+        bar.setMessage("Ejecutando... ");
+        bar.setIcon(R.drawable.gas);
+        bar.setCancelable(false);
+        bar.show();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
@@ -115,6 +122,7 @@ public class ProcesoVenta extends AppCompatActivity {
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                bar.cancel();
                                 modales.alertDialog.dismiss();
                                 Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
                                 startActivity(intent1);
@@ -267,6 +275,7 @@ public class ProcesoVenta extends AppCompatActivity {
     }
 
     private void ValidaTransaccionActiva(long posicionCargaId, long numeroOperativa){
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
                 .addConverterFactory(GsonConverterFactory.create())
