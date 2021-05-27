@@ -49,4 +49,60 @@ public class Control implements Serializable {
     /// Dicho listado corresponde a los datos existentes en la tabla Islas
     /// </summary>
     public List<Posicion> Posiciones;
+
+    public long getLlaveroId() {
+        return LlaveroId;
+    }
+
+    public void setLlaveroId(long llaveroId) {
+        LlaveroId = llaveroId;
+    }
+
+    public String getNumeroInternoLlavero() {
+        return NumeroInternoLlavero;
+    }
+
+    public void setNumeroInternoLlavero(String numeroInternoLlavero) {
+        NumeroInternoLlavero = numeroInternoLlavero;
+    }
+
+    public long getTurnoId() {
+        return TurnoId;
+    }
+
+    public void setTurnoId(long turnoId) {
+        TurnoId = turnoId;
+    }
+
+    public long getNumeroInternoTurno() {
+        return NumeroInternoTurno;
+    }
+
+    public void setNumeroInternoTurno(long numeroInternoTurno) {
+        NumeroInternoTurno = numeroInternoTurno;
+    }
+
+    public long getIslaId() {
+        return IslaId;
+    }
+
+    public void setIslaId(long islaId) {
+        IslaId = islaId;
+    }
+
+    public long getNumeroInternoIsla() {
+        return NumeroInternoIsla;
+    }
+
+    public void setNumeroInternoIsla(long numeroInternoIsla) {
+        NumeroInternoIsla = numeroInternoIsla;
+    }
+
+    public List<Posicion> getPosiciones() {
+        return Posiciones;
+    }
+
+    public void setPosiciones(List<Posicion> posiciones) {
+        Posiciones = posiciones;
+    }
 }

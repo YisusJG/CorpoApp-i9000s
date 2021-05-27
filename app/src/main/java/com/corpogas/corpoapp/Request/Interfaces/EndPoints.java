@@ -49,13 +49,13 @@ public interface EndPoints {
     Call<RespuestaApi<Empleado>> getDatosEmpleado(@Path("clave") String clave);
 
     @GET("api/ventaProductos/sucursal/{sucursalId}/posicionCargaId/{posicionCargaId}")
-    Call<RespuestaApi<List<ProductoTarjetero>>> getProductosProcedencia(@Path("sucursalId") String sucursalId, @Path("posicionCargaId") String posicionCargaId);
+    Call<RespuestaApi<List<ProductoTarjetero>>> getProductosProcedencia(@Path("sucursalId") String sucursalId, @Path("posicionCargaId") long posicionCargaId);
 
     @GET("api/tickets/validaPendienteCobro/sucursalId/{sucursalId}/posicionCargaId/{posicionCargaId}")
-    Call<RespuestaApi<Boolean>> getTicketPendienteCobro(@Path("sucursalId") String sucursalId,@Path("posicionCargaId") String posicionCargaId);
+    Call<RespuestaApi<Boolean>> getTicketPendienteCobro(@Path("sucursalId") String sucursalId,@Path("posicionCargaId") long posicionCargaId);
 
     @GET("api/despachos/autorizaDespacho/posicionCargaId/{posicionCargaId}/usuarioId/{usuarioId}")
-    Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") String posicionCargaId, @Path("usuarioId") String usuarioId);
+    Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") long posicionCargaId, @Path("usuarioId") String usuarioId);
 
 
 //   METODOS POST
@@ -73,7 +73,7 @@ public interface EndPoints {
     Call<Ticket<TicketRequest>> getGenerarTicket(@Body TicketRequest ticketRequest);
 
     @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
-    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") String posicionCarga, @Path("usuarioId") String usuarioId);
+    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") long posicionCarga, @Path("usuarioId") String usuarioId);
 
 }
 
