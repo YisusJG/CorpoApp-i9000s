@@ -84,4 +84,108 @@ public class AccesoUsuario implements Serializable {
     /// Dicho listado corresponde a los datos existentes en la tabla EstacionControles
     /// </summary>
     public List<Control> Controles;
+
+    public long getSucursalEmpleadoId() {
+        return SucursalEmpleadoId;
+    }
+
+    public void setSucursalEmpleadoId(long sucursalEmpleadoId) {
+        SucursalEmpleadoId = sucursalEmpleadoId;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
+
+    public String getApellidoPaterno() {
+        return ApellidoPaterno;
+    }
+
+    public void setApellidoPaterno(String apellidoPaterno) {
+        ApellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return ApellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        ApellidoMaterno = apellidoMaterno;
+    }
+
+    public String getNombreCompleto() {
+        return NombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        NombreCompleto = nombreCompleto;
+    }
+
+    public String getClave() {
+        return Clave;
+    }
+
+    public void setClave(String clave) {
+        Clave = clave;
+    }
+
+    public long getRolId() {
+        return RolId;
+    }
+
+    public void setRolId(long rolId) {
+        RolId = rolId;
+    }
+
+    public long getNumeroInternoRol() {
+        return NumeroInternoRol;
+    }
+
+    public void setNumeroInternoRol(long numeroInternoRol) {
+        NumeroInternoRol = numeroInternoRol;
+    }
+
+    public String getDescripcionRol() {
+        return DescripcionRol;
+    }
+
+    public void setDescripcionRol(String descripcionRol) {
+        DescripcionRol = descripcionRol;
+    }
+
+    public boolean isEstacionJarreo() {
+        return EstacionJarreo;
+    }
+
+    public void setEstacionJarreo(boolean estacionJarreo) {
+        EstacionJarreo = estacionJarreo;
+    }
+
+    public String getNumeroEmpleado() {
+        return NumeroEmpleado;
+    }
+
+    public void setNumeroEmpleado(String numeroEmpleado) {
+        NumeroEmpleado = numeroEmpleado;
+    }
+
+    public List<Control> getControlesTurnoAnterior() {
+        return ControlesTurnoAnterior;
+    }
+
+    public void setControlesTurnoAnterior(List<Control> controlesTurnoAnterior) {
+        ControlesTurnoAnterior = controlesTurnoAnterior;
+    }
+
+    public List<Control> getControles() {
+        return Controles;
+    }
+
+    public void setControles(List<Control> controles) {
+        Controles = controles;
+    }
 }

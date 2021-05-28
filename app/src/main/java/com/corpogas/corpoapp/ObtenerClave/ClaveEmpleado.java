@@ -128,7 +128,7 @@ public class ClaveEmpleado extends AppCompatActivity {
                 .build();
 
         EndPoints datosEmpleado = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado("1111");
+        Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado(pass);
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override
@@ -137,7 +137,23 @@ public class ClaveEmpleado extends AppCompatActivity {
                     return;
                 }
                 respuestaApiEmpleado = response.body();
-                boolean valido = respuestaApiEmpleado.getObjetoRespuesta().isActivo();         //respuestaobjeto.getString("Activo");
+                if(respuestaApiEmpleado.getObjetoRespuesta()==null)
+                {
+                    String titulo = "AVISO";
+                    String mensaje = "Clave inexistente";
+                    Modales modales = new Modales(ClaveEmpleado.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(ClaveEmpleado.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss(); 
+                            pasword.setText("");
+                        }
+                    });
+                    return;
+
+                }
+                boolean valido = respuestaApiEmpleado.getObjetoRespuesta().isActivo();
                 idusuario = respuestaApiEmpleado.getObjetoRespuesta().getId();//respuestaobjeto.getString("Id");
                 nombrecompleto = respuestaApiEmpleado.getObjetoRespuesta().getNombreCompleto();       //respuestaobjeto.getString("NombreCompleto");
                 numeroempleado = respuestaApiEmpleado.getObjetoRespuesta().getNumeroEmpleado();    //respuestaobjeto.getString("NumeroEmpleado");
