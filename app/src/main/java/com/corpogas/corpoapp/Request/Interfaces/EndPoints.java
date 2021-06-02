@@ -4,7 +4,10 @@ import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
+import com.corpogas.corpoapp.Entities.Cortes.CierreCarrete;
+import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
+import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
@@ -26,6 +29,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -65,6 +69,12 @@ public interface EndPoints {
     @GET("api/estacionCombustibles/sucursal/{sucursalId}")
     Call<RespuestaApi<List<Combustible>>>  getCombustiblesPorSucursalId(@Path("sucursalId") String sucursalId);
 
+    @GET("api/lecturaMangueras/sucursal/{sucursalId}/lecturaMangueraPorPosicionCarga/isla/{islaId}/posicionCarga/{posicionId}")
+    Call<List<LecturaManguera>> getLecturaMangueraPorPosicionCargaIdLecturaMecanica(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId, @Path("posicionId") long posicionId);
+
+    @GET("api/diferenciapermitidas/sucursalId/{sucursalId}")
+    Call<RespuestaApi<DiferenciaPermitida>> getDiferenciaPermitidaPorSucursalId(@Path("sucursalId") long sucursalId);
+
 
 //   METODOS POST
 
@@ -82,6 +92,9 @@ public interface EndPoints {
 
     @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
     Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") long posicionCarga, @Path("usuarioId") String usuarioId);
+
+    @POST("api/cierreCarretes/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
+    Call<RespuestaApi<List<CierreCarrete>>> postLecturaInicialMecanica(@Path("sucursalId") long sucursalId);
 
 }
 

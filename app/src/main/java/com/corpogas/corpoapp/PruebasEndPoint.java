@@ -12,6 +12,9 @@ import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
+import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
+import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
+import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
@@ -45,7 +48,8 @@ public class PruebasEndPoint extends AppCompatActivity {
 
     Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago,
            btnPeticionEmpleado, btnPeticionProductosProcedencia, btnPeticiongetPostFinalizaVenta,btnPeticionTicketPendienteCobro,
-           btnPeticionAutorizaDespacho, btnPeticionPosicionCargaProductosSucursal;
+           btnPeticionAutorizaDespacho, btnPeticionPosicionCargaProductosSucursal, btnPeticionCombustiblesPorSucursalId,
+           btnPeticionLecturaMangueraPorPosicion, btnPeticionDiferenciaPermitidaPorSucursal;
 
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -58,9 +62,9 @@ public class PruebasEndPoint extends AppCompatActivity {
     RespuestaApi<Boolean> respuestaApiTicketPendienteCobro;
     RespuestaApi<Boolean> respuestaApiAutorizaDespacho;
     Isla respuestaApiPosicionCargaProductosSucursal;
-
-
-
+    RespuestaApi<List<Combustible>> respuestaApiCombustiblesPorSucursalId;
+    List<LecturaManguera> respuestaApiLecturaManguera;
+    RespuestaApi<DiferenciaPermitida> respuestaApiDiferenciaPermitida;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,9 @@ public class PruebasEndPoint extends AppCompatActivity {
         btnPeticionTicketPendienteCobro = (Button) findViewById(R.id.btnPeticionTicketPendienteCobro);
         btnPeticionAutorizaDespacho = (Button) findViewById(R.id.btnPeticionAutorizaDespacho);
         btnPeticionPosicionCargaProductosSucursal = (Button) findViewById(R.id.btnPeticionPosicionCargaProductosSucursal);
+        btnPeticionCombustiblesPorSucursalId = (Button) findViewById(R.id.btnPeticionCombustiblesPorSucursalId);
+        btnPeticionLecturaMangueraPorPosicion = (Button) findViewById(R.id.btnPeticionLecturaMangueraPorPosicion);
+        btnPeticionDiferenciaPermitidaPorSucursal = (Button) findViewById(R.id.btnPeticionDiferenciaPermitidaPorSucursal);
         btnPeticionBin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,6 +439,96 @@ public class PruebasEndPoint extends AppCompatActivity {
                     }
                 });
 
+
+            }
+        });
+
+        btnPeticionCombustiblesPorSucursalId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints CombustiblesPorSucursalId = retrofit.create(EndPoints.class);
+                Call<RespuestaApi<List<Combustible>>> call = CombustiblesPorSucursalId.getCombustiblesPorSucursalId("497");
+                call.enqueue(new Callback<RespuestaApi<List<Combustible>>>() {
+
+
+                    @Override
+                    public void onResponse(Call<RespuestaApi<List<Combustible>>> call, Response<RespuestaApi<List<Combustible>>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiCombustiblesPorSucursalId = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<List<Combustible>>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+        btnPeticionLecturaMangueraPorPosicion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints LecturaMangueraPorPosicionCargaIdLecturaMecanica = retrofit.create(EndPoints.class);
+                Call<List<LecturaManguera>> call = LecturaMangueraPorPosicionCargaIdLecturaMecanica.getLecturaMangueraPorPosicionCargaIdLecturaMecanica(497,768,2211);
+                call.enqueue(new Callback<List<LecturaManguera>>() {
+
+
+                    @Override
+                    public void onResponse(Call<List<LecturaManguera>> call, Response<List<LecturaManguera>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiLecturaManguera = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<LecturaManguera>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+        btnPeticionDiferenciaPermitidaPorSucursal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints DiferenciaPermitidaPorSucursalId = retrofit.create(EndPoints.class);
+                Call<RespuestaApi<DiferenciaPermitida>> call = DiferenciaPermitidaPorSucursalId.getDiferenciaPermitidaPorSucursalId(497);
+                call.enqueue(new Callback<RespuestaApi<DiferenciaPermitida>>() {
+
+
+                    @Override
+                    public void onResponse(Call<RespuestaApi<DiferenciaPermitida>> call, Response<RespuestaApi<DiferenciaPermitida>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiDiferenciaPermitida = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<DiferenciaPermitida>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
         });

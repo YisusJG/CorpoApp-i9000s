@@ -99,6 +99,24 @@
                 android:layout_height="wrap_content"
                 android:text="Button PosicionCargaProductosSucursal" />
 
+            <Button
+                android:id="@+id/btnPeticionCombustiblesPorSucursalId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button CombustiblesPorSucursalId" />
+
+            <Button
+                android:id="@+id/btnPeticionLecturaMangueraPorPosicion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button LecturaMangueraPorPosicion" />
+
+            <Button
+                android:id="@+id/btnPeticionDiferenciaPermitidaPorSucursal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button DiferenciaPermitidaPorSucursal" />
+
         </LinearLayout>
 
     </ScrollView>
