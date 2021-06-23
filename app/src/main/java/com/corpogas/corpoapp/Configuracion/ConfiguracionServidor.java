@@ -122,12 +122,12 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void ConectarIP() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints conectarIp = retrofit.create(EndPoints.class);
-        Call<Estacion> call = conectarIp.getEstacioApi(oct1,oct2,oct3,oct4);
+        Call<Estacion> call = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4);
         call.enqueue(new Callback<Estacion>() {
             @Override
             public void onResponse(Call<Estacion> call, Response<Estacion> response) {
@@ -272,7 +272,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void getActualizaAPP() {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -308,7 +308,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
 //        Conexion conexion = new Conexion(sucursalid,7,mac);
         ConfiguracionAplicacion configuracionAplicacion = new ConfiguracionAplicacion(sucursalid,0,3,"",mac,0,false,true,0);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -342,7 +342,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
         //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService_Entities/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

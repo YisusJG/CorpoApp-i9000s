@@ -72,6 +72,7 @@ public class PruebasEndPoint extends AppCompatActivity {
         setContentView(R.layout.activity_pruebas_end_point);
         data = new SQLiteBD(getApplicationContext());
 
+    String bearerToken;
 
         btnPeticionBin = (Button) findViewById(R.id.btnPeticionBin);
         btnPeticionAccesoUsuario = (Button) findViewById(R.id.btnPeticionAccesoUsuario);
@@ -129,12 +130,12 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .baseUrl("http://10.0.201.20/corpogasService_Entities_token/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
                 EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario("497", "1111");
+                Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario("497", "QwBvAG4AcwBvAGwAYQBDAG8AcgBwAG8AZwBhAHMA");
                 call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
 
@@ -144,6 +145,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                             return;
                         }
                         accesoUsuario = response.body();
+                        //bearerToken = accesoUsuario.getMensaje();
                     }
 
                     @Override
@@ -236,7 +238,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                        .baseUrl("http://10.0.201.20/corpogasService_Entities_token/")//http://" + data.getIpEstacion() + "/CorpogasService_Entities/
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -252,6 +254,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                             return;
                         }
                         respuestaListaSucursalFormasPago = response.body();
+
                     }
 
                     @Override
