@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageSwitcher
@@ -32,6 +33,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.provider.Settings.Secure;
+
 
 class Menu_Principal : AppCompatActivity() {
     var drawerLayout: DrawerLayout? = null
@@ -396,8 +399,33 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgMonederos -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
-                startActivity(intent)
+//                var manufacturer: String
+                var model: String
+                var identificador: String
+//                manufacturer = Build.MANUFACTURER
+                model = Build.MODEL
+//                identificador = manufacturer + " " + model
+
+                if (model == "i9000S"){
+                    intent = Intent(applicationContext, MonederosElectronicos::class.java)
+                    intent.putExtra("Enviadodesde", "menuprincipal")
+                    startActivity(intent)
+                }else{
+                    val titulo = "AVISO"
+                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
+                    val modales = Modales(this@Menu_Principal)
+                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes,titulo)
+                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
+                        modales.alertDialog.dismiss()
+                    }
+                }
+
+//                Toast.makeText(applicationContext,"El id del dispositivo es"+ model ,Toast.LENGTH_LONG).show()
+//                id = Secure.getString(applicationContext.contentResolver, Secure.NAME)
+//                Toast.makeText(applicationContext,"El id del dispositivo es"+ id ,Toast.LENGTH_LONG).show()
+//                intent = Intent(applicationContext, EnDesarrollo::class.java)
+//                startActivity(intent)
+
 //                intent = Intent(applicationContext, MonederosElectronicos::class.java)
 //                intent.putExtra("Enviadodesde", "menuprincipal")
 //                startActivity(intent)
