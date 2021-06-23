@@ -16,6 +16,7 @@ import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
@@ -49,7 +50,7 @@ public class PruebasEndPoint extends AppCompatActivity {
     Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago,
            btnPeticionEmpleado, btnPeticionProductosProcedencia, btnPeticiongetPostFinalizaVenta,btnPeticionTicketPendienteCobro,
            btnPeticionAutorizaDespacho, btnPeticionPosicionCargaProductosSucursal, btnPeticionCombustiblesPorSucursalId,
-           btnPeticionLecturaMangueraPorPosicion, btnPeticionDiferenciaPermitidaPorSucursal;
+           btnPeticionLecturaMangueraPorPosicion, btnPeticionDiferenciaPermitidaPorSucursal, btnPeticionPorSucursalClaveEmpleado;
 
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -65,6 +66,7 @@ public class PruebasEndPoint extends AppCompatActivity {
     RespuestaApi<List<Combustible>> respuestaApiCombustiblesPorSucursalId;
     List<LecturaManguera> respuestaApiLecturaManguera;
     RespuestaApi<DiferenciaPermitida> respuestaApiDiferenciaPermitida;
+    List<EstacionControl> respuestaApiEstacionControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class PruebasEndPoint extends AppCompatActivity {
         btnPeticionCombustiblesPorSucursalId = (Button) findViewById(R.id.btnPeticionCombustiblesPorSucursalId);
         btnPeticionLecturaMangueraPorPosicion = (Button) findViewById(R.id.btnPeticionLecturaMangueraPorPosicion);
         btnPeticionDiferenciaPermitidaPorSucursal = (Button) findViewById(R.id.btnPeticionDiferenciaPermitidaPorSucursal);
+        btnPeticionPorSucursalClaveEmpleado = (Button) findViewById(R.id.btnPeticionPorSucursalClaveEmpleado);
         btnPeticionBin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -535,5 +538,37 @@ public class PruebasEndPoint extends AppCompatActivity {
 
             }
         });
+
+        btnPeticionPorSucursalClaveEmpleado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                EndPoints sucursalClaveEmpleado = retrofit.create(EndPoints.class);
+                Call<List<EstacionControl>> call = sucursalClaveEmpleado.getPorSucursalClaveEmpleado(497, "1111");
+                call.enqueue(new Callback<List<EstacionControl>>() {
+
+
+                    @Override
+                    public void onResponse(Call<List<EstacionControl>> call, Response<List<EstacionControl>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiEstacionControl = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<EstacionControl>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
     }
+
 }

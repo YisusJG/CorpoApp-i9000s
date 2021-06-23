@@ -10,6 +10,7 @@ import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
+import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
@@ -75,6 +76,9 @@ public interface EndPoints {
 
     @GET("api/diferenciapermitidas/sucursalId/{sucursalId}")
     Call<RespuestaApi<DiferenciaPermitida>> getDiferenciaPermitidaPorSucursalId(@Path("sucursalId") long sucursalId);
+
+    @GET("api/estacioncontroles/sucursal/{sucursalId}/ClaveEmpleado/{claveEmpleado}")
+    Call<List<EstacionControl>> getPorSucursalClaveEmpleado(@Path("sucursalId") long sucursalId, @Path("claveEmpleado") String claveEmpleado);
 
 
 //   METODOS POST
