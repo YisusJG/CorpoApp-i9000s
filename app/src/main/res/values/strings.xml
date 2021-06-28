@@ -10,4 +10,21 @@
     <string name="ok">OK</string>
     <string name="descargando">Descargando...</string>
     <string name="titulo_de_la_descarga">APK se está descargando</string>
+    <string name="menu_about">Version</string>
+
+    <string-array name="font_size">
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+        <item>16</item>
+        <item>24</item>
+        <item>36</item>
+        <item>48</item>
+        <item>50</item>
+    </string-array>
+
+    <string-array name="font_name">
+        <item>simsun</item>
+        <item>arial</item>
+    </string-array>
 </resources>

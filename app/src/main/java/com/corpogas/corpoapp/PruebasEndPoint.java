@@ -2,7 +2,13 @@ package com.corpogas.corpoapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.device.PrinterManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -17,21 +23,13 @@ import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
-import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
-import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
-import com.corpogas.corpoapp.Entities.Sucursales.Update;
-import com.corpogas.corpoapp.Entities.Sucursales.UpdateDetail;
 import com.corpogas.corpoapp.Entities.Tarjetas.Puntada;
 import com.corpogas.corpoapp.Entities.Tickets.DiccionarioParcialidades;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +42,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PruebasEndPoint extends AppCompatActivity {
 
+    public final static String PRNT_ACTION = "action.printer.message";
+    private PrinterManager printer = new PrinterManager();
+    private static int _XVALUE = 384;
+    private final static String STR_FONT_VALUE_SONG = "simsun";
+    int height = 60;
+    private static int _YVALUE = 24;
+    private final int _YVALUE6 = 24;
+    private final static String STR_PRNT_SALE = "sale";
+
+
     SQLiteBD data;
 
     Button btnPeticionBin, btnPeticionAccesoUsuario, btnPeticionAcumulaPuntos, btnPeticionGeneraTicket, btnPeticionFormasPago,
            btnPeticionEmpleado, btnPeticionProductosProcedencia, btnPeticiongetPostFinalizaVenta,btnPeticionTicketPendienteCobro,
            btnPeticionAutorizaDespacho, btnPeticionPosicionCargaProductosSucursal, btnPeticionCombustiblesPorSucursalId,
-           btnPeticionLecturaMangueraPorPosicion, btnPeticionDiferenciaPermitidaPorSucursal;
+           btnPeticionLecturaMangueraPorPosicion, btnPeticionDiferenciaPermitidaPorSucursal, mBtnPrnBill;
 
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -88,6 +96,7 @@ public class PruebasEndPoint extends AppCompatActivity {
         btnPeticionCombustiblesPorSucursalId = (Button) findViewById(R.id.btnPeticionCombustiblesPorSucursalId);
         btnPeticionLecturaMangueraPorPosicion = (Button) findViewById(R.id.btnPeticionLecturaMangueraPorPosicion);
         btnPeticionDiferenciaPermitidaPorSucursal = (Button) findViewById(R.id.btnPeticionDiferenciaPermitidaPorSucursal);
+        mBtnPrnBill = (Button) findViewById(R.id.btnImprimir);
         btnPeticionBin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -535,5 +544,97 @@ public class PruebasEndPoint extends AppCompatActivity {
 
             }
         });
+
+        mBtnPrnBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), ImprimirPruebas.class);//Lecturas
+//
+//                startActivity(intent);
+
+                String messgae ="Pruebas yisus";
+//                mBtnPrnBill.setEnabled(false);
+                int ret = printer.prn_getStatus();
+                if (ret == 0) {
+                    doprintwork(STR_PRNT_SALE);
+//                        doprintwork("Sales un yisus");// print sale
+
+                } else {
+                    doprintwork(STR_PRNT_SALE);
+//                    Intent intent = new Intent(PRNT_ACTION);
+//                    intent.putExtra("ret", ret);
+//                    sendBroadcast(intent);
+                }
+            }
+        });
+    }
+
+
+    void doprintwork(String msg) {
+
+//        printer.prn_open();
+//        printer.prn_setupPage(_XVALUE, -1);
+//        printer.prn_clearPage();
+//        printer.prn_drawText(("打印机测试"), 70, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
+//        height += 50;
+//
+//        BitmapFactory.Options opts = new BitmapFactory.Options();
+//        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//        opts.inDensity = getResources().getDisplayMetrics().densityDpi;
+//        opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.unionpay_logo, opts);
+//        printer.prn_drawBitmap(bitmap, 84, height);
+//        height += 80;
+//        Prn_Str("商户名称：测试商户", _YVALUE6, height);
+
+        Intent intentService = new Intent(this, PrintBillService.class);
+        intentService.putExtra("SPRT", msg);
+        startService(intentService);
+    }
+    private int Prn_Str(String msg, int fontSize, int height) {
+        return printer.prn_drawText(msg, 0, height, STR_FONT_VALUE_SONG, fontSize, false,
+                false, 0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+    }
+
+//    @Override
+//    protected void onPause() {
+//        // TODO Auto-generated method stub
+//        super.onPause();
+//        mReadService.stop();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        // TODO Auto-generated method stub
+//        super.onResume();
+//        mReadService.start();
+//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuItem version = menu.add(0, 1, 0, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);;
+        version.setShowAsAction(1);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        PackageManager pk = getPackageManager();
+        PackageInfo pi;
+        try {
+            pi = pk.getPackageInfo(getPackageName(), 0);
+            Toast.makeText(this, "V" +pi.versionName , Toast.LENGTH_SHORT).show();
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
