@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Service;
+package com.corpogas.corpoapp.PrintStyles;
 
 import android.app.Activity;
 import android.os.Bundle;

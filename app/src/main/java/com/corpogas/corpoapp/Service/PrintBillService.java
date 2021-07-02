@@ -10,26 +10,30 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
-import com.example.pruebasi9000s.R;
+import com.corpogas.corpoapp.R;
+
+import java.io.PrintWriter;
+
 
 public class PrintBillService extends IntentService {
-	private final static String STR_PRNT_BILL = "prn_bill";
+    private final static String STR_PRNT_BILL = "prn_bill";
     private final static String STR_PRNT_TEXT = "text";
     private final static String STR_PRNT_BLCOK = "block";
     private final static String STR_PRNT_SALE = "sale";
-    
-    private final static String STR_FONT_VALUE_SONG = "simsun";
-    
-	private static int _XVALUE = 384;
-	private static int _YVALUE = 24;
-	private final int _YVALUE6 = 24;
 
-	private static int fontSize = 24;
-	private static int fontStyle = 0x0000;
-	private static String fontName = STR_FONT_VALUE_SONG;
+    private final static String STR_FONT_VALUE_SONG = "simsun";
+
+    private static int _XVALUE = 384;
+    private static int _YVALUE = 24;
+    private final int _YVALUE6 = 24;
+    private final int _YVALUE7 = 20;
+
+    private static int fontSize = 24;
+    private static int fontStyle = 0x0000;
+    private static String fontName = STR_FONT_VALUE_SONG;
 
     private PrinterManager printer;
-    
+
     public PrintBillService() {
         super("bill");
         // TODO Auto-generated constructor stub
@@ -57,18 +61,18 @@ public class PrintBillService extends IntentService {
 
         int ret;
         if(context.equals(STR_PRNT_BILL)){	// print bill
-        	printBill();
+            printBill();
         }else if(context.equals(STR_PRNT_BLCOK)){
-        	printBlock();
+            printBlock();
         }else if(context.equals(STR_PRNT_SALE)){
-        	try {
-				printSale(getBaseContext());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            try {
+                printSale(getBaseContext());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } else {  // print string
-            // add by tao.he, for custom print	
+            // add by tao.he, for custom print
             Bundle fontInfo = intent.getBundleExtra("font-info");
             android.util.Log.v("tao.he", fontInfo.toString());
 
@@ -93,14 +97,14 @@ public class PrintBillService extends IntentService {
         }
         // end add
         ret=printer.prn_printPage(0);
-        
+
 //        Intent i = new Intent(PrinterManagerActivity.PRNT_ACTION);
 //        i.putExtra("ret", ret);
 //        this.sendBroadcast(i);
     }
-    
+
     public void printBlock(){
-    	printer.prn_setupPage(_XVALUE, 248);
+        printer.prn_setupPage(_XVALUE, 248);
         /* Black block */
         printer.prn_drawLine(32, 8, 136, 8, 8);
         printer.prn_drawLine(32, 12, 136, 12, 8);
@@ -125,21 +129,21 @@ public class PrintBillService extends IntentService {
         printer.prn_drawLine(136, 164, 240, 164, 8);
         printer.prn_drawLine(136, 170, 240, 170, 8);
         printer.prn_drawLine(136, 176, 240, 176, 32);
-        
+
         printer.prn_drawLine(32, 200, 136, 200, 8);
         printer.prn_drawLine(32, 206, 136, 206, 8);
         printer.prn_drawLine(32, 212, 136, 212, 8);
         printer.prn_drawLine(32, 218, 136, 218, 8);
         printer.prn_drawLine(32, 224, 136, 224, 32);
     }
-    
+
     public void printBill(){
-    	int height = 66;
-    	printer.prn_setupPage(384,780);
+        int height = 66;
+        printer.prn_setupPage(384,780);
         //   printer.prn_drawLine(0,0,384,0,2);
-          
-    	printer.prn_drawText(("  打印机测试"), 5, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
-    	height += 48;
+
+        printer.prn_drawText(("  打印机测试"), 5, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
+        height += 48;
 //    	printer.prn_drawText(("商户名(MERCHANT NAME):"), 0, 100, (STR_FONT_VALUE_SONG), 24 , false, false, 0);
 //    	printer.prn_drawText(("  面点王（科技园店）"), 0, 126, (STR_FONT_VALUE_SONG), 24 , false, false, 0);
 //
@@ -166,226 +170,254 @@ public class PrintBillService extends IntentService {
 //		printer.prn_drawText(("  1234 56** ****0789"), 0, height, (STR_FONT_VALUE_SONG), 24,
 //				false, false, 0);
 //		height += 28;
-//		
+//
 //		printer.prn_drawText(("收单行号:01045840"), 0, height, (STR_FONT_VALUE_SONG), 24, false,
 //				false, 0);
 //		height += 28;
-//		
+//
 //		printer.prn_drawText(("发卡行名:渤海银行"), 0, height, (STR_FONT_VALUE_SONG), 24, false,
 //				false, 0);
 //		height += 28;
 
-		printer.prn_drawText(("ABCDEFGHLIJKMNOPQXYZTRSW"), 0, height, (STR_FONT_VALUE_SONG),
-				36, false, false, 0);
-		height += 40;
-		
-		printer.prn_drawText(("ABCDEFGHLIJKMNOPQXYZTRSWGHLIJKMNOPQX"), 0,
-				height, (STR_FONT_VALUE_SONG), 24, false, false, 0);
-		height += 28;
-		
-		printer.prn_drawText(("abcdefghlijkmnopqxyztrsw"), 0, height, (STR_FONT_VALUE_SONG),
-				36, false, false, 0);
-		height += 40;
-		
-		printer.prn_drawText(("abcdefghlijkmnopqxyztrswefghlijkmn"), 0,
-				height, (STR_FONT_VALUE_SONG), 24, false, false, 0);
-		height += 28;
-		
-		printer.prn_drawText(("囎囏囐囑囒囓囔囕囖墼囏"), 0, height, (STR_FONT_VALUE_SONG), 36, false,
-				false, 0);
-		height += 42;
+        printer.prn_drawText(("ABCDEFGHLIJKMNOPQXYZTRSW"), 0, height, (STR_FONT_VALUE_SONG),
+                36, false, false, 0);
+        height += 40;
 
-		printer.prn_drawText(("囎囏囐囑囒囓囔囕囖墼墽墾孽囎囏囓囔"), 0, height, (STR_FONT_VALUE_SONG),
-				24, false, false, 0);
-		height += 28;
+        printer.prn_drawText(("ABCDEFGHLIJKMNOPQXYZTRSWGHLIJKMNOPQX"), 0,
+                height, (STR_FONT_VALUE_SONG), 24, false, false, 0);
+        height += 28;
 
-		printer.prn_drawText(("HHHHHHHHHHHHHHHHHHHHHHHH"), 0, height, (STR_FONT_VALUE_SONG),
-				36, false, false, 0);
-		height += 40;
-		
-		printer.prn_drawText(("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"),
-				0, height, (STR_FONT_VALUE_SONG), 24, false, false, 0);
-		height += 32;
+        printer.prn_drawText(("abcdefghlijkmnopqxyztrsw"), 0, height, (STR_FONT_VALUE_SONG),
+                36, false, false, 0);
+        height += 40;
 
-		printer.prn_drawText(("☆★○●▲△▼☆★○●▲☆★○"), 0, height, STR_FONT_VALUE_SONG, 36, false,
-				false, 0);
-		height += 40;
+        printer.prn_drawText(("abcdefghlijkmnopqxyztrswefghlijkmn"), 0,
+                height, (STR_FONT_VALUE_SONG), 24, false, false, 0);
+        height += 28;
 
-		printer.prn_drawText(("ぱばびぶづぢだざじずぜぞ"), 0, height, (STR_FONT_VALUE_SONG), 36, false,
-				false, 0);
-		height += 48;
+        printer.prn_drawText(("囎囏囐囑囒囓囔囕囖墼囏"), 0, height, (STR_FONT_VALUE_SONG), 36, false,
+                false, 0);
+        height += 42;
 
-		printer.prn_drawText(("㊣㈱卍▁▂▃▌▍▎▏※※㈱㊣"), 0, height, (STR_FONT_VALUE_SONG), 36, false,
-				false, 0);
-		height += 50;
-				
-		printer.prn_drawBarcode("12345678ABCDEF", 32, height, 20, 2, 70, 0);
+        printer.prn_drawText(("囎囏囐囑囒囓囔囕囖墼墽墾孽囎囏囓囔"), 0, height, (STR_FONT_VALUE_SONG),
+                24, false, false, 0);
+        height += 28;
+
+        printer.prn_drawText(("HHHHHHHHHHHHHHHHHHHHHHHH"), 0, height, (STR_FONT_VALUE_SONG),
+                36, false, false, 0);
+        height += 40;
+
+        printer.prn_drawText(("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"),
+                0, height, (STR_FONT_VALUE_SONG), 24, false, false, 0);
+        height += 32;
+
+        printer.prn_drawText(("☆★○●▲△▼☆★○●▲☆★○"), 0, height, STR_FONT_VALUE_SONG, 36, false,
+                false, 0);
+        height += 40;
+
+        printer.prn_drawText(("ぱばびぶづぢだざじずぜぞ"), 0, height, (STR_FONT_VALUE_SONG), 36, false,
+                false, 0);
+        height += 48;
+
+        printer.prn_drawText(("㊣㈱卍▁▂▃▌▍▎▏※※㈱㊣"), 0, height, (STR_FONT_VALUE_SONG), 36, false,
+                false, 0);
+        height += 50;
+
+        printer.prn_drawBarcode("12345678ABCDEF", 32, height, 20, 2, 70, 0);
 //		height += 80;
-//		
+//
 //		printer.prn_drawBarcode("12345678ABCDEF", 320, height, 20, 2, 50, 3);
     }
-    
+
     public void printSale(Context context) throws Exception {
 
-		int height = 60;
-		printer.prn_open();
-		printer.prn_setupPage(_XVALUE, -1);
-		printer.prn_clearPage();
-		printer.prn_drawText(("打印机测试"), 70, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
-		height += 50;
-		
-		BitmapFactory.Options opts = new BitmapFactory.Options();
-		opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-		opts.inDensity = getResources().getDisplayMetrics().densityDpi;
-		opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.unionpay_logo, opts);
-		
-		
+        int height = 60;
+        printer.prn_open();
+        printer.prn_setupPage(_XVALUE, -1);
+        printer.prn_clearPage();
+//        printer.prn_drawText(("打印机测试"), 70, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
+//        height += 50;
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        opts.inDensity = getResources().getDisplayMetrics().densityDpi;
+        opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo, opts);
+        Bitmap bitmap = BitmapFactory.decodeResource(PrintBillService.this.getResources(), R.drawable.unionpay_logo);
+
+
+
 //		Bitmap bitmap = getLogoBitmap(context, R.drawable.unionpay_logo);
-		printer.prn_drawBitmap(bitmap, 84, height);
-		height += 80;
+        printer.prn_drawBitmap(bitmap, 50, height);
+        height += 100;
+        Prn_Str("                        ",_YVALUE, height);
+        height += _YVALUE;
+        Prn_Str("               23/06/2021  14:04:22", _YVALUE6, height);
 
-		Prn_Str("商户名称：测试商户", _YVALUE6, height);
-		height += _YVALUE;
+        height += _YVALUE;
 
-		Prn_Str("商户编号：123456789012345", _YVALUE6, height);
-		height += _YVALUE;
-		Prn_Str("终端编号：" + "25778987" + "\t操作员号：" + "001" + "\n", _YVALUE6,
-				height);
+        Prn_Str("          Est：13864", _YVALUE6, height);
+        height += _YVALUE;
 
-		String send = "招商银行";
-		String receive = "招商银行";
+        Prn_Str("ECUESTRE", _YVALUE7, height);
+        height += _YVALUE;
+        Prn_Str("AV REVOLUCION ESQ AV MIXCOAC, SN" + "\n"  + "  BENITO JUAREZ, BENITO JUAREZ," + "\n"   + "CIUDAD DE MEXICO, MEXICO, CP:3900" + "\n", _YVALUE7,
+                height);
+        height += 60;
 
-		height += _YVALUE;
-		Prn_Str("发卡行：" + send, _YVALUE6, height);
-		printer.prn_drawText("收单行：" + receive, 190, height, STR_FONT_VALUE_SONG, _YVALUE6,
-				false, false, 0);
+        String send = "CIE060308FH4";
+        String receive = "0000117984";
 
-		height += _YVALUE;
-		String cardNo = "622228888888888888888";
+        height += _YVALUE;
+        Prn_Str("       RFC：" + send + "\n", _YVALUE6, height);
+        height += _YVALUE;
+        Prn_Str("       SIIC：" + receive + "\n", _YVALUE6, height);
+        height += _YVALUE;
+        Prn_Str("REGIMEN GENERAL DE LEY PERSONAS" + "\n" + "MORALES", 24, height);
+        height += 40;
+//        Prn_Str_Bold("           ORIGINAL", _YVALUE6, height);
+//        height += 40;
+        printer.prn_drawText(("ORIGINAL"), 125, height, (STR_FONT_VALUE_SONG),25, true, false, 0);
+        height += 40;
+//        printer.prn_drawText("SIIC：" + receive, 190, height, STR_FONT_VALUE_SONG, _YVALUE6,
+//                false, false, 0);
+//
+//        height += _YVALUE;
 
-		// if (swipe == _SWIPE_MODE.CARD_INSERTED) {
-		Prn_Str("卡号：", _YVALUE6, height);
-		height += _YVALUE;
-		Prn_Str_Bold(cardNo, _YVALUE, height);
-		// }
-		// if (swipe == _SWIPE_MODE.CLCARD_SWIPED) {
-		// Prn_Str("卡号:", _YVALUE6, height);
-		// height += _YVALUE;
-		// Prn_Str_Bold(cardNo + " C" + "\n", _YVALUE, height);
-		// }
-		// if (swipe == _SWIPE_MODE.CARD_SWIPED) {
-		// Prn_Str("卡号:", _YVALUE6, height);
-		// height += _YVALUE;
-		// Prn_Str_Bold(cardNo + " S" + "\n", _YVALUE, height);
-		// }
-		// if (swipe == _SWIPE_MODE.NO_SWIPE_INSERT) {
-		// if (transType == PosTransType.EC_QUICK_RETURN) {
-		// Prn_Str("卡号:", _YVALUE6, height);
-		// height += _YVALUE;
-		// Prn_Str_Bold(cardNo + " C" + "\n", _YVALUE, height);
-		// } else {
-		// Prn_Str("卡号:", _YVALUE6, height);
-		// height += _YVALUE;
-		// Prn_Str_Bold(cardNo + " N" + "\n", _YVALUE, height);
-		// }
-		// }
+        Prn_Str("No. Rec: " + 9216 + "  No. Trans: "+ 1952 +"\n",22, height);
+        height += _YVALUE;
+        Prn_Str("No. Rastreo: 13868492169052" + "\n", 22, height);
+        height += _YVALUE;
+        Prn_Str("           PC：1" + "\n", 22, height);
+        height += _YVALUE;
 
-		height += _YVALUE;
-		Prn_Str("交易类别：消费 ", _YVALUE6, height);
-		height += _YVALUE;
-		Prn_Str("批次号：", _YVALUE6, height);
-		printer.prn_drawText("000001", 90, height, STR_FONT_VALUE_SONG, _YVALUE, false, false,
-				0);
 
-		printer.prn_drawText("有效期：" + "234567", 200, height, STR_FONT_VALUE_SONG, _YVALUE6,
-				false, false, 0);
 
-		height += _YVALUE;
-		Prn_Str("凭证号：", _YVALUE6, height);
-		printer.prn_drawText("000001", 90, height - 3, STR_FONT_VALUE_SONG, _YVALUE, false,
-				false, 0);
 
-		printer.prn_drawText("授权码：" + "123456", 200, height, STR_FONT_VALUE_SONG, _YVALUE6,
-				false, false, 0);
-		height += _YVALUE;
-		Prn_Str("参考号：" + "12345678901" + "\n", _YVALUE6, height);
+        String cardNo = "622228888888888888888";
+        // if (swipe == _SWIPE_MODE.CARD_INSERTED) {
+        Prn_Str("卡号：", _YVALUE6, height);
+        height += _YVALUE;
+        Prn_Str_Bold(cardNo, _YVALUE, height);
+        // }
+        // if (swipe == _SWIPE_MODE.CLCARD_SWIPED) {
+        // Prn_Str("卡号:", _YVALUE6, height);
+        // height += _YVALUE;
+        // Prn_Str_Bold(cardNo + " C" + "\n", _YVALUE, height);
+        // }
+        // if (swipe == _SWIPE_MODE.CARD_SWIPED) {
+        // Prn_Str("卡号:", _YVALUE6, height);
+        // height += _YVALUE;
+        // Prn_Str_Bold(cardNo + " S" + "\n", _YVALUE, height);
+        // }
+        // if (swipe == _SWIPE_MODE.NO_SWIPE_INSERT) {
+        // if (transType == PosTransType.EC_QUICK_RETURN) {
+        // Prn_Str("卡号:", _YVALUE6, height);
+        // height += _YVALUE;
+        // Prn_Str_Bold(cardNo + " C" + "\n", _YVALUE, height);
+        // } else {
+        // Prn_Str("卡号:", _YVALUE6, height);
+        // height += _YVALUE;
+        // Prn_Str_Bold(cardNo + " N" + "\n", _YVALUE, height);
+        // }
+        // }
 
-		height += _YVALUE;
-		Prn_Str("日期时间：20160602", _YVALUE6, height);
-		height += _YVALUE;
+        height += _YVALUE;
+        Prn_Str("交易类别：消费 ", _YVALUE6, height);
+        height += _YVALUE;
+        Prn_Str("批次号：", _YVALUE6, height);
+        printer.prn_drawText("000001", 90, height, STR_FONT_VALUE_SONG, _YVALUE, false, false,
+                0);
 
-		Prn_Str("金额：RMB 12.5", _YVALUE, height);
+        printer.prn_drawText("有效期：" + "234567", 200, height, STR_FONT_VALUE_SONG, _YVALUE6,
+                false, false, 0);
 
-		height += _YVALUE;
-		Prn_Str("--------------------------------------------------------\n",
-				_YVALUE, height);
+        height += _YVALUE;
+        Prn_Str("凭证号：", _YVALUE6, height);
+        printer.prn_drawText("000001", 90, height - 3, STR_FONT_VALUE_SONG, _YVALUE, false,
+                false, 0);
 
-		height += _YVALUE;
-		Prn_Str("备注：", _YVALUE6, height);
+        printer.prn_drawText("授权码：" + "123456", 200, height, STR_FONT_VALUE_SONG, _YVALUE6,
+                false, false, 0);
+        height += _YVALUE;
+        Prn_Str("参考号：" + "12345678901" + "\n", _YVALUE6, height);
 
-		height += _YVALUE;
-		Prn_Str("--------------------------------------------------------\n",
-				_YVALUE, height);
+        height += _YVALUE;
+        Prn_Str("日期时间：20160602", _YVALUE6, height);
+        height += _YVALUE;
 
-		height += _YVALUE;
-		Prn_Str("持卡人签名：\n \n \n", _YVALUE, height);
-		height += _YVALUE;
-		try {// 电子签名
+        Prn_Str("金额：RMB 12.5", _YVALUE, height);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+        height += _YVALUE;
+        Prn_Str("--------------------------------------------------------\n",
+                _YVALUE, height);
 
-		}
-		height += _YVALUE + 80;
-		Prn_Str("本人确认以上交易,同意将其记入本卡帐户\n \n \n", 16, height);
+        height += _YVALUE;
+        Prn_Str("备注：", _YVALUE6, height);
 
-		height += _YVALUE + 10;
-		Prn_Str("  \t\t\t\t   商户存联\n", 16, height);
+        height += _YVALUE;
+        Prn_Str("--------------------------------------------------------\n",
+                _YVALUE, height);
 
-		height += _YVALUE;
-		Prn_Str("\t  --请妥善保留小票一年--", _YVALUE6, height);
-		height += _YVALUE * 3;
-		Prn_Str("\n", _YVALUE, height);
-		Prn_Str("", _YVALUE, height);
-		Prn_Str("", _YVALUE, height);
-		Prn_Str("", _YVALUE, height);
-		Prn_Str("", _YVALUE, height);
-		Prn_Str("", _YVALUE, height);
-		Prn_Str("", _YVALUE, height);
+        height += _YVALUE;
+        Prn_Str("持卡人签名：\n \n \n", _YVALUE, height);
+        height += _YVALUE;
+        try {// 电子签名
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        }
+        height += _YVALUE + 80;
+        Prn_Str("本人确认以上交易,同意将其记入本卡帐户\n \n \n", 16, height);
+
+        height += _YVALUE + 10;
+        Prn_Str("  \t\t\t\t   商户存联\n", 16, height);
+
+        height += _YVALUE;
+        Prn_Str("\t  --请妥善保留小票一年--", _YVALUE6, height);
+        height += _YVALUE * 3;
+        Prn_Str("\n", _YVALUE, height);
+        Prn_Str("", _YVALUE, height);
+        Prn_Str("", _YVALUE, height);
+        Prn_Str("", _YVALUE, height);
+        Prn_Str("", _YVALUE, height);
+        Prn_Str("", _YVALUE, height);
+        Prn_Str("", _YVALUE, height);
 
 //		int iRet = printer.prn_printPage(0);
 
-	}
+    }
 
- // 银联logo 转成Bitmap
- 	@SuppressWarnings("static-access")
- 	private Bitmap getLogoBitmap(Context context, int id) {
- 		BitmapDrawable draw = (BitmapDrawable) context.getResources()
- 				.getDrawable(id);
- 		Bitmap bitmap = draw.getBitmap();
- 		return bitmap;
- 	}
+    // 银联logo 转成Bitmap
+    @SuppressWarnings("static-access")
+    private Bitmap getLogoBitmap(Context context, int id) {
+        BitmapDrawable draw = (BitmapDrawable) context.getResources()
+                .getDrawable(id);
+        Bitmap bitmap = draw.getBitmap();
+        return bitmap;
+    }
 
- 	private int Prn_Str(String msg, int fontSize, int height) {
- 		return printer.prn_drawText(msg, 0, height, STR_FONT_VALUE_SONG, fontSize, false,
- 				false, 0);
- 	}
+    private int Prn_Str(String msg, int fontSize, int height) {
+        return printer.prn_drawText(msg, 0, height, STR_FONT_VALUE_SONG, fontSize, false,
+                false, 0);
+    }
 
- 	private int Prn_Str_Bold(String msg, int fontSize, int height) {
- 		return printer.prn_drawText(msg, 0, height, STR_FONT_VALUE_SONG, fontSize, true,
- 				false, 0);
- 	}
-    
+    private int Prn_Str_Bold(String msg, int fontSize, int height) {
+        return printer.prn_drawText(msg, 0, height, STR_FONT_VALUE_SONG, fontSize, true,
+                false, 0);
+    }
+
     private void sleep(){
         //延时1秒
         try {
             Thread.currentThread();
-			Thread.sleep(50);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
 }
+

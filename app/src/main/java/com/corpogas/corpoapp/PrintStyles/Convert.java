@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Service;
+package com.corpogas.corpoapp.PrintStyles;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

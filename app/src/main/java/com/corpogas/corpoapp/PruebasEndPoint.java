@@ -30,6 +30,7 @@ import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.Service.PrintBillService;
 
 import java.util.ArrayList;
 import java.util.List;

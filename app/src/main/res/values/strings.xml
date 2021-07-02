@@ -12,6 +12,15 @@
     <string name="titulo_de_la_descarga">APK se está descargando</string>
     <string name="menu_about">Version</string>
 
+    <string name="tst_info_paper">Out of Paper!!!</string>
+    <string name="tst_info_temperature">Thermal Protection!!!</string>
+    <string name="tst_info_voltage">Low Power!!!</string>
+    <string name="tst_info_busy">Printer Busy!!!</string>
+    <string name="tst_info_error">Printer Error!!!</string>
+    <string name="tst_info_driver_error">Printer Driver Error!!!</string>
+    <string name="tst_info_select_picture">Print default picture?</string>
+    <string name="tst_info_select_picture_msg">Press OK to print default picture, otherwise print a picture from Gallery!!!</string>
+
     <string-array name="font_size">
         <item>8</item>
         <item>10</item>
