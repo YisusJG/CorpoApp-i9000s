@@ -123,7 +123,7 @@ public class ClaveEmpleado extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -156,14 +156,14 @@ public class ClaveEmpleado extends AppCompatActivity {
                 boolean valido = respuestaApiEmpleado.getObjetoRespuesta().isActivo();
                 idusuario = respuestaApiEmpleado.getObjetoRespuesta().getId();//respuestaobjeto.getString("Id");
                 nombrecompleto = respuestaApiEmpleado.getObjetoRespuesta().getNombreCompleto();       //respuestaobjeto.getString("NombreCompleto");
-                numeroempleado = respuestaApiEmpleado.getObjetoRespuesta().getNumeroEmpleado();    //respuestaobjeto.getString("NumeroEmpleado");
+                numeroempleado = respuestaApiEmpleado.getObjetoRespuesta().getNumeroEmpleado();
                 idRoll = respuestaApiEmpleado.getObjetoRespuesta().getRolId();//respuestaobjeto.getString("RolId");
 
                 if (valido == true) {
 //                                ejecutar=false;
 //                                numerodispositivo.setText("Coloca cualquier dedo en el lector");
 //                                numerodispositivo.setVisibility(View.VISIBLE);
-                    enviaActividadSiguiente(idusuario, pass, idRoll);
+                    enviaActividadSiguiente(pass, idRoll);
                 } else {
                     //Si no es valido se envia mensaje
                     //vm.mostrarVentana("Usuario No Activo");
@@ -205,7 +205,7 @@ public class ClaveEmpleado extends AppCompatActivity {
         });
     }
 
-    private  void enviaActividadSiguiente(long idusuario, String pass, long idRoll){
+    private  void enviaActividadSiguiente(String pass, long idRoll){
         switch (lugarProviene){
             case "Reimpresion":
                 if (idRoll ==1 || idRoll ==3) { // 1 es Gerente, 3 Jefe de ISla Autorizado por Gerente  (idRoll.equals("3") || idRoll.equals("1"))
@@ -248,8 +248,9 @@ public class ClaveEmpleado extends AppCompatActivity {
                 Intent intent1 = new Intent(getApplicationContext(), ProcesoVenta.class); //posicionFinaliza Mikel 22/04/2021
                 //Se envian los parametros de posicion y usuario
                 intent1.putExtra("lugarproviene", "IniciaVenta");
-                intent1.putExtra("usuario", idusuario);
+                intent1.putExtra("IdUsuario", idusuario);
                 intent1.putExtra("clave", pass);
+//                intent1.putExtra("numeromepleado", numeroempleado);
                 //inicia el activity
                 startActivity(intent1);
                 finish();
@@ -258,7 +259,7 @@ public class ClaveEmpleado extends AppCompatActivity {
                 Intent intent2 = new Intent(getApplicationContext(), ProcesoVenta.class);//ProcesoVenta
                 //Se envian los parametros de posicion y usuario
                 intent2.putExtra("lugarproviene", "FinalizaVenta");
-                intent2.putExtra("usuario", idusuario);
+                intent2.putExtra("IdUsuario", idusuario);
                 intent2.putExtra("clave", pass);
                 //inicia el activity
                 startActivity(intent2);
@@ -278,7 +279,7 @@ public class ClaveEmpleado extends AppCompatActivity {
                 //Se instancia y se llama a la clase Venta de Productos
                 Intent intentproducto = new Intent(getApplicationContext(), Menu_Principal.class); //formaPago
                 //Se envian los parametros de posicion y usuario
-                intentproducto.putExtra("usuario", idusuario);
+                intentproducto.putExtra("IdUsuario", idusuario);
                 intentproducto.putExtra("clave",pass);
                 intentproducto.putExtra("nombrecompleto", nombrecompleto);
                 //inicia el activity

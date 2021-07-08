@@ -71,7 +71,7 @@ public class AccesoUsuario implements Serializable {
     /// <summary>
     /// Numero del empleado en el central de empleados
     /// </summary>
-    public String NumeroEmpleado;
+    public long NumeroEmpleado;
 
     /// <summary>
     /// Lista de controles asignados al usuario en el turno anterior.
@@ -165,11 +165,11 @@ public class AccesoUsuario implements Serializable {
         EstacionJarreo = estacionJarreo;
     }
 
-    public String getNumeroEmpleado() {
+    public long getNumeroEmpleado() {
         return NumeroEmpleado;
     }
 
-    public void setNumeroEmpleado(String numeroEmpleado) {
+    public void setNumeroEmpleado(long numeroEmpleado) {
         NumeroEmpleado = numeroEmpleado;
     }
 

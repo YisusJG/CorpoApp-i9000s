@@ -15,10 +15,10 @@
         android:src="@drawable/gasolinera" />
 
     <TextView
+        android:id="@+id/txtVersionApk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#043A07"
-        android:text="CorpoApp    Versión 1.1"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="20sp"

@@ -74,7 +74,7 @@ public class Ventas extends AppCompatActivity {
                 txtTitulo.setText("¡¡ VENTAS !!");
                 imgViewIcono.setImageResource(R.drawable.ic_autoplay);
                 MediaController mediaController = new MediaController(Ventas.this);
-                String path = "http://sso.corpogas.com.mx/stationUpdates/Video_Tutoriales/ventas.mp4";
+                String path = "http://10.0.2.11/stationUpdates/Video_Tutoriales/ventas.mp4";
                 Uri uri = Uri.parse(path);
                 videoView.setVideoURI(uri);
                 videoView.start();

@@ -6,4 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".Productos.MostrarCarritoTransacciones">
 
+    <TextView
+        android:id="@+id/txtTotalProducto"
+        android:layout_width="160dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtPosicionCarga"
+        android:layout_width="105dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/txtTotalProducto"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvProductosCarrito"
+        android:layout_width="match_parent"
+        android:layout_height="328dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtTotalProducto" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvCancelarCarrito"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rcvProductosCarrito"
+        app:layout_constraintVertical_bias="0.333" />
 </androidx.constraintlayout.widget.ConstraintLayout>

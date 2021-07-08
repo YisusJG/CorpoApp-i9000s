@@ -9,10 +9,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageSwitcher
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -34,6 +30,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.provider.Settings.Secure;
+import android.widget.*
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
 
 
 class Menu_Principal : AppCompatActivity() {
@@ -41,6 +39,7 @@ class Menu_Principal : AppCompatActivity() {
     lateinit var bar: ProgressDialog
     var list: ListView? = null
     lateinit var downloadController:DownloadController
+    lateinit var txtVersionApk:TextView
 
     //-------Variables necesarias para ininicalizar el lector de huellas
     private val GENERAL_ACTIVITY_RESULT = 1
@@ -53,7 +52,7 @@ class Menu_Principal : AppCompatActivity() {
     private val imgFoto: ImageSwitcher? = null
     var imagen: ImageView? = null
     var ImageDisplay: Boolean? = null
-    var applicationUpdate: Update? = null
+    var applicationUpdate: RespuestaApi<Update>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
@@ -98,6 +97,8 @@ class Menu_Principal : AppCompatActivity() {
         cambiaColor(primaryDark, primary, background)
         imagen = findViewById<View>(R.id.imgFoto) as ImageView
         imagen!!.setImageResource(R.drawable.gasolinera)
+        txtVersionApk =findViewById(R.id.txtVersionApk)
+        txtVersionApk.text = "Version: ${data.versionApk}"
         ImageDisplay = true
         BuscarActualizacion
     }
@@ -107,57 +108,62 @@ class Menu_Principal : AppCompatActivity() {
         private get() {
             val data = SQLiteBD(applicationContext)
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService_Entities/")
+                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val actualizaApp = retrofit.create(EndPoints::class.java)
             val call = actualizaApp.getActializaApp(data.idSucursal)
-            call.enqueue(object : Callback<Update?> {
-                override fun onResponse(call: Call<Update?>, response: Response<Update?>) {
-                    var version = ""
-                    var fileName = ""
-                    var deviceModel =""
+            call.enqueue(object : Callback<RespuestaApi<Update>> {
+                override fun onResponse(call: Call<RespuestaApi<Update>>, response: Response<RespuestaApi<Update>>) {
+
                     if (!response.isSuccessful) {
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                         return
                     }
                     applicationUpdate = response.body()
-                    for (item in applicationUpdate!!.UpdateDetails) {
-                        version = item.getVersion()
-                        fileName = item.getFileName()
-                        deviceModel = item.getDeviceModel()
-                    }
-//                    var actualizaDatosApp = data!!.updateVersionAPP("1.0","CorpoApp.apk",deviceModel)  //descomentar si deseas actualizar la tabla para hacer la prueba de actualizacion
-                    if (data!!.versionApk != version && data!!.fileNameApk != fileName && data!!.deviceModelApk == deviceModel) {
-                        val apkUrl = "http://sso.corpogas.com.mx/StationUpdates/I9000S/"+fileName
-                        downloadController = DownloadController(this@Menu_Principal, apkUrl, fileName)
 
+                    if (applicationUpdate?.isCorrecto == true) {
+                        var version = ""
+                        var fileName = ""
+                        var deviceModel = ""
 
-                        val titulo = "CORPOGAS"
-                        val mensajes = "Hay una actualizacion disponible"
-
-                        val modales = Modales(this@Menu_Principal)
-                        val viewActualizarApp = modales.MostrarDialogoCorrecto(this@Menu_Principal, titulo, mensajes, "ACTUALIZAR")
-                        viewActualizarApp.findViewById<View>(R.id.buttonAction).setOnClickListener {
-                            modales.alertDialog.dismiss()
-                            bar = ProgressDialog(this@Menu_Principal)
-                            bar.setTitle("CORPOAPP")
-                            bar.setMessage("ACTUALIZANDO APLICACION... ")
-                            bar.setIcon(R.drawable.logocorpoapp)
-                            bar.setCancelable(false)
-                            bar.show()
-
-                            var actualizaDatosApp = data!!.updateVersionAPP(version,fileName,deviceModel)
-
-                            checkStoragePermission()
-
+                        for (item in applicationUpdate?.objetoRespuesta!!.UpdateDetails) {
+                            version = item.getVersion()
+                            fileName = item.getFileName()
+                            deviceModel = item.getDeviceModel()
                         }
-                    } else {
-                        val mensaje = "No hay actualizacions disponibles"
+//                    var actualizaDatosApp = data!!.updateVersionAPP("1.0","CorpoApp.apk",deviceModel)  //descomentar si deseas actualizar la tabla para hacer la prueba de actualizacion
+                        if (data!!.versionApk != version && data!!.fileNameApk != fileName && data!!.deviceModelApk == deviceModel) {
+                            val apkUrl = "http://10.0.2.11/StationUpdates/I9000S_DESARROLLO/" + fileName
+                            downloadController = DownloadController(this@Menu_Principal, apkUrl, fileName)
+
+
+                            val titulo = "CORPOGAS"
+                            val mensajes = "Hay una actualizacion disponible"
+
+                            val modales = Modales(this@Menu_Principal)
+                            val viewActualizarApp = modales.MostrarDialogoCorrecto(this@Menu_Principal, titulo, mensajes, "ACTUALIZAR")
+                            viewActualizarApp.findViewById<View>(R.id.buttonAction).setOnClickListener {
+                                modales.alertDialog.dismiss()
+                                bar = ProgressDialog(this@Menu_Principal)
+                                bar.setTitle("CORPOAPP")
+                                bar.setMessage("ACTUALIZANDO APLICACION... ")
+                                bar.setIcon(R.drawable.logocorpoapp)
+                                bar.setCancelable(false)
+                                bar.show()
+
+                                var actualizaDatosApp = data!!.updateVersionAPP(version, fileName, deviceModel)
+
+                                checkStoragePermission()
+
+                            }
+                        } else {
+                            val mensaje = "No hay actualizacions disponibles"
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<Update?>, t: Throwable) {
+                override fun onFailure(call: Call<RespuestaApi<Update>>, t: Throwable) {
                     Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
                 }
             })

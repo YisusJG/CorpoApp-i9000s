@@ -7,6 +7,7 @@ public class RecyclerViewHeaders implements Serializable {
     String subtitulo;
     int imagenId;
     long PosicionCargaId;
+    long posicioncarganumerointerno;
 
     public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId) {
         this.titulo = titulo;
@@ -14,11 +15,12 @@ public class RecyclerViewHeaders implements Serializable {
         this.imagenId = imagenId;
     }
 
-    public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId, long posicionCargaId) {
+    public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId, long posicionCargaId,long posicioncarganumerointerno) {
         this.titulo = titulo;
         this.subtitulo = subtitulo;
         this.imagenId = imagenId;
         this.PosicionCargaId = posicionCargaId;
+        this.posicioncarganumerointerno = posicioncarganumerointerno;
     }
 
     public String getTitulo() {
@@ -51,5 +53,13 @@ public class RecyclerViewHeaders implements Serializable {
 
     public void setPosicionCargaId(long posicionCargaId) {
         PosicionCargaId = posicionCargaId;
+    }
+
+    public long getPosicioncarganumerointerno() {
+        return posicioncarganumerointerno;
+    }
+
+    public void setPosicioncarganumerointerno(long posicioncarganumerointerno) {
+        this.posicioncarganumerointerno = posicioncarganumerointerno;
     }
 }

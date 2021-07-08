@@ -346,7 +346,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta("497",1,"104");
+                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta("497",1,104);
                 call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
 
 
@@ -404,7 +404,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints AutorizaDespacho = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Boolean>> call = AutorizaDespacho.getAutorizaDespacho(1,"100049486");
+                Call<RespuestaApi<Boolean>> call = AutorizaDespacho.getAutorizaDespacho(1,100049486);
                 call.enqueue(new Callback<RespuestaApi<Boolean>>() {
 
 

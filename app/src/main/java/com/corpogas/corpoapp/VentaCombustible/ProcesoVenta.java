@@ -46,9 +46,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProcesoVenta extends AppCompatActivity {
     RecyclerView rcvProcesoVenta;
-    String  usuarioid, empleadoNumero;
-    long posicionCargaId,numeroOperativa;
-    String EstacionId, sucursalId, ipEstacion, numeroTarjetero, lugarproviene, usuario, clave;
+    String EstacionId, sucursalId, ipEstacion,
+            numeroTarjetero, lugarproviene, usuario, clave;
+    long posicionCargaId,numeroOperativa,cargaNumeroInterno,usuarioid,empleadoNumero;
     Boolean banderaposicionCarga;
     SQLiteBD data;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -78,21 +78,22 @@ public class ProcesoVenta extends AppCompatActivity {
         sucursalId = data.getIdSucursal();
         ipEstacion = data.getIpEstacion();
         lugarproviene = getIntent().getStringExtra("lugarproviene");
-        usuarioid = getIntent().getStringExtra("usuario");
+        usuarioid = getIntent().getLongExtra("IdUsuario",0);
         usuario = getIntent().getStringExtra("clave");
+//        numeroEmpleado = getIntent().getStringExtra("numeromepleado");
     }
 
 
     public void posicionCargaFinaliza(){
         bar = new ProgressDialog(ProcesoVenta.this);
-        bar.setTitle("Cargando Posiciones de Carga");
+        bar.setTitle("Buscando Posiciones de Carga");
         bar.setMessage("Ejecutando... ");
         bar.setIcon(R.drawable.gas);
         bar.setCancelable(false);
         bar.show();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -114,6 +115,7 @@ public class ProcesoVenta extends AppCompatActivity {
                 {
                     if(correcto == false)
                     {
+
                         //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
                         String titulo = "AVISO";
                         String mensaje = "" + mensajes;
@@ -159,7 +161,7 @@ public class ProcesoVenta extends AppCompatActivity {
                         {
 
                             posicionCargaId = posicion.getPosicionCargaId();
-                            long posicioncarganumerointerno = posicion.getNumeroInterno();
+                            long posicionCargaNumeroInterno = posicion.getNumeroInterno();
                             boolean pocioncargadisponible = posicion.isDisponible();
                             boolean pocioncargapendientecobro = posicion.isPendienteCobro();
                             String descripcionoperativa =  posicion.getDescripcionOperativa();
@@ -192,7 +194,7 @@ public class ProcesoVenta extends AppCompatActivity {
                                             if (numeroOperativa == 21){
 
                                             }else{
-                                                String titulo = "PC " + posicioncarganumerointerno;
+                                                String titulo = "PC " + posicionCargaNumeroInterno;
                                                 String subtitulo = "";//
                                                 if (lugarproviene.equals("1")) {
                                                     subtitulo = "Magna  |  Premium  |  Diesel";
@@ -200,7 +202,7 @@ public class ProcesoVenta extends AppCompatActivity {
                                                 } else {
                                                     subtitulo =descripcionoperativa;//
                                                 }
-                                                lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId));//
+                                                lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno));//
                                                 banderaposicionCarga = true;
                                             }
                                         }
@@ -241,6 +243,7 @@ public class ProcesoVenta extends AppCompatActivity {
                         });
                     }else {
                         initializeAdapter();
+                        bar.cancel();
                     }
                 }
             }
@@ -260,9 +263,9 @@ public class ProcesoVenta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 posicionCargaId=lProcesoVenta.get(rcvProcesoVenta.getChildAdapterPosition(v)).getPosicionCargaId();
-
+                cargaNumeroInterno = lProcesoVenta.get(rcvProcesoVenta.getChildAdapterPosition(v)).getPosicioncarganumerointerno();
                 if (lugarproviene.equals("IniciaVenta")) {
-                    ValidaTransaccionActiva(posicionCargaId,numeroOperativa);
+                    ValidaTransaccionActiva();
                 } else {
                     validaPosicionDisponible(posicionCargaId);
                 }
@@ -274,10 +277,10 @@ public class ProcesoVenta extends AppCompatActivity {
         rcvProcesoVenta.setAdapter(adapter);
     }
 
-    private void ValidaTransaccionActiva(long posicionCargaId, long numeroOperativa){
+    private void ValidaTransaccionActiva(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -310,16 +313,18 @@ public class ProcesoVenta extends AppCompatActivity {
                         solicitadespacho();
                     }else{
                         //Envia a Mostrar CArrito TRansacciones
-                        Intent intente = new Intent(getApplicationContext(), EnDesarrollo.class);//MostrarCarritoTransacciones
+                        Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);//MostrarCarritoTransacciones
                         //se envia el id seleccionado a la clase Usuario Producto
-                        intente.putExtra("posicion", posicionCargaId);
-                        intente.putExtra("usuario", usuarioid);
+                        intente.putExtra("posicionCarga", posicionCargaId);
+                        intente.putExtra("cargaNumeroInterno", cargaNumeroInterno);
+                        intente.putExtra("IdUsuario", usuarioid);
                         intente.putExtra("cadenaproducto", "");
                         intente.putExtra("lugarproviene", "Despacho");
                         intente.putExtra("numeroOperativa", numeroOperativa);
                         intente.putExtra("cadenarespuesta", respuestaApiProductoTarjetero);
                         intente.putExtra("clave", usuario);
                         intente.putExtra("nombrecompleto", "Nombrecompleto");
+                        intente.putExtra("numeroEmpleado", empleadoNumero);
                         //Ejecuta la clase del Usuario producto
                         startActivity(intente);
                         //Finaliza activity
@@ -343,7 +348,7 @@ public class ProcesoVenta extends AppCompatActivity {
 
     private void solicitadespacho() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -405,7 +410,7 @@ public class ProcesoVenta extends AppCompatActivity {
     private void validaPosicionDisponible(long posicionCargaId) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -452,7 +457,7 @@ public class ProcesoVenta extends AppCompatActivity {
 
     private void finalizaventa(long posicionCargaId) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
@@ -42,7 +43,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
     Ticket ticket;
     Conexion conexionApi;
     ConfiguracionAplicacion configuracionAplicacionApi;
-    Update applicationUpdate;
+    RespuestaApi<Update> applicationUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +134,25 @@ public class ConfiguracionServidor extends AppCompatActivity{
             public void onResponse(Call<Estacion> call, Response<Estacion> response) {
                 if(!response.isSuccessful())
                 {
+                    String titulo = "AVISO";
+                    String mensaje = "La direccion IP que ingresaste no es Valida";
+                    final Modales modales = new Modales(ConfiguracionServidor.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(ConfiguracionServidor.this, mensaje, titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
+                            edtOct1.setText("");
+                            edtOct2.setText("");
+                            edtOct3.setText("");
+                            edtOct4.setText("");
+
+                            edtOct1.requestFocus();
+
+
+                        }
+                    });
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                     return;
                 }
@@ -270,6 +290,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
     }
 
     private void getActualizaAPP() {
+//        String getUrl = "http://10.0.2.11/CorpoCoreService/api/actualizaciones/sucursalId/"+data.getIdSucursal()+"/aplicacionId/3/lastUpdates"; //Produccion
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://"+ip2+"/CorpogasService/")
@@ -277,25 +298,31 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 .build();
 
         EndPoints actualizaApp = retrofit.create(EndPoints.class);
-        Call<Update> call = actualizaApp.getActializaApp(data.getIdSucursal());
-        call.enqueue(new Callback<Update>() {
+        Call<RespuestaApi<Update>> call = actualizaApp.getActializaApp(data.getIdSucursal());
+        call.enqueue(new Callback<RespuestaApi<Update>>() {
             @Override
-            public void onResponse(Call<Update> call, Response<Update> response) {
+            public void onResponse(Call<RespuestaApi<Update>> call, Response<RespuestaApi<Update>> response) {
                 if(!response.isSuccessful())
                 {
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                     return;
                 }
                 applicationUpdate = response.body();
-                for(UpdateDetail item: applicationUpdate.getUpdateDetails())
+
+                if(applicationUpdate.isCorrecto() == true) {
+
+                    for (UpdateDetail item : applicationUpdate.getObjetoRespuesta().getUpdateDetails()) {
+                        data.InsertarActualizcionApp(item.getVersion(), item.getFileName(), "I9000S");
+                    }
+                }else
                 {
-                    data.InsertarActualizcionApp(item.getVersion(),item.getFileName(),"I9000S");
+                    data.InsertarActualizcionApp("","","I9000S");
                 }
 
             }
 
             @Override
-            public void onFailure(Call<Update> call, Throwable t) {
+            public void onFailure(Call<RespuestaApi<Update>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
@@ -411,27 +438,29 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
 
                 if (oct1.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa el campo 12",Toast.LENGTH_LONG).show();
+                    edtOct1.setError("Ingresa un valor");
+                    edtOct1.requestFocus();
                     //happy
                 }else{
                     if (oct2.isEmpty()){
-                        Toast.makeText(getApplicationContext(),"Ingresa este campo 2",Toast.LENGTH_LONG).show();
+                        edtOct2.setError("Ingresa un valor");
+                        edtOct2.requestFocus();
                     }else{
                         if (oct3.isEmpty()){
-                            Toast.makeText(getApplicationContext(),"Ingresa este campo 3",Toast.LENGTH_LONG).show();
+                            edtOct3.setError("Ingresa un valor");
+                            edtOct3.requestFocus();
                         }else{
                             if (oct4.isEmpty()){
-                                Toast.makeText(getApplicationContext(),"Ingresa este campo 4",Toast.LENGTH_LONG).show();
+                                edtOct4.setError("Ingresa un valor");
+                                edtOct4.requestFocus();
                             }else{
+                                edtOct4.requestFocus();
                                 ConectarIP();
                             }
                         }
                     }
                 }
-                edtOct1.setText("");
-                edtOct2.setText("");
-                edtOct3.setText("");
-                edtOct4.setText("");
+
 
                 return true;
             default:

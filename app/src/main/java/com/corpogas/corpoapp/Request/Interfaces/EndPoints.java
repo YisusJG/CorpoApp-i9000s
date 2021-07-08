@@ -27,8 +27,10 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.Header;
@@ -38,8 +40,8 @@ import retrofit2.http.Path;
 public interface EndPoints {
 
 //    METODOS GET
-    @GET("api/actualizaciones/sucursalId/{sucursalId}/lastUpdates")
-    Call<Update> getActializaApp(@Path("sucursalId") String sucursalId);
+    @GET("api/actualizaciones/sucursalId/{sucursalId}/aplicacionId/3/lastUpdates")
+    Call<RespuestaApi<Update>> getActializaApp(@Path("sucursalId") String sucursalId);
 
     @GET("api/estaciones/ip/{octeto1}/{octeto2}/{octeto3}/{octeto4}")
     Call<Estacion> getEstacionApi(@Path("octeto1") String octeto1, @Path("octeto2") String octeto2, @Path("octeto3") String octeto3, @Path("octeto4") String octeto4);
@@ -63,7 +65,7 @@ public interface EndPoints {
     Call<RespuestaApi<Boolean>> getTicketPendienteCobro(@Path("sucursalId") String sucursalId,@Path("posicionCargaId") long posicionCargaId);
 
     @GET("api/despachos/autorizaDespacho/posicionCargaId/{posicionCargaId}/usuarioId/{usuarioId}")
-    Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") long posicionCargaId, @Path("usuarioId") String usuarioId);
+    Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") long posicionCargaId, @Path("usuarioId") long usuarioId);
 
     @GET("api/Islas/productos/sucursal/{sucursalId}/posicionCargaId/{id}")
     Call<Isla> getPosicionCargaProductosSucursal(@Path("sucursalId") String sucursalId, @Path("id") String id);
@@ -96,11 +98,16 @@ public interface EndPoints {
     Call<Ticket<TicketRequest>> getGenerarTicket(@Body TicketRequest ticketRequest);
 
     @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
-    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") long posicionCarga, @Path("usuarioId") String usuarioId);
+    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") long posicionCarga, @Path("usuarioId") long usuarioId);
 
     @POST("api/cierreCarretes/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
     Call<RespuestaApi<List<CierreCarrete>>> postLecturaInicialMecanica(@Path("sucursalId") long sucursalId);
 
+
+//    METODOS DELETE
+
+    @DELETE("api/ventaProductos/BorraProductos/sucursal/{sucursalId}/usuario/{usuarioId}/posicionCarga/{posicionCargaId}")
+    Call<ResponseBody> deleteProductos(@Path("sucursalId") String sucursalId,@Path("usuarioId") long usuarioId,@Path("posicionCargaId") long posicionCargaId);
 }
 
 
