@@ -51,6 +51,9 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    //para el qr
+    implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+
 
 }
 repositories {
