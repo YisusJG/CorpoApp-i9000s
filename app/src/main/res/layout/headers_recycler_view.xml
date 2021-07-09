@@ -28,11 +28,11 @@
             android:id="@+id/txtTituloHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
             android:text="TextView"
-            android:textStyle="bold"
             android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgHeader"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,10 +40,10 @@
             android:id="@+id/txtSubtituloHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/black"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
             android:text="TextView"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imgHeader"
             app:layout_constraintTop_toBottomOf="@+id/txtTituloHeader" />
 

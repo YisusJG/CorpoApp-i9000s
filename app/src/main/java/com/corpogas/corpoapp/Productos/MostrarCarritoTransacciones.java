@@ -20,11 +20,13 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
+import com.corpogas.corpoapp.FormasPago.FormasDePago;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 
 import org.json.JSONException;
@@ -166,7 +168,8 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                 }
                 else if(titulo.equals("Imprimir"))
                 {
-                    Toast.makeText(getApplicationContext(),"En proceso de desarrollo", Toast.LENGTH_SHORT).show();
+                    Imprimir();
+//                    Toast.makeText(getApplicationContext(),"En proceso de desarrollo", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -388,6 +391,28 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void Imprimir() {
+        String mensajes = "Estas seguro de IMPRIMIR venta?";
+        Modales modales = new Modales(MostrarCarritoTransacciones.this);
+        View viewLectura = modales.MostrarDialogoAlerta(MostrarCarritoTransacciones.this, mensajes,  "SI", "NO");
+        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getApplicationContext(), FormasDePago.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modales.alertDialog.dismiss();
+            }
+        });
     }
 
     private void solicitadespacho() {

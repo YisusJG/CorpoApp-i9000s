@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Productos.MostrarCarritoTransacciones"></activity>
+        <activity android:name=".FormasPago.FormasDePago"></activity>
+        <activity android:name=".Productos.MostrarCarritoTransacciones" />
         <activity android:name=".VentaCombustible.ProcesoVenta" />
         <activity android:name=".EnProcesoDeDesarrollo.EnDesarrollo" />
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
@@ -27,16 +28,17 @@
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 
-        <service android:name=".Service.PrintBillService"/>
+        <service android:name=".Service.PrintBillService" />
 
-        <activity android:name=".PruebasEndPoint" >
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+        <activity android:name=".PruebasEndPoint">
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
         <activity android:name=".Menu_Principal" />
         <activity android:name=".SplashEmpresas.SplashGulf" />
         <activity android:name=".SplashEmpresas.Splash" />
