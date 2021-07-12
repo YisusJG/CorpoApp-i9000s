@@ -8,6 +8,7 @@ public class RecyclerViewHeaders implements Serializable {
     int imagenId;
     long PosicionCargaId;
     long posicioncarganumerointerno;
+    long formaPagoId;
 
     public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId) {
         this.titulo = titulo;
@@ -21,6 +22,12 @@ public class RecyclerViewHeaders implements Serializable {
         this.imagenId = imagenId;
         this.PosicionCargaId = posicionCargaId;
         this.posicioncarganumerointerno = posicioncarganumerointerno;
+    }
+
+    public RecyclerViewHeaders(String titulo, long formaPagoId, int imagenId) {
+        this.titulo = titulo;
+        this.formaPagoId = formaPagoId;
+        this.imagenId = imagenId;
     }
 
     public String getTitulo() {
@@ -61,5 +68,13 @@ public class RecyclerViewHeaders implements Serializable {
 
     public void setPosicioncarganumerointerno(long posicioncarganumerointerno) {
         this.posicioncarganumerointerno = posicioncarganumerointerno;
+    }
+
+    public long getFormaPagoId() {
+        return formaPagoId;
+    }
+
+    public void setFormaPagoId(long formaPagoId) {
+        this.formaPagoId = formaPagoId;
     }
 }

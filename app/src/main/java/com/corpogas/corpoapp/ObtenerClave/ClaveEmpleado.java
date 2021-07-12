@@ -93,6 +93,9 @@ public class ClaveEmpleado extends AppCompatActivity {
         titulo = findViewById(R.id.titulo);
         numerodispositivo =  (TextView) findViewById(R.id.txtnumerodispositivo);
         lugarProviene =  getIntent().getStringExtra("LugarProviene");
+        if (lugarProviene.equals("IniciaVenta")) {
+            txtEtiqueta.setText("Inicia venta");
+        }
     }
 
     @Override

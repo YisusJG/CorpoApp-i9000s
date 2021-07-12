@@ -117,10 +117,6 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         }
         txtTotalProductos.setText("Total: $"+String.format("%.2f",totalPrecio));
         txtPosicionCarga.setText("Posicion: "+ cargaNumeroInterno);
-
-
-//        lProductosCarrito.add(new RecyclerViewHeaders("ATF DEXRON II (900 ML)","Cantidad: 1 \nPrecio: $60",R.drawable.atf900));
-//        lProductosCarrito.add(new RecyclerViewHeaders("TOP OIL LIMPIEZA CONTINUA 200 ML","Cantidad: 1 \nPrecio: $35",R.drawable.oil200ml));
     }
 
     private void initialDataOpcionesCarrito() {
@@ -139,14 +135,6 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
 
     private void initializeAdapterCarrito() {
         RVAdapter adapter = new RVAdapter(lProductosCarrito);
-//        adapter.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String titulo;
-//                Toast.makeText(getApplicationContext(),"Seleccion :" + lProductosCarrito.get(rcvProductosCarrito.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
         rcvProductosCarrito.setAdapter(adapter);
     }
 
@@ -394,14 +382,16 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
     }
 
     private void Imprimir() {
-        String mensajes = "Estas seguro de IMPRIMIR venta?";
+        String mensajes = "Estas seguro de imprimir venta?";
         Modales modales = new Modales(MostrarCarritoTransacciones.this);
         View viewLectura = modales.MostrarDialogoAlerta(MostrarCarritoTransacciones.this, mensajes,  "SI", "NO");
         viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                modales.alertDialog.dismiss();
                 Intent intent = new Intent(getApplicationContext(), FormasDePago.class);
+                intent.putExtra("posicioncarga",posicioncarga);
+                intent.putExtra("IdUsuario", usuarioid);
                 startActivity(intent);
                 finish();
 

@@ -62,6 +62,8 @@ public class PaymentMethod implements Serializable {
     /// </summary>
     public int MappingValue;
 
+    public int Id;
+
     public long getSatPaymentMethodId() {
         return SatPaymentMethodId;
     }
@@ -132,5 +134,13 @@ public class PaymentMethod implements Serializable {
 
     public void setMappingValue(int mappingValue) {
         MappingValue = mappingValue;
+    }
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
     }
 }
