@@ -14,6 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
+import com.corpogas.corpoapp.Corte.Clave
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Sucursales.Update
@@ -57,7 +58,7 @@ class Menu_Principal : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
         val data = SQLiteBD(this)
-        this.title = data.nombreEsatcion
+        this.title = data.nombreEstacion
         drawerLayout = findViewById(R.id.drawer_layout)
         //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,"open navigation drawer", "close navigation drawer");
@@ -442,7 +443,7 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgCortes -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                intent = Intent(applicationContext, Clave::class.java)
                 startActivity(intent)
             }
             R.id.btnImgPendientes -> {

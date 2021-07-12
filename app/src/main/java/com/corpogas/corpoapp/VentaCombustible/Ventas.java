@@ -58,7 +58,7 @@ public class Ventas extends AppCompatActivity {
         txtTitulo = (TextView)findViewById(R.id.textTitle);
         videoView = findViewById(R.id.miVideo);
         imgViewIcono =(ImageView) findViewById(R.id.imageIcon);
-        this.setTitle(data.getNombreEsatcion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
     }
 
     private void onClicks() {

@@ -86,7 +86,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         txtTotalProductos = findViewById(R.id.txtTotalProducto);
 
         this.setTitle(db.getRazonSocial());
-        this.setTitle(db.getNombreEsatcion() + " ( EST.:" + db.getNumeroEstacion() + ")");
+        this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion = db.getIpEstacion();

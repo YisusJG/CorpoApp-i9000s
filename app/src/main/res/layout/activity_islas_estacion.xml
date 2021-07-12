@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Corte.IslasEstacion">
+
+    <ImageView
+        android:id="@+id/imageBienvenidoIslasEstacion"
+        android:layout_width="301dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bienvenido" />
+
+    <ImageView
+        android:id="@+id/imageSiluetaIslasEstacion"
+        android:layout_width="71dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/silueta_usuario" />
+
+    <TextView
+        android:id="@+id/textNombreIslasEstacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="5dp"
+        android:text="Nombre"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageSiluetaIslasEstacion"
+        app:layout_constraintTop_toBottomOf="@+id/imageBienvenidoIslasEstacion" />
+
+    <TextView
+        android:id="@+id/textSeleccionaIslasEstacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="SELECCIONA UNA ISLA"
+        android:textColor="@color/black"
+        android:textSize="17dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNombreIslasEstacion" />
+
+    <Spinner
+        android:id="@+id/spinnerIslasEstacion"
+        android:layout_width="99dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSeleccionaIslasEstacion" />
+
+    <Button
+        android:id="@+id/btnAceptarIslasEstacion"
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="65dp"
+        android:background="@drawable/b3"
+        android:text="ACEPTAR"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageIslaIslasEstacion"
+        android:layout_width="159dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="71dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAceptarIslasEstacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerIslasEstacion"
+        app:srcCompat="@drawable/gasolinera" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

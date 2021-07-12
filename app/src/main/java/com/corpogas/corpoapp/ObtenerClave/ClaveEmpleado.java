@@ -82,7 +82,7 @@ public class ClaveEmpleado extends AppCompatActivity {
         init();
 
         this.setTitle(data.getRazonSocial());
-        this.setTitle(data.getNombreEsatcion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         numerodispositivo.setVisibility(View.INVISIBLE);
     }
 

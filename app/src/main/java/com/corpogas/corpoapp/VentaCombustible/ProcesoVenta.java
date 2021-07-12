@@ -73,7 +73,7 @@ public class ProcesoVenta extends AppCompatActivity {
         rcvProcesoVenta = (RecyclerView)findViewById(R.id.rcvProcesoVenta);
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getRazonSocial());
-        this.setTitle(data.getNombreEsatcion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         EstacionId = data.getIdEstacion();
         sucursalId = data.getIdSucursal();
         ipEstacion = data.getIpEstacion();

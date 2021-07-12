@@ -101,7 +101,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         String tipo = cursor.getString(0);
         return tipo;
     }
-    public String getNombreEsatcion (){
+    public String getNombreEstacion (){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT nombreestacion FROM configuracionestacion", null);
         cursor.moveToFirst();

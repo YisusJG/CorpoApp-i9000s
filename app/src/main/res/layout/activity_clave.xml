@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Corte.Clave">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationCorteClave"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:lottie_autoPlay="true"
+        app:lottie_imageAssetsFolder="assets"
+        app:lottie_loop="true" />
+
+    <TextView
+        android:id="@+id/textCorteClave"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/animationCorteClave"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="35dp"
+        android:text="Cortes"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/passwordCorteClave"
+        android:layout_width="289dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textCorteClave"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@drawable/key"
+        android:ems="10"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:hint="******"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/textTituloCorteClave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/passwordCorteClave"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp"
+        android:fontFamily="monospace"
+        android:lineSpacingExtra="10sp"
+        android:text="Ingresa tu contraseña de Jefe de Isla"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textnumerodispositivoCorteClave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTituloCorteClave"
+        android:layout_marginTop="40dp"
+        android:text="Número de Dispositivo: "
+        android:textAlignment="center"
+        android:textColor="@color/colorError"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+
+</RelativeLayout>

@@ -19,6 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Corte.ProcesoCorte" />
+        <activity android:name=".Corte.IslasEstacion" />
+        <activity android:name=".Corte.Clave">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Productos.MostrarCarritoTransacciones" />
         <activity android:name=".FormasPago.FormasDePago"></activity>
         <activity android:name=".Productos.MostrarCarritoTransacciones" />
         <activity android:name=".VentaCombustible.ProcesoVenta" />
@@ -46,11 +56,13 @@
             android:name=".Configuracion.ConfiguracionServidor"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
             android:windowSoftInputMode="adjustPan|stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".MainActivity">
 
