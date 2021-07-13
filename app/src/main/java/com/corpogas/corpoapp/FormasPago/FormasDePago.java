@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,6 +15,9 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
+import com.corpogas.corpoapp.Entities.Tickets.DiccionarioParcialidades;
+import com.corpogas.corpoapp.Entities.Tickets.Ticket;
+import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
@@ -21,15 +25,20 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,10 +49,12 @@ public class FormasDePago extends AppCompatActivity {
     RecyclerView rcvFormasPago;
     List<RecyclerViewHeaders> lFormasPago;
     SQLiteBD db;
-    String sucursalId,ipEstacion;
-    long posicioncarga,usuarioid;
+    String ipEstacion;
+    double totalCarrito;
+    long posicioncarga,usuarioid,sucursalId;
     List<BranchPaymentMethod> respuestaListaSucursalFormasPago;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
+    Ticket respuestaTicketRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +75,11 @@ public class FormasDePago extends AppCompatActivity {
 
         this.setTitle(db.getRazonSocial());
         this.setTitle(db.getNumeroEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
-        sucursalId = db.getIdSucursal();
+        sucursalId = Long.parseLong(db.getIdSucursal());
         ipEstacion = db.getIpEstacion();
         posicioncarga = getIntent().getLongExtra("posicioncarga",0);
         usuarioid = getIntent().getLongExtra("IdUsuario",0);
+        totalCarrito = getIntent().getDoubleExtra("totalCarrito",0);
 
     }
 
@@ -186,7 +198,7 @@ public class FormasDePago extends AppCompatActivity {
                     viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            RespuestaImprimeFinaliza(posicioncarga, usuarioid, formapagoid, titulo);
+                            respuestaImprimeFinaliza(posicioncarga, usuarioid, formapagoid);
                             modales.alertDialog.dismiss();
                         }
                     });
@@ -198,7 +210,7 @@ public class FormasDePago extends AppCompatActivity {
         rcvFormasPago.setAdapter(adapter);
     }
 
-    private void RespuestaImprimeFinaliza(long posicioncarga, long usuarioid, long formapagoid, String titulo) {
+    private void respuestaImprimeFinaliza(long posicioncarga, long usuarioid, long formapagoid) {
 
         String mensajes = "Desea finalizar la venta?";
         Modales modales = new Modales(FormasDePago.this);
@@ -271,9 +283,54 @@ public class FormasDePago extends AppCompatActivity {
         viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ObtenerDatosticketnormal(numPosicionCarga, idusuario, formapagoid, numticket, nombrepago);
+                modales.alertDialog.dismiss();
+                ObtenerDatosticketnormal(posicioncarga, String.valueOf(usuarioid), formapagoid);
             }
         });
+    }
+
+    private void ObtenerDatosticketnormal(long posicioncarga, String usuarioid, long formapagoid) {
+        List<DiccionarioParcialidades> parcialidades = new ArrayList<DiccionarioParcialidades>();
+        parcialidades.add(new DiccionarioParcialidades(formapagoid,totalCarrito));
+        TicketRequest ticketRequest = new TicketRequest(posicioncarga,sucursalId, usuarioid, parcialidades); //
+//        String json = new Gson().toJson(ticketRequest);
+
+        try {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+            EndPoints generaTicket = retrofit.create(EndPoints.class);
+            Call<Ticket> call = generaTicket.getGenerarTicket(ticketRequest);
+            call.enqueue(new Callback<Ticket>() {
+
+
+                @Override
+                public void onResponse(Call<Ticket> call, Response<Ticket> response) {
+                    if (!response.isSuccessful()) {
+                        return;
+                    }
+                    respuestaTicketRequest = response.body();
+
+                    Toast.makeText(getApplicationContext(), "Mandar a imprimir", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<Ticket> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            });
+
+        }catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 

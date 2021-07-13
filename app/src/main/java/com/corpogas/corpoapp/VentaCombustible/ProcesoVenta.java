@@ -46,9 +46,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProcesoVenta extends AppCompatActivity {
     RecyclerView rcvProcesoVenta;
-    String EstacionId, sucursalId, ipEstacion,
+    String EstacionId, ipEstacion,
             numeroTarjetero, lugarproviene, usuario, clave;
-    long posicionCargaId,numeroOperativa,cargaNumeroInterno,usuarioid,empleadoNumero;
+    long posicionCargaId,numeroOperativa,cargaNumeroInterno,usuarioid,empleadoNumero,sucursalId;
     Boolean banderaposicionCarga;
     SQLiteBD data;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -75,7 +75,7 @@ public class ProcesoVenta extends AppCompatActivity {
         this.setTitle(data.getRazonSocial());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         EstacionId = data.getIdEstacion();
-        sucursalId = data.getIdSucursal();
+        sucursalId = Long.parseLong(data.getIdSucursal());
         ipEstacion = data.getIpEstacion();
         lugarproviene = getIntent().getStringExtra("lugarproviene");
         usuarioid = getIntent().getLongExtra("IdUsuario",0);

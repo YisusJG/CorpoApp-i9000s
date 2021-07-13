@@ -13,6 +13,11 @@ public class DiccionarioParcialidades implements Serializable {
     /// </summary>
     public double Importe;
 
+    public DiccionarioParcialidades(long id, double importe) {
+        Id = id;
+        Importe = importe;
+    }
+
     public long getId() {
         return Id;
     }

@@ -50,11 +50,11 @@ public class TicketRequest implements Serializable {
     /// </summary>
     public boolean Reimpresion;
 
-    public TicketRequest(long posicionCargaId, String idUsuario, long sucursalId, List<DiccionarioParcialidades> idFormasPago){
+    public TicketRequest(long posicionCargaId, long sucursalId, String idUsuario, List<DiccionarioParcialidades> idFormasPago){
 
         PosicionCargaId = posicionCargaId;
-        IdUsuario = idUsuario;
         SucursalId = sucursalId;
+        IdUsuario = idUsuario;
         IdFormasPago = idFormasPago;
     }
 

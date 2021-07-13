@@ -31,6 +31,7 @@ import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
 import com.corpogas.corpoapp.Service.PrintBillService;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class PruebasEndPoint extends AppCompatActivity {
     RespuestaApi<AccesoUsuario> accesoUsuario;
     RespuestaApi<Puntada> respuestaPuntada;
     RespuestaApi<Empleado> respuestaApiEmpleado;
-    Ticket<TicketRequest> respuestaTicketRequest;
+//    Ticket<TicketRequest> respuestaTicketRequest;
     List<BranchPaymentMethod> respuestaListaSucursalFormasPago;
     RespuestaApi<List<ProductoTarjetero>> respuestaApiProductoTarjetero;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
@@ -210,35 +211,36 @@ public class PruebasEndPoint extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                List<DiccionarioParcialidades> parcialidades = new ArrayList<DiccionarioParcialidades>();
-
-                TicketRequest ticketRequest = new TicketRequest(2, "100049486", 497, parcialidades);
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                EndPoints generaTicket = retrofit.create(EndPoints.class);
-                Call<Ticket<TicketRequest>> call = generaTicket.getGenerarTicket(ticketRequest);
-                call.enqueue(new Callback<Ticket<TicketRequest>>() {
-
-
-                    @Override
-                    public void onResponse(Call<Ticket<TicketRequest>> call, Response<Ticket<TicketRequest>> response) {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        respuestaTicketRequest = response.body();
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Ticket<TicketRequest>> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+//                List<DiccionarioParcialidades> parcialidades = new ArrayList<DiccionarioParcialidades>();
+//
+//                TicketRequest ticketRequest = new TicketRequest(2, 497,100049486, parcialidades);
+//                String json = new Gson().toJson(ticketRequest);
+//
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .build();
+//
+//                EndPoints generaTicket = retrofit.create(EndPoints.class);
+//                Call<Ticket<TicketRequest>> call = generaTicket.getGenerarTicket(ticketRequest);
+//                call.enqueue(new Callback<Ticket<TicketRequest>>() {
+//
+//
+//                    @Override
+//                    public void onResponse(Call<Ticket<TicketRequest>> call, Response<Ticket<TicketRequest>> response) {
+//                        if (!response.isSuccessful()) {
+//                            return;
+//                        }
+//                        respuestaTicketRequest = response.body();
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Ticket<TicketRequest>> call, Throwable t) {
+//                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
             }
 
         });
@@ -253,7 +255,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints formasPago = retrofit.create(EndPoints.class);
-                Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos("497");
+                Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(497);
 
                 call.enqueue(new Callback<List<BranchPaymentMethod>>() {
 
@@ -315,7 +317,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints productosProcedencia = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<List<ProductoTarjetero>>> call = productosProcedencia.getProductosProcedencia("497",  1);
+                Call<RespuestaApi<List<ProductoTarjetero>>> call = productosProcedencia.getProductosProcedencia(497,  1);
                 call.enqueue(new Callback<RespuestaApi<List<ProductoTarjetero>>>() {
 
 
@@ -346,7 +348,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta("497",1,104);
+                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(497,1,104);
                 call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
 
 
@@ -375,7 +377,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints TicketPendienteCobro = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro("497",1);
+                Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro(497,1);
                 call.enqueue(new Callback<RespuestaApi<Boolean>>() {
 
 

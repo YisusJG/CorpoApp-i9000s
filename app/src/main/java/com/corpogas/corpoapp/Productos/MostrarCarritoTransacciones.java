@@ -50,14 +50,16 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
     RecyclerView rcvCancelarCarrito;
     List<RecyclerViewHeaders> lCancelarCarrito;
     SQLiteBD db;
-    String EstacionId, sucursalId, ipEstacion,usuarioclave, cadenaproducto,
+    String EstacionId, ipEstacion,usuarioclave, cadenaproducto,
             lugarproviene, NombreCompleto;
     RespuestaApi<List<ProductoTarjetero>> respuestaApiProductoTarjetero;
     TextView txtTotalProductos, txtPosicionCarga;
-    long posicioncarga,numeroOperativa,cargaNumeroInterno,usuarioid,EmpleadoNumero;
+    long posicioncarga,numeroOperativa,cargaNumeroInterno,usuarioid,EmpleadoNumero,sucursalId;
+    double totalCarrito = 0.0;
     SQLiteBD data;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
     RespuestaApi<Boolean> respuestaApiAutorizaDespacho;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         this.setTitle(db.getRazonSocial());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         EstacionId = db.getIdEstacion();
-        sucursalId = db.getIdSucursal();
+        sucursalId =Long.parseLong(db.getIdSucursal());
         ipEstacion = db.getIpEstacion();
 
         posicioncarga = getIntent().getLongExtra("posicionCarga",0);
@@ -109,13 +111,12 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
 
     private void initializeDataCarrito() {
         lProductosCarrito = new ArrayList<>();
-        double totalPrecio = 0;
         for (ProductoTarjetero item: respuestaApiProductoTarjetero.getObjetoRespuesta())
         {
-            totalPrecio += item.getPrecio();
+            totalCarrito += item.getPrecio();
             lProductosCarrito.add(new RecyclerViewHeaders(item.getDescripcion(),"Cantidad: "+(int)item.getCantidad()+"\nPrecio: $"+String.format("%.2f",item.getPrecio()),R.drawable.atf900));
         }
-        txtTotalProductos.setText("Total: $"+String.format("%.2f",totalPrecio));
+        txtTotalProductos.setText("Total: $"+String.format("%.2f",totalCarrito));
         txtPosicionCarga.setText("Posicion: "+ cargaNumeroInterno);
     }
 
@@ -392,6 +393,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), FormasDePago.class);
                 intent.putExtra("posicioncarga",posicioncarga);
                 intent.putExtra("IdUsuario", usuarioid);
+                intent.putExtra("totalCarrito", totalCarrito);
                 startActivity(intent);
                 finish();
 

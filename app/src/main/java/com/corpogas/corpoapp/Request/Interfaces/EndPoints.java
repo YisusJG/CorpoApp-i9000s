@@ -54,16 +54,16 @@ public interface EndPoints {
     Call<RespuestaApi<AccesoUsuario>> getAccesoUsuario(@Path("sucursalId") String sucursalId, @Path("clave") String clave);
 
     @GET("api/sucursalFormaPagos/sucursal/{sucursalId}")
-    Call<List<BranchPaymentMethod>> getFormaPagos(@Path("sucursalId") String sucursalId);
+    Call<List<BranchPaymentMethod>> getFormaPagos(@Path("sucursalId") long sucursalId);
 
     @GET("api/Empleados/clave/{clave}")
     Call<RespuestaApi<Empleado>> getDatosEmpleado(@Path("clave") String clave);
 
     @GET("api/ventaProductos/sucursal/{sucursalId}/posicionCargaId/{posicionCargaId}")
-    Call<RespuestaApi<List<ProductoTarjetero>>> getProductosProcedencia(@Path("sucursalId") String sucursalId, @Path("posicionCargaId") long posicionCargaId);
+    Call<RespuestaApi<List<ProductoTarjetero>>> getProductosProcedencia(@Path("sucursalId") long sucursalId, @Path("posicionCargaId") long posicionCargaId);
 
     @GET("api/tickets/validaPendienteCobro/sucursalId/{sucursalId}/posicionCargaId/{posicionCargaId}")
-    Call<RespuestaApi<Boolean>> getTicketPendienteCobro(@Path("sucursalId") String sucursalId,@Path("posicionCargaId") long posicionCargaId);
+    Call<RespuestaApi<Boolean>> getTicketPendienteCobro(@Path("sucursalId") long sucursalId,@Path("posicionCargaId") long posicionCargaId);
 
     @GET("api/despachos/autorizaDespacho/posicionCargaId/{posicionCargaId}/usuarioId/{usuarioId}")
     Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") long posicionCargaId, @Path("usuarioId") long usuarioId);
@@ -99,10 +99,10 @@ public interface EndPoints {
     Call<RespuestaApi<Puntada>> getActualizaPuntos(@Path("clave") String clave, @Body Puntada puntada);
 
     @POST("api/tickets/generar")
-    Call<Ticket<TicketRequest>> getGenerarTicket(@Body TicketRequest ticketRequest);
+    Call<Ticket> getGenerarTicket(@Body TicketRequest ticketRequest);
 
     @POST("api/Transacciones/finalizaVenta/sucursal/{sucursalId}/posicionCarga/{posicionCarga}/usuario/{usuarioId}")
-    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") String sucursalId, @Path("posicionCarga") long posicionCarga, @Path("usuarioId") long usuarioId);
+    Call<RespuestaApi<Transaccion>> getPostFinalizaVenta(@Path("sucursalId") long sucursalId, @Path("posicionCarga") long posicionCarga, @Path("usuarioId") long usuarioId);
 
     @POST("api/cierreCarretes/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
     Call<RespuestaApi<List<CierreCarrete>>> postLecturaInicialMecanica(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId, @Path("usuarioId") long usuarioId);
@@ -114,7 +114,7 @@ public interface EndPoints {
 //    METODOS DELETE
 
     @DELETE("api/ventaProductos/BorraProductos/sucursal/{sucursalId}/usuario/{usuarioId}/posicionCarga/{posicionCargaId}")
-    Call<ResponseBody> deleteProductos(@Path("sucursalId") String sucursalId,@Path("usuarioId") long usuarioId,@Path("posicionCargaId") long posicionCargaId);
+    Call<ResponseBody> deleteProductos(@Path("sucursalId") long sucursalId,@Path("usuarioId") long usuarioId,@Path("posicionCargaId") long posicionCargaId);
 }
 
 

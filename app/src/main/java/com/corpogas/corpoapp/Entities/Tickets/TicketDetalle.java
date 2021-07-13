@@ -80,7 +80,7 @@ public class TicketDetalle implements Serializable {
     /// <summary>
     /// Fecha en la que se genera el ticket
     /// </summary>
-    public Date Fecha;
+    public String Fecha;
     /// <summary>
     /// Bandera que valida si se debe de imprimir el saldo (para tanque lleno)
     /// </summary>
@@ -102,91 +102,179 @@ public class TicketDetalle implements Serializable {
     /// </summary>
     public String NombreEmpleadoImpresion;
 
-    public long getNoRecibo() { return NoRecibo; }
+    public long getNoRecibo() {
+        return NoRecibo;
+    }
 
-    public void setNoRecibo(long noRecibo) { NoRecibo = noRecibo; }
+    public void setNoRecibo(long noRecibo) {
+        NoRecibo = noRecibo;
+    }
 
-    public long getNoTransaccion() { return NoTransaccion; }
+    public long getNoTransaccion() {
+        return NoTransaccion;
+    }
 
-    public void setNoTransaccion(long noTransaccion) { NoTransaccion = noTransaccion; }
+    public void setNoTransaccion(long noTransaccion) {
+        NoTransaccion = noTransaccion;
+    }
 
-    public String getNoRastreo() { return NoRastreo; }
+    public String getNoRastreo() {
+        return NoRastreo;
+    }
 
-    public void setNoRastreo(String noRastreo) { NoRastreo = noRastreo; }
+    public void setNoRastreo(String noRastreo) {
+        NoRastreo = noRastreo;
+    }
 
-    public long getPosCarga() { return PosCarga; }
+    public long getPosCarga() {
+        return PosCarga;
+    }
 
-    public void setPosCarga(long posCarga) { PosCarga = posCarga; }
+    public void setPosCarga(long posCarga) {
+        PosCarga = posCarga;
+    }
 
-    public long getDesp() { return Desp; }
+    public long getDesp() {
+        return Desp;
+    }
 
-    public void setDesp(long desp) { Desp = desp; }
+    public void setDesp(long desp) {
+        Desp = desp;
+    }
 
-    public long getVend() { return Vend; }
+    public long getVend() {
+        return Vend;
+    }
 
-    public void setVend(long vend) { Vend = vend; }
+    public void setVend(long vend) {
+        Vend = vend;
+    }
 
-    public List<TicketProducto> getProductos() { return Productos; }
+    public List<TicketProducto> getProductos() {
+        return Productos;
+    }
 
-    public void setProductos(List<TicketProducto> productos) { Productos = productos; }
+    public void setProductos(List<TicketProducto> productos) {
+        Productos = productos;
+    }
 
-    public double getSubtotal() { return Subtotal; }
+    public double getSubtotal() {
+        return Subtotal;
+    }
 
-    public void setSubtotal(double subtotal) { Subtotal = subtotal; }
+    public void setSubtotal(double subtotal) {
+        Subtotal = subtotal;
+    }
 
-    public double getIVA() { return IVA; }
+    public double getIVA() {
+        return IVA;
+    }
 
-    public void setIVA(double IVA) { this.IVA = IVA; }
+    public void setIVA(double IVA) {
+        this.IVA = IVA;
+    }
 
-    public double getTotal() { return Total; }
+    public double getTotal() {
+        return Total;
+    }
 
-    public void setTotal(double total) { Total = total; }
+    public void setTotal(double total) {
+        Total = total;
+    }
 
-    public String getTotalTexto() { return TotalTexto; }
+    public String getTotalTexto() {
+        return TotalTexto;
+    }
 
-    public void setTotalTexto(String totalTexto) { TotalTexto = totalTexto; }
+    public void setTotalTexto(String totalTexto) {
+        TotalTexto = totalTexto;
+    }
 
-    public String getClave() { return Clave; }
+    public String getClave() {
+        return Clave;
+    }
 
-    public void setClave(String clave) { Clave = clave; }
+    public void setClave(String clave) {
+        Clave = clave;
+    }
 
-    public String getRfc() { return Rfc; }
+    public String getRfc() {
+        return Rfc;
+    }
 
-    public void setRfc(String rfc) { Rfc = rfc; }
+    public void setRfc(String rfc) {
+        Rfc = rfc;
+    }
 
-    public boolean isReimpresion() { return Reimpresion; }
+    public boolean isReimpresion() {
+        return Reimpresion;
+    }
 
-    public void setReimpresion(boolean reimpresion) { Reimpresion = reimpresion; }
+    public void setReimpresion(boolean reimpresion) {
+        Reimpresion = reimpresion;
+    }
 
-    public List<TicketFormaPago> getTicketFormaPagos() { return TicketFormaPagos; }
+    public List<TicketFormaPago> getTicketFormaPagos() {
+        return TicketFormaPagos;
+    }
 
-    public void setTicketFormaPagos(List<TicketFormaPago> ticketFormaPagos) { TicketFormaPagos = ticketFormaPagos; }
+    public void setTicketFormaPagos(List<TicketFormaPago> ticketFormaPagos) {
+        TicketFormaPagos = ticketFormaPagos;
+    }
 
-    public TransactionType getTipoTransaccion() { return TipoTransaccion; }
+    public TransactionType getTipoTransaccion() {
+        return TipoTransaccion;
+    }
 
-    public void setTipoTransaccion(TransactionType tipoTransaccion) { TipoTransaccion = tipoTransaccion; }
+    public void setTipoTransaccion(TransactionType tipoTransaccion) {
+        TipoTransaccion = tipoTransaccion;
+    }
 
-    public Date getFecha() { return Fecha; }
+    public String getFecha() {
+        return Fecha;
+    }
 
-    public void setFecha(Date fecha) { Fecha = fecha; }
+    public void setFecha(String fecha) {
+        Fecha = fecha;
+    }
 
-    public boolean isImprimeSaldo() { return ImprimeSaldo; }
+    public boolean isImprimeSaldo() {
+        return ImprimeSaldo;
+    }
 
-    public void setImprimeSaldo(boolean imprimeSaldo) { ImprimeSaldo = imprimeSaldo; }
+    public void setImprimeSaldo(boolean imprimeSaldo) {
+        ImprimeSaldo = imprimeSaldo;
+    }
 
-    public long getEmpleadoVentaId() { return EmpleadoVentaId; }
+    public long getEmpleadoVentaId() {
+        return EmpleadoVentaId;
+    }
 
-    public void setEmpleadoVentaId(long empleadoVentaId) { EmpleadoVentaId = empleadoVentaId; }
+    public void setEmpleadoVentaId(long empleadoVentaId) {
+        EmpleadoVentaId = empleadoVentaId;
+    }
 
-    public long getEmpleadoImpresionId() { return EmpleadoImpresionId; }
+    public long getEmpleadoImpresionId() {
+        return EmpleadoImpresionId;
+    }
 
-    public void setEmpleadoImpresionId(long empleadoImpresionId) { EmpleadoImpresionId = empleadoImpresionId; }
+    public void setEmpleadoImpresionId(long empleadoImpresionId) {
+        EmpleadoImpresionId = empleadoImpresionId;
+    }
 
-    public long getEmpleadoReimpresionId() { return EmpleadoReimpresionId; }
+    public long getEmpleadoReimpresionId() {
+        return EmpleadoReimpresionId;
+    }
 
-    public void setEmpleadoReimpresionId(long empleadoReimpresionId) { EmpleadoReimpresionId = empleadoReimpresionId; }
+    public void setEmpleadoReimpresionId(long empleadoReimpresionId) {
+        EmpleadoReimpresionId = empleadoReimpresionId;
+    }
 
-    public String getNombreEmpleadoImpresion() { return NombreEmpleadoImpresion; }
+    public String getNombreEmpleadoImpresion() {
+        return NombreEmpleadoImpresion;
+    }
 
-    public void setNombreEmpleadoImpresion(String nombreEmpleadoImpresion) { NombreEmpleadoImpresion = nombreEmpleadoImpresion; }
+    public void setNombreEmpleadoImpresion(String nombreEmpleadoImpresion) {
+        NombreEmpleadoImpresion = nombreEmpleadoImpresion;
+    }
 }
