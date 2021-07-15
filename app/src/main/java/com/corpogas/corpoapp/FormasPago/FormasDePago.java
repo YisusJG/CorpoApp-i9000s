@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.device.PrinterManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.Service.PrintBillService;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 import com.google.gson.Gson;
 
@@ -55,6 +57,8 @@ public class FormasDePago extends AppCompatActivity {
     List<BranchPaymentMethod> respuestaListaSucursalFormasPago;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
     Ticket respuestaTicketRequest;
+    private PrinterManager printer = new PrinterManager();
+    private final static String STR_PRNT_SALE = "sale";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -293,7 +297,7 @@ public class FormasDePago extends AppCompatActivity {
         List<DiccionarioParcialidades> parcialidades = new ArrayList<DiccionarioParcialidades>();
         parcialidades.add(new DiccionarioParcialidades(formapagoid,totalCarrito));
         TicketRequest ticketRequest = new TicketRequest(posicioncarga,sucursalId, usuarioid, parcialidades); //
-//        String json = new Gson().toJson(ticketRequest);
+        String json = new Gson().toJson(ticketRequest);
 
         try {
         Retrofit retrofit = new Retrofit.Builder()
@@ -313,7 +317,17 @@ public class FormasDePago extends AppCompatActivity {
                         return;
                     }
                     respuestaTicketRequest = response.body();
+                    int ret = printer.prn_getStatus();
+                    if (ret == 0) {
+                        doprintwork(STR_PRNT_SALE);
+//                        doprintwork("Sales un yisus");// print sale
 
+                    } else {
+                        doprintwork(STR_PRNT_SALE);
+//                    Intent intent = new Intent(PRNT_ACTION);
+//                    intent.putExtra("ret", ret);
+//                    sendBroadcast(intent);
+                    }
                     Toast.makeText(getApplicationContext(), "Mandar a imprimir", Toast.LENGTH_SHORT).show();
                 }
 
@@ -333,5 +347,11 @@ public class FormasDePago extends AppCompatActivity {
 
     }
 
+    void doprintwork(String msg) {
+        Intent intentService = new Intent(this, PrintBillService.class);
+        intentService.putExtra("SPRT", msg);
+        intentService.putExtra("ticketEfectivo",respuestaTicketRequest);
+        startService(intentService);
+    }
 
 }

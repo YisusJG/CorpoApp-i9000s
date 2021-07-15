@@ -46,11 +46,6 @@ public class PruebasEndPoint extends AppCompatActivity {
 
     public final static String PRNT_ACTION = "action.printer.message";
     private PrinterManager printer = new PrinterManager();
-    private static int _XVALUE = 384;
-    private final static String STR_FONT_VALUE_SONG = "simsun";
-    int height = 60;
-    private static int _YVALUE = 24;
-    private final int _YVALUE6 = 24;
     private final static String STR_PRNT_SALE = "sale";
 
 
@@ -555,7 +550,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 //
 //                startActivity(intent);
 
-                String messgae ="Pruebas yisus";
+
 //                mBtnPrnBill.setEnabled(false);
                 int ret = printer.prn_getStatus();
                 if (ret == 0) {
@@ -574,30 +569,11 @@ public class PruebasEndPoint extends AppCompatActivity {
 
 
     void doprintwork(String msg) {
-
-//        printer.prn_open();
-//        printer.prn_setupPage(_XVALUE, -1);
-//        printer.prn_clearPage();
-//        printer.prn_drawText(("打印机测试"), 70, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
-//        height += 50;
-//
-//        BitmapFactory.Options opts = new BitmapFactory.Options();
-//        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//        opts.inDensity = getResources().getDisplayMetrics().densityDpi;
-//        opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.unionpay_logo, opts);
-//        printer.prn_drawBitmap(bitmap, 84, height);
-//        height += 80;
-//        Prn_Str("商户名称：测试商户", _YVALUE6, height);
-
         Intent intentService = new Intent(this, PrintBillService.class);
         intentService.putExtra("SPRT", msg);
         startService(intentService);
     }
-    private int Prn_Str(String msg, int fontSize, int height) {
-        return printer.prn_drawText(msg, 0, height, STR_FONT_VALUE_SONG, fontSize, false,
-                false, 0);
-    }
+
 
     @Override
     protected void onDestroy() {

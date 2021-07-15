@@ -10,6 +10,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.nfc.tech.NfcBarcode;
 import android.os.Bundle;
+
+import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Catalogos.Product;
+import com.corpogas.corpoapp.Entities.Tickets.Ticket;
+import com.corpogas.corpoapp.Entities.Tickets.TicketFormaPago;
+import com.corpogas.corpoapp.Entities.Tickets.TicketProducto;
+import com.corpogas.corpoapp.Menu_Principal;
 import com.google.zxing.BarcodeFormat;
 
 import com.corpogas.corpoapp.R;
@@ -18,6 +25,8 @@ import java.io.PrintWriter;
 
 
 public class PrintBillService extends IntentService {
+    private Ticket respuestaTicketRequest;
+    private SQLiteBD db;
     private final static String STR_PRNT_BILL = "prn_bill";
     private final static String STR_PRNT_TEXT = "text";
     private final static String STR_PRNT_BLCOK = "block";
@@ -45,6 +54,7 @@ public class PrintBillService extends IntentService {
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
+        db = new SQLiteBD(getApplicationContext());
         printer = new PrinterManager();
     }
 
@@ -59,6 +69,8 @@ public class PrintBillService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         // TODO Auto-generated method stub
         String context = intent.getStringExtra("SPRT");
+        respuestaTicketRequest = (Ticket) intent.getSerializableExtra("ticketEfectivo");
+
         if(context== null || context.equals("")) return ;
 
         int ret;
@@ -233,197 +245,126 @@ public class PrintBillService extends IntentService {
 
     public void printSale(Context context) throws Exception {
 
+
+        String formaDePago ="";
+
+
+//        for(TicketFormaPago item: respuestaTicketRequest.getDetalle().getTicketFormaPagos()) {
+////            printer.prn_drawText(("PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()), 0, height, (STR_FONT_VALUE_SONG),25, false, false, 0);//"PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()
+////            height += 40;
+//        }
+
+
+
         int height = 10;
+        String numeroRastreo = respuestaTicketRequest.getDetalle().getNoRastreo();
+        numeroRastreo = numeroRastreo.replace("-", "");
         printer.prn_open();
         printer.prn_setupPage(_XVALUE, -1);
         printer.prn_clearPage();
-//        printer.prn_drawText(("打印机测试"), 70, 50, (STR_FONT_VALUE_SONG), 48 , false, false, 0);
-//        height += 50;
+
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
         opts.inDensity = getResources().getDisplayMetrics().densityDpi;
         opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
-//        Bitmap bitmap = BitmapFactory.decodeResource(PrintBillService.this.getResources(), R.mipmap.logo);
         Bitmap bitmap = BitmapFactory.decodeResource(PrintBillService.this.getResources(), R.drawable.logo, opts);
-//		Bitmap bitmap = getLogoBitmap(context, R.drawable.unionpay_logo);
+
+
         printer.prn_drawBitmap(bitmap, 75, height);
 
         height += 150;
         Prn_Str("                        ",_YVALUE, height);
         height += _YVALUE;
 
-        printer.prn_drawText(("23/06/2021 14:04:22"), 135, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+        printer.prn_drawText((respuestaTicketRequest.getDetalle().getFecha()), 135, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 50;
 
-        printer.prn_drawText(("Est：13864"), 130, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+        printer.prn_drawText(("Est："+db.getNumeroEstacion()), 130, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 30;
 
-        Prn_Str("ECUESTRE", _YVALUE7, height);
-        height += _YVALUE;
+        printer.prn_drawText((db.getNombreEstacion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
 
-        Prn_Str("AV REVOLUCION ESQ AV MIXCOAC, SN" + "\n"  + "  BENITO JUAREZ, BENITO JUAREZ," + "\n"   + "CIUDAD DE MEXICO, MEXICO, CP:3900" + "\n", _YVALUE7,
-                height);
+//        Prn_Str(db.getCalle() + ", " + db.getNumeroExterior()+ ", " + db.getNumeroInterno()+ "\n"  + db.getColonia() + db.getLocalidad()+", "  + db.getMunicipio() + ", " + "\n" + db.getEstado() + ", " + db.getPais() + ", CP:" + db.getCP() + "\n", _YVALUE7,
+//                height);
+        printer.prn_drawText((db.getCalle() + ", " + db.getNumeroExterior()+ ", " + db.getNumeroInterno()+ "\n"  + db.getColonia() + db.getLocalidad()+", "  + db.getMunicipio() + ", " + "\n" + db.getEstado() + ", " + db.getPais() + ", CP:" + db.getCP() + "\n"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 100;
 
-        String send = "CIE060308FH4";
-        String receive = "0000117984";
-
-
-
-//        Prn_Str("       RFC：" + send + "\n", _YVALUE6, height);
-//        height += _YVALUE;
-
-        printer.prn_drawText(("RFC: " + send), 90, height, (STR_FONT_VALUE_SONG),24, false, false, 0);
+        printer.prn_drawText(("RFC: " + db.getRFC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 30;
-        printer.prn_drawText(("SIIC: " + receive), 90, height, (STR_FONT_VALUE_SONG),24, false, false, 0);
+        printer.prn_drawText(("SIIC: " + db.getSIIC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 30;
 
 //        Prn_Str("       SIIC：" + receive + "\n", _YVALUE6, height);
 //        height += _YVALUE;
-        Prn_Str("REGIMEN GENERAL DE LEY PERSONAS" + "\n" + "MORALES", 22, height);
+        Prn_Str("Regimen fiscla de pruebas", 22, height); //db.getRegimenFiscal()
         height += 50;
 //        Prn_Str_Bold("           ORIGINAL", _YVALUE6, height);
 //        height += 40;
-        printer.prn_drawText(("ORIGINAL"), 125, height, (STR_FONT_VALUE_SONG),25, true, false, 0);
+        printer.prn_drawText(("ORIGINAL"), 125, height, (STR_FONT_VALUE_SONG),30, true, false, 0);
         height += 40;
-//        printer.prn_drawText("SIIC：" + receive, 190, height, STR_FONT_VALUE_SONG, _YVALUE6,
-//                false, false, 0);
-//
-//        height += _YVALUE;
 
-        Prn_Str("No. Rec: " + 9216 + "    No. Trans: "+ 1952 +"\n",22, height);
-        height += _YVALUE;
-        Prn_Str("No. Rastreo: 13868492169052" + "\n", 22, height);
-        height += _YVALUE;
+        printer.prn_drawText(("No. Rec: " + respuestaTicketRequest.getDetalle().getNoRecibo()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 40;
 
+        printer.prn_drawText(("No. Rastreo: "+numeroRastreo), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 40;
 
-        printer.prn_drawText(("PC：1"), 130, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+        printer.prn_drawText(("PC: "+ respuestaTicketRequest.getDetalle().getPosCarga()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 40;
+
+        printer.prn_drawText(("Lo atendio: "+ respuestaTicketRequest.getDetalle().getNombreEmpleadoImpresion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);//"PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()
+        height += 40;
+
+        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 40;
+
+        for(TicketFormaPago item: respuestaTicketRequest.getDetalle().getTicketFormaPagos()) {
+
+            printer.prn_drawText(("PAGO: "+item.getFormaPago().getShortDescription()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 20;
+        }
+
+        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 40;
+
+        printer.prn_drawText(("CANT  |DESC   |PRECIO    |IMPORTE"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 30;
+        for(TicketProducto item : respuestaTicketRequest.getDetalle().getProductos())
+        {
+            printer.prn_drawText(((int)item.getCantidad()+"     |"+item.getDescripcion()+"  |"+String.format("%.2f",item.getPrecio())+"     |"+String.format("%.2f",item.getImporte())), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+        }
 
-        Prn_Str("Lo atendio: Juanito Perez Perez", 22, height);
-        height += _YVALUE;
 
-        Prn_Str("-----------------------------------------", 30, height);
-        height += 30;
-        Prn_Str("PAGO: EFECTIVO" + "\n", 22, height);
-        height += _YVALUE;
-        Prn_Str("-----------------------------------------", 30, height);
-        height += 30;
-        Prn_Str( "CANT   |DESC   |PRECIO  |IMPORTE" + "\n", 22, height);
-        height += 30;
 
-//        Prn_Str("__________________________", 36, height);
-//        height += 5;
-
-        Prn_Str("6.30   |MAGNA  |9.48    |59.74" + "\n", 22, height);
-        height += 15;
-
-        Prn_Str("_______________________", 36, height);
+        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
         height += 50;
-        printer.prn_drawText(("SUBTOTAL: 59.74"), 195, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+
+        printer.prn_drawText(("SUBTOTAL: "+respuestaTicketRequest.getDetalle().getSubtotal()), 195, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 30;
-        printer.prn_drawText(("IVA: 9.56"), 261, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+
+        printer.prn_drawText(("IVA: "+respuestaTicketRequest.getDetalle().getIVA()), 261, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 30;
-        printer.prn_drawText(("TOTAL: 69.30"), 228, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+
+        printer.prn_drawText(("TOTAL: "+respuestaTicketRequest.getDetalle().getTotal()), 228, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 45;
 
-        printer.prn_drawText(("(Sesenta Y Nueve PESOS 30/100 MN)"), 0, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+        printer.prn_drawText((respuestaTicketRequest.getDetalle().getTotalTexto()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
         height += 45;
 
-        printer.prn_drawText(("$ 69.30"), 110, height, (STR_FONT_VALUE_SONG),40, true, false, 0);
+        printer.prn_drawText(("$ "+respuestaTicketRequest.getDetalle().getTotal()), 110, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
         height += 200;
 
 //        printer.prn_drawBarcode("12",2,2, BarcodeFormat.QR_CODE,2,2,0);
         printer.drawBarcode("numerorastreo", 10, 10, R.drawable.qr,240,240,0);
         height += 200;
 
-
-        printer.prn_drawText(("www.facturasgas.com"), 85, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
+        printer.prn_drawText((respuestaTicketRequest.getPie().getMensaje().toString()), 85, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
         height += 30;
 
-        printer.prn_drawText(("FACTURABLE EN EL MES EN CURSO"), 0, height, (STR_FONT_VALUE_SONG),24, false, false, 0);
-        height += 30;
 
-        printer.prn_drawText(("PUNTOS QUE HABRIA ACUMULADO CON"), 0, height, (STR_FONT_VALUE_SONG),24, false, false, 0);
-        height += 30;
-        printer.prn_drawText(("TARJETA PUNTADA: 63"), 0, height, (STR_FONT_VALUE_SONG),24, false, false, 0);
-        height += 70;
-
-
-
-
-
-
-
-//        String cardNo = "622228888888888888888";
-        // if (swipe == _SWIPE_MODE.CARD_INSERTED) {
-//        Prn_Str("卡号：", _YVALUE6, height);
-//        height += _YVALUE;
-//        Prn_Str_Bold(cardNo, _YVALUE, height);
-        // }
-        // if (swipe == _SWIPE_MODE.CLCARD_SWIPED) {
-        // Prn_Str("卡号:", _YVALUE6, height);
-        // height += _YVALUE;
-        // Prn_Str_Bold(cardNo + " C" + "\n", _YVALUE, height);
-        // }
-        // if (swipe == _SWIPE_MODE.CARD_SWIPED) {
-        // Prn_Str("卡号:", _YVALUE6, height);
-        // height += _YVALUE;
-        // Prn_Str_Bold(cardNo + " S" + "\n", _YVALUE, height);
-        // }
-        // if (swipe == _SWIPE_MODE.NO_SWIPE_INSERT) {
-        // if (transType == PosTransType.EC_QUICK_RETURN) {
-        // Prn_Str("卡号:", _YVALUE6, height);
-        // height += _YVALUE;
-        // Prn_Str_Bold(cardNo + " C" + "\n", _YVALUE, height);
-        // } else {
-        // Prn_Str("卡号:", _YVALUE6, height);
-        // height += _YVALUE;
-        // Prn_Str_Bold(cardNo + " N" + "\n", _YVALUE, height);
-        // }
-        // }
-
-//        height += _YVALUE;
-//        Prn_Str("交易类别：消费 ", _YVALUE6, height);
-//        height += _YVALUE;
-//        Prn_Str("批次号：", _YVALUE6, height);
-//        printer.prn_drawText("000001", 90, height, STR_FONT_VALUE_SONG, _YVALUE, false, false,
-//                0);
-//
-//        printer.prn_drawText("有效期：" + "234567", 200, height, STR_FONT_VALUE_SONG, _YVALUE6,
-//                false, false, 0);
-//
-//        height += _YVALUE;
-//        Prn_Str("凭证号：", _YVALUE6, height);
-//        printer.prn_drawText("000001", 90, height - 3, STR_FONT_VALUE_SONG, _YVALUE, false,
-//                false, 0);
-//
-//        printer.prn_drawText("授权码：" + "123456", 200, height, STR_FONT_VALUE_SONG, _YVALUE6,
-//                false, false, 0);
-//        height += _YVALUE;
-//        Prn_Str("参考号：" + "12345678901" + "\n", _YVALUE6, height);
-//
-//        height += _YVALUE;
-//        Prn_Str("日期时间：20160602", _YVALUE6, height);
-//        height += _YVALUE;
-//
-//        Prn_Str("金额：RMB 12.5", _YVALUE, height);
-//
-//        height += _YVALUE;
-//        Prn_Str("--------------------------------------------------------\n",
-//                _YVALUE, height);
-//
-//        height += _YVALUE;
-//        Prn_Str("备注：", _YVALUE6, height);
-//
-//        height += _YVALUE;
-//        Prn_Str("--------------------------------------------------------\n",
-//                _YVALUE, height);
-//
-//        height += _YVALUE;
-//        Prn_Str("持卡人签名：\n \n \n", _YVALUE, height);
-//        height += _YVALUE;
         try {// 电子签名
 
         } catch (Exception e) {
@@ -449,6 +390,13 @@ public class PrintBillService extends IntentService {
 //        Prn_Str("", _YVALUE, height);
 
 //		int iRet = printer.prn_printPage(0);
+        enviarPrincipal();
+    }
+
+    private void enviarPrincipal() {
+        Intent i = new Intent(getApplicationContext(), Menu_Principal.class);
+        startActivity(i);
+        onDestroy();
 
     }
 

@@ -55,7 +55,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
     RespuestaApi<List<ProductoTarjetero>> respuestaApiProductoTarjetero;
     TextView txtTotalProductos, txtPosicionCarga;
     long posicioncarga,numeroOperativa,cargaNumeroInterno,usuarioid,EmpleadoNumero,sucursalId;
-    double totalCarrito = 0.0;
+    double totalCarrito = 0.0, cantidadProductos = 0.0;
     SQLiteBD data;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
     RespuestaApi<Boolean> respuestaApiAutorizaDespacho;
@@ -113,8 +113,9 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         lProductosCarrito = new ArrayList<>();
         for (ProductoTarjetero item: respuestaApiProductoTarjetero.getObjetoRespuesta())
         {
-            totalCarrito += item.getPrecio();
-            lProductosCarrito.add(new RecyclerViewHeaders(item.getDescripcion(),"Cantidad: "+(int)item.getCantidad()+"\nPrecio: $"+String.format("%.2f",item.getPrecio()),R.drawable.atf900));
+
+            totalCarrito += item.getPrecio() * item.getCantidad();
+            lProductosCarrito.add(new RecyclerViewHeaders(item.getDescripcion(),"Cantidad: "+(int)item.getCantidad()+"\nPrecio: $"+String.format("%.2f",item.getPrecio() * item.getCantidad()),R.drawable.atf900));
         }
         txtTotalProductos.setText("Total: $"+String.format("%.2f",totalCarrito));
         txtPosicionCarga.setText("Posicion: "+ cargaNumeroInterno);
