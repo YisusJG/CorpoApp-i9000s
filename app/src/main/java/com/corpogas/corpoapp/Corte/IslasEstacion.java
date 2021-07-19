@@ -2,6 +2,7 @@ package com.corpogas.corpoapp.Corte;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,9 +18,10 @@ import com.corpogas.corpoapp.Entities.Accesos.Control;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
 import com.corpogas.corpoapp.Entities.Cortes.CierreCarrete;
+import com.corpogas.corpoapp.Entities.Cortes.CierreDespachoDetalle;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -43,14 +45,14 @@ public class IslasEstacion extends AppCompatActivity {
     RespuestaApi<List<CierreCarrete>> respuestaApiCierreCarretes;
     RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
 //    RespuestaApi<List<CierreDetalle>> cierreDetalles;
-//    RespuestaApi<List<CierreDespachoDetalle>> cierreCombustibleDetalles;
+    RespuestaApi<List<CierreDespachoDetalle>> respuestaApiCierreDespachoDetalle;
     Type respuestaCierreCombustiblesDetalles;
     Type respuestaCierreDetalles;
     Type tipóRespuesta, respuestaCierreCarrete;
     long idusuario, numeroIslas, islaId, sucursalId;
 
     String ipEstacion, EstacionId;
-    SQLiteBD data;
+    SQLiteBD db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +60,11 @@ public class IslasEstacion extends AppCompatActivity {
         setContentView(R.layout.activity_islas_estacion);
 
         // Traemos los Metodos de la clase SQliteBD
-        data = new SQLiteBD(getApplicationContext());
-//        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        db = new SQLiteBD(getApplicationContext());
+        this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
 
-        sucursalId = 497; //data.getIdSucursal();
-        ipEstacion = "10.0.1.40"; //data.getIpEstacion();
+        sucursalId = Long.parseLong(db.getIdSucursal());
+        ipEstacion = db.getIpEstacion();
 
         // Obtenemos la clase Serializada de accesoUsuario obtenida en la actividad anterior
 
@@ -129,7 +131,7 @@ public class IslasEstacion extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerLecturasMecanicas = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreCarrete>>> call = obtenerLecturasMecanicas.getLecturaInicialMecanica(sucursalId, islaId, idusuario);
+        Call<RespuestaApi<List<CierreCarrete>>> call = obtenerLecturasMecanicas.getLecturaInicialMecanica(sucursalId, islaId);
         call.enqueue(new Callback<RespuestaApi<List<CierreCarrete>>>() {
 
             @Override
@@ -188,6 +190,15 @@ public class IslasEstacion extends AppCompatActivity {
                 boolean Correcto = respuestaApiCierreCabero.Correcto;
                 if (Correcto == true) { // true
                     btnAceptar.setEnabled(true);
+                    obtenerDespachoDetalles();
+                    Intent intent = new Intent(getApplicationContext(), ProcesoCorte.class);//Lecturas
+                    intent.putExtra("islaId", String.valueOf(islaId));
+                    intent.putExtra("lcierreRespuestaApi", respuestaApiCierreCabero);
+                    intent.putExtra("cierreCarretes", respuestaApiCierreCarretes);
+                    intent.putExtra("respuestaApiAccesoUsuario", respuestaApiAccesoUsuario);
+//                    intent.putExtra("cierreDetalles",cierreDetalles);
+                    intent.putExtra("cierreCombustibleDetalles",respuestaApiCierreDespachoDetalle);
+                    startActivity(intent);
 
 //                            respuetas =  "Se recupero el cierre";
 
@@ -204,6 +215,34 @@ public class IslasEstacion extends AppCompatActivity {
             public void onFailure(Call<RespuestaApi<Cierre>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
 
+            }
+        });
+
+    }
+
+    public void obtenerDespachoDetalles(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerDespachoDetalles = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<List<CierreDespachoDetalle>>> call = obtenerDespachoDetalles.getDespachoDetalle(sucursalId, islaId);
+        call.enqueue(new Callback<RespuestaApi<List<CierreDespachoDetalle>>>() {
+
+
+            @Override
+            public void onResponse(Call<RespuestaApi<List<CierreDespachoDetalle>>> call, Response<RespuestaApi<List<CierreDespachoDetalle>>> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                respuestaApiCierreDespachoDetalle = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<List<CierreDespachoDetalle>>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 

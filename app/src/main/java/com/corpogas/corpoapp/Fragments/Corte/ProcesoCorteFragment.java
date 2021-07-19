@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Corte.Fragments;
+package com.corpogas.corpoapp.Fragments.Corte;
 
 import android.os.Bundle;
 
@@ -10,15 +10,14 @@ import android.view.ViewGroup;
 
 import com.corpogas.corpoapp.R;
 
-public class DesgloseValesFragment extends Fragment {
 
-   View view;
+public class ProcesoCorteFragment extends Fragment {
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_desglose_vales, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_proceso_corte, container, false);
     }
 }

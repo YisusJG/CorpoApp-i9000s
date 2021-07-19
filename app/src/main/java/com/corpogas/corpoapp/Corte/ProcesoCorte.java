@@ -7,15 +7,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.corpogas.corpoapp.Adapters.AdapterRvProcesoCorte;
+import com.corpogas.corpoapp.Adapters.Corte.AdapterRvProcesoCorte;
+import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Cortes.CierreDespachoDetalle;
 import com.corpogas.corpoapp.Entities.Cortes.MenuCorte;
 import com.corpogas.corpoapp.Entities.Cortes.ProductosFaltantes;
 import com.corpogas.corpoapp.Entities.Cortes.ValePapelDenominacion;
-import com.corpogas.corpoapp.Interfaces.iDesgloceVales;
-import com.corpogas.corpoapp.Interfaces.iDespachoDetalles;
-import com.corpogas.corpoapp.Interfaces.iProcesosCorteTerminado;
-import com.corpogas.corpoapp.Interfaces.iProductosFaltantes;
+import com.corpogas.corpoapp.Interfaces.Cortes.iDesgloceVales;
+import com.corpogas.corpoapp.Interfaces.Cortes.iDespachoDetalles;
+import com.corpogas.corpoapp.Interfaces.Cortes.iProcesosCorteTerminado;
+import com.corpogas.corpoapp.Interfaces.Cortes.iProductosFaltantes;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
 
@@ -25,11 +26,14 @@ public class ProcesoCorte extends AppCompatActivity implements iDesgloceVales, i
 
     private RecyclerView recyclerView;
     private AdapterRvProcesoCorte adapterRvProcesoCorte;
+    SQLiteBD data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proceso_corte);
+        data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
 
         ArrayList<MenuCorte> item = new ArrayList<>();
         item.add(new MenuCorte(R.drawable.lecturasmecanicas,"Lecturas mecanicas"));

@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Corte.Fragments;
+package com.corpogas.corpoapp.Fragments.Corte;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.corpogas.corpoapp.R;
 
-public class FormasPagoFragment extends Fragment {
+public class ProductosFragment extends Fragment {
 
     View view;
 
@@ -18,7 +18,7 @@ public class FormasPagoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_formas_pago, container, false);
+        view = inflater.inflate(R.layout.fragment_productos, container, false);
 
         return view;
     }

@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Adapters;
+package com.corpogas.corpoapp.Adapters.Corte;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,17 +16,18 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.corpogas.corpoapp.Corte.Fragments.CombustiblesFragment;
-import com.corpogas.corpoapp.Corte.Fragments.DesgloseValesFragment;
-import com.corpogas.corpoapp.Corte.Fragments.FajillasBilletesFragment;
-import com.corpogas.corpoapp.Corte.Fragments.FajillasMonedasFragment;
-import com.corpogas.corpoapp.Corte.Fragments.FormasPagoFragment;
-import com.corpogas.corpoapp.Corte.Fragments.GranTotalFragment;
-import com.corpogas.corpoapp.Corte.Fragments.LecturasMecanicasFragment;
-import com.corpogas.corpoapp.Corte.Fragments.PicosFragment;
-import com.corpogas.corpoapp.Corte.Fragments.ProductosFaltantesFragment;
-import com.corpogas.corpoapp.Corte.Fragments.ProductosFragment;
-import com.corpogas.corpoapp.Corte.Fragments.ValesPapelFragment;
+import com.corpogas.corpoapp.Fragments.Corte.CombustiblesFragment;
+import com.corpogas.corpoapp.Fragments.Corte.DesgloseValesFragment;
+import com.corpogas.corpoapp.Fragments.Corte.FajillasBilletesFragment;
+import com.corpogas.corpoapp.Fragments.Corte.FajillasMonedasFragment;
+import com.corpogas.corpoapp.Fragments.Corte.FormasPagoFragment;
+import com.corpogas.corpoapp.Fragments.Corte.GranTotalFragment;
+import com.corpogas.corpoapp.Fragments.Corte.LecturasMecanicasFragment;
+import com.corpogas.corpoapp.Fragments.Corte.PicosFragment;
+import com.corpogas.corpoapp.Fragments.Corte.ProcesoCorteFragment;
+import com.corpogas.corpoapp.Fragments.Corte.ProductosFaltantesFragment;
+import com.corpogas.corpoapp.Fragments.Corte.ProductosFragment;
+import com.corpogas.corpoapp.Fragments.Corte.ValesPapelFragment;
 import com.corpogas.corpoapp.Entities.Cortes.CierreDespachoDetalle;
 import com.corpogas.corpoapp.Entities.Cortes.MenuCorte;
 import com.corpogas.corpoapp.Entities.Cortes.ProductosFaltantes;
@@ -64,7 +65,7 @@ public class AdapterRvProcesoCorte extends RecyclerView.Adapter<AdapterRvProceso
     public AdapterRvProcesoCorte(ArrayList<MenuCorte> itemsMenuCorte, Activity activity) {
         this.itemsMenuCorte = itemsMenuCorte;
         this.activity = activity;
-//        fragmentProcespCorte = new ProcesoCorteFragment();
+        fragmentProcespCorte = new ProcesoCorteFragment();
         fragmentLecturasMecanicas = new LecturasMecanicasFragment();
         fragmentProductos = new ProductosFragment();
         fragmentProductosFaltantes = new ProductosFaltantesFragment();
@@ -115,7 +116,7 @@ public class AdapterRvProcesoCorte extends RecyclerView.Adapter<AdapterRvProceso
     @NonNull
     @Override
     public RViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item_corte, parent, false);
         RViewHolder rViewHolder = new RViewHolder(view);
         return rViewHolder;
     }

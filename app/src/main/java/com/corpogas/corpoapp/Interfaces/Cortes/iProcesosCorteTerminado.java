@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Interfaces;
+package com.corpogas.corpoapp.Interfaces.Cortes;
 
 public interface iProcesosCorteTerminado {
 

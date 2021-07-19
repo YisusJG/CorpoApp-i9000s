@@ -20,7 +20,7 @@ import com.corpogas.corpoapp.Entities.Sucursales.UpdateDetail;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
 

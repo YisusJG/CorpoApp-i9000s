@@ -3,22 +3,13 @@ package com.corpogas.corpoapp.LecturaTarjetas;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.device.PrinterManager;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
@@ -28,7 +19,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Service.MagReadService;
 
 import java.util.ArrayList;
@@ -45,7 +36,8 @@ public class MonederosElectronicos extends AppCompatActivity {
 
     private MagReadService mReadService;
     private ToneGenerator tg = null;
-    String Enviadodesde,idSucursal;
+    String Enviadodesde;
+    long idSucursal;
     SQLiteBD data;
     RespuestaApi<Bin> respuestaApiBin;
 
@@ -99,7 +91,7 @@ public class MonederosElectronicos extends AppCompatActivity {
 //        mAlertTv = (TextView) findViewById(R.id.textView1);
         Enviadodesde = getIntent().getStringExtra( "Enviadodesde");
         data= new SQLiteBD(getApplicationContext());
-        idSucursal = data.getIdSucursal();
+        idSucursal = Long.parseLong(data.getIdSucursal());
         tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         mReadService = new MagReadService(this, mHandler);
 

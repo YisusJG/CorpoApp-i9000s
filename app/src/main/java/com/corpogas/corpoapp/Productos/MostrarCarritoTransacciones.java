@@ -25,12 +25,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
-import com.corpogas.corpoapp.SplashEmpresas.Splash;
-import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 
 import java.util.ArrayList;
 import java.util.HashMap;

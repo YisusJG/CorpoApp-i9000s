@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Request.Interfaces;
+package com.corpogas.corpoapp.Interfaces.Endpoints;
 
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
@@ -6,6 +6,8 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
 import com.corpogas.corpoapp.Entities.Cortes.CierreCarrete;
+import com.corpogas.corpoapp.Entities.Cortes.CierreDespachoDetalle;
+import com.corpogas.corpoapp.Entities.Cortes.CierreFormaPago;
 import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
@@ -48,10 +50,10 @@ public interface EndPoints {
     Call<Estacion> getEstacionApi(@Path("octeto1") String octeto1, @Path("octeto2") String octeto2, @Path("octeto3") String octeto3, @Path("octeto4") String octeto4);
 
     @GET("api/tickets/cabecero/sucursalId/{sucursalId}")
-    Call<Ticket> getTicketsApi(@Path("sucursalId") long estacionId);
+    Call<Ticket> getTicketsApi(@Path("sucursalId") long sucursalId);
 
     @GET("api/accesoUsuarios/sucursal/{sucursalId}/clave/{clave}")
-    Call<RespuestaApi<AccesoUsuario>> getAccesoUsuario(@Path("sucursalId") String sucursalId, @Path("clave") String clave);
+    Call<RespuestaApi<AccesoUsuario>> getAccesoUsuario(@Path("sucursalId") long sucursalId, @Path("clave") String clave);
 
     @GET("api/sucursalFormaPagos/sucursal/{sucursalId}")
     Call<List<BranchPaymentMethod>> getFormaPagos(@Path("sucursalId") long sucursalId);
@@ -69,10 +71,10 @@ public interface EndPoints {
     Call<RespuestaApi<Boolean>> getAutorizaDespacho (@Path("posicionCargaId") long posicionCargaId, @Path("usuarioId") long usuarioId);
 
     @GET("api/Islas/productos/sucursal/{sucursalId}/posicionCargaId/{id}")
-    Call<Isla> getPosicionCargaProductosSucursal(@Path("sucursalId") String sucursalId, @Path("id") String id);
+    Call<Isla> getPosicionCargaProductosSucursal(@Path("sucursalId") long sucursalId, @Path("id") String id);
 
     @GET("api/estacionCombustibles/sucursal/{sucursalId}")
-    Call<RespuestaApi<List<Combustible>>>  getCombustiblesPorSucursalId(@Path("sucursalId") String sucursalId);
+    Call<RespuestaApi<List<Combustible>>>  getCombustiblesPorSucursalId(@Path("sucursalId") long sucursalId);
 
     @GET("api/lecturaMangueras/sucursal/{sucursalId}/lecturaMangueraPorPosicionCarga/isla/{islaId}/posicionCarga/{posicionId}")
     Call<List<LecturaManguera>> getLecturaMangueraPorPosicionCargaIdLecturaMecanica(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId, @Path("posicionId") long posicionId);
@@ -83,8 +85,14 @@ public interface EndPoints {
     @GET("api/estacioncontroles/sucursal/{sucursalId}/ClaveEmpleado/{claveEmpleado}")
     Call<List<EstacionControl>> getPorSucursalClaveEmpleado(@Path("sucursalId") long sucursalId, @Path("claveEmpleado") String claveEmpleado);
 
-    @GET("api/cierreCarretes/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
-    Call<RespuestaApi<List<CierreCarrete>>> getLecturaInicialMecanica(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId, @Path("usuarioId") long usuarioId);
+    @GET("api/cierreCarretes/sucursal/{sucursalId}/isla/{islaId}")
+    Call<RespuestaApi<List<CierreCarrete>>> getLecturaInicialMecanica(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId);
+
+    @GET("api/cierreDespachoDetalles/sucursalId/{sucursalId}/islaId/{islaId}")
+    Call<RespuestaApi<List<CierreDespachoDetalle>>> getDespachoDetalle(@Path("sucursalId") long sucursalId,@Path("islaId") long islaId);
+
+    @GET("api/cierreFormaPagos/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
+    Call<RespuestaApi<List<CierreFormaPago>>> getFormaPagosUltimoTurno(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId, @Path("usuarioId") long usuarioId);
 
 
 //   METODOS POST
@@ -93,7 +101,7 @@ public interface EndPoints {
     Call<ConfiguracionAplicacion> getConexionApi(@Body ConfiguracionAplicacion configuracionAplicacion);
 
     @POST("api/bines/obtieneBinTarjeta/sucursalId/{sucursalId}")
-    Call<RespuestaApi<Bin>> getBin(@Path("sucursalId") String sucursalId, @Body Bin bin);
+    Call<RespuestaApi<Bin>> getBin(@Path("sucursalId") long sucursalId, @Body Bin bin);
 
     @POST("api/puntadas/actualizaPuntos/clave/{clave}")
     Call<RespuestaApi<Puntada>> getActualizaPuntos(@Path("clave") String clave, @Body Puntada puntada);

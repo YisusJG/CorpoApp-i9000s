@@ -2,11 +2,8 @@ package com.corpogas.corpoapp.Corte;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -14,24 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
-import com.google.zxing.Reader;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,10 +28,11 @@ public class Clave extends AppCompatActivity {
 
     // Declaracion de Variables
 
-    String pass, ipEstacion, sucursalId;
+    String pass, ipEstacion;
     TextView numerodispositivo;
+    long sucursalId;
     EditText password;
-    SQLiteBD data;
+    SQLiteBD db;
     RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
     LottieAnimationView animationView2;
 
@@ -54,11 +40,11 @@ public class Clave extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave);
-        data = new SQLiteBD(getApplicationContext());
-//        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        db = new SQLiteBD(getApplicationContext());
+        this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
 
-        sucursalId = "497"; //data.getIdSucursal();
-        ipEstacion = "10.0.1.40"; //data.getIpEstacion();
+        sucursalId = Long.parseLong(db.getIdSucursal());
+        ipEstacion =  db.getIpEstacion();
         numerodispositivo =  findViewById(R.id.textnumerodispositivoCorteClave);
         numerodispositivo.setText("");
         numerodispositivo.setVisibility(View.INVISIBLE);
@@ -69,7 +55,7 @@ public class Clave extends AppCompatActivity {
 
         // Traemos los Metodos de la clase SQliteBD
 
-        data = new SQLiteBD(getApplicationContext());
+        db = new SQLiteBD(getApplicationContext());
 
         animationView2 = findViewById(R.id.animationCorteClave);
 

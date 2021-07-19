@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Corte.Fragments;
+package com.corpogas.corpoapp.Fragments.Corte;
 
 import android.os.Bundle;
 
@@ -11,15 +11,15 @@ import android.view.ViewGroup;
 import com.corpogas.corpoapp.R;
 
 
-public class ProductosFaltantesFragment extends Fragment {
+public class FajillasBilletesFragment extends Fragment {
 
-    View view;
+   View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_productos_faltantes, container, false);
+        view = inflater.inflate(R.layout.fragment_fajillas_billetes, container, false);
 
         return view;
     }

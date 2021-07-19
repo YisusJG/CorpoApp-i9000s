@@ -1,14 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Corte.Fragments.FormasPagoFragment">
+    tools:context=".Fragments.Corte.FormasPagoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/textTotalPicosFormasPago"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="2dp"
+        android:text="TOTAL PICOS:"
+        android:textSize="18dp"
+        android:textStyle="bold" />
 
-</FrameLayout>
+    <ListView
+        android:id="@+id/listFormasPago"
+        android:layout_width="wrap_content"
+        android:layout_height="286dp"
+        android:layout_below="@+id/textTotalPicosFormasPago"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="20dp" />
+
+    <TextView
+        android:id="@+id/textSubtotalOficinaFormasPago"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listFormasPago"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="9dp"
+        android:text="SUBTOTAL OFICINA: "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnAceptarFormasPago"
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_below="@+id/textSubtotalOficinaFormasPago"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="137dp"
+        android:background="@drawable/b3"
+        android:text="ACEPTAR"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

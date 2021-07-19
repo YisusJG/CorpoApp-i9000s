@@ -29,7 +29,7 @@ import com.corpogas.corpoapp.Entities.Tickets.DiccionarioParcialidades;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Service.PrintBillService;
 import com.google.gson.Gson;
 
@@ -109,7 +109,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin("497", bin);
+                Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(497, bin);
                 call.enqueue(new Callback<RespuestaApi<Bin>>() {
 
                     @Override
@@ -141,7 +141,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario("497", "QwBvAG4AcwBvAGwAYQBDAG8AcgBwAG8AZwBhAHMA");
+                Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(497, "QwBvAG4AcwBvAGwAYQBDAG8AcgBwAG8AZwBhAHMA");
                 call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
 
@@ -431,7 +431,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-                Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal("497","2211");
+                Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(497,"2211");
                 call.enqueue(new Callback<Isla>() {
 
 
@@ -462,7 +462,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints CombustiblesPorSucursalId = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<List<Combustible>>> call = CombustiblesPorSucursalId.getCombustiblesPorSucursalId("497");
+                Call<RespuestaApi<List<Combustible>>> call = CombustiblesPorSucursalId.getCombustiblesPorSucursalId(497);
                 call.enqueue(new Callback<RespuestaApi<List<Combustible>>>() {
 
 

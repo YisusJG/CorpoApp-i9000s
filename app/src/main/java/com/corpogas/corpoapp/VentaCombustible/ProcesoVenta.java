@@ -29,11 +29,7 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProcesoVenta extends AppCompatActivity {
     RecyclerView rcvProcesoVenta;
-    String EstacionId, ipEstacion,
+    String EstacionId,  ipEstacion,
             numeroTarjetero, lugarproviene, usuario, clave;
     long posicionCargaId,numeroOperativa,cargaNumeroInterno,usuarioid,empleadoNumero,sucursalId;
     Boolean banderaposicionCarga;
@@ -98,7 +94,7 @@ public class ProcesoVenta extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(data.getIdSucursal(), usuario);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, usuario);
         call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
 
