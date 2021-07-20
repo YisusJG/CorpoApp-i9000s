@@ -27,8 +27,6 @@ public class Modales extends Dialog implements
         super(a);
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

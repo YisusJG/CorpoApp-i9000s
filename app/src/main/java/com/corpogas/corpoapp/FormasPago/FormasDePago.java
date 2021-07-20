@@ -4,13 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.device.PrinterManager;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Corte.ProcesoCorte;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
@@ -23,11 +29,13 @@ import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.Request.Interfaces.EndPoints;
+
 import com.corpogas.corpoapp.Service.PrintBillService;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -290,5 +298,65 @@ public class FormasDePago extends AppCompatActivity {
         });
     }
 
+    private void ObtenerDatosticketnormal(long posicioncarga, String usuarioid, long formapagoid) {
+        List<DiccionarioParcialidades> parcialidades = new ArrayList<DiccionarioParcialidades>();
+        parcialidades.add(new DiccionarioParcialidades(formapagoid,totalCarrito));
+        TicketRequest ticketRequest = new TicketRequest(posicioncarga,sucursalId, usuarioid, parcialidades); //
+        String json = new Gson().toJson(ticketRequest);
+
+        try {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+            EndPoints generaTicket = retrofit.create(EndPoints.class);
+            Call<Ticket> call = generaTicket.getGenerarTicket(ticketRequest);
+            call.enqueue(new Callback<Ticket>() {
+
+
+                @Override
+                public void onResponse(Call<Ticket> call, Response<Ticket> response) {
+                    if (!response.isSuccessful()) {
+                        return;
+                    }
+                    respuestaTicketRequest = response.body();
+                    int ret = printer.prn_getStatus();
+                    if (ret == 0) {
+                        doprintwork(STR_PRNT_SALE);
+//                        doprintwork("Sales un yisus");// print sale
+
+                    } else {
+                        doprintwork(STR_PRNT_SALE);
+//                    Intent intent = new Intent(PRNT_ACTION);
+//                    intent.putExtra("ret", ret);
+//                    sendBroadcast(intent);
+                    }
+                    Toast.makeText(getApplicationContext(), "Mandar a imprimir", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<Ticket> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            });
+
+        }catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    void doprintwork(String msg) {
+        Intent intentService = new Intent(this, PrintBillService.class);
+        intentService.putExtra("SPRT", msg);
+        intentService.putExtra("ticketEfectivo",respuestaTicketRequest);
+        startService(intentService);
+    }
 
 }

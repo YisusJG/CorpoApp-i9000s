@@ -30,6 +30,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -110,9 +111,9 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         {
 
             totalCarrito += item.getPrecio() * item.getCantidad();
-            lProductosCarrito.add(new RecyclerViewHeaders(item.getDescripcion(),"Cantidad: "+(int)item.getCantidad()+"\nPrecio: $"+String.format("%.2f",item.getPrecio() * item.getCantidad()),R.drawable.atf900));
+            lProductosCarrito.add(new RecyclerViewHeaders(item.getDescripcion(),"Cantidad: "+(int)item.getCantidad()+"\nPrecio: $"+String.format(Locale.US,"%.2f",item.getPrecio() * item.getCantidad()),R.drawable.atf900));
         }
-        txtTotalProductos.setText("Total: $"+String.format("%.2f",totalCarrito));
+        txtTotalProductos.setText("Total: $"+String.format(Locale.US, "%.2f",totalCarrito));
         txtPosicionCarga.setText("Posicion: "+ cargaNumeroInterno);
     }
 

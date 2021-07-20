@@ -1,6 +1,7 @@
 package com.corpogas.corpoapp.Service;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -8,20 +9,19 @@ import android.device.PrinterManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.nfc.tech.NfcBarcode;
 import android.os.Bundle;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
-import com.corpogas.corpoapp.Entities.Catalogos.Product;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketFormaPago;
 import com.corpogas.corpoapp.Entities.Tickets.TicketProducto;
+import com.corpogas.corpoapp.FormasPago.FormasDePago;
 import com.corpogas.corpoapp.Menu_Principal;
-import com.google.zxing.BarcodeFormat;
 
 import com.corpogas.corpoapp.R;
 
-import java.io.PrintWriter;
+import java.util.List;
+import java.util.Locale;
 
 
 public class PrintBillService extends IntentService {
@@ -44,10 +44,17 @@ public class PrintBillService extends IntentService {
     private static String fontName = STR_FONT_VALUE_SONG;
 
     private PrinterManager printer;
+    Activity activityRecuperado;
 
-    public PrintBillService() {
+//    public PrintBillService(Activity activity) {
+//        super(activity);
+//    }
+
+
+    public PrintBillService(Activity activityRecuperado) {
         super("bill");
         // TODO Auto-generated constructor stub
+//        this.activityRecuperado = activity;
     }
 
     @Override
@@ -70,6 +77,7 @@ public class PrintBillService extends IntentService {
         // TODO Auto-generated method stub
         String context = intent.getStringExtra("SPRT");
         respuestaTicketRequest = (Ticket) intent.getSerializableExtra("ticketEfectivo");
+//        Activity ver = activityRecuperado;
 
         if(context== null || context.equals("")) return ;
 
@@ -240,157 +248,151 @@ public class PrintBillService extends IntentService {
         printer.prn_drawBarcode("12345678ABCDEF", 32, height, 20, 2, 70, 0);
 		height += 80;
 //
-//		printer.prn_drawBarcode("12345678ABCDEF", 320, height, 20, 2, 50, 3);
+		printer.prn_drawBarcode("12345678ABCDEF", 320, height, 20, 2, 50, 3);
     }
 
     public void printSale(Context context) throws Exception {
 
 
-        String formaDePago ="";
-
-
-//        for(TicketFormaPago item: respuestaTicketRequest.getDetalle().getTicketFormaPagos()) {
-////            printer.prn_drawText(("PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()), 0, height, (STR_FONT_VALUE_SONG),25, false, false, 0);//"PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()
-////            height += 40;
-//        }
-
-
 
         int height = 10;
+        int i;
         String numeroRastreo = respuestaTicketRequest.getDetalle().getNoRastreo();
         numeroRastreo = numeroRastreo.replace("-", "");
         printer.prn_open();
         printer.prn_setupPage(_XVALUE, -1);
         printer.prn_clearPage();
 
-
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        opts.inDensity = getResources().getDisplayMetrics().densityDpi;
-        opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
-        Bitmap bitmap = BitmapFactory.decodeResource(PrintBillService.this.getResources(), R.drawable.logo, opts);
-
-
-        printer.prn_drawBitmap(bitmap, 75, height);
-
-        height += 150;
-        Prn_Str("                        ",_YVALUE, height);
-        height += _YVALUE;
-
-        printer.prn_drawText((respuestaTicketRequest.getDetalle().getFecha()), 135, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 50;
-
-        printer.prn_drawText(("Est："+db.getNumeroEstacion()), 130, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-
-        printer.prn_drawText((db.getNombreEstacion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-
-//        Prn_Str(db.getCalle() + ", " + db.getNumeroExterior()+ ", " + db.getNumeroInterno()+ "\n"  + db.getColonia() + db.getLocalidad()+", "  + db.getMunicipio() + ", " + "\n" + db.getEstado() + ", " + db.getPais() + ", CP:" + db.getCP() + "\n", _YVALUE7,
-//                height);
-        printer.prn_drawText((db.getCalle() + ", " + db.getNumeroExterior()+ ", " + db.getNumeroInterno()+ "\n"  + db.getColonia() + db.getLocalidad()+", "  + db.getMunicipio() + ", " + "\n" + db.getEstado() + ", " + db.getPais() + ", CP:" + db.getCP() + "\n"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 100;
-
-        printer.prn_drawText(("RFC: " + db.getRFC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-        printer.prn_drawText(("SIIC: " + db.getSIIC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-
-//        Prn_Str("       SIIC：" + receive + "\n", _YVALUE6, height);
-//        height += _YVALUE;
-        Prn_Str("Regimen fiscla de pruebas", 22, height); //db.getRegimenFiscal()
-        height += 50;
-//        Prn_Str_Bold("           ORIGINAL", _YVALUE6, height);
-//        height += 40;
-        printer.prn_drawText(("ORIGINAL"), 125, height, (STR_FONT_VALUE_SONG),30, true, false, 0);
-        height += 40;
-
-        printer.prn_drawText(("No. Rec: " + respuestaTicketRequest.getDetalle().getNoRecibo()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 40;
-
-        printer.prn_drawText(("No. Rastreo: "+numeroRastreo), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 40;
-
-        printer.prn_drawText(("PC: "+ respuestaTicketRequest.getDetalle().getPosCarga()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 40;
-
-        printer.prn_drawText(("Lo atendio: "+ respuestaTicketRequest.getDetalle().getNombreEmpleadoImpresion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);//"PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()
-        height += 40;
-
-        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
-        height += 40;
-
-        for(TicketFormaPago item: respuestaTicketRequest.getDetalle().getTicketFormaPagos()) {
-
-            printer.prn_drawText(("PAGO: "+item.getFormaPago().getShortDescription()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-            height += 20;
-        }
-
-        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
-        height += 40;
-
-        printer.prn_drawText(("CANT  |DESC   |PRECIO    |IMPORTE"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-        for(TicketProducto item : respuestaTicketRequest.getDetalle().getProductos())
+        for(i = 1; i <= respuestaTicketRequest.getDetalle().getNumeroImpresiones(); i++)
         {
-            printer.prn_drawText(((int)item.getCantidad()+"     |"+item.getDescripcion()+"  |"+String.format("%.2f",item.getPrecio())+"     |"+String.format("%.2f",item.getImporte())), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            opts.inDensity = getResources().getDisplayMetrics().densityDpi;
+            opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
+            Bitmap bitmap = BitmapFactory.decodeResource(PrintBillService.this.getResources(), R.drawable.logo, opts);
+
+
+            printer.prn_drawBitmap(bitmap, 75, height);
+
+            height += 150;
+            Prn_Str("                        ",_YVALUE, height);
+            height += _YVALUE;
+
+            printer.prn_drawText((respuestaTicketRequest.getDetalle().getFecha()), 135, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 50;
+
+            printer.prn_drawText(("Est："+db.getNumeroEstacion()), 130, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
             height += 30;
+
+            printer.prn_drawText((db.getNombreEstacion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+
+            printer.prn_drawText((db.getCalle() + ", " + db.getNumeroExterior()+ ", " + db.getNumeroInterno()+ "\n"  + db.getColonia() + db.getLocalidad()+", "  + db.getMunicipio() + ", " + "\n" + db.getEstado() + ", " + db.getPais() + ", CP:" + db.getCP() + "\n"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 100;
+
+            printer.prn_drawText(("RFC: " + db.getRFC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+
+            printer.prn_drawText(("SIIC: " + db.getSIIC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+
+            Prn_Str("Regimen fiscla de pruebas", 22, height); //db.getRegimenFiscal()
+            height += 50;
+
+            printer.prn_drawText(("ORIGINAL"), 125, height, (STR_FONT_VALUE_SONG),30, true, false, 0);
+            height += 40;
+
+            printer.prn_drawText(("No. Rec: " + respuestaTicketRequest.getDetalle().getNoRecibo()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 40;
+
+            printer.prn_drawText(("No. Rastreo: "+numeroRastreo), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 40;
+
+            printer.prn_drawText(("PC: "+ respuestaTicketRequest.getDetalle().getPosCarga()), 145, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 40;
+
+            printer.prn_drawText(("Lo atendio: "+ respuestaTicketRequest.getDetalle().getNombreEmpleadoImpresion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);//"PAGO: "+item.getFormaPago().getSatPaymentMethod().getDescription()
+            height += 40;
+
+            printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+            height += 40;
+
+            for(TicketFormaPago item: respuestaTicketRequest.getDetalle().getTicketFormaPagos()) {
+
+                printer.prn_drawText(("PAGO: "+item.getFormaPago().getShortDescription()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+                height += 20;
+            }
+
+            printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+            height += 40;
+
+            printer.prn_drawText(("CANT  |DESC   |PRECIO    |IMPORTE"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+            for(TicketProducto item : respuestaTicketRequest.getDetalle().getProductos())
+            {
+                printer.prn_drawText(((int)item.getCantidad()+"     |"+item.getDescripcion()+"  |"+String.format(Locale.US,"%.2f",item.getPrecio())+"     |"+String.format(Locale.US,"%.2f",item.getImporte())), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+                height += 30;
+            }
+
+
+
+            printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+            height += 50;
+
+            printer.prn_drawText(("SUBTOTAL: "+String.format(Locale.US,"%.2f",respuestaTicketRequest.getDetalle().getSubtotal())), 195, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+
+            printer.prn_drawText(("IVA: "+String.format(Locale.US,"%.2f",respuestaTicketRequest.getDetalle().getIVA())), 261, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+
+            printer.prn_drawText(("TOTAL: "+String.format(Locale.US,"%.2f",respuestaTicketRequest.getDetalle().getTotal())), 228, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 45;
+
+            printer.prn_drawText((respuestaTicketRequest.getDetalle().getTotalTexto()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 45;
+
+            printer.prn_drawText(("$ "+String.format(Locale.US,"%.2f",respuestaTicketRequest.getDetalle().getTotal())), 100, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+            height += 100;
+
+            printer.prn_drawBarcode(numeroRastreo, 100, height, 58, 8, 10, 0);// este deberia de imrpimir el qr
+            height += 200;
+
+            List<String> mensaje = respuestaTicketRequest.getPie().getMensaje();
+            for (String item : mensaje)
+            {
+                printer.prn_drawText((item), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+                height += 30;
+            }
+            height += 100;
+            printer.prn_drawText(("   "), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+//            if(respuestaTicketRequest.getDetalle().getNumeroImpresiones()==1)
+//            {
+//                break;
+//            }
+
+
+
+            String titulo = "TICKET";
+            String mensajeModal = "Imprimir copia";
+            String nombreAceptar = "Imprimir";
+
+
+//            final Modales modales = new Modales(PrintBillService.this);
+//            View view1 = modales.MostrarDialogoCorrecto(PrintBillService.this,titulo,mensajeModal,nombreAceptar);
+//            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    modales.alertDialog.dismiss();
+//                }
+//            });
+
+
+
         }
 
 
-
-        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
-        height += 50;
-
-        printer.prn_drawText(("SUBTOTAL: "+respuestaTicketRequest.getDetalle().getSubtotal()), 195, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-
-        printer.prn_drawText(("IVA: "+respuestaTicketRequest.getDetalle().getIVA()), 261, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 30;
-
-        printer.prn_drawText(("TOTAL: "+respuestaTicketRequest.getDetalle().getTotal()), 228, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 45;
-
-        printer.prn_drawText((respuestaTicketRequest.getDetalle().getTotalTexto()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
-        height += 45;
-
-        printer.prn_drawText(("$ "+respuestaTicketRequest.getDetalle().getTotal()), 110, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
-        height += 200;
-
-//        printer.prn_drawBarcode("12",2,2, BarcodeFormat.QR_CODE,2,2,0);
-        printer.drawBarcode("numerorastreo", 10, 10, R.drawable.qr,240,240,0);
-        height += 200;
-
-        printer.prn_drawText((respuestaTicketRequest.getPie().getMensaje().toString()), 85, height, (STR_FONT_VALUE_SONG),22, false, false, 0);
-        height += 30;
-
-
-        try {// 电子签名
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-
-        }
-//        height += _YVALUE + 80;
-//        Prn_Str("本人确认以上交易,同意将其记入本卡帐户\n \n \n", 16, height);
-//
-//        height += _YVALUE + 10;
-//        Prn_Str("  \t\t\t\t   商户存联\n", 16, height);
-//
-//        height += _YVALUE;
-//        Prn_Str("\t  --请妥善保留小票一年--", _YVALUE6, height);
-//        height += _YVALUE * 3;
-        Prn_Str("\n", _YVALUE, height);
-//        Prn_Str("\n", _YVALUE, height);
-//        Prn_Str("\n", _YVALUE, height);
-//        Prn_Str("\n", _YVALUE, height);
-//        Prn_Str("", _YVALUE, height);
-//        Prn_Str("", _YVALUE, height);
-//        Prn_Str("", _YVALUE, height);
-
-//		int iRet = printer.prn_printPage(0);
         enviarPrincipal();
+
     }
 
     private void enviarPrincipal() {

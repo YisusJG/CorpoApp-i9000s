@@ -101,6 +101,10 @@ public class TicketDetalle implements Serializable {
     /// Nombre del empleado que imprime el ticket
     /// </summary>
     public String NombreEmpleadoImpresion;
+    /// <summary>
+    /// Numero de tickets que se debe de imprimir
+    /// </summary>
+    public int NumeroImpresiones;
 
     public long getNoRecibo() {
         return NoRecibo;
@@ -276,5 +280,13 @@ public class TicketDetalle implements Serializable {
 
     public void setNombreEmpleadoImpresion(String nombreEmpleadoImpresion) {
         NombreEmpleadoImpresion = nombreEmpleadoImpresion;
+    }
+
+    public int getNumeroImpresiones() {
+        return NumeroImpresiones;
+    }
+
+    public void setNumeroImpresiones(int numeroImpresiones) {
+        NumeroImpresiones = numeroImpresiones;
     }
 }
