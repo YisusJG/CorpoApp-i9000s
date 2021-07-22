@@ -24,6 +24,8 @@ import com.corpogas.corpoapp.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +40,9 @@ public class FormasPagoFragment extends Fragment {
     View view;
     SQLiteBD db;
     TextView totalPicos, subTotalOficina;
-    Button btnAceptar;
+//    Button btnAceptar;
     long sucursalId, idusuario, islaId;
-    String ipEstacion;
+    String ipEstacion, resultadoTotalFormasPago;
     double sumaTotalFormas;
     JSONArray contSubtotalOficina = new JSONArray();
 
@@ -70,7 +72,7 @@ public class FormasPagoFragment extends Fragment {
 
         totalPicos = (TextView)view.findViewById(R.id.textTotalPicosFormasPago);
         subTotalOficina = (TextView) view.findViewById(R.id.textSubtotalOficinaFormasPago);
-        btnAceptar = view.findViewById(R.id.btnAceptarFormasPago);
+//        btnAceptar = view.findViewById(R.id.btnAceptarFormasPago);
 
     }
 
@@ -97,7 +99,7 @@ public class FormasPagoFragment extends Fragment {
                 .build();
 
         EndPoints obtenerFormaPagosUltimoTurno = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreFormaPago>>> call = obtenerFormaPagosUltimoTurno.getFormaPagosUltimoTurno(sucursalId, islaId, idusuario);
+        Call<RespuestaApi<List<CierreFormaPago>>> call = obtenerFormaPagosUltimoTurno.getFormaPagosUltimoTurno(sucursalId, islaId);
         call.enqueue(new Callback<RespuestaApi<List<CierreFormaPago>>>() {
 
 
@@ -108,6 +110,12 @@ public class FormasPagoFragment extends Fragment {
                 }
                 respuestaApiCierreFormaPago = response.body();
                 mostrarFormasPago();
+                BigDecimal bd = new BigDecimal(sumaTotalFormas);
+                // Se limite el resultado a 4 decimales y se redondea
+                resultadoTotalFormasPago = String.valueOf(bd.setScale(2, RoundingMode.HALF_UP));
+
+                subTotalOficina.setText("SUBTOTAL OFICINA: $ "+ resultadoTotalFormasPago);
+                contSubtotalOficina = new JSONArray();
 
             }
 
@@ -136,6 +144,11 @@ public class FormasPagoFragment extends Fragment {
                 maintitle.add(String.valueOf(numeroTickets));
                 subtitle.add(descripcionCorta);
                 total.add(String.valueOf(cantidad));
+                try {
+                    contSubtotalOficina.put(cantidad);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             final ListAdapterFormasPago adapter = new ListAdapterFormasPago((Activity) getContext(), maintitle, subtitle, total);
             list = (ListView) view.findViewById(R.id.listFormasPago);

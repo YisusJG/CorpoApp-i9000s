@@ -191,14 +191,7 @@ public class IslasEstacion extends AppCompatActivity {
                 if (Correcto == true) { // true
                     btnAceptar.setEnabled(true);
                     obtenerDespachoDetalles();
-                    Intent intent = new Intent(getApplicationContext(), ProcesoCorte.class);//Lecturas
-                    intent.putExtra("islaId", String.valueOf(islaId));
-                    intent.putExtra("lcierreRespuestaApi", respuestaApiCierreCabero);
-                    intent.putExtra("cierreCarretes", respuestaApiCierreCarretes);
-                    intent.putExtra("respuestaApiAccesoUsuario", respuestaApiAccesoUsuario);
-//                    intent.putExtra("cierreDetalles",cierreDetalles);
-                    intent.putExtra("cierreCombustibleDetalles",respuestaApiCierreDespachoDetalle);
-                    startActivity(intent);
+
 
 //                            respuetas =  "Se recupero el cierre";
 
@@ -238,6 +231,14 @@ public class IslasEstacion extends AppCompatActivity {
                     return;
                 }
                 respuestaApiCierreDespachoDetalle = response.body();
+                Intent intent = new Intent(getApplicationContext(), ProcesoCorte.class);//Lecturas
+                intent.putExtra("islaId", String.valueOf(islaId));
+                intent.putExtra("respuestaApiCierreCabero", respuestaApiCierreCabero);
+                intent.putExtra("cierreCarretes", respuestaApiCierreCarretes);
+                intent.putExtra("respuestaApiAccesoUsuario", respuestaApiAccesoUsuario);
+//                    intent.putExtra("cierreDetalles",cierreDetalles);
+                intent.putExtra("cierreCombustibleDetalles",respuestaApiCierreDespachoDetalle);
+                startActivity(intent);
             }
 
             @Override

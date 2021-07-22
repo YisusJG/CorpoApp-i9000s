@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.device.PrinterManager;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +35,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class PruebasEndPoint extends AppCompatActivity {
 
     public final static String PRNT_ACTION = "action.printer.message";
-    private PrinterManager printer = new PrinterManager();
+//    private PrinterManager printer = new PrinterManager();
     private final static String STR_PRNT_SALE = "sale";
 
 
@@ -110,6 +111,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
                 Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(497, bin);
+                call.timeout().timeout(60, TimeUnit.SECONDS);
                 call.enqueue(new Callback<RespuestaApi<Bin>>() {
 
                     @Override
@@ -552,17 +554,17 @@ public class PruebasEndPoint extends AppCompatActivity {
 
 
 //                mBtnPrnBill.setEnabled(false);
-                int ret = printer.prn_getStatus();
-                if (ret == 0) {
-                    doprintwork(STR_PRNT_SALE);
-//                        doprintwork("Sales un yisus");// print sale
-
-                } else {
-                    doprintwork(STR_PRNT_SALE);
+//                int ret = printer.prn_getStatus();
+//                if (ret == 0) {
+//                    doprintwork(STR_PRNT_SALE);
+////                        doprintwork("Sales un yisus");// print sale
+//
+//                } else {
+//                    doprintwork(STR_PRNT_SALE);
 //                    Intent intent = new Intent(PRNT_ACTION);
 //                    intent.putExtra("ret", ret);
 //                    sendBroadcast(intent);
-                }
+//                }
             }
         });
     }

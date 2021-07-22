@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.device.PrinterManager;
+
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -62,7 +62,7 @@ public class FormasDePago extends AppCompatActivity {
     List<BranchPaymentMethod> respuestaListaSucursalFormasPago;
     RespuestaApi<Transaccion> respuestaApiTransaccion;
     Ticket respuestaTicketRequest;
-    private PrinterManager printer = new PrinterManager();
+//    private PrinterManager printer = new PrinterManager();
     private final static String STR_PRNT_SALE = "sale";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -293,7 +293,7 @@ public class FormasDePago extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 modales.alertDialog.dismiss();
-                ObtenerDatosticketnormal(posicioncarga, String.valueOf(usuarioid), formapagoid);
+//                ObtenerDatosticketnormal(posicioncarga, String.valueOf(usuarioid), formapagoid);
             }
         });
     }
@@ -318,21 +318,21 @@ public class FormasDePago extends AppCompatActivity {
 
                 @Override
                 public void onResponse(Call<Ticket> call, Response<Ticket> response) {
-                    if (!response.isSuccessful()) {
-                        return;
-                    }
-                    respuestaTicketRequest = response.body();
-                    int ret = printer.prn_getStatus();
-                    if (ret == 0) {
-                        doprintwork(STR_PRNT_SALE);
-//                        doprintwork("Sales un yisus");// print sale
-
-                    } else {
-                        doprintwork(STR_PRNT_SALE);
-//                    Intent intent = new Intent(PRNT_ACTION);
-//                    intent.putExtra("ret", ret);
-//                    sendBroadcast(intent);
-                    }
+//                    if (!response.isSuccessful()) {
+//                        return;
+//                    }
+//                    respuestaTicketRequest = response.body();
+//                    int ret = printer.prn_getStatus();
+//                    if (ret == 0) {
+//                        doprintwork(STR_PRNT_SALE);
+////                        doprintwork("Sales un yisus");// print sale
+//
+//                    } else {
+//                        doprintwork(STR_PRNT_SALE);
+////                    Intent intent = new Intent(PRNT_ACTION);
+////                    intent.putExtra("ret", ret);
+////                    sendBroadcast(intent);
+//                    }
                     Toast.makeText(getApplicationContext(), "Mandar a imprimir", Toast.LENGTH_SHORT).show();
                 }
 

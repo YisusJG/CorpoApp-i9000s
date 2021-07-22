@@ -7,6 +7,7 @@ import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
 import com.corpogas.corpoapp.Entities.Cortes.CierreCarrete;
 import com.corpogas.corpoapp.Entities.Cortes.CierreDespachoDetalle;
+import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFormaPago;
 import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
@@ -91,8 +92,8 @@ public interface EndPoints {
     @GET("api/cierreDespachoDetalles/sucursalId/{sucursalId}/islaId/{islaId}")
     Call<RespuestaApi<List<CierreDespachoDetalle>>> getDespachoDetalle(@Path("sucursalId") long sucursalId,@Path("islaId") long islaId);
 
-    @GET("api/cierreFormaPagos/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
-    Call<RespuestaApi<List<CierreFormaPago>>> getFormaPagosUltimoTurno(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId, @Path("usuarioId") long usuarioId);
+    @GET("api/cierreFormaPagos/sucursal/{sucursalId}/isla/{islaId}")
+    Call<RespuestaApi<List<CierreFormaPago>>> getFormaPagosUltimoTurno(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId);
 
 
 //   METODOS POST
@@ -117,6 +118,9 @@ public interface EndPoints {
 
     @POST("api/cierres/cabecero/sucursal/{sucursalId}/isla/{islaId}/usuario/{usuarioId}")
     Call<RespuestaApi<Cierre>> getCrearCierre(@Path("sucursalId") long sucursalId,@Path("islaId") long islaId,@Path("usuarioId") long usuarioId);
+
+    @POST("api/cierreFajillas/fajillas/usuario/{usuarioId}")
+    Call<RespuestaApi<List<CierreFajilla>>> postGuardaFoliosCierreListaFajillas(@Body List<CierreFajilla> cierreFajillas, @Path("usuarioId") long usuarioId);
 
 
 //    METODOS DELETE

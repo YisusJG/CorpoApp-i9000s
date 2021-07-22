@@ -27,6 +27,7 @@ import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -129,6 +130,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
         EndPoints conectarIp = retrofit.create(EndPoints.class);
         Call<Estacion> call = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4);
+        call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<Estacion>() {
             @Override
             public void onResponse(Call<Estacion> call, Response<Estacion> response) {
@@ -341,6 +343,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
         EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
         Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion);
+        call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<ConfiguracionAplicacion>() {
             @Override
             public void onResponse(Call<ConfiguracionAplicacion> call, Response<ConfiguracionAplicacion> response) {

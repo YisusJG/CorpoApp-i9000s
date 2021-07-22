@@ -1,14 +1,16 @@
 package com.corpogas.corpoapp.Entities.Cortes;
 
+import com.corpogas.corpoapp.Entities.Classes.EntityBase;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.Branch;
 import com.corpogas.corpoapp.Entities.Sucursales.Shift;
+import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class Cierre implements Serializable {
+public class Cierre extends EntityBase implements Serializable {
 
     public long SucursalId;
     public Branch Sucursal;
@@ -35,7 +37,7 @@ public class Cierre implements Serializable {
 //    public List<CierreDetallePeriferico> CierreDetallePerifericos;
 //    public List<CierreDetalle> CierreDetalleCategoriaProducto;
 
-//    public CierreVariables Variables;
+    public CierreVariables Variables;
 //    public GranTotal Totales;
 
 
