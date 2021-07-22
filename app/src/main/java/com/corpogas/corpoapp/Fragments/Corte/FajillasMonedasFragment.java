@@ -87,6 +87,8 @@ public class FajillasMonedasFragment extends Fragment {
 
     }
 
+
+
     private boolean validaCampos(){
 
 //        for(PriceBankRoll item : respuestaApiCierreCabero.getObjetoRespuesta().Variables.getPrecioFajillas()){
@@ -143,7 +145,7 @@ public class FajillasMonedasFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     return;
                 }
-                respuestaApiBin = response.body();
+//                respuestaApiBin = response.body();
 
             }
 

@@ -14,10 +14,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Corte.IslasEstacion;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
+import com.corpogas.corpoapp.Entities.Cortes.Cierre;
 import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
@@ -30,6 +32,7 @@ import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Service.PrintBillService;
 import com.google.gson.Gson;
 
@@ -71,6 +74,7 @@ public class PruebasEndPoint extends AppCompatActivity {
     RespuestaApi<List<Combustible>> respuestaApiCombustiblesPorSucursalId;
     List<LecturaManguera> respuestaApiLecturaManguera;
     RespuestaApi<DiferenciaPermitida> respuestaApiDiferenciaPermitida;
+    RespuestaApi<Cierre> respuestaApiCierreCabero;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -548,6 +552,7 @@ public class PruebasEndPoint extends AppCompatActivity {
         mBtnPrnBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ObtenerCierreId();
 //                Intent intent = new Intent(getApplicationContext(), ImprimirPruebas.class);//Lecturas
 //
 //                startActivity(intent);
@@ -567,6 +572,36 @@ public class PruebasEndPoint extends AppCompatActivity {
 //                }
             }
         });
+    }
+
+    public void ObtenerCierreId(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://"+ data.getIpEstacion()  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerCierreId = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<Cierre>> call = obtenerCierreId.getCrearCierre(497, 76, 10002026);
+        call.enqueue(new Callback<RespuestaApi<Cierre>>() {
+
+
+            @Override
+            public void onResponse(Call<RespuestaApi<Cierre>> call, Response<RespuestaApi<Cierre>> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                respuestaApiCierreCabero = response.body();
+
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<Cierre>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+
     }
 
 
