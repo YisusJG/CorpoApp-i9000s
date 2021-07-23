@@ -10,7 +10,7 @@ import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import java.io.Serializable;
 import java.util.List;
 
-public class Cierre extends EntityBase implements Serializable {
+public class Cierre implements Serializable {
 
     public long SucursalId;
     public Branch Sucursal;
@@ -25,6 +25,7 @@ public class Cierre extends EntityBase implements Serializable {
     public double TotalIva;
     public double TotalIeps;
     public boolean Completado;
+    public long Id;
 //    public DateTime FechaTrabajo;
 
 
@@ -151,5 +152,21 @@ public class Cierre extends EntityBase implements Serializable {
 
     public void setCierreCarretes(List<CierreCarrete> cierreCarretes) {
         CierreCarretes = cierreCarretes;
+    }
+
+    public CierreVariables getVariables() {
+        return Variables;
+    }
+
+    public void setVariables(CierreVariables variables) {
+        Variables = variables;
+    }
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
     }
 }

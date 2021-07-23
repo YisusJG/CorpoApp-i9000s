@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -30,7 +31,7 @@ public class Ventas extends AppCompatActivity {
 
     RecyclerView rcvCombustible;
     List<RecyclerViewHeaders> lCombustible;
-    ImageButton btnTutorial;
+    ImageView btnTutorial;
     SQLiteBD data;
     TextView txtTitulo;
     ImageView imgViewIcono;
@@ -54,7 +55,7 @@ public class Ventas extends AppCompatActivity {
     private void init() {
         data = new SQLiteBD(getApplicationContext());
         rcvCombustible = findViewById(R.id.rcvVentasCombustible);
-        btnTutorial = (ImageButton) findViewById(R.id.btnTutorial);
+        btnTutorial = (ImageView) findViewById(R.id.btnTutorial);
         txtTitulo = (TextView)findViewById(R.id.textTitle);
         videoView = findViewById(R.id.miVideo);
         imgViewIcono =(ImageView) findViewById(R.id.imageIcon);

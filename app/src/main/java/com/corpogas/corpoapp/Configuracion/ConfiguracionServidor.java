@@ -301,6 +301,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
         EndPoints actualizaApp = retrofit.create(EndPoints.class);
         Call<RespuestaApi<Update>> call = actualizaApp.getActializaApp(data.getIdSucursal());
+        call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<Update>>() {
             @Override
             public void onResponse(Call<RespuestaApi<Update>> call, Response<RespuestaApi<Update>> response) {
@@ -378,6 +379,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
         EndPoints guardaDatosEncabezado = retrofit.create(EndPoints.class);
         Call<Ticket> call = guardaDatosEncabezado.getTicketsApi(sucursalid);
+        call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<Ticket>() {
             @Override
             public void onResponse(Call<Ticket> call, Response<Ticket> response) {

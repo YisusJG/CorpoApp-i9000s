@@ -26,6 +26,7 @@ import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
+import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
 import com.corpogas.corpoapp.Entities.Tarjetas.Puntada;
 import com.corpogas.corpoapp.Entities.Tickets.DiccionarioParcialidades;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
@@ -592,7 +593,14 @@ public class PruebasEndPoint extends AppCompatActivity {
                     return;
                 }
                 respuestaApiCierreCabero = response.body();
-
+                long id = respuestaApiCierreCabero.getObjetoRespuesta().getId();
+//                respuestaApiCierreCabero.getObjetoRespuesta().getVariables().getPrecioFajillas();
+                for(PriceBankRoll item : respuestaApiCierreCabero.getObjetoRespuesta().getVariables().getPrecioFajillas())
+                {
+                    long bankRollType = item.BankRollType;
+                    long bankRollType2 = item.BankRollType.longValue();
+                    String nada = "";
+                }
             }
 
             @Override

@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,10 +18,13 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD
 import com.corpogas.corpoapp.Corte.Clave
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
 import com.corpogas.corpoapp.Entities.Sucursales.Update
-import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
-import com.corpogas.corpoapp.Modales.Modales
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
+import com.corpogas.corpoapp.Menu_Principal
+import com.corpogas.corpoapp.Modales.Modales
+
 import com.corpogas.corpoapp.VentaCombustible.Ventas
 import com.google.android.material.snackbar.Snackbar
 import com.szzcs.corpoapp.ActualizadorAPP.*
@@ -29,8 +33,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import android.widget.*
-import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
+import java.util.concurrent.TimeUnit
 
 
 class Menu_Principal : AppCompatActivity() {
@@ -107,11 +110,12 @@ class Menu_Principal : AppCompatActivity() {
         private get() {
             val data = SQLiteBD(applicationContext)
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService/")
+                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val actualizaApp = retrofit.create(EndPoints::class.java)
             val call = actualizaApp.getActializaApp(data.idSucursal)
+            call.timeout().timeout(60, TimeUnit.SECONDS)
             call.enqueue(object : Callback<RespuestaApi<Update>> {
                 override fun onResponse(call: Call<RespuestaApi<Update>>, response: Response<RespuestaApi<Update>>) {
 
