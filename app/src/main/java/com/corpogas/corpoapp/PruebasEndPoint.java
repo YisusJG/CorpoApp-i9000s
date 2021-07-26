@@ -61,6 +61,8 @@ public class PruebasEndPoint extends AppCompatActivity {
            btnPeticionAutorizaDespacho, btnPeticionPosicionCargaProductosSucursal, btnPeticionCombustiblesPorSucursalId,
            btnPeticionLecturaMangueraPorPosicion, btnPeticionDiferenciaPermitidaPorSucursal, mBtnPrnBill;
 
+    long fajillaMorralla;
+
     RespuestaApi<Bin> respuestaApiBin;
     RespuestaApi<AccesoUsuario> accesoUsuario;
     RespuestaApi<Puntada> respuestaPuntada;
@@ -597,9 +599,12 @@ public class PruebasEndPoint extends AppCompatActivity {
 //                respuestaApiCierreCabero.getObjetoRespuesta().getVariables().getPrecioFajillas();
                 for(PriceBankRoll item : respuestaApiCierreCabero.getObjetoRespuesta().getVariables().getPrecioFajillas())
                 {
-                    long bankRollType = item.BankRollType;
-                    long bankRollType2 = item.BankRollType.longValue();
-                    String nada = "";
+                    if(item.BankRollType == 2)
+
+                        fajillaMorralla = item.getPrice();
+//                    long bankRollType = item.BankRollType;
+//                    long bankRollType2 = item.BankRollType.longValue();
+//                    String nada = "";
                 }
             }
 

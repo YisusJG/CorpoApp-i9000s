@@ -2,6 +2,7 @@ package com.corpogas.corpoapp.Interfaces.Endpoints;
 
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
+import com.corpogas.corpoapp.Entities.Catalogos.PaperVoucherType;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
@@ -94,6 +95,10 @@ public interface EndPoints {
 
     @GET("api/cierreFormaPagos/sucursal/{sucursalId}/isla/{islaId}")
     Call<RespuestaApi<List<CierreFormaPago>>> getFormaPagosUltimoTurno(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId);
+
+    @GET("api/TipoValePapeles")
+    Call<PaperVoucherType> getTipoValePapel();
+
 
 
 //   METODOS POST

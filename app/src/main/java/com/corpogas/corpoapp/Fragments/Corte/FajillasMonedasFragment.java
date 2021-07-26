@@ -13,12 +13,10 @@ import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
-import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
-import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
@@ -38,14 +36,16 @@ public class FajillasMonedasFragment extends Fragment {
     View view;
     EditText fajillasMorralla;
     Button btnValidaFajillas;
-    long cierreId, turnoId, idusuario, islaId, sucursalId ;
+    long cierreId, turnoId, idusuario, islaId, sucursalId;
     String titulo, morralla, mensaje;
+    int dineroMorralla, fajillaMorralla;
 
     RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
     RespuestaApi<Cierre> respuestaApiCierreCabero;
+    RespuestaApi<List<CierreFajilla>> respuestaApiCierreFajilla;
     Modales modales;
 
-    CierreFajilla cierreFajilla = null;
+    ArrayList<CierreFajilla> arrayListCierreFajillas = new ArrayList<>();
 
     SQLiteBD db;
 
@@ -58,6 +58,7 @@ public class FajillasMonedasFragment extends Fragment {
         init();
         getObjetos();
         setVariables();
+        onClickButton();
 
 
         return view;
@@ -65,7 +66,7 @@ public class FajillasMonedasFragment extends Fragment {
 
     private void init() {
         fajillasMorralla = (EditText) view.findViewById(R.id.editTextFajillasMorralla);
-        btnValidaFajillas = (Button) view.findViewById(R.id.btnAceptarFajillaBilletes);
+        btnValidaFajillas = (Button) view.findViewById(R.id.btnAceptarFajillaMorralla);
     }
 
     private void getObjetos() {
@@ -74,28 +75,40 @@ public class FajillasMonedasFragment extends Fragment {
     }
 
     private void setVariables() {
+        db = new SQLiteBD(getContext());
         turnoId = respuestaApiCierreCabero.getObjetoRespuesta().getTurnoId();
         cierreId = respuestaApiCierreCabero.getObjetoRespuesta().getId();
         idusuario = respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroEmpleado();
-        sucursalId = Long.parseLong(db.getIdSucursal());
         islaId = Long.parseLong(getActivity().getIntent().getStringExtra("islaId"));
-        db = new SQLiteBD(getContext());
+        sucursalId = Long.parseLong(db.getIdSucursal());
         modales = new Modales(getActivity());
         titulo = "AVISO";
         fajillasMorralla.setText("0");
 
-
     }
 
-
+    public void onClickButton(){
+        btnValidaFajillas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnValidaFajillas.setEnabled(true);
+                boolean validaCampos = validaCampos();
+                if (validaCampos == true){
+                    dineroMorralla = Integer.parseInt(morralla) * fajillaMorralla;
+                    enviarFoliosMorralla();
+                }
+            }
+        });
+    }
 
     private boolean validaCampos(){
 
-//        for(PriceBankRoll item : respuestaApiCierreCabero.getObjetoRespuesta().Variables.getPrecioFajillas()){
-//
-//            item.BankRollType.getMORRALLA();
-//
-//        }
+        for(PriceBankRoll item : respuestaApiCierreCabero.getObjetoRespuesta().getVariables().getPrecioFajillas())
+        {
+            if(item.BankRollType == 2)
+
+                fajillaMorralla = item.getPrice();
+        }
 
         morralla = fajillasMorralla.getText().toString();
 
@@ -116,43 +129,57 @@ public class FajillasMonedasFragment extends Fragment {
     return true;
     }
 
-    public void obtenerObjetoCierreFajillas(long tipoFajillaId, int folioInical, int folioFinal, double denominacion){
-        cierreFajilla = new CierreFajilla(sucursalId,cierreId,tipoFajillaId,folioInical,folioFinal,denominacion);
-
-    }
-
     public void enviarFoliosMorralla(){
 
-        List<String> pistas = new ArrayList<String>();
-        pistas.add("400000025010000199997000");
-        pistas.add("400000025010000199997000");
-        pistas.add("");
+        arrayListCierreFajillas.add(new CierreFajilla(sucursalId,cierreId,2,0,Integer.parseInt(morralla),fajillaMorralla));
 
-        Bin bin = new Bin(pistas);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(497, bin);
+        EndPoints guardaFoliosCierreListaFajillas = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<List<CierreFajilla>>> call = guardaFoliosCierreListaFajillas.postGuardaFoliosCierreListaFajillas(arrayListCierreFajillas, idusuario);
         call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<Bin>>() {
+        call.enqueue(new Callback<RespuestaApi<List<CierreFajilla>>>() {
+
 
             @Override
-            public void onResponse(Call<RespuestaApi<Bin>> call, Response<RespuestaApi<Bin>> response) {
-
+            public void onResponse(Call<RespuestaApi<List<CierreFajilla>>> call, Response<RespuestaApi<List<CierreFajilla>>> response) {
                 if (!response.isSuccessful()) {
                     return;
                 }
-//                respuestaApiBin = response.body();
+                respuestaApiCierreFajilla = response.body();
+                boolean correcto = respuestaApiCierreFajilla.Correcto;
+                if (correcto == true){
+                    mensaje = "Sus Folios han sido registrados. Total Morralla: $" + dineroMorralla + " pesos";
+                    View view1 = modales.MostrarDialogoCorrecto(getContext(),mensaje);
+                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            btnValidaFajillas.setEnabled(false);
+                            modales.alertDialog.dismiss();
+                        }
+                    });
 
+                }else {
+                    String titulo = "AVISO";
+                    String mensaje = respuestaApiCierreFajilla.Mensaje;
+                    View view1 = modales.MostrarDialogoAlertaAceptar(getContext(), mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            btnValidaFajillas.setEnabled(true);
+                            modales.alertDialog.dismiss();
+
+                        }
+                    });
+                }
             }
 
             @Override
-            public void onFailure(Call<RespuestaApi<Bin>> call, Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
+            public void onFailure(Call<RespuestaApi<List<CierreFajilla>>> call, Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
