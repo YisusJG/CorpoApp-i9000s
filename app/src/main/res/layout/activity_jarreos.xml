@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Jarreos.Jarreos">
+
+    <Switch
+        android:id="@+id/swjarreo"
+        android:layout_width="330dp"
+        android:layout_height="74dp"
+        android:text="Jarreo"
+        android:textSize="30sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.028"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="14dp"
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/btnJarreo"
+        android:layout_width="101dp"
+        android:layout_height="131dp"
+        android:src="@drawable/jarra"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swjarreo"
+        app:layout_constraintVertical_bias="0.443"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tvEstado"
+        android:layout_width="309dp"
+        android:layout_height="36dp"
+        android:text="JARREO DESACTIVADO"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btnImgJarreo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swjarreo"
+        app:layout_constraintVertical_bias="0.544"
+        tools:ignore="MissingConstraints"
+        tools:textAlignment="center" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

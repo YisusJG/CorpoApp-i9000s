@@ -82,9 +82,19 @@ public class RespuestaTanqueLleno implements Serializable {
     /// </summary>
     public boolean ImprimeSaldo;
 
+    public String SolicitudEnLitros;
+
+    /// Id del empleado que realiza la transaccion
+    /// </summary>
+    public String NumeroEmpleado;
+
     public boolean isCorrecto() { return Correcto; }
 
     public void setCorrecto(boolean correcto) { Correcto = correcto; }
+
+    public String getSolicitudEnLitros() { return SolicitudEnLitros; }
+
+    public String getNumeroEmpleado(){ return NumeroEmpleado; }
 
     public String getMensaje() { return Mensaje; }
 

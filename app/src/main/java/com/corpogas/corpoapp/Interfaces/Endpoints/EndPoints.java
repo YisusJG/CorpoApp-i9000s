@@ -22,7 +22,9 @@ import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
+import com.corpogas.corpoapp.Entities.TanqueLleno.RespuestaIniAuto;
 import com.corpogas.corpoapp.Entities.Tarjetas.Puntada;
+import com.corpogas.corpoapp.Entities.Tarjetas.RespuestaTanqueLleno;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
@@ -126,6 +128,14 @@ public interface EndPoints {
 
     @POST("api/cierreFajillas/fajillas/usuario/{usuarioId}")
     Call<RespuestaApi<List<CierreFajilla>>> postGuardaFoliosCierreListaFajillas(@Body List<CierreFajilla> cierreFajillas, @Path("usuarioId") long usuarioId);
+
+    @POST("api/tanqueLleno/InicioAutorizacion/clave/{clave}")
+    Call<RespuestaTanqueLleno> getInicializaAuto(@Path("clave") String clave, @Body RespuestaIniAuto respuestaIniAuto);
+
+    @POST("api/tanqueLleno/EnviarProductos")
+//    Call<RespuestaEnviarProductos> getEnviaProductos(@Body RespuestaEnviarProductos respuestaEnviarProductos);
+
+
 
 
 //    METODOS DELETE

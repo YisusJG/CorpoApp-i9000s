@@ -19,11 +19,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Puntada.ProductosARedimir"></activity>
+        <activity android:name=".Puntada.TarjetaPuntadaProvisional" />
+        <activity android:name=".Puntada.PosicionPuntadaRedimir" />
+        <activity android:name=".Gastos.cargaValeGasto" />
+        <activity android:name=".Gastos.CargaGasto" />
+        <activity android:name=".Gastos.AutorizacionGastos" />
+        <activity android:name=".Jarreos.Jarreos" />
+        <activity android:name=".Gastos.ClaveGastos" />
         <activity android:name=".Corte.ProcesoCorte" />
         <activity android:name=".Corte.IslasEstacion" />
-        <activity android:name=".Corte.Clave"/>
+        <activity android:name=".Corte.Clave" />
         <activity android:name=".Productos.MostrarCarritoTransacciones" />
-        <activity android:name=".FormasPago.FormasDePago"></activity>
+        <activity android:name=".FormasPago.FormasDePago" />
+        <activity android:name=".TanqueLleno.eligeCombustibleTL" />
+        <activity android:name=".TanqueLleno.eligeLitrosPrecioTL" />
+        <activity android:name=".TanqueLleno.PosicionCargaTLl" />
+        <activity android:name=".TanqueLleno.TanqueLlenoNip" />
+        <activity
+            android:name=".ui.login.TanqueLlenoActivity"
+            android:label="@string/title_activity_tanque_lleno" />
+        <activity android:name=".TanqueLleno.LeeTarjeta" />
+        <activity android:name=".TanqueLleno.seccionTanqueLleno" />
+        <activity android:name=".Productos.MostrarCarritoTransacciones" />
         <activity android:name=".VentaCombustible.ProcesoVenta" />
         <activity android:name=".EnProcesoDeDesarrollo.EnDesarrollo" />
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
@@ -49,12 +67,11 @@
             android:name=".Configuracion.ConfiguracionServidor"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
             android:windowSoftInputMode="adjustPan|stateHidden">
-<!--             <intent-filter>-->
-<!--             <action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
-<!--             <category android:name="android.intent.category.LAUNCHER" />-->
-<!--             </intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".MainActivity">
 

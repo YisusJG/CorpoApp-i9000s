@@ -14,15 +14,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+import com.corpogas.corpoapp.Gastos.AutorizacionGastos;
+import com.corpogas.corpoapp.Gastos.ClaveGastos;
+import com.corpogas.corpoapp.Jarreos.Jarreos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.TanqueLleno.PosicionCargaTLl;
+//import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -72,13 +89,14 @@ public class ClaveEmpleado extends AppCompatActivity {
     LottieAnimationView animationView2;
     RespuestaApi<Empleado> respuestaApiEmpleado;
 
+    String  claveEmpleadoIdentificado, idisla, idTurno, proviene;;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_empleado);
         init();
 
-        this.setTitle(data.getRazonSocial());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         numerodispositivo.setVisibility(View.INVISIBLE);
     }
@@ -93,6 +111,11 @@ public class ClaveEmpleado extends AppCompatActivity {
         if (lugarProviene.equals("IniciaVenta")) {
             txtEtiqueta.setText("Inicia venta");
         }
+        claveEmpleadoIdentificado = "";
+        EstacionId = data.getIdEstacion();
+        sucursalId = data.getIdSucursal();
+        ipEstacion = data.getIpEstacion();
+
     }
 
     @Override
@@ -207,7 +230,59 @@ public class ClaveEmpleado extends AppCompatActivity {
 
     private  void enviaActividadSiguiente(String pass, long idRoll){
         switch (lugarProviene){
-            case "Reimpresion":
+            case "ConsultaSaldoPuntada":
+                String trackSaldo = getIntent().getStringExtra("NumeroTarjeta");
+                String nipSaldo = getIntent().getStringExtra("Nip");
+                Intent intentSaldo = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
+                intentSaldo.putExtra("IdUsuario", idusuario);
+                intentSaldo.putExtra("ClaveDespachador", pass);
+                intentSaldo.putExtra("nombrecompleto", nombrecompleto);
+                intentSaldo.putExtra("track", trackSaldo);
+                intentSaldo.putExtra("nip", nipSaldo);
+                intentSaldo.putExtra("lugarproviene", "ConsultaSaldoPuntada");
+                startActivity(intentSaldo);
+                finish();
+                break;
+
+            case "Gastos":
+
+                if (idRoll ==1 || idRoll ==3) { // 1 es Gerente, 3 Jefe de ISla Autorizado por Gerente  (idRoll.equals("3") || idRoll.equals("1"))
+                    String titulo = "TIPO GASTO";
+                    String mensajes = "Qué tipo de Gasto desea realizar?";
+                    Modales modales = new Modales(ClaveEmpleado.this);
+                    View viewLectura = modales.MostrarDialogoAlerta(ClaveEmpleado.this, mensajes,  "GASTOS", "CAJA CHICA");
+                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            proviene = "1";
+                            modales.alertDialog.dismiss();
+                            obtenerIsla(proviene);
+                        }
+                    });
+                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            proviene = "2";
+                            modales.alertDialog.dismiss();
+                            obtenerIsla(proviene);
+                        }
+                    });
+                }else{
+                    String titulo = "Contraseña incorrecta";
+                    String mensajes = "Debe ser de Jefe de Isla o Gerente";
+                    Modales modales = new Modales(ClaveEmpleado.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(ClaveEmpleado.this, mensajes, titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+//                                password.setText("");
+                        }
+                    });
+
+                }
+                break;
+           case "Reimpresion":
                 if (idRoll ==1 || idRoll ==3) { // 1 es Gerente, 3 Jefe de ISla Autorizado por Gerente  (idRoll.equals("3") || idRoll.equals("1"))
                     Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                     intent.putExtra("IdUsuario", idusuario);
@@ -299,25 +374,27 @@ public class ClaveEmpleado extends AppCompatActivity {
             case "Redimir":
                 String track1 = getIntent().getStringExtra("NumeroTarjeta");
                 String nip = getIntent().getStringExtra("Nip");
-                Intent intent4 = new Intent(getApplicationContext(), Menu_Principal.class);
+                Intent intent4 = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
                 intent4.putExtra("IdUsuario", idusuario);
                 intent4.putExtra("ClaveDespachador", pass);
                 intent4.putExtra("nombrecompleto", nombrecompleto);
                 intent4.putExtra("track", track1);
                 intent4.putExtra("nip", nip);
+                intent4.putExtra("lugarproviene", "Redimir");
                 startActivity(intent4);
                 finish();
                 break;
             case "Registrar":
-                String track2 = getIntent().getStringExtra("NumeroTarjeta");
-                String nip2 = getIntent().getStringExtra("Nip");
-                Intent intente = new Intent(getApplicationContext(), EnDesarrollo.class);
-                intente.putExtra("IdUsuario", idusuario);
-                intente.putExtra("ClaveDespachador", pass);
-                intente.putExtra("nombrecompleto", nombrecompleto);
-                intente.putExtra("track", track2);
-                intente.putExtra("nip", nip2);
-                startActivity(intente);
+                String trackRegistrar = getIntent().getStringExtra("NumeroTarjeta");
+                String nipRegistrar = getIntent().getStringExtra("Nip");
+                Intent intentRegistrar = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
+                intentRegistrar.putExtra("IdUsuario", idusuario);
+                intentRegistrar.putExtra("ClaveDespachador", pass);
+                intentRegistrar.putExtra("nombrecompleto", nombrecompleto);
+                intentRegistrar.putExtra("track", trackRegistrar);
+                intentRegistrar.putExtra("nip", nipRegistrar);
+                intentRegistrar.putExtra("lugarproviene", "Registrar");
+                startActivity(intentRegistrar);
                 finish();
                 break;
             case "Tanque":
@@ -325,7 +402,7 @@ public class ClaveEmpleado extends AppCompatActivity {
                 NIPmd5Cliente = getIntent().getStringExtra("nipTanqueLlenoMd5");
                 String track4 = getIntent().getStringExtra("track");
 
-                Intent intent5 = new Intent(getApplicationContext(), Menu_Principal.class);
+                Intent intent5 = new Intent(getApplicationContext(), PosicionCargaTLl.class);
                 intent5.putExtra("IdUsuario", idusuario);
                 intent5.putExtra("ClaveDespachador", pass);
                 intent5.putExtra("track", track4);
@@ -335,12 +412,93 @@ public class ClaveEmpleado extends AppCompatActivity {
                 startActivity(intent5);
                 finish();
                 pasword.setText("");
+                break;
+            case "JarreoTodaEstacion":
+                Intent intentea = new Intent(getApplicationContext(), Jarreos.class);
+                intentea.putExtra("IdUsuario", idusuario);
+                intentea.putExtra("ClaveDespachador", pass);
+                intentea.putExtra("numeroempleado", numeroempleado);
+                startActivity(intentea);
+                finish();
+                break;
+
             case "TicketPendiente":
 //                usuario.setText(idusuario);
 //                TicketPendiente();
                 break;
             default:
         }
+    }
+    public void obtenerIsla(final String proviene) {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
+            if (claveEmpleadoIdentificado.length() > 0) {
+                pasword.setText(claveEmpleadoIdentificado);
+            }
+            final String pass = pasword.getText().toString();
 
+            String url = "http://" + ipEstacion + "/CorpogasService/api/estacionControles/Sucursal/" + sucursalId + "/ClaveEmpleado/" + pass;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject respuesta = new JSONObject(response);
+                        String ObjetoRespuesa = respuesta.getString("ObjetoRespuesta");
+                        JSONArray jsonArray = new JSONArray(ObjetoRespuesa);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject claveusuario = jsonArray.getJSONObject(i);
+                            idisla = claveusuario.getString("IslaId");
+                            idTurno = claveusuario.getString("TurnoId");
+                        }
+                        //usuario.setText(idusuario);
+                        //Se instancia y se llama a la clase formas de pago
+                        Intent intent = new Intent(getApplicationContext(), AutorizacionGastos.class);
+                        intent.putExtra("tipoGasto", proviene);
+                        intent.putExtra("isla", idisla);
+                        intent.putExtra("turno", idTurno);
+                        startActivity(intent);
+                        finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String algo = new String(error.networkResponse.data);
+                    try {
+                        //creamos un json Object del String algo
+                        JSONObject errorCaptado = new JSONObject(algo);
+                        //Obtenemos el elemento ExceptionMesage del errro enviado
+                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                        try {
+                            String titulo = "Gastos";
+                            String mensajes = errorMensaje;
+                            Modales modales = new Modales(ClaveEmpleado.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(ClaveEmpleado.this, mensajes, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
+        }
     }
 }

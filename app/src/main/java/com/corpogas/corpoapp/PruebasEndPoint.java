@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
+import android.device.PrinterManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -117,26 +117,25 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(497, bin);
-                call.timeout().timeout(60, TimeUnit.SECONDS);
-                call.enqueue(new Callback<RespuestaApi<Bin>>() {
-
-                    @Override
-                    public void onResponse(Call<RespuestaApi<Bin>> call, Response<RespuestaApi<Bin>> response) {
-
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        respuestaApiBin = response.body();
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<RespuestaApi<Bin>> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+//                Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin("497", bin);
+//                call.enqueue(new Callback<RespuestaApi<Bin>>() {
+//
+//                    @Override
+//                    public void onResponse(Call<RespuestaApi<Bin>> call, Response<RespuestaApi<Bin>> response) {
+//
+//                        if (!response.isSuccessful()) {
+//                            return;
+//                        }
+//                        respuestaApiBin = response.body();
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<RespuestaApi<Bin>> call, Throwable t) {
+//                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
             }
         });
 
@@ -150,25 +149,25 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(497, "QwBvAG4AcwBvAGwAYQBDAG8AcgBwAG8AZwBhAHMA");
-                call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-
-
-                    @Override
-                    public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        accesoUsuario = response.body();
-                        //bearerToken = accesoUsuario.getMensaje();
-                    }
-
-                    @Override
-                    public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+//                Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario("497", "QwBvAG4AcwBvAGwAYQBDAG8AcgBwAG8AZwBhAHMA");
+//                call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+//
+//
+//                    @Override
+//                    public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+//                        if (!response.isSuccessful()) {
+//                            return;
+//                        }
+//                        accesoUsuario = response.body();
+//                        //bearerToken = accesoUsuario.getMensaje();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+//                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
             }
         });
 
@@ -440,23 +439,23 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-                Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(497,"2211");
-                call.enqueue(new Callback<Isla>() {
+//                Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal("497",2211);
+//                call.enqueue(new Callback<Isla>() {
 
 
-                    @Override
-                    public void onResponse(Call<Isla> call, Response<Isla> response) {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        respuestaApiPosicionCargaProductosSucursal = response.body();
-                    }
-
-                    @Override
-                    public void onFailure(Call<Isla> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+////                    @Override
+////                    public void onResponse(Call<Isla> call, Response<Isla> response) {
+////                        if (!response.isSuccessful()) {
+////                            return;
+////                        }
+////                        respuestaApiPosicionCargaProductosSucursal = response.body();
+////                    }
+////
+////                    @Override
+////                    public void onFailure(Call<Isla> call, Throwable t) {
+////                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+////                    }
+//                });
 
 
             }
@@ -552,29 +551,29 @@ public class PruebasEndPoint extends AppCompatActivity {
             }
         });
 
-        mBtnPrnBill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ObtenerCierreId();
-//                Intent intent = new Intent(getApplicationContext(), ImprimirPruebas.class);//Lecturas
+//        mBtnPrnBill.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                ObtenerCierreId();
+////                Intent intent = new Intent(getApplicationContext(), ImprimirPruebas.class);//Lecturas
+////
+////                startActivity(intent);
 //
-//                startActivity(intent);
-
-
-//                mBtnPrnBill.setEnabled(false);
-//                int ret = printer.prn_getStatus();
-//                if (ret == 0) {
-//                    doprintwork(STR_PRNT_SALE);
-////                        doprintwork("Sales un yisus");// print sale
 //
-//                } else {
-//                    doprintwork(STR_PRNT_SALE);
-//                    Intent intent = new Intent(PRNT_ACTION);
-//                    intent.putExtra("ret", ret);
-//                    sendBroadcast(intent);
-//                }
-            }
-        });
+////                mBtnPrnBill.setEnabled(false);
+////                int ret = printer.prn_getStatus();
+////                if (ret == 0) {
+////                    doprintwork(STR_PRNT_SALE);
+//////                        doprintwork("Sales un yisus");// print sale
+////
+////                } else {
+////                    doprintwork(STR_PRNT_SALE);
+//////                    Intent intent = new Intent(PRNT_ACTION);
+//////                    intent.putExtra("ret", ret);
+//////                    sendBroadcast(intent);
+//////                }
+////            }
+//        });
     }
 
     public void ObtenerCierreId(){

@@ -45,7 +45,7 @@
         android:ems="10"
         android:focusable="auto"
         android:gravity="center_horizontal"
-        android:inputType="number|text"
+        android:inputType="number"
         android:maxLength="3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -62,7 +62,7 @@
         android:ems="10"
         android:focusable="auto"
         android:gravity="center_horizontal"
-        android:inputType="number|text"
+        android:inputType="number"
         android:maxLength="3"
         app:layout_constraintStart_toEndOf="@+id/edtOct1"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -79,7 +79,7 @@
         android:ems="10"
         android:focusable="auto"
         android:gravity="center_horizontal"
-        android:inputType="number|text"
+        android:inputType="number"
         android:maxLength="3"
         app:layout_constraintStart_toEndOf="@+id/edtOct2"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -96,7 +96,7 @@
         android:ems="10"
         android:focusable="auto"
         android:gravity="center_horizontal"
-        android:inputType="number|text"
+        android:inputType="number"
         android:maxLength="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

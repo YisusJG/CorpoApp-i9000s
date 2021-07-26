@@ -14,17 +14,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet
+import com.corpogas.corpoapp.Configuracion.ConfiguracionServidor
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
 import com.corpogas.corpoapp.Corte.Clave
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
+import com.corpogas.corpoapp.Entities.Estaciones.ConfiguracionAplicaciones
 import com.corpogas.corpoapp.Entities.Sucursales.Update
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
 import com.corpogas.corpoapp.Menu_Principal
 import com.corpogas.corpoapp.Modales.Modales
-
+import com.corpogas.corpoapp.TanqueLleno.seccionTanqueLleno
 import com.corpogas.corpoapp.VentaCombustible.Ventas
 import com.google.android.material.snackbar.Snackbar
 import com.szzcs.corpoapp.ActualizadorAPP.*
@@ -33,8 +35,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.provider.Settings.Secure;
+import android.widget.*
+import com.corpogas.corpoapp.Gastos.ClaveGastos
+import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
+import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
+import java.io.File
 import java.util.concurrent.TimeUnit
-
 
 class Menu_Principal : AppCompatActivity() {
     var drawerLayout: DrawerLayout? = null
@@ -59,7 +66,7 @@ class Menu_Principal : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
         val data = SQLiteBD(this)
-        this.title = data.nombreEstacion
+        this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
         drawerLayout = findViewById(R.id.drawer_layout)
         //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,"open navigation drawer", "close navigation drawer");
@@ -84,7 +91,7 @@ class Menu_Principal : AppCompatActivity() {
         val primaryDark = "#1C0D02"
         val background = "#FFFFFF"
         var primary = ""
-        val tipo = data.tipoEstacion
+        val tipo = data!!.tipoEstacion
         if (tipo == "CORPOGAS") {
             primary = "#003300"
         } else {
@@ -100,7 +107,7 @@ class Menu_Principal : AppCompatActivity() {
         imagen = findViewById<View>(R.id.imgFoto) as ImageView
         imagen!!.setImageResource(R.drawable.gasolinera)
         txtVersionApk =findViewById(R.id.txtVersionApk)
-        txtVersionApk.text = "Version: ${data.versionApk}"
+        txtVersionApk.text = "CorpoApp Versión: ${data.versionApk}"
         ImageDisplay = true
         BuscarActualizacion
     }
@@ -188,6 +195,77 @@ class Menu_Principal : AppCompatActivity() {
         }
     }
 
+    private fun AutenticacionActualizacion(){
+
+        bar = ProgressDialog(this@Menu_Principal)
+        bar.setTitle("Buscando Posiciones de Carga")
+        bar.setMessage("Ejecutando... ")
+        bar.setIcon(R.drawable.gas)
+        bar.setCancelable(false)
+        bar.show()
+
+
+//        val retrofit = Retrofit.Builder()
+//                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build()
+
+//        val obtenerHuella = retrofit.create<EndPoints>(EndPoints::class.java)
+//        val call = obtenerHuella.getLectorHuella(data.idTarjetero)
+//        call.enqueue(new Callback<RespuestaApi<ConfiguracionAplicaciones>>)
+//        call.enqueue(new Callback < RespuestaApi < ConfiguracionAplicaciones > > () {
+
+
+        //        val url = "http://"+data!!.ipEstacion+"/CorpogasService/Api/ConfiguracionAplicaciones/Huella/Dispositivo/" + data!!.idTarjtero;
+//        //Se solicita peticion GET para obtener el encabezado
+//        val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener { response ->
+//            try {
+//                //se instancia la respuesta del JSON
+//                val respuesta = JSONObject(response)
+//                val correcto = respuesta.getString("Correcto")
+//                val mensaje = respuesta.getString("Mensaje")
+//                val banderarespuesta = respuesta.getString("ObjetoRespuesta")
+//                if (correcto.equals("true")){
+//                    var actualizacampoHuella = data!!.ActualizaCampoHuella(banderarespuesta);
+//                    if (actualizacampoHuella == true){
+//                        val titulo = "CORPOGAS"
+//                        val mensajes = "Dato Actualizado exitosamente"
+//                        val modales = Modales(this)
+//                        val viewActualizarApp = modales.MostrarDialogoCorrecto(this, titulo, mensajes, "OK")
+//                        viewActualizarApp.findViewById<View>(R.id.buttonAction).setOnClickListener {
+//                            modales.alertDialog.dismiss()
+//                            if (banderarespuesta.equals("true")){
+//                            }else{
+////                              LogOutReiniciar(this)
+//                                closeDrawer(drawerLayout)
+//                            }
+//                        }
+//
+//                    }else{
+//                        val titulo = "CORPOGAS"
+//                        val mensajes = "Dato NO actualizado"
+//                        val modales = Modales(this)
+//                        val viewActualizarApp = modales.MostrarDialogoError(this, mensajes)
+//                        viewActualizarApp.findViewById<View>(R.id.buttonAction).setOnClickListener {
+//                            modales.alertDialog.dismiss()
+//                            closeDrawer(drawerLayout)
+//                        }
+//                    }
+//                }
+//            } catch (e: JSONException) {
+//                //herramienta  para diagnostico de excepciones
+//                e.printStackTrace()
+//            }
+//        }, //funcion para capturar errores
+//                Response.ErrorListener { error -> Toast.makeText(applicationContext, error.toString(), Toast.LENGTH_LONG).show() })
+//        val requestQueue = Volley.newRequestQueue(this.applicationContext)
+//        stringRequest.retryPolicy = DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+//        requestQueue.add(stringRequest)
+    }
+
+
+
+
     fun ClicMenu(view: View?) {
         openDrawer(drawerLayout)
     }
@@ -213,6 +291,28 @@ class Menu_Principal : AppCompatActivity() {
 //        recreate();
         if (!ComprobarConexionInternet.compruebaConexion(this)) {
             Toast.makeText(baseContext, "Necesaria conexión a internet ", Toast.LENGTH_SHORT).show()
+        }else{
+            val titulo = "Reconfiguración"
+            val mensajes = "Se eliminarán los datos de la Estación en éste dispositivo,  \n \n ESTAS SEGURO DE REINICIALIZAR LA APLICACION? "
+            val modales = Modales(this)
+            val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
+            viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
+                val intent: Intent
+                //File dir = getFilesDir();
+                //val file = File("data/data/com.szzcs.corpoapp/databases/ConfiguracionEstacion.db")
+                val file = File("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db")
+                val FileDeleted = file.delete()
+                if (FileDeleted) {
+                    Toast.makeText(this@Menu_Principal, "Base de Datos Inicializada", Toast.LENGTH_SHORT).show()
+                    intent = Intent(applicationContext, ConfiguracionServidor::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this@Menu_Principal, "Archivo de Base de Datos no Encontrado", Toast.LENGTH_SHORT).show()
+                }
+                modales.alertDialog.dismiss()
+            }
+            viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
         }
     }
 
@@ -415,19 +515,19 @@ class Menu_Principal : AppCompatActivity() {
                 model = Build.MODEL
 //                identificador = manufacturer + " " + model
 
-                if (model == "i9000S"){
-                    intent = Intent(applicationContext, MonederosElectronicos::class.java)
+//                if (model == "i9000S") {
+                    intent = Intent(applicationContext, TarjetaPuntadaProvisional::class.java)  //MonederosElectronicos
                     intent.putExtra("Enviadodesde", "menuprincipal")
                     startActivity(intent)
-                }else{
-                    val titulo = "AVISO"
-                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
-                    val modales = Modales(this@Menu_Principal)
-                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes,titulo)
-                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
-                        modales.alertDialog.dismiss()
-                    }
-                }
+//                } else {
+//                    val titulo = "AVISO"
+//                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
+//                    val modales = Modales(this@Menu_Principal)
+//                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes, titulo)
+//                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
+//                        modales.alertDialog.dismiss()
+//                    }
+//                }
 
 //                Toast.makeText(applicationContext,"El id del dispositivo es"+ model ,Toast.LENGTH_LONG).show()
 //                id = Secure.getString(applicationContext.contentResolver, Secure.NAME)
@@ -453,7 +553,8 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgGastos -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                intent = Intent(applicationContext, ClaveEmpleado::class.java)
+                intent.putExtra("LugarProviene", "Gastos")
                 startActivity(intent)
             }
             R.id.btnImgReimpresiones -> {
@@ -465,6 +566,16 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
 //                intent = Intent(applicationContext, PruebasEndPoint::class.java)
 //                startActivity(intent)
+            }
+            R.id.btnImgTarjeta -> {
+                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
+                intent.putExtra("device_name", m_deviceName)
+                startActivity(intent)
+            }
+            R.id.btnImgJarreo -> {
+                intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
+                intent.putExtra("LugarProviene", "JarreoTodaEstacion")
+                startActivity(intent)
             }
         }
     }

@@ -130,6 +130,14 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return idempresa;
     }
 
+    public String getNumeroFranquicia(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT numerofranquicia FROM configuracionestacion", null);
+        cursor.moveToFirst();
+        String nummerofranquicia = cursor.getString(0);
+        return nummerofranquicia;
+    }
+
     public void execSQL(String sqlDeleteConfiguracionEstacion) {
     }
 
