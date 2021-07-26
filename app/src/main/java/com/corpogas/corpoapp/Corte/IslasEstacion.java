@@ -234,7 +234,7 @@ public class IslasEstacion extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ProcesoCorte.class);//Lecturas
                 intent.putExtra("islaId", String.valueOf(islaId));
                 intent.putExtra("respuestaApiCierreCabero", respuestaApiCierreCabero);
-                intent.putExtra("cierreCarretes", respuestaApiCierreCarretes);
+                intent.putExtra("respuestaApiCierreCarretes", respuestaApiCierreCarretes);
                 intent.putExtra("respuestaApiAccesoUsuario", respuestaApiAccesoUsuario);
 //                    intent.putExtra("cierreDetalles",cierreDetalles);
                 intent.putExtra("cierreCombustibleDetalles",respuestaApiCierreDespachoDetalle);
