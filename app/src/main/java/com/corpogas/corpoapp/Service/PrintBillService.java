@@ -44,14 +44,9 @@ public class PrintBillService extends IntentService {
     private static String fontName = STR_FONT_VALUE_SONG;
 
     private PrinterManager printer;
-    Activity activityRecuperado;
-
-//    public PrintBillService(Activity activity) {
-//        super(activity);
-//    }
 
 
-    public PrintBillService(Activity activityRecuperado) {
+    public PrintBillService() {
         super("bill");
         // TODO Auto-generated constructor stub
 //        this.activityRecuperado = activity;
@@ -77,7 +72,7 @@ public class PrintBillService extends IntentService {
         // TODO Auto-generated method stub
         String context = intent.getStringExtra("SPRT");
         respuestaTicketRequest = (Ticket) intent.getSerializableExtra("ticketEfectivo");
-//        Activity ver = activityRecuperado;
+
 
         if(context== null || context.equals("")) return ;
 

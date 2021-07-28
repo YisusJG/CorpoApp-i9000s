@@ -20,7 +20,7 @@ import com.corpogas.corpoapp.Corte.Clave
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
-import com.corpogas.corpoapp.Entities.Estaciones.ConfiguracionAplicaciones
+//import com.corpogas.corpoapp.Entities.Estaciones.ConfiguracionAplicaciones
 import com.corpogas.corpoapp.Entities.Sucursales.Update
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos

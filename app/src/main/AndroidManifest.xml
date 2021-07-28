@@ -36,12 +36,12 @@
         <activity android:name=".TanqueLleno.eligeLitrosPrecioTL" />
         <activity android:name=".TanqueLleno.PosicionCargaTLl" />
         <activity android:name=".TanqueLleno.TanqueLlenoNip" />
-        <activity
-            android:name=".ui.login.TanqueLlenoActivity"
-            android:label="@string/title_activity_tanque_lleno" />
+<!--        <activity-->
+<!--            android:name=".ui.login.TanqueLlenoActivity"-->
+<!--            android:label="@string/title_activity_tanque_lleno" />-->
         <activity android:name=".TanqueLleno.LeeTarjeta" />
         <activity android:name=".TanqueLleno.seccionTanqueLleno" />
-        <activity android:name=".Productos.MostrarCarritoTransacciones" />
+
         <activity android:name=".VentaCombustible.ProcesoVenta" />
         <activity android:name=".EnProcesoDeDesarrollo.EnDesarrollo" />
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
@@ -49,7 +49,6 @@
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 
-        <service android:name=".Service.PrintBillService" />
 
         <activity android:name=".PruebasEndPoint">
 
@@ -76,14 +75,14 @@
         </activity>
         <activity android:name=".MainActivity">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+<!--             <intent-filter>-->
+<!--             <action android:name="android.intent.action.MAIN" />-->
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+<!--             <category android:name="android.intent.category.LAUNCHER" />-->
+<!--             </intent-filter>-->
         </activity>
-
+        <service android:name=".Service.PrintBillService" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
