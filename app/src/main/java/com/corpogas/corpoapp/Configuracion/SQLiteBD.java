@@ -315,6 +315,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         //public static final String PROPIEDAD_CONEXION = "propiedadconexion";
         public static final String LECTOR_HUELA = "lectorhuella";
         public static final String ID_TARJETERO = "idtarjetero";
+        public static final String ImprimeLocal = "imprimeLocal";
     }
 
     private static final String TBL_DATOS_TARJETERO =
@@ -323,18 +324,20 @@ public class SQLiteBD extends SQLiteOpenHelper {
                     DatosTarjetero.DIRECCION_MAC + " TEXT," +
                     //DatosTarjetero.PROPIEDAD_CONEXION + " TEXT, "  +
                     DatosTarjetero.LECTOR_HUELA + " TEXT, "  +
-                    DatosTarjetero.ID_TARJETERO + " TEXT )";
+                    DatosTarjetero.ID_TARJETERO + " TEXT, " +
+                    DatosTarjetero.ImprimeLocal + " INTEGER)";
 
     public static final String SQL_DELETE_DATOS_TARJETERO =
             "DROP TABLE IF EXISTS " + DatosTarjetero.NOMBRE_TABLA_TARJETERO;
 
-    public void InsertarDatosNumeroTarjetero(String direccionmac, String lectorhuella, String idtarjetero){
+    public void InsertarDatosNumeroTarjetero(String direccionmac, String lectorhuella, String idtarjetero, boolean imprimeLocal){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosTarjetero.DIRECCION_MAC, direccionmac);
 //        values.put(DatosTarjetero.PROPIEDAD_CONEXION, propiedadconexion);
         values.put(DatosTarjetero.LECTOR_HUELA, lectorhuella);
         values.put(DatosTarjetero.ID_TARJETERO, idtarjetero);
+        values.put(DatosTarjetero.ImprimeLocal,imprimeLocal);
 
         long newRowId = base.insert(DatosTarjetero.NOMBRE_TABLA_TARJETERO,null,values);
     }

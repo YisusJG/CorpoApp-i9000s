@@ -99,7 +99,8 @@ public interface EndPoints {
     @GET("api/TipoValePapeles")
     Call<PaperVoucherType> getTipoValePapel();
 
-
+    @GET("api/ConfiguracionAplicaciones/ValidaMac/{direccionMac}")
+    Call<RespuestaApi<ConfiguracionAplicacion>> getDatosTarjetero(@Path("direccionMac") String direccionMac);
 
 //   METODOS POST
 

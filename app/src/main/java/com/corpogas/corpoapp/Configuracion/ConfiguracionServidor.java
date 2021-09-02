@@ -11,9 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
-import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
+
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
 import com.corpogas.corpoapp.Entities.Sucursales.UpdateDetail;
@@ -42,16 +43,21 @@ public class ConfiguracionServidor extends AppCompatActivity{
     static String mac;
     Estacion estacion;
     Ticket ticket;
-    Conexion conexionApi;
+
     ConfiguracionAplicacion configuracionAplicacionApi;
     RespuestaApi<Update> applicationUpdate;
+    RespuestaApi<ConfiguracionAplicacion> configuracionAplicacion;
+
+    SQLiteBD db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         setContentView(R.layout.activity_configuracion_servidor);
+        setContentView(R.layout.activity_configuracion_servidor);
+        db = new SQLiteBD(getApplicationContext());
         this.setTitle("Configuracion Inicial Servidor");
         getMacAddress();
+
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         boolean verdad = data.checkDataBase("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db");
         if(verdad == true){
@@ -62,8 +68,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 finish();
             }else{
                 if (tipo.equals("GULF")){
-                    Intent intent = new Intent(getApplicationContext(),
-                            SplashGulf.class);
+                    Intent intent = new Intent(getApplicationContext(), SplashGulf.class);
                     startActivity(intent);
                     finish();
                 }else{
@@ -116,59 +121,68 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 }
             });
         }
-
-
-
     }
 
     private void ConectarIP() {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints conectarIp = retrofit.create(EndPoints.class);
-        Call<Estacion> call = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4);
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<Estacion>() {
-            @Override
-            public void onResponse(Call<Estacion> call, Response<Estacion> response) {
-                if(!response.isSuccessful())
-                {
-                    String titulo = "AVISO";
-                    String mensaje = "La direccion IP que ingresaste no es Valida";
-                    final Modales modales = new Modales(ConfiguracionServidor.this);
-                    View view1 = modales.MostrarDialogoAlertaAceptar(ConfiguracionServidor.this, mensaje, titulo);
-                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            modales.alertDialog.dismiss();
-
-                            edtOct1.setText("");
-                            edtOct2.setText("");
-                            edtOct3.setText("");
-                            edtOct4.setText("");
-
-                            edtOct1.requestFocus();
-
-
-                        }
-                    });
-//                    mJsonTxtView.setText("Codigo: "+ response.code());
-                    return;
+        if (!Conexion.compruebaConexion(this)) {
+            String mensaje = "Sin Conexión a la RED.";
+            Modales modales = new Modales(ConfiguracionServidor.this);
+            View view= modales.MostrarDialogoError(ConfiguracionServidor.this, mensaje);
+            view.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    System.exit(0);
                 }
-                estacion = response.body();
-                guardarDatosDBEmpresa();
-            }
+            });
 
-            @Override
-            public void onFailure(Call<Estacion> call, Throwable t) {
-                String error ="";
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
+        }else {
 
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ip2 + "/CorpogasService/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            EndPoints conectarIp = retrofit.create(EndPoints.class);
+            Call<Estacion> call = conectarIp.getEstacionApi(oct1, oct2, oct3, oct4);
+            call.timeout().timeout(60, TimeUnit.SECONDS);
+            call.enqueue(new Callback<Estacion>() {
+                @Override
+                public void onResponse(Call<Estacion> call, Response<Estacion> response) {
+                    if (!response.isSuccessful()) {
+                        String titulo = "AVISO";
+                        String mensaje = "La direccion IP que ingresaste no es Valida";
+                        final Modales modales = new Modales(ConfiguracionServidor.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(ConfiguracionServidor.this, mensaje, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+
+                                edtOct1.setText("");
+                                edtOct2.setText("");
+                                edtOct3.setText("");
+                                edtOct4.setText("");
+
+                                edtOct1.requestFocus();
+
+
+                            }
+                        });
+//                    mJsonTxtView.setText("Codigo: "+ response.code());
+                        return;
+                    }
+                    estacion = response.body();
+                    guardarDatosDBEmpresa();
+                }
+
+                @Override
+                public void onFailure(Call<Estacion> call, Throwable t) {
+                    String error = "";
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 
@@ -221,71 +235,10 @@ public class ConfiguracionServidor extends AppCompatActivity{
             data.InsertarDatosEstacion(id.toString(),sucursalid.toString(),siic,correo,empresaid.toString(),ip,nombre,numerofranquicia,numinterno, descripcion);
 
             guardarDatosEncabezado(sucursalid);
-            obtenerNumeroTarjetero(sucursalid);
+            obtenerNumeroTarjetero();
             getActualizaAPP();
 
-            if (descripcion.equals("CORPOGAS")){
-                String titulo = "Inicio de Configuración";
-                String mensaje = "Los datos se guardaron correctamente";
-                final Modales modales = new Modales(ConfiguracionServidor.this);
-                View view1 = modales.MostrarDialogoCorrecto(ConfiguracionServidor.this,mensaje);
-                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), Splash.class);
-                        startActivity(intent);
-                        finish();
-                        modales.alertDialog.dismiss();
-                    }
-                });
-            }else{
-                if (descripcion.equals("GULF")){
-                    String titulo = "Inicio de Configuración";
-                    String mensaje = "Los datos se guardaron correctamente";
-                    Modales modales = new Modales(ConfiguracionServidor.this);
-                    View view1 = modales.MostrarDialogoCorrecto(ConfiguracionServidor.this,mensaje);
-                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(getApplicationContext(), SplashGulf.class);
-                            startActivity(intent);
-                            finish();
-                            modales.alertDialog.dismiss();
-                        }
-                    });
-                }else{
-                    if (descripcion.equals("PEMEX")){
-                        String titulo = "Inicio de Configuración";
-                        String mensaje = "Los datos se guardaron correctamente";
-                        Modales modales = new Modales(ConfiguracionServidor.this);
-                        View view1 = modales.MostrarDialogoCorrecto(ConfiguracionServidor.this,mensaje);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(getApplicationContext(), Splash.class);
-                                startActivity(intent);
-                                finish();
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    }else {
-                        String titulo = "Inicio de Configuración";
-                        String mensaje = "Los datos no se guardaron en la base de datos";
-                        Modales modales = new Modales(ConfiguracionServidor.this);
-                        View view1 = modales.MostrarDialogoError(ConfiguracionServidor.this,mensaje );
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    }
-                }
-            }
-            edtOct1.setText("");
-            edtOct2.setText("");
-            edtOct3.setText("");
-            edtOct4.setText("");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -333,39 +286,36 @@ public class ConfiguracionServidor extends AppCompatActivity{
     }
 
 
-    private void obtenerNumeroTarjetero(final long sucursalid) {
+    private void obtenerNumeroTarjetero() {
 
-//        Conexion conexion = new Conexion(sucursalid,7,mac);
-        ConfiguracionAplicacion configuracionAplicacion = new ConfiguracionAplicacion(sucursalid,0,3,"",mac,0,false,true,0);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
+                .baseUrl("http://" + ip2 + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-        Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion);
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<ConfiguracionAplicacion>() {
+        mac = mac.replace(":","");
+
+        EndPoints obtenDatosTarjeteros = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<ConfiguracionAplicacion>> call = obtenDatosTarjeteros.getDatosTarjetero(mac);
+        call.enqueue(new Callback<RespuestaApi<ConfiguracionAplicacion>>() {
             @Override
-            public void onResponse(Call<ConfiguracionAplicacion> call, Response<ConfiguracionAplicacion> response) {
-                if(!response.isSuccessful()) {
+            public void onResponse(Call<RespuestaApi<ConfiguracionAplicacion>> call, retrofit2.Response<RespuestaApi<ConfiguracionAplicacion>> response) {
+                if (!response.isSuccessful()) {
                     return;
                 }
-                configuracionAplicacionApi = response.body();
-//                String direccionmac =  configuracionAplicacionApi.getDireccionMac();//respons.getString("DireccionMac");
-//                boolean banderaHuella = configuracionAplicacionApi.isLectorHuella(); //respons.getString("PropiedadConexion");
-//                long id = configuracionAplicacionApi.getId();  //respons.getString("Id");
-//
-//                SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
-//                data.InsertarDatosNumeroTarjetero(direccionmac,String.valueOf(banderaHuella), String.valueOf(id));
-
+                configuracionAplicacion = response.body();
+                db.InsertarDatosNumeroTarjetero(configuracionAplicacion.getObjetoRespuesta().getDireccionMac(),String.valueOf(configuracionAplicacion.getObjetoRespuesta().isLectorHuella()),String.valueOf(configuracionAplicacion.getObjetoRespuesta().getId()),configuracionAplicacion.getObjetoRespuesta().isImprimeLocal());
+                Intent intent = new Intent(getApplicationContext(), Splash.class);
+                startActivity(intent);
+                finish();
             }
 
             @Override
-            public void onFailure(Call<ConfiguracionAplicacion> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<RespuestaApi<ConfiguracionAplicacion>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void guardarDatosEncabezado(long sucursalid) {

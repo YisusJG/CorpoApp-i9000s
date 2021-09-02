@@ -26,6 +26,8 @@ public class ConfiguracionAplicacion implements Serializable {
 //    public List<ConfiguracionAplicacionDetalle> ConfiguracionAplicacionDetalles;
     public long Id;
 
+    public boolean ImprimeLocal;
+
     public ConfiguracionAplicacion(long sucursalId, long estacionId, long aplicacionId, String aliasDispositivo, String direccionMac, long categoriaCombustibleId, boolean lectorHuella, boolean maximizado, int numeroTeriminal) {
         SucursalId = sucursalId;
         EstacionId = estacionId;
@@ -116,5 +118,13 @@ public class ConfiguracionAplicacion implements Serializable {
 
     public void setId(long id) {
         Id = id;
+    }
+
+    public boolean isImprimeLocal() {
+        return ImprimeLocal;
+    }
+
+    public void setImprimeLocal(boolean imprimeLocal) {
+        ImprimeLocal = imprimeLocal;
     }
 }

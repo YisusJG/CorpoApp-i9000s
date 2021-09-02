@@ -26,7 +26,7 @@
         android:layout_width="148dp"
         android:layout_height="46dp"
         android:layout_marginTop="25dp"
-        android:drawableLeft="@drawable/folio_edittext"
+
         android:ems="10"
         android:inputType="number"
         android:textAlignment="center"
