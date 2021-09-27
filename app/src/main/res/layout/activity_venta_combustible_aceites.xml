@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VentaCombustible.VentaCombustibleAceites">
+
+  <Button
+      android:id="@+id/btnEscanearProucto"
+      android:layout_width="311dp"
+      android:layout_height="34dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:background="@drawable/button_error_background"
+      android:text="Escanear Proucto"
+      android:textColor="#FFFFFF"
+      tools:layout_editor_absoluteX="28dp"
+      tools:layout_editor_absoluteY="588dp" />
+
+  <TextView
+      android:id="@+id/txtDescripcion2"
+      android:layout_width="330dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginTop="20dp"
+      android:textColor="#070707"
+      android:textSize="15sp"
+      android:textStyle="bold"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/edtCantidadProducto2" />
+
+  <EditText
+      android:id="@+id/edtCantidadProducto2"
+      android:layout_width="152dp"
+      android:layout_height="41dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginStart="28dp"
+      android:layout_marginTop="40dp"
+      android:background="@drawable/cajadetextopuntada"
+      android:ems="10"
+      android:enabled="false"
+      android:gravity="center_horizontal"
+      android:inputType="number"
+      android:text="1"
+      android:visibility="visible"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/list" />
+
+  <Button
+      android:id="@+id/btnDisminuir"
+      android:layout_width="52dp"
+      android:layout_height="42dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginTop="40dp"
+      android:layout_marginEnd="28dp"
+      android:background="@drawable/fondoazulpuntada"
+      android:text="-"
+      android:textColor="#FFFFFF"
+      android:visibility="visible"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/list" />
+
+  <Button
+      android:id="@+id/btnAumentar"
+      android:layout_width="52dp"
+      android:layout_height="42dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginTop="40dp"
+      android:background="@drawable/fondoazulpuntada"
+      android:text="+"
+      android:textColor="#FFFFFF"
+      android:visibility="visible"
+      app:layout_constraintEnd_toStartOf="@+id/btnDisminuir"
+      app:layout_constraintHorizontal_bias="0.768"
+      app:layout_constraintStart_toEndOf="@+id/edtCantidadProducto2"
+      app:layout_constraintTop_toBottomOf="@+id/list" />
+
+  <ListView
+      android:id="@+id/list"
+      android:layout_width="324dp"
+      android:layout_height="371dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginTop="20dp"
+      android:background="@drawable/border"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btnCombustibleDespacho" />
+
+  <Button
+      android:id="@+id/btnCombustibleDespacho"
+      android:layout_width="170dp"
+      android:layout_height="36dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginStart="12dp"
+      android:layout_marginTop="20dp"
+      android:background="@drawable/button_error_background"
+      android:text="COMBUSTIBLES"
+      android:textColor="#FFFFFF"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <Button
+      android:id="@+id/btnAceitesDespacho"
+      android:layout_width="170dp"
+      android:layout_height="35dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginStart="10dp"
+      android:layout_marginTop="20dp"
+      android:layout_marginEnd="10dp"
+      android:background="@drawable/button_neutral_background"
+      android:text="ACEITES"
+      android:textColor="#FFFFFF"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/btnCombustibleDespacho"
+      app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

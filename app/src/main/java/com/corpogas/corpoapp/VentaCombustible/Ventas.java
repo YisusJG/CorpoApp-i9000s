@@ -105,12 +105,12 @@ public class Ventas extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"Seleccion :" + lCombustible.get(rcvCombustible.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
                 titulo = lCombustible.get(rcvCombustible.getChildAdapterPosition(v)).getTitulo();
                 if (titulo.equals("Inicia Venta")) {
-                    Intent intent = new Intent(getApplicationContext(), ClaveEmpleado.class);   //claveIniciaVenta
-                    intent.putExtra("LugarProviene", "IniciaVenta");
-//                    intent.putExtra("device_name", m_deviceName);
-//                    intent.putExtra("banderaHuella", banderaHuella);
-
-                    startActivity(intent);
+                    //Se envian los parametros de posicion y usuario
+                    Intent intent1 = new Intent(getApplicationContext(), ProcesoVenta.class); //posicionFinaliza Mikel 22/04/2021
+                    intent1.putExtra("lugarproviene", "IniciaVenta");
+                    intent1.putExtra("IdUsuario", "136"); //idusuario
+                    intent1.putExtra("clave", "4444"); //pass
+                    startActivity(intent1);
                     finish();
 
                 } else if (titulo.equals("Finaliza Venta")) {

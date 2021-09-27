@@ -29,6 +29,7 @@ import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Service.PrintBillService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -301,6 +302,17 @@ public class CargaGasto extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     modales.alertDialog.dismiss();
+
+                                    Intent intentService = new Intent(CargaGasto.this, PrintBillService.class);
+                                    intentService.putExtra("SPRT", "expenses");
+                                    intentService.putExtra("Subtotal", subTotal.getText().toString());
+                                    intentService.putExtra("Iva", iva.getText().toString());
+                                    intentService.putExtra("Descripcion", Descripcion.getText().toString());
+                                    intentService.putExtra("NumeroTicket", numeroticket);
+                                    intentService.putExtra("NombreEmpleado", empleado);
+                                    intentService.putExtra("DescripcionGasto", txtDescripcion.getText().toString());
+                                    intentService.putExtra("TipoGasto", "Gasto");
+                                    startService(intentService);
                                     //ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket[0], empleado);
                                     //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
 

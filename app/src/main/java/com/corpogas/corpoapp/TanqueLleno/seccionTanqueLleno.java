@@ -75,8 +75,9 @@ public class seccionTanqueLleno extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"Seleccion :" + lCombustible.get(rcvCombustible.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
                 titulo = lTanqueLleno.get(rcvTanqueLleno.getChildAdapterPosition(v)).getTitulo();
                 if (titulo.equals("Banda Magnética")) {
-                    Intent intent = new Intent(getApplicationContext(), LeeTarjeta.class);   //ClaveEmpleado
-                    intent.putExtra("LugarProviene", "TanqueLlenoBandaMagnetica");
+                    Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);   //LeeTarjeta
+                    intent.putExtra("Enviadodesde", "TanqueLlenoBandaMagnetica");
+//                    intent.putExtra("LugarProviene", "TanqueLlenoBandaMagnetica");
 //                    intent.putExtra("device_name", m_deviceName);
 //                    intent.putExtra("banderaHuella", banderaHuella);
 

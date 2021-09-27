@@ -323,8 +323,8 @@ public class ClaveEmpleado extends AppCompatActivity {
                 Intent intent1 = new Intent(getApplicationContext(), ProcesoVenta.class); //posicionFinaliza Mikel 22/04/2021
                 //Se envian los parametros de posicion y usuario
                 intent1.putExtra("lugarproviene", "IniciaVenta");
-                intent1.putExtra("IdUsuario", idusuario);
-                intent1.putExtra("clave", pass);
+                intent1.putExtra("IdUsuario", "136"); //idusuario
+                intent1.putExtra("clave", "4444"); //pass
 //                intent1.putExtra("numeromepleado", numeroempleado);
                 //inicia el activity
                 startActivity(intent1);

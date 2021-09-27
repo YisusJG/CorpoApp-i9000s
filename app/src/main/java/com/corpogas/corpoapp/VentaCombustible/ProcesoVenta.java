@@ -10,13 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
-import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Accesos.Control;
 import com.corpogas.corpoapp.Entities.Accesos.Posicion;
@@ -26,7 +23,6 @@ import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
-import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
@@ -66,7 +62,7 @@ public class ProcesoVenta extends AppCompatActivity {
     }
 
     private void init() {
-        rcvProcesoVenta = (RecyclerView)findViewById(R.id.rcvProcesoVenta);
+        rcvProcesoVenta = (RecyclerView)findViewById(R.id.rcvPosicionCargaTicket);
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getRazonSocial());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
@@ -266,10 +262,8 @@ public class ProcesoVenta extends AppCompatActivity {
                     validaPosicionDisponible(posicionCargaId);
                 }
 //                Toast.makeText(getApplicationContext(),"Seleccion :" + lProcesoVenta.get(rcvProcesoVenta.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
-
             }
         });
-
         rcvProcesoVenta.setAdapter(adapter);
     }
 

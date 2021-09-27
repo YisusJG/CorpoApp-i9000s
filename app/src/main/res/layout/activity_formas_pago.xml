@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VentaCombustible.ProcesoVenta">
+    tools:context=".VentaCombustible.FormasPago">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvPosicionCargaTicket"
+    <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="186dp"
-        tools:layout_editor_absoluteY="182dp" />
+        android:scrollbars="vertical" />
 </androidx.constraintlayout.widget.ConstraintLayout>

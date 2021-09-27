@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.View;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
@@ -31,6 +32,7 @@ public class PrintBillService extends IntentService {
     private final static String STR_PRNT_TEXT = "text";
     private final static String STR_PRNT_BLCOK = "block";
     private final static String STR_PRNT_SALE = "sale";
+    private final static String STR_PRNT_EXPENSES = "expenses";
 
     private final static String STR_FONT_VALUE_SONG = "simsun";
 
@@ -51,6 +53,7 @@ public class PrintBillService extends IntentService {
         // TODO Auto-generated constructor stub
 //        this.activityRecuperado = activity;
     }
+
 
     @Override
     public void onCreate() {
@@ -74,6 +77,14 @@ public class PrintBillService extends IntentService {
         respuestaTicketRequest = (Ticket) intent.getSerializableExtra("ticketEfectivo");
 
 
+        String subtotal = intent.getStringExtra("Subtotal");
+        String iva = intent.getStringExtra("Iva");
+        String descripcion = intent.getStringExtra("Descripcion");
+        String numeroTicket = intent.getStringExtra("NumeroTicket");
+        String nombreEmpleado = intent.getStringExtra("NombreEmpleado");
+        String descripcionGasto = intent.getStringExtra("Descripcion");
+        String tipoGasto = intent.getStringExtra("TipoGasto");
+
         if(context== null || context.equals("")) return ;
 
         int ret;
@@ -86,6 +97,12 @@ public class PrintBillService extends IntentService {
                 printSale(getBaseContext());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else if (context.equals(STR_PRNT_EXPENSES)){
+            try {
+                printExpenses(getBaseContext(), subtotal, iva, descripcion, numeroTicket, nombreEmpleado, descripcionGasto, tipoGasto );
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {  // print string
@@ -248,8 +265,6 @@ public class PrintBillService extends IntentService {
 
     public void printSale(Context context) throws Exception {
 
-
-
         int height = 10;
         int i;
         String numeroRastreo = respuestaTicketRequest.getDetalle().getNoRastreo();
@@ -389,6 +404,95 @@ public class PrintBillService extends IntentService {
         enviarPrincipal();
 
     }
+
+    public void printExpenses(Context context, String Subtotal, String Iva, String Descripcion, String NumeroTicket, String NombreEmpleado, String DescripcionGasto, String TipoGasto) {
+
+        int height = 10;
+        int i;
+        printer.prn_open();
+        printer.prn_setupPage(_XVALUE, -1);
+        printer.prn_clearPage();
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        opts.inDensity = getResources().getDisplayMetrics().densityDpi;
+        opts.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
+        Bitmap bitmap = BitmapFactory.decodeResource(PrintBillService.this.getResources(), R.drawable.logo, opts);
+
+        String Fecha = "2021-07-26 15:00:00";
+        printer.prn_drawBitmap(bitmap, 75, height);
+
+        height += 150;
+        Prn_Str("                        ",_YVALUE, height);
+        height += _YVALUE;
+
+        printer.prn_drawText(Fecha, 135, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 50;
+
+        printer.prn_drawText(("Est："+db.getNumeroEstacion()), 130, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText((db.getNombreEstacion()), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText((db.getCalle() + ", " + db.getNumeroExterior()+ ", " + db.getNumeroInterno()+ "\n"  + db.getColonia() + db.getLocalidad()+", "  + db.getMunicipio() + ", " + "\n" + db.getEstado() + ", " + db.getPais() + ", CP:" + db.getCP() + "\n"), 0, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 100;
+
+        printer.prn_drawText(("RFC: " + db.getRFC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText(("SIIC: " + db.getSIIC()), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        Prn_Str("Regimen fiscal de pruebas", 22, height); //db.getRegimenFiscal()
+        height += 50;
+
+        printer.prn_drawText(("GASTO: " + DescripcionGasto), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText(("No. Gasto " + NumeroTicket), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText(("Descripcion " + Descripcion), 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText("$ " + Subtotal, 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        if(TipoGasto.equals("Gasto")){
+            printer.prn_drawText("$ " + Iva, 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+            height += 30;
+        }
+
+
+        printer.prn_drawText("Autorizo " + NombreEmpleado, 90, height, (STR_FONT_VALUE_SONG),22, true, false, 0);
+        height += 30;
+
+        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 50;
+
+        printer.prn_drawText(("Nombre y firma gerente"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 50;
+
+        printer.prn_drawText((""), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 50;
+
+        printer.prn_drawText((""), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+
+        height += 50;
+        printer.prn_drawText(("------------------------"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 50;
+        printer.prn_drawText(("Nombre y firma supervisor"), 0, height, (STR_FONT_VALUE_SONG),50, true, false, 0);
+        height += 50;
+
+
+        enviarPrincipal();
+
+
+    }
+
+
+
 
     private void enviarPrincipal() {
         Intent i = new Intent(getApplicationContext(), Menu_Principal.class);

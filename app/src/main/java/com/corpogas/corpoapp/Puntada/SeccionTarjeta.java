@@ -49,7 +49,7 @@ public class SeccionTarjeta extends AppCompatActivity {
     private void initializeData() {
         lrecyclerViewHeaders = new ArrayList<>();
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir","Paga con Puntos",R.drawable.redimirpuntada));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
+//        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Consulta Saldo","Saldo Tarjeta",R.drawable.registrarpuntada));
 
         NumeroTarjeta = getIntent().getStringExtra("track");
@@ -69,41 +69,41 @@ public class SeccionTarjeta extends AppCompatActivity {
                         RedencionConsultaPuntada("Redimir");
                         break;
                     case "Puntada Registrar"://Registrar
-                        try {
-                            String titulo = "PUNTADA";
-                            String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
-                            Modales modales = new Modales(SeccionTarjeta.this);
-                            View viewLectura = modales.MostrarDialogoInsertaDato(SeccionTarjeta.this, mensaje, titulo);
-                            EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
-                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    String cantidad = edtProductoCantidad.getText().toString();
-                                    if (cantidad.isEmpty()){
-                                        edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
-                                    }else {
-                                        String NIPCliente = cantidad;
-                                        Intent intent = new Intent(getApplicationContext(), ClaveEmpleado.class);
-                                        intent.putExtra("LugarProviene", "Registrar");
-                                        intent.putExtra("Nip", NIPCliente);
-                                        intent.putExtra("NumeroTarjeta", NumeroTarjeta);
-//                                        intent.putExtra("device_name", m_deviceName);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            });
-                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        break;
+//                        try {
+//                            String titulo = "PUNTADA";
+//                            String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
+//                            Modales modales = new Modales(SeccionTarjeta.this);
+//                            View viewLectura = modales.MostrarDialogoInsertaDato(SeccionTarjeta.this, mensaje, titulo);
+//                            EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+//                            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    String cantidad = edtProductoCantidad.getText().toString();
+//                                    if (cantidad.isEmpty()){
+//                                        edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
+//                                    }else {
+//                                        String NIPCliente = cantidad;
+//                                        Intent intent = new Intent(getApplicationContext(), ClaveEmpleado.class);
+//                                        intent.putExtra("LugarProviene", "Registrar");
+//                                        intent.putExtra("Nip", NIPCliente);
+//                                        intent.putExtra("NumeroTarjeta", NumeroTarjeta);
+////                                        intent.putExtra("device_name", m_deviceName);
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }
+//                                }
+//                            });
+//                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
                     default:
                         break;
                 }

@@ -78,10 +78,11 @@ public class eligeCombustibleTL extends AppCompatActivity {
     Boolean bandera;
     String placas ,odometro, NumeroInternoEstacion, SucursalEmpleadoId, NumeroDeTarjeta, ClaveTanqueLleno,  transaccionid, folio, nipCliente, nipMd5Cliente;
     Integer Tipocliente;
-    String PosicioDeCarga;
+    Long PosicioCargaNumerico;
     long TipoProducto = 1;
     JSONArray array1 = new JSONArray();
     JSONArray myArrayVer = new JSONArray();
+    String dato;
 
     List<String> ID;
     List<String> NombreProducto;
@@ -111,7 +112,11 @@ public class eligeCombustibleTL extends AppCompatActivity {
         ipEstacion = db.getIpEstacion();
 //        numerodispositivo= db.getIdTarjtero();
         numerointernoSucursal = db.getNumeroFranquicia();
+        init();
+        cargaCombustible();
+    }
 
+    private void init(){
         Cantidad = findViewById(R.id.cantidad);
         EtiquetaCantidad = findViewById(R.id.lblcantidad);
         Pesos = findViewById(R.id.pesos);
@@ -120,12 +125,11 @@ public class eligeCombustibleTL extends AppCompatActivity {
         posicion = getIntent().getStringExtra("posicion");
         cantidadtotal = getIntent().getStringExtra("Cantidad");
         tipoSelecccionado = getIntent().getStringExtra("TipoSeleccionado");
-
         placas = getIntent().getStringExtra("placas");
         odometro = getIntent().getStringExtra("odometro");
         NumeroInternoEstacion = getIntent().getStringExtra("NumeroInternoEstacion");
         SucursalEmpleadoId = getIntent().getStringExtra("SucursalEmpleadoId");
-        PosicioDeCarga = getIntent().getStringExtra("PosicioDeCarga");
+        PosicioCargaNumerico = getIntent().getLongExtra("cargaPosicion", 0);
         NumeroDeTarjeta = getIntent().getStringExtra("NumeroDeTarjeta");
         ClaveTanqueLleno = getIntent().getStringExtra("ClaveTanqueLleno");
         Tipocliente = getIntent().getIntExtra("Tipocliente", 0);
@@ -142,16 +146,16 @@ public class eligeCombustibleTL extends AppCompatActivity {
             banderatiposeleccion = "false";
             bandera = false;
             //EtiquetaCantidad.setText("Litros");
-        }else{if (tipoSelecccionado.equals("P")) {
-            Pesos.setText(cantidadtotal);
-            //EtiquetaCantidad.setText("Pesos");
-            Cantidad.setEnabled(false);
-            Pesos.setEnabled(false);
-            banderatiposeleccion = "false";
-            bandera = true;
+        }else{
+            if (tipoSelecccionado.equals("P")) {
+                Pesos.setText(cantidadtotal);
+                //EtiquetaCantidad.setText("Pesos");
+                Cantidad.setEnabled(false);
+                Pesos.setEnabled(false);
+                banderatiposeleccion = "false";
+                bandera = true;
+            }
         }
-        }
-        cargaCombustible();
         Enviar = findViewById(R.id.comprar);
         Enviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +177,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
         });
     }
 
+
     private void EnviarProductos() {
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
@@ -189,7 +194,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
 //            datos.put("EstacionId", EstacionId);
                 datos.put("SucursalId", sucursalId);
                 datos.put("SucursalEmpleadoId",SucursalEmpleadoId);
-                datos.put("PosicionCarga", PosicioDeCarga);
+                datos.put("PosicionCarga", PosicioCargaNumerico);
                 datos.put("TarjetaCliente", NumeroDeTarjeta);
                 datos.put("Placas", placas);
                 datos.put("Odometro",odometro);
@@ -296,6 +301,8 @@ public class eligeCombustibleTL extends AppCompatActivity {
         ExistenciaProductos = new ArrayList();
         ProductoId = new ArrayList();
         CategoriaId = new ArrayList<>();
+        PosicioCargaNumerico = getIntent().getLongExtra("cargaPosicion", 0);
+
         List<Integer> imgid;
         imgid = new ArrayList<>();
 
@@ -313,7 +320,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
                     .build();
 
             EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId,PosicioDeCarga);
+            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString());
             call.enqueue(new Callback<Isla>() {
 
 
@@ -485,19 +492,8 @@ public class eligeCombustibleTL extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-
-
-
-
         }
     }
-
-    private String obtieneDosDecimales(float valor){
-        DecimalFormat format = new DecimalFormat();
-        format.setMaximumFractionDigits(2); //Define 2 decimales.
-        return format.format(valor);
-    }
-
 
     //Metodo para regresar a la actividad principal
     @Override

@@ -61,6 +61,11 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
         db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
 
+        init();
+        cargaOpciones();
+    }
+
+    private void init(){
         Cantidad = findViewById(R.id.cantidad);
         EtiquetaCantidad = findViewById(R.id.lblcantidad);
 
@@ -78,8 +83,6 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
         nipMd5Cliente = getIntent().getStringExtra("nipMd5Cliente");
         banderaLitros = getIntent().getStringExtra("Litros");
         combustibles = getIntent().getStringExtra("CombustiblesAsociados");
-
-        cargaOpciones();
     }
 
     private void cargaOpciones(){
@@ -178,7 +181,7 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
                     public void onClick(View view) {
                         modales.alertDialog.dismiss();
                         Intent intent = new Intent(getApplicationContext(), eligeCombustibleTL.class);
-                        intent.putExtra("posicion", PosicioDeCarga);
+                        intent.putExtra("respuesta", PosicioDeCarga);
                         intent.putExtra("usuario", SucursalEmpleadoId);
                         intent.putExtra("Cantidad", Cantidad.getText().toString());
                         intent.putExtra("TipoSeleccionado", TipoSeleccionado);
@@ -187,7 +190,7 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
                         intent.putExtra("odometro",odometro);
                         intent.putExtra("NumeroInternoEstacion", NumeroInternoEstacion);
                         intent.putExtra("SucursalEmpleadoId", SucursalEmpleadoId);
-                        intent.putExtra("PosicioDeCarga", PosicioDeCarga);
+                        intent.putExtra("cargaPosicion", PosicioDeCarga);
                         intent.putExtra("NumeroDeTarjeta", NumeroDeTarjeta);
                         intent.putExtra("ClaveTanqueLleno", ClaveTanqueLleno);
                         intent.putExtra("Tipocliente", Tipocliente);

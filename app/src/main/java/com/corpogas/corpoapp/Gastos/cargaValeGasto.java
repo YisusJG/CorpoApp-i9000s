@@ -27,7 +27,9 @@ import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Service.PrintBillService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -140,7 +142,8 @@ public class cargaValeGasto extends AppCompatActivity {
                     String mensaje = "Gasto Cargado Exitosamente";
                     final Modales modales = new Modales(cargaValeGasto.this);
                     View view1 = modales.MostrarDialogoCorrecto(cargaValeGasto.this, mensaje);
-                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                    view1.findViewById(R.id.buttonAction);
+                    view1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             modales.alertDialog.dismiss();
@@ -150,6 +153,16 @@ public class cargaValeGasto extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                            Intent intentService = new Intent( cargaValeGasto.this, PrintBillService.class);
+                            intentService.putExtra("SPRT", "expenses");
+                            intentService.putExtra("Subtotal", SubTotal.getText().toString());
+                            intentService.putExtra("Iva", "0");
+                            intentService.putExtra("Descripcion", Descripcion.getText().toString());
+                            intentService.putExtra("NumeroTicket", numeroticket);
+                            intentService.putExtra("NombreEmpleado", empleado);
+                            intentService.putExtra("DescripcionGasto", "CAJA CHICA");
+                            intentService.putExtra("TipoGasto", "CajaChica");
+                            startService(intentService);
                             //ObtenerCuerpoTicket(SubTotal.getText().toString(), Descripcion.getText().toString(), numeroticket, empleado);
                         }
                     });

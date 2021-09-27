@@ -39,7 +39,10 @@ import android.provider.Settings.Secure;
 import android.widget.*
 import com.corpogas.corpoapp.Gastos.ClaveGastos
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
+import com.corpogas.corpoapp.Puntada.SeccionTarjeta
 import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
+import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
+import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -499,12 +502,17 @@ class Menu_Principal : AppCompatActivity() {
         var intent: Intent
         when (v.id) {
             R.id.btnImgVentas -> {
-                intent = Intent(applicationContext, Ventas::class.java)
+                intent = Intent(applicationContext, ProcesoVenta::class.java)
 //                intent.putExtra("device_name", m_deviceName)
+                intent.putExtra("IdUsuario", "136")
+                intent.putExtra("clave", "4444")
+
                 startActivity(intent)
             }
             R.id.btnImgTickets -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                intent = Intent(applicationContext, PosicionCargaTickets::class.java)
+                intent.putExtra("IdUsuario", "136")
+                intent.putExtra("clave", "4444")
                 startActivity(intent)
             }
             R.id.btnImgMonederos -> {
@@ -515,19 +523,20 @@ class Menu_Principal : AppCompatActivity() {
                 model = Build.MODEL
 //                identificador = manufacturer + " " + model
 
-//                if (model == "i9000S") {
-                    intent = Intent(applicationContext, TarjetaPuntadaProvisional::class.java)  //MonederosElectronicos
+                if (model == "i9000S") {
+                    intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos
                     intent.putExtra("Enviadodesde", "menuprincipal")
+                    intent.putExtra("tipoTarjeta", "Puntada")
                     startActivity(intent)
-//                } else {
-//                    val titulo = "AVISO"
-//                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
-//                    val modales = Modales(this@Menu_Principal)
-//                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes, titulo)
-//                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
-//                        modales.alertDialog.dismiss()
-//                    }
-//                }
+                } else {
+                    val titulo = "AVISO"
+                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
+                    val modales = Modales(this@Menu_Principal)
+                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes, titulo)
+                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
+                        modales.alertDialog.dismiss()
+                    }
+                }
 
 //                Toast.makeText(applicationContext,"El id del dispositivo es"+ model ,Toast.LENGTH_LONG).show()
 //                id = Secure.getString(applicationContext.contentResolver, Secure.NAME)
@@ -540,38 +549,38 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 
             }
-            R.id.btnImgProductos -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
-                startActivity(intent)
-            }
-            R.id.btnImgCortes -> {
-                intent = Intent(applicationContext, Clave::class.java)
-                startActivity(intent)
-            }
-            R.id.btnImgPendientes -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
-                startActivity(intent)
-            }
-            R.id.btnImgGastos -> {
-                intent = Intent(applicationContext, ClaveEmpleado::class.java)
-                intent.putExtra("LugarProviene", "Gastos")
-                startActivity(intent)
-            }
-            R.id.btnImgReimpresiones -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
-                startActivity(intent)
-            }
-            R.id.btnImgFacturacion -> {
-                intent = Intent(applicationContext, PruebasEndPoint::class.java)
-                startActivity(intent)
+//            R.id.btnImgProductos -> {
+//                intent = Intent(applicationContext, EnDesarrollo::class.java)
+//                startActivity(intent)
+//            }
+//            R.id.btnImgCortes -> {
+//                intent = Intent(applicationContext, Clave::class.java)
+//                startActivity(intent)
+//            }
+//            R.id.btnImgPendientes -> {
+//                intent = Intent(applicationContext, EnDesarrollo::class.java)
+//                startActivity(intent)
+//            }
+//            R.id.btnImgGastos -> {
+//                intent = Intent(applicationContext, ClaveEmpleado::class.java)
+//                intent.putExtra("LugarProviene", "Gastos")
+//                startActivity(intent)
+//            }
+//            R.id.btnImgReimpresiones -> {
+//                intent = Intent(applicationContext, EnDesarrollo::class.java)
+//                startActivity(intent)
+//            }
+//            R.id.btnImgFacturacion -> {
 //                intent = Intent(applicationContext, PruebasEndPoint::class.java)
 //                startActivity(intent)
-            }
-            R.id.btnImgTarjeta -> {
-                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
-                intent.putExtra("device_name", m_deviceName)
-                startActivity(intent)
-            }
+////                intent = Intent(applicationContext, PruebasEndPoint::class.java)
+////                startActivity(intent)
+//            }
+//            R.id.btnImgTarjeta -> {
+//                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
+//                intent.putExtra("device_name", m_deviceName)
+//                startActivity(intent)
+//            }
             R.id.btnImgJarreo -> {
                 intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
                 intent.putExtra("LugarProviene", "JarreoTodaEstacion")

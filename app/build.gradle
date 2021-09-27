@@ -4,13 +4,13 @@ plugins {
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.corpogas.corpoapp"
         minSdkVersion 22
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -60,6 +60,7 @@ dependencies {
 
     implementation 'com.android.volley:volley:1.1.1'
 
+//    implementation files('libs\\platform_sdk_v4.2.0618.jar')
 
 }
 repositories {

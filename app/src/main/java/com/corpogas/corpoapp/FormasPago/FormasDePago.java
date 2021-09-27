@@ -70,6 +70,7 @@ public class FormasDePago extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formas_de_pago);
         init();
+        rcvFormasPago = findViewById(R.id.rcvFormasPago);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvFormasPago.setLayoutManager(linearLayoutManager);
         rcvFormasPago.setHasFixedSize(true);
