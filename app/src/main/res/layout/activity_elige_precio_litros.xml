@@ -12,22 +12,22 @@
         android:layout_width="144dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="44dp"
         android:text="LIBRE"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lstOpcionesPrecio"
+        app:layout_constraintTop_toBottomOf="@+id/CantidadPrecio"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btnPredeterminadoInicia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="44dp"
         android:text="Predeterminado"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toEndOf="@+id/btnDespachoLibre"
-        app:layout_constraintTop_toBottomOf="@+id/lstOpcionesPrecio" />
+        app:layout_constraintTop_toBottomOf="@+id/CantidadPrecio" />
 
     <Button
         android:id="@+id/btnCobrarDespacho"
@@ -45,7 +45,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Selecciona una Opcion"
+        android:text="SELECCIONA UNA OPCION"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,5 +62,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSelecciona" />
+
+    <TextView
+        android:id="@+id/EtiquetaPrecioLista"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="40dp"
+        android:text="Precio"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lstOpcionesPrecio"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/CantidadPrecio"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintStart_toEndOf="@+id/EtiquetaPrecioLista"
+        app:layout_constraintTop_toBottomOf="@+id/lstOpcionesPrecio"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

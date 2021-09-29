@@ -70,8 +70,8 @@ public class EligePrecioLitros extends AppCompatActivity {
         claveProducto = getIntent().getStringExtra("claveProducto");
         precio = getIntent().getStringExtra("precioProducto");
 
-        Cantidad = findViewById(R.id.cantidad);
-        EtiquetaCantidad = findViewById(R.id.tvcantidad);
+        Cantidad = findViewById(R.id.CantidadPrecio);
+        EtiquetaCantidad = findViewById(R.id.EtiquetaPrecioLista);
         btnLibre = (Button) findViewById(R.id.btnDespachoLibre);
         list= findViewById(R.id.lstOpcionesPrecio);
 
@@ -79,15 +79,16 @@ public class EligePrecioLitros extends AppCompatActivity {
         btnLibre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                list.setEnabled(false);
-                Cantidad.setEnabled(false);
-                btnLibre.setEnabled(true);
-                btnCobrar.setEnabled(true);
-                btnPredeterminado.setEnabled(false);
+//                list.setEnabled(false);
+//                Cantidad.setEnabled(false);
+//                btnLibre.setEnabled(true);
+//                btnCobrar.setEnabled(true);
+//                btnPredeterminado.setEnabled(false);
                 solicitarDespacho();
 //                Toast.makeText(EligeLitrosPrecio.this, "Entro Click boton Libre", Toast.LENGTH_SHORT).show();
             }
         });
+
         btnPredeterminado = (Button) findViewById(R.id.btnPredeterminadoInicia);
         btnPredeterminado.setOnClickListener(new View.OnClickListener() {
             @Override
