@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
 
+import com.corpogas.corpoapp.Login.LoginActivity;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
 
@@ -27,7 +28,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent intent = new Intent(Splash.this, Menu_Principal.class);
+                Intent intent = new Intent(Splash.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             };

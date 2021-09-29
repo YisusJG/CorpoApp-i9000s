@@ -1,175 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imgFoto"
-        android:layout_width="268dp"
-        android:layout_height="150dp"
-        android:layout_margin="16dp"
-        android:onClick="ClickLogo"
-        android:scaleType="fitXY"
-        android:src="@drawable/gasolinera" />
+        android:id="@+id/imgGogasMainNav"
+        android:layout_width="298dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        app:srcCompat="@drawable/gogas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtVersionApk"
+        android:id="@+id/txtSucursal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="#043A07"
-        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:text="ECUESTRE"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/imgGogasMainNav"
+        tools:layout_editor_absoluteX="0dp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="10sp"
-        android:layout_marginBottom="10sp"
-        android:background="#636363" />
+    <ImageView
+        android:id="@+id/imgUsuarioMainNav"
+        android:layout_width="248dp"
+        android:layout_height="127dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSucursal"
+        app:srcCompat="@drawable/silueta_usuario" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/txtNombreUsuarioMainNav"
+        style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center_horizontal"
+        android:text="Jose Alberto Neri Gonzalez"
+        android:textColor="#000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgUsuarioMainNav" />
+
+    <TextView
+        android:id="@+id/txtRolMainNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#000"
+        android:text="Despachador"
+        android:gravity="center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtNombreUsuarioMainNav" />
+
+    <TextView
+        android:id="@+id/txtIdDispositivoMainNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="13"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtRolMainNav"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/txtCerrarSesionMainNav"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/border"
+        android:drawableLeft="@drawable/exit"
         android:gravity="center_vertical"
-        android:onClick="ClickHome"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/border"
-            android:text="Alerta Oficinas"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:background="@drawable/border"
-            android:onClick="ClickLogo"
-            android:src="@drawable/ic_home" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center_vertical"
-        android:onClick="ClickHuella"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/border"
-            android:text="Clave / Huella"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:background="@drawable/border"
-            android:onClick="ClickHuella"
-            android:src="@drawable/ic_baseline_fingerprint_24" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center_vertical"
-        android:onClick="ClickCerrarSesion"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/border"
-            android:text="Reconfiguración"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:background="@drawable/border"
-            android:onClick="ClickCerrarSesion"
-            android:src="@drawable/ic_cerrarsesion" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center_vertical"
-        android:onClick="ClickSalir"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/border"
-            android:text="Salir"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:background="@drawable/border"
-            android:onClick="ClickSalir"
-            android:src="@drawable/ic_salir" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center_vertical"
-        android:onClick="ClickCambiar"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/border"
-            android:text="Alerta C5"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:background="@drawable/border"
-            android:onClick="ClickCambiar"
-            android:src="@drawable/ic_camera" />
-
-    </LinearLayout>
+        android:text="   Cerrar sesion"
+        android:textColor="#000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtIdDispositivoMainNav" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

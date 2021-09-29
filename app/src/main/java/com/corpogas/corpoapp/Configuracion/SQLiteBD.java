@@ -10,6 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLiteBD extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "ConfiguracionEstacion.db";
@@ -25,6 +30,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_ENCABEZADO_ESTACION);
         db.execSQL(TBL_DATOS_TARJETERO);
         db.execSQL(TBL_ACTUALIZADOR_APP);
+        db.execSQL(TBL_EMPLEADO);
     }
 
     @Override
@@ -33,6 +39,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENCABEZADO);
         db.execSQL(SQL_DELETE_DATOS_TARJETERO);
         db.execSQL(SQL_DELETE_ACTUALIZADOR_APP);
+        db.execSQL(SQL_DELETE_TBL_EMPLEADO);
         onCreate(db);
 
     }
@@ -140,6 +147,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     public void execSQL(String sqlDeleteConfiguracionEstacion) {
     }
+
 
     public static class Datosempresa implements BaseColumns {
         public static final String NOMBRE_TABLA = "configuracionestacion";
@@ -461,6 +469,84 @@ public class SQLiteBD extends SQLiteOpenHelper {
         }
     }
 //   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
+
+    //<-------------------------------------------------------PARAMETROS DE LA TABLA EMPLEADO------------------------------------------------>
+    public static class DatosEmpleado implements BaseColumns {
+        public static final String nombreTabla = "DatosEmpleado";
+        public static final String sucursalId = "SucursalId";
+        public static final String estacionId = "EstacionId";
+        public static final String rolId = "RolId";
+        public static final String nombre = "Nombre";
+        public static final String apellidoPaterno = "ApellidoPaterno";
+        public static final String apellidoMaterno = "ApellidoMaterno";
+        public static final String nombreCompleto = "NombreCompleto";
+        public static final String id = "id";
+        public static final String clave = "Clave";
+        public static final String activo = "Activo";
+        public static final String correo = "Correo";
+        public static final String numeroEmpleado = "NumeroEmpleado";
+
+    }
+    //<------------------------------------------------------------------CREACION DE TABLA EMPLEADO---------------------------------------------------------------------->
+
+    private static final String TBL_EMPLEADO = "CREATE TABLE " + DatosEmpleado.nombreTabla+ "("+
+            DatosEmpleado._ID + " INTEGER PRIMARY KEY," +
+            DatosEmpleado.sucursalId + " REAL," +
+            DatosEmpleado.estacionId + " REAL," +
+            DatosEmpleado.rolId + " REAL," +
+            DatosEmpleado.nombre + " TEXT," +
+            DatosEmpleado.apellidoPaterno + " TEXT," +
+            DatosEmpleado.apellidoMaterno + " TEXT," +
+            DatosEmpleado.nombreCompleto + " TEXT," +
+            DatosEmpleado.id + " INTEGER," +
+            DatosEmpleado.clave + " TEXT," +
+            DatosEmpleado.activo + " INTEGER," +
+            DatosEmpleado.correo + " TEXT," +
+            DatosEmpleado.numeroEmpleado + " TEXT)";
+
+    public static final String SQL_DELETE_TBL_EMPLEADO =
+            "DROP TABLE IF EXISTS " + DatosEmpleado.nombreTabla;
+
+
+
+        //    <----------------------------------------------------------------------INSERT DE TABLA EMPLEADO------------------------------------------------------------------->
+
+    public void InsertarDatosEmpleado(long sucursalId, long estacionId, long rolId, String nombre, String apellidoPaterno, String apellidoMaterno, String nombreCompleto,
+                                      long id, String clave, boolean activo, String correo, String numeroEmpleado){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosEmpleado.sucursalId, sucursalId);
+        values.put(DatosEmpleado.estacionId, estacionId);
+        values.put(DatosEmpleado.rolId, rolId);
+        values.put(DatosEmpleado.nombre, nombre);
+        values.put(DatosEmpleado.apellidoPaterno, apellidoPaterno);
+        values.put(DatosEmpleado.apellidoMaterno, apellidoMaterno);
+        values.put(DatosEmpleado.nombreCompleto, nombreCompleto);
+        values.put(DatosEmpleado.id, id);
+        values.put(DatosEmpleado.clave, clave);
+        values.put(DatosEmpleado.activo, activo);
+        values.put(DatosEmpleado.correo, correo);
+        values.put(DatosEmpleado.numeroEmpleado, numeroEmpleado);
+
+        long newRowId = base.insert(DatosEmpleado.nombreTabla, null, values);
+    }
+//<----------------------------------------------------------------------SELECTS DE TABLA EMPLEADO -------------------------------------------------------->
+
+    public List<Empleado> getDatosEmpleado(){
+        SQLiteDatabase base =getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM DatosEmpleado", null);
+        List<Empleado> lEmpleado = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            do{
+                lEmpleado.add(new Empleado(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getString(4),cursor.getString(5),
+                              cursor.getString(6),cursor.getString(7),cursor.getInt(8),cursor.getString(9),cursor.getInt(10) != 0,cursor.getString(11),
+                              cursor.getString(12)));
+
+            }while(cursor.moveToNext());
+
+        }
+        return lEmpleado;
+    }
 }
 
 

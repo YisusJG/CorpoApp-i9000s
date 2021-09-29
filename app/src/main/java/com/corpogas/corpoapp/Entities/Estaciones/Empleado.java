@@ -45,65 +45,111 @@ public class Empleado implements Serializable {
     /// </summary>
     public String NumeroEmpleado;
 
-    public long getSucursalId() { return SucursalId; }
+    public Empleado(long sucursalId, long estacionId, long rolId, String nombre, String apellidoPaterno, String apellidoMaterno, String nombreCompleto, long id,
+                    String clave, boolean activo, String correo, String numeroEmpleado){
 
-    public void setSucursalId(long sucursalId) { SucursalId = sucursalId; }
+        this.SucursalId = sucursalId;
+        this.EstacionId = estacionId;
+        this.RolId = rolId;
+        this.Nombre = nombre;
+        this.ApellidoPaterno = apellidoPaterno;
+        this.ApellidoMaterno = apellidoMaterno;
+        this.NombreCompleto = nombreCompleto;
+        this.Id = id;
+        this.Clave = clave;
+        this.Activo = activo;
+        this.Correo = correo;
+        this.NumeroEmpleado = numeroEmpleado;
 
-    public Branch getSucursal() { return Sucursal; }
+    }
 
-    public void setSucursal(Branch sucursal) { Sucursal = sucursal; }
+    public long getSucursalId() {
+        return SucursalId;
+    }
 
-    public long getEstacionId() { return EstacionId; }
+    public void setSucursalId(long sucursalId) {
+        SucursalId = sucursalId;
+    }
 
-    public void setEstacionId(long estacionId) { EstacionId = estacionId; }
+    public Branch getSucursal() {
+        return Sucursal;
+    }
 
-    public Estacion getEstacion() { return Estacion; }
+    public void setSucursal(Branch sucursal) {
+        Sucursal = sucursal;
+    }
 
-    public void setEstacion(Estacion estacion) { Estacion = estacion; }
+    public long getEstacionId() {
+        return EstacionId;
+    }
 
-    public long getRolId() { return RolId; }
+    public void setEstacionId(long estacionId) {
+        EstacionId = estacionId;
+    }
 
-    public void setRolId(long rolId) { RolId = rolId; }
+    public com.corpogas.corpoapp.Entities.Estaciones.Estacion getEstacion() {
+        return Estacion;
+    }
 
-    public Role getRol() { return Rol; }
+    public void setEstacion(com.corpogas.corpoapp.Entities.Estaciones.Estacion estacion) {
+        Estacion = estacion;
+    }
 
-    public void setRol(Role rol) { Rol = rol; }
+    public long getRolId() {
+        return RolId;
+    }
 
-    public String getNombre() { return Nombre; }
+    public void setRolId(long rolId) {
+        RolId = rolId;
+    }
 
-    public void setNombre(String nombre) { Nombre = nombre; }
+    public Role getRol() {
+        return Rol;
+    }
 
-    public String getApellidoPaterno() { return ApellidoPaterno; }
+    public void setRol(Role rol) {
+        Rol = rol;
+    }
 
-    public void setApellidoPaterno(String apellidoPaterno) { ApellidoPaterno = apellidoPaterno; }
+    public String getNombre() {
+        return Nombre;
+    }
 
-    public String getApellidoMaterno() { return ApellidoMaterno; }
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
 
-    public void setApellidoMaterno(String apellidoMaterno) { ApellidoMaterno = apellidoMaterno; }
+    public String getApellidoPaterno() {
+        return ApellidoPaterno;
+    }
 
-    public String getNombreCompleto() { return NombreCompleto; }
+    public void setApellidoPaterno(String apellidoPaterno) {
+        ApellidoPaterno = apellidoPaterno;
+    }
 
-    public void setNombreCompleto(String nombreCompleto) { NombreCompleto = nombreCompleto; }
+    public String getApellidoMaterno() {
+        return ApellidoMaterno;
+    }
 
-    public List<Huella> getHuellas() { return Huellas; }
+    public void setApellidoMaterno(String apellidoMaterno) {
+        ApellidoMaterno = apellidoMaterno;
+    }
 
-    public void setHuellas(List<Huella> huellas) { Huellas = huellas; }
+    public String getNombreCompleto() {
+        return NombreCompleto;
+    }
 
-    public String getClave() { return Clave; }
+    public void setNombreCompleto(String nombreCompleto) {
+        NombreCompleto = nombreCompleto;
+    }
 
-    public void setClave(String clave) { Clave = clave; }
+    public List<Huella> getHuellas() {
+        return Huellas;
+    }
 
-    public boolean isActivo() { return Activo; }
-
-    public void setActivo(boolean activo) { Activo = activo; }
-
-    public String getCorreo() { return Correo; }
-
-    public void setCorreo(String correo) { Correo = correo; }
-
-    public String getNumeroEmpleado() { return NumeroEmpleado; }
-
-    public void setNumeroEmpleado(String numeroEmpleado) { NumeroEmpleado = numeroEmpleado; }
+    public void setHuellas(List<Huella> huellas) {
+        Huellas = huellas;
+    }
 
     public long getId() {
         return Id;
@@ -111,5 +157,37 @@ public class Empleado implements Serializable {
 
     public void setId(long id) {
         Id = id;
+    }
+
+    public String getClave() {
+        return Clave;
+    }
+
+    public void setClave(String clave) {
+        Clave = clave;
+    }
+
+    public boolean isActivo() {
+        return Activo;
+    }
+
+    public void setActivo(boolean activo) {
+        Activo = activo;
+    }
+
+    public String getCorreo() {
+        return Correo;
+    }
+
+    public void setCorreo(String correo) {
+        Correo = correo;
+    }
+
+    public String getNumeroEmpleado() {
+        return NumeroEmpleado;
+    }
+
+    public void setNumeroEmpleado(String numeroEmpleado) {
+        NumeroEmpleado = numeroEmpleado;
     }
 }

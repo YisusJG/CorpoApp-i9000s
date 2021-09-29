@@ -101,6 +101,11 @@ public interface EndPoints {
     @GET("api/TipoValePapeles")
     Call<PaperVoucherType> getTipoValePapel();
 
+    // METODO PARA VALIDAR NIP DE USUARIO
+
+    @GET("api/asignacionDispositivos/validaNip/{nip}/dispositivoId/{dispositivoId}")
+    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId);
+
 
 
 //   METODOS POST

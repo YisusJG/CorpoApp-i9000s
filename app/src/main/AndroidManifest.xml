@@ -20,6 +20,9 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Login.LoginActivity"
+            android:exported="true" />
+        <activity
             android:name=".VentaCombustible.DiferentesFormasPago"
             android:exported="true" />
         <activity

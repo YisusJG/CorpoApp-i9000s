@@ -37,7 +37,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.provider.Settings.Secure;
 import android.widget.*
+import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
 import com.corpogas.corpoapp.Gastos.ClaveGastos
+import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
 import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
@@ -52,6 +54,7 @@ class Menu_Principal : AppCompatActivity() {
     var list: ListView? = null
     lateinit var downloadController:DownloadController
     lateinit var txtVersionApk:TextView
+    lateinit var txtCerrarSesion: TextView
 
     //-------Variables necesarias para ininicalizar el lector de huellas
     private val GENERAL_ACTIVITY_RESULT = 1
@@ -68,6 +71,7 @@ class Menu_Principal : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
+
         val data = SQLiteBD(this)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -107,12 +111,34 @@ class Menu_Principal : AppCompatActivity() {
             }
         }
         cambiaColor(primaryDark, primary, background)
-        imagen = findViewById<View>(R.id.imgFoto) as ImageView
-        imagen!!.setImageResource(R.drawable.gasolinera)
-        txtVersionApk =findViewById(R.id.txtVersionApk)
-        txtVersionApk.text = "CorpoApp Versión: ${data.versionApk}"
+//        imagen = findViewById<View>(R.id.imgFoto) as ImageView
+//        imagen!!.setImageResource(R.drawable.gasolinera)
+//        txtVersionApk =findViewById(R.id.txtVersionApk)
+//        txtVersionApk.text = "CorpoApp Versión: ${data.versionApk}"
+        txtCerrarSesion = findViewById(R.id.txtCerrarSesionMainNav)
         ImageDisplay = true
         BuscarActualizacion
+
+        txtCerrarSesion.setOnClickListener{
+            deleteDatos()
+        }
+
+    }
+
+    fun deleteDatos(){
+
+        val mensajes = "¿ESTÁS SEGURO DE FINALIZAR TU SESIÓN?"
+        val modales = Modales(this)
+        val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
+        viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
+            val data = SQLiteBD(applicationContext)
+            data.execSQL(SQL_DELETE_TBL_EMPLEADO)
+            intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
+
     }
 
 

@@ -218,6 +218,7 @@
         android:background="@android:color/white">
 
         <include
+            android:id="@+id/includedSesion"
             layout="@layout/main_nav_drawer"/>
 
     </RelativeLayout>
