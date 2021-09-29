@@ -23,6 +23,12 @@
             android:name=".Login.LoginActivity"
             android:exported="true" />
         <activity
+            android:name=".VentaCombustible.ValesPalel"
+            android:exported="true" />
+        <activity
+            android:name=".VentaCombustible.VentaProductos"
+            android:exported="true" />
+        <activity
             android:name=".VentaCombustible.DiferentesFormasPago"
             android:exported="true" />
         <activity
@@ -59,6 +65,9 @@
         <activity android:name=".EnProcesoDeDesarrollo.EnDesarrollo" />
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
         <activity android:name=".VentaCombustible.Ventas" />
+
+        <activity android:name=".VentaCombustible.EligePrecioLitros" />
+
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 

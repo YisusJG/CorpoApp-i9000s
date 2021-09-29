@@ -25,7 +25,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
-import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
@@ -140,7 +139,7 @@ public class CargaGasto extends AppCompatActivity {
         }
 
         final ListAdapterProductos adapterP = new ListAdapterProductos(this,  ID, NombreProducto);
-        list=(ListView)findViewById(R.id.list);
+        list=(ListView)findViewById(R.id.lstPosicionCarga);
         list.setTextFilterEnabled(true);
         list.setAdapter(adapterP);
 //        Agregado  click en la lista

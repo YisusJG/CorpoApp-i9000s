@@ -6,10 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".VentaCombustible.ProcesoVenta">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvPosicionCargaTicket"
+    <ListView
+        android:id="@+id/listPosicionesCarga"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="186dp"
-        tools:layout_editor_absoluteY="182dp" />
+        android:layout_height="match_parent"></ListView>
 </androidx.constraintlayout.widget.ConstraintLayout>

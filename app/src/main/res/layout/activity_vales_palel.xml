@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VentaCombustible.ValesPalel">
+
+    <Spinner
+        android:id="@+id/spnValesPapel"
+        android:layout_width="340dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="44dp"
+        android:text="Tipos de Vale"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtMontoValesPapel"
+        android:layout_width="79dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="24dp"
+        android:text="Monto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spnValesPapel" />
+
+    <EditText
+        android:id="@+id/etMontoValesPapel"
+        android:layout_width="118dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="16dp"
+        android:hint="0.00"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/txtMontoValesPapel"
+        app:layout_constraintTop_toBottomOf="@+id/spnValesPapel" />
+
+    <Button
+        android:id="@+id/btnEscanearValesPapel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Escanear Vales de Papel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etMontoValesPapel" />
+
+    <ListView
+        android:id="@+id/lstValesPapelEscaneados"
+        android:layout_width="356dp"
+        android:layout_height="346dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnEscanearValesPapel"
+        tools:ignore="MissingConstraints" />
+</androidx.constraintlayout.widget.ConstraintLayout>

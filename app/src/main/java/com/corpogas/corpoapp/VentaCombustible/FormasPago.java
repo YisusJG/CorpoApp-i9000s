@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 
@@ -25,7 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FormasPago extends AppCompatActivity {
     private ListView list;
@@ -35,14 +40,14 @@ public class FormasPago extends AppCompatActivity {
     String formapago, nombrepago, numticket; //numticket, numeroTicket = "";
     Bundle args = new Bundle();
     String EstacionId, sucursalId, ipEstacion, EstacionJarreo;
-    String MontoCanasta;
+    Double MontoCanasta;
 
     JSONObject FormasPagoObjecto;
     JSONArray FormasPagoArreglo;
     Integer TipoTransacionImprimir;
 
     String fechaTicket;
-    String posiciondecargaid, sucursalnumeroempleado;
+    String posiciondecargaid, sucursalnumeroempleado, claveProducto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +61,10 @@ public class FormasPago extends AppCompatActivity {
         ipEstacion = data.getIpEstacion();
 
         EstacionJarreo = getIntent().getStringExtra("estacionjarreo");
-        MontoCanasta = getIntent().getStringExtra("montocanasta");
-        posiciondecargaid = getIntent().getStringExtra("PosicionCargaId");
-        sucursalnumeroempleado = getIntent().getStringExtra("numeroempleadosucursal");
+        MontoCanasta = getIntent().getDoubleExtra("montoenCanasta", 0);
+        posiciondecargaid = getIntent().getStringExtra("posicionCarga");
+        sucursalnumeroempleado = getIntent().getStringExtra("numeroEmpleado");
+        claveProducto = getIntent().getStringExtra("claveProducto");
 
         obtenerformasdepago();
     }
@@ -233,7 +239,7 @@ public class FormasPago extends AppCompatActivity {
         }
         //Invocamos a la clase de listadapter para crear la vista sobre el layout
         Adaptador adapter = new Adaptador(this, maintitle, subtitle, imgid);
-        list = (ListView) findViewById(R.id.list);
+        list = (ListView) findViewById(R.id.lstFormasPago);
         list.setEnabled(true);
         list.setAdapter(adapter);
 
@@ -255,9 +261,9 @@ public class FormasPago extends AppCompatActivity {
                 String posicioncarga = getIntent().getStringExtra("posicioncarga");
                 String idusuario = getIntent().getStringExtra("IdUsuario");
                 String ClaveDespachador = getIntent().getStringExtra("clavedespachador");
-                int operativa = Integer.parseInt(idoperativa);
+//                int operativa = Integer.parseInt(idoperativa);
 
-                switch (operativa) {
+                switch (Integer.parseInt(formapago)) {
                     case 20: //                    Puntada Acumular
 //                        ObtenerTicketPuntadaAcumular(posicioncarga, idusuario, numpago);
                         break;
@@ -312,6 +318,7 @@ public class FormasPago extends AppCompatActivity {
                                 public void onClick(View view) {
 //                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
                                     modales.alertDialog.dismiss();
+                                    MuestraFormaEfectivo();
                                 }
                             });
 
@@ -394,7 +401,7 @@ public class FormasPago extends AppCompatActivity {
 //                        finish();
                         break;
                     default:
-                        throw new IllegalStateException("Valor inesperado: " + operativa);
+                        throw new IllegalStateException("Valor inesperado: " ); //+ operativa
                 }
 
             }
@@ -402,4 +409,125 @@ public class FormasPago extends AppCompatActivity {
     }
 
 
+    private void MuestraFormaEfectivo(){
+        String titulo = "RECIBI";
+        String mensaje = "Ingresa el monto" ;
+        Modales modalesEfectivo = new Modales(FormasPago.this);
+        View viewLectura = modalesEfectivo.MostrarDialogoInsertaDato(FormasPago.this, mensaje, titulo);
+        EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+        edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Boolean banderaSigue = true;
+                String cantidad = edtProductoCantidad.getText().toString();
+                if (cantidad.isEmpty()){
+                    edtProductoCantidad.setError("Ingresa el monto");
+                }else {
+                    Double cambio = Double.parseDouble(cantidad)-MontoCanasta;
+                    String tituloEfectivo = "Venta";
+                    Modales modales = new Modales(FormasPago.this);
+                    View viewVenta = modales.MostrarDialogoEfectivo(FormasPago.this, String.valueOf(MontoCanasta), cantidad, cambio.toString(), tituloEfectivo);
+                    viewVenta.findViewById(R.id.btnAceptarVales).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                            FinalizaVenta();
+                        }
+                    });
+                    viewVenta.findViewById(R.id.btnCancelarVales).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                            list.setEnabled(true);
+
+                        }
+                    });
+                }
+                modalesEfectivo.alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void FinalizaVenta() {
+//        if (!Conexion.compruebaConexion(this)) {
+//            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+//            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+//            startActivity(intent1);
+//            finish();
+//        } else {
+            //Utilizamos el metodo POST para  finalizar la Venta
+            String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado ;
+            StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject respuesta = new JSONObject(response);
+                                String correcto = respuesta.getString("Correcto");
+                                String mensaje = respuesta.getString("Mensaje");
+                                String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                                if (objetoRespuesta.equals("null")) {
+                                    try {
+                                        String titulo = "AVISO";
+                                        //String mensaje = "No hay Posiciones de Carga para Finalizar Venta";
+                                        Modales modales = new Modales(FormasPago.this);
+                                        View view1 = modales.MostrarDialogoAlertaAceptar(FormasPago.this, mensaje, titulo);
+                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                modales.alertDialog.dismiss();
+                                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                                                startActivity(intent1);
+                                                finish();
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }else {
+                                    try {
+                                        String titulo = "AVISO";
+                                        String mensajes = "Venta Finalizada";
+                                        final Modales modales = new Modales(FormasPago.this);
+                                        View view1 = modales.MostrarDialogoCorrecto(FormasPago.this,mensajes);
+                                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                modales.alertDialog.dismiss();
+                                                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() {
+                    // Colocar parametros para ingresar la  url
+                    Map<String, String> params = new HashMap<String, String>();
+                    return params;
+                }
+            };
+
+
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(eventoReq);
+        }
+//    }
 }

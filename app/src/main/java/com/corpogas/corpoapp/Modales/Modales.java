@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -244,6 +245,36 @@ public class Modales extends Dialog implements
         return view;
 
     }
+
+    public View MostrarDialogoEfectivo(Context context, String monto, String recibi, String cambio, String titulo){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.activity_dialogo_pago_efectivo, (ConstraintLayout) findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitleEfectivo)).setText(titulo);
+        ((TextView) view.findViewById(R.id.textMonto)).setText(monto);
+        ((TextView) view.findViewById(R.id.textMontoVales)).setText(recibi);
+        ((TextView) view.findViewById(R.id.textCambio)).setText(cambio);
+        ((Button) view.findViewById(R.id.btnAceptarVales)).setText("ACEPTAR");
+        ((Button) view.findViewById(R.id.btnCancelarVales)).setText("CANCELAR");
+
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_warning);
+
+        alertDialog = builder.create();
+
+        if(alertDialog.getWindow() != null)
+        {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        return view;
+
+
+    }
+
 
     @Override
     public void onClick(View v) {

@@ -3,7 +3,6 @@ package com.corpogas.corpoapp.Puntada;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -632,7 +631,7 @@ public class ProductosARedimir extends AppCompatActivity {
             e.printStackTrace();
         }
         final ListAdapterAceitesRedimir adapterP = new ListAdapterAceitesRedimir(this,  ID, NombreProducto);
-        list=(ListView)findViewById(R.id.list);
+        list=(ListView)findViewById(R.id.lstPosicionCarga);
         list.setTextFilterEnabled(true);
         list.setAdapter(adapterP);
 //        Agregado  click en la lista

@@ -94,7 +94,7 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
             TipoSeleccionado = "L";
 
             MyListAdapter adapter=new MyListAdapter(eligeLitrosPrecioTL.this, maintitleLitros, subtitleLitros,imgidLitros);
-            list= findViewById(R.id.list);
+            list= findViewById(R.id.lstPosicionCarga);
             list.setAdapter(adapter);
 
         }else{
@@ -102,7 +102,7 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
             TipoSeleccionado = "P";
 
             MyListAdapter adapter=new MyListAdapter(eligeLitrosPrecioTL.this, maintitlePesos, subtitlePesos,imgidPesos);
-            list= findViewById(R.id.list);
+            list= findViewById(R.id.lstPosicionCarga);
             list.setAdapter(adapter);
 
         }

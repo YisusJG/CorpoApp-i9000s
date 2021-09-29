@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,13 +24,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
-import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
-import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.BodegaProducto;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.ProductControl;
-import com.corpogas.corpoapp.Entities.TanqueLleno.RespuestaIniAuto;
-import com.corpogas.corpoapp.Entities.Tickets.TicketFormaPago;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
@@ -386,7 +381,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
                        }
                     }
                     ListAdapterConbustiblesTLl adapterP = new ListAdapterConbustiblesTLl(eligeCombustibleTL.this, ID, NombreProducto, imgid);
-                    list=(ListView)findViewById(R.id.list);
+                    list=(ListView)findViewById(R.id.lstPosicionCarga);
                     list.setAdapter(adapterP);
 //        Agregado  click en la lista
                     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -475,7 +470,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
                             img.add(imgid.get(position));
 
                             ListAdapterConbustiblesTLl adapterP = new ListAdapterConbustiblesTLl(eligeCombustibleTL.this, main, sub, img);
-                            list=(ListView)findViewById(R.id.list);
+                            list=(ListView)findViewById(R.id.lstPosicionCarga);
                             list.setAdapter(adapterP);
                             list.setEnabled(false);
 

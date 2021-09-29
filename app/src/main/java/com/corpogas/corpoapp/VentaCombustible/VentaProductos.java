@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,13 +28,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VentaCombustibleAceites extends AppCompatActivity {
+public class VentaProductos extends AppCompatActivity {
     SQLiteBD data;
-    ListView lstProductos;
     String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo;
-    ImageView btnJarreoCombuistible;
 
-    Button btnCombustibleDespacho, btnAceitesDespacho, btnAumentar, btnDisminuir, btnEscanearProucto;
+    Button btnCombustibleVenta, btnPerifericosVentas, btnIncrementarProducto, btnDecrementarProducto, btnEscanearProducto;
+    ListView lstProductos;
+
     List<String> NombreProducto;
     List<String> PrecioProducto;
     List<String> ClaveProducto;
@@ -45,55 +44,70 @@ public class VentaCombustibleAceites extends AppCompatActivity {
     ProgressDialog bar;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_venta_combustible_aceites);
+        setContentView(R.layout.activity_venta_productos);
+
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        EstacionId = data.getIdEstacion();
+        sucursalId = data.getIdSucursal();
+        ipEstacion = data.getIpEstacion();
+
         init();
 
-        btnCombustibleDespacho = findViewById(R.id.btncombustible);
-        btnCombustibleDespacho.setOnClickListener(new View.OnClickListener() {
+        lstProductos = findViewById(R.id.lstProductos);
+        btnCombustibleVenta = findViewById(R.id.btnGasolinas);
+        btnCombustibleVenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(VentaCombustibleAceites.this, "ENTRO Combustible", Toast.LENGTH_SHORT).show();
-//                cargaProductos("1");
+//                Toast.makeText(VentaProductos.this, "Entro Boton Gas Venta", Toast.LENGTH_SHORT).show();
+                ActivaDesactiva (false);
             }
         });
-
-        btnAceitesDespacho = findViewById(R.id.btnAceiteVenta);
-        btnCombustibleDespacho.setOnClickListener(new View.OnClickListener() {
+        btnPerifericosVentas = findViewById(R.id.btnAceitesVentas);
+        btnPerifericosVentas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ActivaDesactiva (true);
+//                Toast.makeText(VentaProductos.this, "Entro Boton Perifericos Venta", Toast.LENGTH_SHORT).show();
             }
         });
-
-        btnAumentar = findViewById(R.id.btnMas);
-        btnAumentar.setOnClickListener(new View.OnClickListener() {
+        btnIncrementarProducto = findViewById(R.id.btnAumentar);
+        btnIncrementarProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-            }
-        });
-
-        btnDisminuir = findViewById(R.id.btnMenos);
-        btnDisminuir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                Toast.makeText(VentaProductos.this, "Entro Boton Mas Venta", Toast.LENGTH_SHORT).show();
 
             }
         });
-
-        btnEscanearProucto = findViewById(R.id.btnScanear);
-        btnEscanearProucto.setOnClickListener(new View.OnClickListener() {
+        btnDecrementarProducto = findViewById(R.id.btnDisminuir);
+        btnDecrementarProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(VentaProductos.this, "Entro Boton Menos Venta", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnEscanearProducto = findViewById(R.id.btnEscanearProducto);
+        btnEscanearProducto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(VentaProductos.this, "Entro Boton Escanear Venta", Toast.LENGTH_SHORT).show();
 
             }
         });
+        ActivaDesactiva (false);
+//        btnDecrementarProducto.setEnabled(false);
+//        btnIncrementarProducto.setEnabled(false);
+//        btnEscanearProducto.setEnabled(false);
+
         cargaProductos("1");
+
     }
+
     private void init() {
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
@@ -103,16 +117,18 @@ public class VentaCombustibleAceites extends AppCompatActivity {
         poscicionCarga = getIntent().getStringExtra("posicionCarga");
         idUsuario = getIntent().getStringExtra("numeroEmpleado");
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
-//        btnCombustibleDespacho.findViewById(R.id.btnCombustible);
-//        btnAceitesDespacho.findViewById(R.id.btnAceites);
-//        btnAumentar.findViewById(R.id.btnAumentar);
-//        btnDisminuir.findViewById(R.id.btnDisminuir);
-//        btnEscanearProucto.findViewById(R.id.btnEscanear);
+
+    }
+
+    private void ActivaDesactiva(Boolean Activa){
+        btnDecrementarProducto.setEnabled(Activa);
+        btnIncrementarProducto.setEnabled(Activa);
+        btnEscanearProducto.setEnabled(Activa);
 
     }
 
     private void cargaProductos(String TipoProducto) {
-        bar = new ProgressDialog(VentaCombustibleAceites.this);
+        bar = new ProgressDialog(VentaProductos.this);
         bar.setTitle("Cargando Productos");
         bar.setMessage("Ejecutando... ");
         bar.setIcon(R.drawable.gas);
@@ -120,25 +136,25 @@ public class VentaCombustibleAceites extends AppCompatActivity {
         bar.show();
 
 
-            SQLiteBD data = new SQLiteBD(getApplicationContext());
-            String posicion = getIntent().getStringExtra("pos");
-            String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    mostrarProductos(response, TipoProducto);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String posicion = getIntent().getStringExtra("pos");
+        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mostrarProductos(response, TipoProducto);
 //                    Toast.makeText(VentaCombustibleAceites.this, "Entro", Toast.LENGTH_SHORT).show();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-                }
-            });
-            RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-            requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest);
     }
 
     private void mostrarProductos(String response, String TipoProducto) {
@@ -231,6 +247,5 @@ public class VentaCombustibleAceites extends AppCompatActivity {
             }
         });
     }
-
 
 }

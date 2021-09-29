@@ -102,11 +102,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list"
+        app:layout_constraintTop_toBottomOf="@+id/lstPosicionCarga"
         app:layout_constraintVertical_bias="0.0" />
 
     <ListView
-        android:id="@+id/list"
+        android:id="@+id/lstPosicionCarga"
         android:layout_width="330dp"
         android:layout_height="230dp"
         android:layout_alignParentEnd="true"

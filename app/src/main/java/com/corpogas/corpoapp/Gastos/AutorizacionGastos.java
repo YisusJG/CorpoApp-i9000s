@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -112,7 +111,7 @@ public class AutorizacionGastos extends AppCompatActivity {
             }
 
             final ListAdapterProductos adapterP = new ListAdapterProductos(this,  ID, NombreUsuario);
-            list=(ListView)findViewById(R.id.list);
+            list=(ListView)findViewById(R.id.lstPosicionCarga);
             list.setTextFilterEnabled(true);
             list.setAdapter(adapterP);
 //        Agregado  click en la lista

@@ -39,6 +39,7 @@ import android.provider.Settings.Secure;
 import android.widget.*
 import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
 import com.corpogas.corpoapp.Gastos.ClaveGastos
+import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
@@ -71,7 +72,6 @@ class Menu_Principal : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
-
         val data = SQLiteBD(this)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -530,17 +530,16 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgVentas -> {
                 intent = Intent(applicationContext, ProcesoVenta::class.java)
 //                intent.putExtra("device_name", m_deviceName)
-                intent.putExtra("IdUsuario", "136")
-                intent.putExtra("clave", "4444")
-
-                startActivity(intent)
-            }
-            R.id.btnImgTickets -> {
-                intent = Intent(applicationContext, PosicionCargaTickets::class.java)
-                intent.putExtra("IdUsuario", "136")
+                intent.putExtra("IdUsuario", "10045353")
                 intent.putExtra("clave", "4444")
                 startActivity(intent)
             }
+//            R.id.btnImgTickets -> {
+//                intent = Intent(applicationContext, PosicionCargaTickets::class.java)
+//                intent.putExtra("IdUsuario", "136")
+//                intent.putExtra("clave", "4444")
+//                startActivity(intent)
+//            }
             R.id.btnImgMonederos -> {
 //                var manufacturer: String
                 var model: String
@@ -550,9 +549,9 @@ class Menu_Principal : AppCompatActivity() {
 //                identificador = manufacturer + " " + model
 
                 if (model == "i9000S") {
-                    intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos
+                    intent = Intent(applicationContext, Jarreos::class.java)  //MonederosElectronicos SeccionTarjeta
                     intent.putExtra("Enviadodesde", "menuprincipal")
-                    intent.putExtra("tipoTarjeta", "Puntada")
+                    intent.putExtra("numeroempleado", "10002026")
                     startActivity(intent)
                 } else {
                     val titulo = "AVISO"
