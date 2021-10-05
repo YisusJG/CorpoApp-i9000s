@@ -20,7 +20,7 @@ import com.corpogas.corpoapp.Corte.Clave
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
-//import com.corpogas.corpoapp.Entities.Estaciones.ConfiguracionAplicaciones
+//import com.corpogas.corpoapp.Entities2.Estaciones.ConfiguracionAplicaciones
 import com.corpogas.corpoapp.Entities.Sucursales.Update
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
@@ -38,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.provider.Settings.Secure;
 import android.widget.*
 import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
+import com.corpogas.corpoapp.Facturacion.ClienteFacturas
 import com.corpogas.corpoapp.Gastos.ClaveGastos
 import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.LoginActivity
@@ -595,12 +596,11 @@ class Menu_Principal : AppCompatActivity() {
 //                intent = Intent(applicationContext, EnDesarrollo::class.java)
 //                startActivity(intent)
 //            }
-//            R.id.btnImgFacturacion -> {
-//                intent = Intent(applicationContext, PruebasEndPoint::class.java)
-//                startActivity(intent)
-////                intent = Intent(applicationContext, PruebasEndPoint::class.java)
-////                startActivity(intent)
-//            }
+            R.id.btnImgFacturacion -> {
+
+                intent = Intent(applicationContext, ClienteFacturas::class.java)
+                startActivity(intent)
+            }
 //            R.id.btnImgTarjeta -> {
 //                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
 //                intent.putExtra("device_name", m_deviceName)

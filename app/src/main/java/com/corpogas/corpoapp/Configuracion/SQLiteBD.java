@@ -532,6 +532,22 @@ public class SQLiteBD extends SQLiteOpenHelper {
     }
 //<----------------------------------------------------------------------SELECTS DE TABLA EMPLEADO -------------------------------------------------------->
 
+    public String getNumeroEmpleado(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT NumeroEmpleado FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getClave(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT Clave FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
     public List<Empleado> getDatosEmpleado(){
         SQLiteDatabase base =getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT * FROM DatosEmpleado", null);

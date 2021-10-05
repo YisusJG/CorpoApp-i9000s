@@ -17,8 +17,6 @@ import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
-import com.corpogas.corpoapp.Entities.HandHeld.ListaSucursalFormaPago;
-import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
@@ -28,10 +26,11 @@ import com.corpogas.corpoapp.Entities.Tarjetas.RespuestaTanqueLleno;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
+import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
+import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
+import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
+import com.corpogas.corpoapp.Facturacion.Entities.SolicitudFactura;
 
-import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -39,8 +38,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -107,7 +104,6 @@ public interface EndPoints {
     Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId);
 
 
-
 //   METODOS POST
 
     @POST("api/ConfiguracionAplicaciones/ValidarConexion")
@@ -137,10 +133,16 @@ public interface EndPoints {
     @POST("api/tanqueLleno/InicioAutorizacion/clave/{clave}")
     Call<RespuestaTanqueLleno> getInicializaAuto(@Path("clave") String clave, @Body RespuestaIniAuto respuestaIniAuto);
 
-    @POST("api/tanqueLleno/EnviarProductos")
+//    @POST("api/tanqueLleno/EnviarProductos")
 //    Call<RespuestaEnviarProductos> getEnviaProductos(@Body RespuestaEnviarProductos respuestaEnviarProductos);
 
+    // METODOS PARA SOLICITUD DE FACTURAS
 
+    @POST("api/facturas/Rfc")
+    Call<RespuestaApi<List<RespuestaRFC>>> postObtenerRfcs(@Body PeticionRFC peticionRFC);
+
+    @POST("sucursalId/{sucursalId}/usuarioId/{usuarioId}/Factura")
+    Call<RespuestaApi<RespuestaSolicitudFactura>> postSolicitarFactura(@Path("sucursalId") long sucursalId, @Path("usuarioId") long usuarioId, @Body SolicitudFactura solicitudFactura);
 
 
 //    METODOS DELETE

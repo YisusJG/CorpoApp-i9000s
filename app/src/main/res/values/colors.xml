@@ -15,4 +15,5 @@
     <color name="colorWarning">#FFCC00</color>
     <color name="colorInsertarDato">#17a2b8</color>
     <color name="colorNeutral">#434343</color>
+    <color name="darkGrayColor">#A9A9A9</color>
 </resources>

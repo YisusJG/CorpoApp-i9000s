@@ -65,4 +65,5 @@
     <string name="_combustibles">Combustibles</string>
     <string name="tipos_de_vale">Tipos de Vale</string>
     <string name="monto">Monto</string>
+    <string name="label">RFC</string>
 </resources>

@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
+        <!-- Modulo Facturacion -->
+        <activity android:name=".Facturacion.ClienteFacturas" />
+        <!-- Termina modulo de facturacion -->
         <activity
             android:name=".Login.LoginActivity"
             android:exported="true" />
@@ -65,9 +68,7 @@
         <activity android:name=".EnProcesoDeDesarrollo.EnDesarrollo" />
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
         <activity android:name=".VentaCombustible.Ventas" />
-
         <activity android:name=".VentaCombustible.EligePrecioLitros" />
-
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 
