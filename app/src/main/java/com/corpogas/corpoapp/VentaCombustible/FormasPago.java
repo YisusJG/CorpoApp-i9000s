@@ -19,9 +19,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -293,23 +295,21 @@ public class FormasPago extends AppCompatActivity {
                                     String banderaHuella = getIntent().getStringExtra( "banderaHuella");
                                     String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
                                     //LeeTarjeta();
-//                                    Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
-//                                    //intent.putExtra("device_name", m_deviceName);
-//                                    intent.putExtra("banderaHuella", banderaHuella);
-//                                    intent.putExtra("Enviadodesde", "formaspago");
-//                                    intent.putExtra("idusuario", idusuario);
-//                                    intent.putExtra("posicioncarga", posicioncarga);
-//                                    intent.putExtra("claveusuario", ClaveDespachador);
-//                                    intent.putExtra("idoperativa", idoperativa);
-//                                    intent.putExtra("formapagoid", numpago1);
-//                                    intent.putExtra("NombrePago", nombrepago);
-//                                    intent.putExtra("NombreCompleto", nombreCompletoVenta);
-//                                    intent.putExtra("montoenlacanasta", MontoCanasta);
-//                                    intent.putExtra("posicioncargaid", posiciondecargaid);
-//                                    intent.putExtra("tipoTarjeta", "Puntada");
-//                                    intent.putExtra("pagoconpuntada", "no");
-//
-//                                    startActivity(intent);
+                                    Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                                    //intent.putExtra("device_name", m_deviceName);
+                                    intent.putExtra("banderaHuella", banderaHuella);
+                                    intent.putExtra("Enviadodesde", "formaspago");
+                                    intent.putExtra("numeroEmpleado", sucursalnumeroempleado);
+                                    intent.putExtra("idoperativa", idoperativa);
+                                    intent.putExtra("formapagoid", numpago1);
+                                    intent.putExtra("NombrePago", nombrepago);
+                                    intent.putExtra("NombreCompleto", nombreCompletoVenta);
+                                    intent.putExtra("montoenlacanasta", MontoCanasta);
+                                    intent.putExtra("posicioncargaid", posiciondecargaid);
+                                    intent.putExtra("tipoTarjeta", "Puntada");
+                                    intent.putExtra("pagoconpuntada", "no");
+
+                                    startActivity(intent);
                                     modales.alertDialog.dismiss();
                                 }
                             });
@@ -318,13 +318,23 @@ public class FormasPago extends AppCompatActivity {
                                 public void onClick(View view) {
 //                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
                                     modales.alertDialog.dismiss();
-                                    MuestraFormaEfectivo();
+                                    SeleccionaPesosDoalares();
                                 }
                             });
 
                         } else {
                             if (numpago == 2) {//3 VALES
-//                                ObtenerDatosTicketVales(posicioncarga, idusuario, formapagoid, numticket);
+                                Intent intent = new Intent(getApplicationContext(), ValesPapel.class);//DiferentesFormasPagoPuntada
+                                intent.putExtra("Enviadodesde", "formaspago");
+                                intent.putExtra("idusuario", idusuario);
+                                intent.putExtra("posicioncarga", posicioncarga);
+                                intent.putExtra("claveusuario", ClaveDespachador);
+                                intent.putExtra("idoperativa", idoperativa);
+                                intent.putExtra("formapagoid", numpago);
+                                intent.putExtra("montoencanasta", MontoCanasta);
+                                intent.putExtra("numeroempleadosucursal", sucursalnumeroempleado);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 if (numpago == 3 || numpago == 5 || numpago == 13 ) { //numpago == 4 || numpago == 5 || numpago == 6 AMEX, VISA, GASCARD
                                     String titulo = "PUNTADA";
@@ -409,6 +419,32 @@ public class FormasPago extends AppCompatActivity {
     }
 
 
+
+    private void SeleccionaPesosDoalares(){
+        String titulo = "PAGO EFECTIVO";
+        String mensaje = "FORMA DE PAGO EN EFECTIVO";
+        Modales modales = new Modales(FormasPago.this);
+        View viewLectura = modales.MostrarDialogoAlerta(FormasPago.this, mensaje,  "DOLRES", "PESOS");
+        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ObtieneTipoCambbio();
+                modales.alertDialog.dismiss();
+            }
+        });
+
+        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MuestraFormaEfectivo();
+                modales.alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void ObtieneTipoCambbio(){
+        MuestraFormaEfectivo();
+    }
     private void MuestraFormaEfectivo(){
         String titulo = "RECIBI";
         String mensaje = "Ingresa el monto" ;

@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_pago_efectivo.xml" value="0.27445652173913043" />
+        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_tipo_efectivo.xml" value="0.30625" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_vales_papel.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_diferentes_formas_pago.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_litros_precio.xml" value="0.25" />
@@ -15,12 +16,15 @@
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_posiciones_carga_venta.xml" value="0.25" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_proceso_venta.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_splash.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_tarjeta_nfc.xml" value="0.19375" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_vales_palel.xml" value="0.2296875" />
+        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_vales_papel.xml" value="0.25" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_combustible_aceites.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_productos.xml" value="0.19114583333333332" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas.xml" value="0.27943840579710144" />
+        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas_productos.xml" value="0.25" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activoity_dialogo_efectivio_cambio.xml" value="0.26197916666666665" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/listaproductos.xml" value="0.26197916666666665" />
+        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/listaproductos.xml" value="0.25" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/mylist.xml" value="0.16983695652173914" />
       </map>
     </option>

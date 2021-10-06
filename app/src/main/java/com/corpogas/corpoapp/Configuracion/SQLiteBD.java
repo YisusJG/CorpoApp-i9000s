@@ -548,6 +548,14 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return tipo;
     }
 
+    public String getUsuarioId(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT id FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
     public List<Empleado> getDatosEmpleado(){
         SQLiteDatabase base =getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT * FROM DatosEmpleado", null);

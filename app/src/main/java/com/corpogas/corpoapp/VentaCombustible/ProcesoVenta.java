@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class ProcesoVenta extends AppCompatActivity {
     List<String> permiteventa;
     List<String> numeroOperativa;
 
+    Button btnCargaTodasPosicionesCarga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,14 @@ public class ProcesoVenta extends AppCompatActivity {
 //        rcvProcesoVenta.setLayoutManager(linearLayoutManager);
 //        rcvProcesoVenta.setHasFixedSize(true);
 
-        posicionCargaFinaliza();
+        btnCargaTodasPosicionesCarga = findViewById(R.id.btnCargaTodasPosicionesCarga);
+        btnCargaTodasPosicionesCarga.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                posicionCargaFinaliza(2);
+            }
+        });
+        posicionCargaFinaliza(1);
     }
 
     private void init() {
@@ -100,7 +109,7 @@ public class ProcesoVenta extends AppCompatActivity {
     }
 
 
-    public void posicionCargaFinaliza(){
+    public void posicionCargaFinaliza(Integer Identificador){
         bar = new ProgressDialog(ProcesoVenta.this);
         bar.setTitle("Buscando Posiciones de Carga");
         bar.setMessage("Ejecutando... ");
@@ -108,8 +117,12 @@ public class ProcesoVenta extends AppCompatActivity {
         bar.setCancelable(false);
         bar.show();
 
-
-        String url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + IdUsuario;
+        String url;
+        if (Identificador.equals(1)){
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + IdUsuario;
+        }else{
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+        }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -297,84 +310,90 @@ public class ProcesoVenta extends AppCompatActivity {
                             }
                         }
 
-                        Double MontoenCanasta = 0.00;
-                        try {
-                            JSONArray ArregloCadenaRespuesta = new JSONArray(ObjetoRespuesta);
-                            for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
-                                JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
-                                String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
+                        if (banderaConDatos.equals(true)){
+                            Toast.makeText(ProcesoVenta.this, "Posicion Ocupada", Toast.LENGTH_SHORT).show();
+                        } else {
 
-                                Double aTotal;
-                                String fTotal;
-                                aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
-                                MontoenCanasta = MontoenCanasta + aTotal;
+                            Double MontoenCanasta = 0.00;
+                            try {
+                                JSONArray ArregloCadenaRespuesta = new JSONArray(ObjetoRespuesta);
+                                for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
+                                    JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
+                                    String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
+
+                                    Double aTotal;
+                                    String fTotal;
+                                    aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
+                                    MontoenCanasta = MontoenCanasta + aTotal;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+
+                            int IdOperativa = Integer.parseInt(numerooperativa);
+                            if (IdOperativa == 21){ //TarjetaPuntada Redimir
+    //                                        imprimirticket(posicionCarga, "REDIMIR", MontoenCanasta.toString());
+                            }else{
+                                Intent intent = new Intent(getApplicationContext(), VentaCombustibleAceites.class);
+                                intent.putExtra("estacionjarreo", Estacionjarreo);
+    //                                        intent.putExtra("clavedespachador", ClaveDespachador);
+    //                                        intent.putExtra("numeroempleadosucursal", numeroempleado);
+                                switch (IdOperativa) {
+                                    case 1: //              Operativa normal
+                                    case 3:
+                                    case 20://Operativa Puntada P
+    //                                                intent.putExtra("posicioncarga", posicionCarga);
+    //                                                intent.putExtra("IdOperativa", numerooperativa);
+    //                                                intent.putExtra("IdUsuario", IdUsuario);
+    //                                                intent.putExtra("nombrecompleto", nombreCompletoempleado);
+    //                                                intent.putExtra("estacionjarreo", Estacionjarreo);
+    //                                                intent.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
+    //                                                intent.putExtra("montocanasta", MontoenCanasta.toString());
+    //                                                startActivity(intent);
+    //                                                finish();
+                                        break;
+                                    case 2://                Operativa Autoservicio
+                                        break;
+                                    case 4://                Operativa Tanque Lleno Arillo
+                                        break;
+                                    case 5://                Operativa Tanque Lleno Tarjeta
+    //                                                imprimirticket(posicionCarga, "TLLENO", MontoenCanasta.toString());
+                                        break;
+                                    case 6://                Operativa Cliente Estacion E
+                                        break;
+                                    case 7://                Operativa Yena Y
+                                        break;
+                                    case 8://                Operativa Yena Ñ
+                                        break;
+                                    case 10://                Operrativa Puntada Q
+                                        break;
+                                    case 11://                Operativa Desconocida
+                                        break;
+                                    case 54://                Operativa Predeterminada
+                                        break;
+                                    case 55://                Operativa Jarreo
+                                        break;
+                                    case 31://    Autojarreo
+    //                                                Intent intent1 = new Intent(getApplicationContext(), formaPagoEstacionJarreo.class); //
+    //                                                intent1.putExtra("posicioncarga",posicionCarga);
+    //                                                intent1.putExtra("IdOperativa", numerooperativa);
+    //                                                intent1.putExtra("IdUsuario", IdUsuario);
+    //                                                intent1.putExtra("nombrecompleto", nombreCompletoempleado);
+    //                                                intent1.putExtra("montocanasta", MontoenCanasta.toString());
+    //                                                intent1.putExtra("numeroempleadosucursal", numeroempleado);
+    //                                                intent1.putExtra("posicioncargarid", posicioncargaid);
+    //                                                startActivity(intent1);
+    //                                                finish();
+                                        break;
+                                    case 41:// Mercado Pago
+    //                                                imprimirticket(posicionCarga, "MERCADOPAGO", MontoenCanasta.toString());
+                                        break;
+                                    default://                No se encontro ninguna forma de operativa
+                                        break;
+                                }
+                            }
                         }
 
-                        int IdOperativa = Integer.parseInt(numerooperativa);
-                        if (IdOperativa == 21){ //TarjetaPuntada Redimir
-//                                        imprimirticket(posicionCarga, "REDIMIR", MontoenCanasta.toString());
-                        }else{
-                            Intent intent = new Intent(getApplicationContext(), VentaCombustibleAceites.class);
-                            intent.putExtra("estacionjarreo", Estacionjarreo);
-//                                        intent.putExtra("clavedespachador", ClaveDespachador);
-//                                        intent.putExtra("numeroempleadosucursal", numeroempleado);
-                            switch (IdOperativa) {
-                                case 1: //              Operativa normal
-                                case 3:
-                                case 20://Operativa Puntada P
-//                                                intent.putExtra("posicioncarga", posicionCarga);
-//                                                intent.putExtra("IdOperativa", numerooperativa);
-//                                                intent.putExtra("IdUsuario", IdUsuario);
-//                                                intent.putExtra("nombrecompleto", nombreCompletoempleado);
-//                                                intent.putExtra("estacionjarreo", Estacionjarreo);
-//                                                intent.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
-//                                                intent.putExtra("montocanasta", MontoenCanasta.toString());
-//                                                startActivity(intent);
-//                                                finish();
-                                    break;
-                                case 2://                Operativa Autoservicio
-                                    break;
-                                case 4://                Operativa Tanque Lleno Arillo
-                                    break;
-                                case 5://                Operativa Tanque Lleno Tarjeta
-//                                                imprimirticket(posicionCarga, "TLLENO", MontoenCanasta.toString());
-                                    break;
-                                case 6://                Operativa Cliente Estacion E
-                                    break;
-                                case 7://                Operativa Yena Y
-                                    break;
-                                case 8://                Operativa Yena Ñ
-                                    break;
-                                case 10://                Operrativa Puntada Q
-                                    break;
-                                case 11://                Operativa Desconocida
-                                    break;
-                                case 54://                Operativa Predeterminada
-                                    break;
-                                case 55://                Operativa Jarreo
-                                    break;
-                                case 31://    Autojarreo
-//                                                Intent intent1 = new Intent(getApplicationContext(), formaPagoEstacionJarreo.class); //
-//                                                intent1.putExtra("posicioncarga",posicionCarga);
-//                                                intent1.putExtra("IdOperativa", numerooperativa);
-//                                                intent1.putExtra("IdUsuario", IdUsuario);
-//                                                intent1.putExtra("nombrecompleto", nombreCompletoempleado);
-//                                                intent1.putExtra("montocanasta", MontoenCanasta.toString());
-//                                                intent1.putExtra("numeroempleadosucursal", numeroempleado);
-//                                                intent1.putExtra("posicioncargarid", posicioncargaid);
-//                                                startActivity(intent1);
-//                                                finish();
-                                    break;
-                                case 41:// Mercado Pago
-//                                                imprimirticket(posicionCarga, "MERCADOPAGO", MontoenCanasta.toString());
-                                    break;
-                                default://                No se encontro ninguna forma de operativa
-                                    break;
-                            }
-                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

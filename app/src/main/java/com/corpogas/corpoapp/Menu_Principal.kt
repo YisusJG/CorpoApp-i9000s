@@ -550,10 +550,14 @@ class Menu_Principal : AppCompatActivity() {
 //                identificador = manufacturer + " " + model
 
                 if (model == "i9000S") {
-                    intent = Intent(applicationContext, Jarreos::class.java)  //MonederosElectronicos SeccionTarjeta
+                    intent = Intent(applicationContext, MonederosElectronicos::class.java)
                     intent.putExtra("Enviadodesde", "menuprincipal")
-                    intent.putExtra("numeroempleado", "10002026")
+                    intent.putExtra("tipoTarjeta", "Puntada")
                     startActivity(intent)
+
+//                    intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
+//                    intent.putExtra("Enviadodesde", "menuprincipal")
+//                    startActivity(intent)
                 } else {
                     val titulo = "AVISO"
                     val mensajes = "El dispositivo no cuenta con lector de tarjetas."
@@ -601,11 +605,11 @@ class Menu_Principal : AppCompatActivity() {
                 intent = Intent(applicationContext, ClienteFacturas::class.java)
                 startActivity(intent)
             }
-//            R.id.btnImgTarjeta -> {
-//                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
+            R.id.btnImgTarjeta -> {
+                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
 //                intent.putExtra("device_name", m_deviceName)
-//                startActivity(intent)
-//            }
+                startActivity(intent)
+            }
             R.id.btnImgJarreo -> {
                 intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
                 intent.putExtra("LugarProviene", "JarreoTodaEstacion")

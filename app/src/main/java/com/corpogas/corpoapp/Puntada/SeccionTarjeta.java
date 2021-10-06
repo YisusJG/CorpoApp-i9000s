@@ -60,7 +60,6 @@ public class SeccionTarjeta extends AppCompatActivity {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getApplicationContext(),"Seleccion :" + lrecyclerViewHeaders.get(recyclerViewSeccionTarjeta.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
                 switch (lrecyclerViewHeaders.get(recyclerViewSeccionTarjeta.getChildAdapterPosition(v)).getTitulo()) {
                     case "Puntada Consulta Saldo": //Consulta Saldo
                         RedencionConsultaPuntada("ConsultaSaldoPuntada" );
@@ -69,41 +68,7 @@ public class SeccionTarjeta extends AppCompatActivity {
                         RedencionConsultaPuntada("Redimir");
                         break;
                     case "Puntada Registrar"://Registrar
-//                        try {
-//                            String titulo = "PUNTADA";
-//                            String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
-//                            Modales modales = new Modales(SeccionTarjeta.this);
-//                            View viewLectura = modales.MostrarDialogoInsertaDato(SeccionTarjeta.this, mensaje, titulo);
-//                            EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-//                            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    String cantidad = edtProductoCantidad.getText().toString();
-//                                    if (cantidad.isEmpty()){
-//                                        edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
-//                                    }else {
-//                                        String NIPCliente = cantidad;
-//                                        Intent intent = new Intent(getApplicationContext(), ClaveEmpleado.class);
-//                                        intent.putExtra("LugarProviene", "Registrar");
-//                                        intent.putExtra("Nip", NIPCliente);
-//                                        intent.putExtra("NumeroTarjeta", NumeroTarjeta);
-////                                        intent.putExtra("device_name", m_deviceName);
-//                                        startActivity(intent);
-//                                        finish();
-//                                    }
-//                                }
-//                            });
-//                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    modales.alertDialog.dismiss();
-//                                }
-//                            });
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                        break;
+                        break;
                     default:
                         break;
                 }
@@ -128,13 +93,15 @@ public class SeccionTarjeta extends AppCompatActivity {
                         edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
                     }else {
                         String NIPCliente = cantidad;
-                        Intent intent2 = new Intent(getApplicationContext(), ClaveEmpleado.class);
-                        intent2.putExtra("LugarProviene", ProcesoARealizar);
-                        intent2.putExtra("Nip", NIPCliente);
-                        intent2.putExtra("NumeroTarjeta", NumeroTarjeta);
-//                        intent2.putExtra("banderaHuella", banderahuella);
-//                        intent2.putExtra("device_name", m_deviceName);
-                        startActivity(intent2);
+//                        Intent intent2 = new Intent(getApplicationContext(), ClaveEmpleado.class);
+//                        intent2.putExtra("LugarProviene", ProcesoARealizar);
+//                        intent2.putExtra("Nip", NIPCliente);
+//                        intent2.putExtra("NumeroTarjeta", NumeroTarjeta);
+                        Intent intent4 = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
+                        intent4.putExtra("track", NumeroTarjeta);
+                        intent4.putExtra("nip", NIPCliente);
+                        intent4.putExtra("lugarproviene", "Redimir");
+                        startActivity(intent4);
                         finish();
                     }
                 }

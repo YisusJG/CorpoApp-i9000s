@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ValesPapel.ValesPapel">
+
+    <TextView
+        android:id="@+id/tvMontoACargarPendiente"
+        android:layout_width="81dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:hint="0.00"
+        android:textAlignment="center"
+        android:textColor="#2196F3"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.017"
+        app:layout_constraintStart_toEndOf="@+id/tvMontoACargar"
+        app:layout_constraintTop_toBottomOf="@+id/tvMontoCargarD3"
+        tools:ignore="MissingConstraints,TouchTargetSizeCheck"
+        tools:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvMontoCargarD3"
+        android:layout_width="85dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Pendiente $"
+        android:textAlignment="center"
+        android:textColor="#2196F3"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintStart_toEndOf="@+id/tvMontoCargarD"
+        app:layout_constraintTop_toBottomOf="@+id/lstValesPapel"
+        tools:ignore="MissingConstraints" />
+
+    <ImageButton
+        android:id="@+id/imgEscanearVale"
+        android:layout_width="60dp"
+        android:layout_height="42dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/b3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintStart_toEndOf="@+id/tvDenominacionMonto"
+        app:layout_constraintTop_toBottomOf="@+id/tvFolioMonto"
+        app:srcCompat="@android:drawable/ic_menu_search"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <Spinner
+        android:id="@+id/spTipoValePapel"
+        android:layout_width="346dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvValesPapelTitulo"
+        tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/tvDenominacionMonto"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:hint="000"
+        android:minWidth="48dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/tvDenominacion"
+        app:layout_constraintTop_toBottomOf="@+id/tvFolioMonto"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/tvDenominacion"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="25dp"
+        android:text="Monto"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFolioTitulo" />
+
+    <EditText
+        android:id="@+id/tvFolioMonto"
+        android:layout_width="265dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="000000000000000000"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.281"
+        app:layout_constraintStart_toEndOf="@+id/tvFolioTitulo"
+        app:layout_constraintTop_toBottomOf="@+id/spTipoValePapel"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/tvFolioTitulo"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:text="Folio"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spTipoValePapel"
+        tools:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvMontoACargar"
+        android:layout_width="81dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:hint="0.00"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMontoCargarD"
+        tools:ignore="MissingConstraints,TouchTargetSizeCheck"
+        tools:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvMontoCargarD"
+        android:layout_width="85dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Por Pagar $"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lstValesPapel"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tvValesPapelTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Tipo Vale Papel"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnAgregarVale"
+        android:layout_width="354dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:text="Agregar Vale"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDenominacion"
+        tools:ignore="MissingConstraints,TouchTargetSizeCheck" />
+
+    <ListView
+        android:id="@+id/lstValesPapel"
+        android:layout_width="348dp"
+        android:layout_height="206dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAgregarVale" />
+
+    <Button
+        android:id="@+id/btnAceptarValesPapel"
+        android:layout_width="107dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="10dp"
+        android:text="Aceptar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lstValesPapel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

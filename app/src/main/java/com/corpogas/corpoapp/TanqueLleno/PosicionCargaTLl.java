@@ -94,8 +94,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
         sucursalId = Long.parseLong(data.getIdSucursal());
         ipEstacion = data.getIpEstacion();
         lugarproviene = getIntent().getStringExtra("lugarproviene");
-        usuarioid = getIntent().getLongExtra("IdUsuario",0);
-        usuario = getIntent().getStringExtra("ClaveDespachador");
+        usuario = data.getClave();
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nipCliente");
         NipClientemd5 = getIntent().getStringExtra("nipMd5Cliente");

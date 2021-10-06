@@ -21,6 +21,7 @@ import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.TanqueLleno.NFC.TarjetaNFC;
 import com.corpogas.corpoapp.VentaCombustible.Ventas;
 
 import java.util.ArrayList;
@@ -64,6 +65,9 @@ public class seccionTanqueLleno extends AppCompatActivity {
         lTanqueLleno = new ArrayList<>();
         lTanqueLleno.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
+        lTanqueLleno.add(new RecyclerViewHeaders("Planchado","Planchado de Tarjeta",R.drawable.tanquelleno));
+
+
     }
 
     private void initializeAdapter() {
@@ -74,6 +78,7 @@ public class seccionTanqueLleno extends AppCompatActivity {
                 String titulo;
 //                Toast.makeText(getApplicationContext(),"Seleccion :" + lCombustible.get(rcvCombustible.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
                 titulo = lTanqueLleno.get(rcvTanqueLleno.getChildAdapterPosition(v)).getTitulo();
+
                 if (titulo.equals("Banda Magnética")) {
                     Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);   //LeeTarjeta
                     intent.putExtra("Enviadodesde", "TanqueLlenoBandaMagnetica");
@@ -85,6 +90,10 @@ public class seccionTanqueLleno extends AppCompatActivity {
                     finish();
 
                 } else if (titulo.equals("NFC")) {
+                    Intent intent1 = new Intent(getApplicationContext(), TarjetaNFC.class);
+                    startActivity(intent1);
+                    finish();
+                } else if (titulo.equals("Planchado")) {
                     Intent intent1 = new Intent(getApplicationContext(), ClaveEmpleado.class); //claveFinVenta
 //                    intent1.putExtra("LugarProviene", "FinalizaVenta");
 //                    intent1.putExtra("device_name", m_deviceName);

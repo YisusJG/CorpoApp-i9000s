@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TanqueLleno.NFC.TarjetaNFC">
+
+    <EditText
+        android:id="@+id/rev_data"
+        android:layout_width="match_parent"
+        android:layout_height="176dp"
+        android:enabled="false"
+        android:isScrollContainer="true"
+        android:scrollbarStyle="insideOverlay"
+        android:textColor="#000000"
+        android:visibility="invisible"
+        tools:ignore="MissingConstraints,SpeakableTextPresentCheck"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:visibility="invisible"></EditText>
+
+    <Button
+        android:id="@+id/picc_check"
+        android:layout_width="305dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="132dp"
+        android:layout_weight="1"
+        android:background="@drawable/b3"
+        android:text="@string/leer_tarjeta_nfc"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgNFC"
+        tools:ignore="MissingConstraints"></Button>
+
+    <ImageView
+        android:id="@+id/imgNFC"
+        android:layout_width="278dp"
+        android:layout_height="222dp"
+        android:layout_marginTop="136dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rev_data"
+        tools:srcCompat="@drawable/monederos"
+        tools:visibility="visible"
+        android:contentDescription="TODO" />
+</androidx.constraintlayout.widget.ConstraintLayout>

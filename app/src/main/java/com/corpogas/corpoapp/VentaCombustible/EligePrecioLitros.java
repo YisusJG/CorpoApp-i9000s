@@ -24,7 +24,9 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.MyListAdapter;
+import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,7 +50,7 @@ public class EligePrecioLitros extends AppCompatActivity {
     String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
 
 
-    Button btnLibre, btnPredeterminado, btnCobrar;
+    Button btnLibre, btnPredeterminado, btnCobrar, btnCombustibleCobrar, btnPerifericosCobrar;
     SQLiteBD data;
     String EstacionId,  ipEstacion, sucursalId;
 
@@ -70,6 +72,23 @@ public class EligePrecioLitros extends AppCompatActivity {
         claveProducto = getIntent().getStringExtra("claveProducto");
         precio = getIntent().getStringExtra("precioProducto");
 
+        btnPerifericosCobrar = findViewById(R.id.btnPerifericosCobrar);
+        btnPerifericosCobrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
+                intent.putExtra("numeroOperativa", usuarioid);
+                intent.putExtra("cadenaproducto", "");
+                intent.putExtra("lugarproviene", "Venta");
+                intent.putExtra("NumeroIsla", "1");
+                intent.putExtra("NumeroEmpleado", usuarioid);
+                intent.putExtra("posicionCarga", posicionCarga);
+                startActivity(intent);
+                finish();
+            }
+        });
+        btnCombustibleCobrar = findViewById(R.id.btnCombustibleCobrar);
+        btnCombustibleCobrar.setEnabled(false);
         Cantidad = findViewById(R.id.CantidadPrecio);
         EtiquetaCantidad = findViewById(R.id.EtiquetaPrecioLista);
         btnLibre = (Button) findViewById(R.id.btnDespachoLibre);
@@ -98,6 +117,17 @@ public class EligePrecioLitros extends AppCompatActivity {
                 Cantidad.setEnabled(true);
                 btnLibre.setEnabled(false);
                 btnPredeterminado.setEnabled(true);
+
+                Intent intent = new Intent(getApplicationContext(), ValesPapel.class);
+                intent.putExtra("numeroEmpleado", usuarioid);
+                intent.putExtra("posicionCarga", posicionCarga);
+                intent.putExtra("estacionjarreo", estacionJarreo);
+                intent.putExtra("claveProducto", claveProducto);
+                intent.putExtra("montoenCanasta", "200");
+                startActivity(intent);
+                finish();
+
+
             }
         });
 

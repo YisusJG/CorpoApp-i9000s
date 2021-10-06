@@ -93,8 +93,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         numerotarjetero = Integer.parseInt(db.getIdTarjtero());
 
         lugarproviene = getIntent().getStringExtra("lugarproviene");
-        usuarioid = getIntent().getLongExtra("IdUsuario",0);
-        usuario = getIntent().getStringExtra("ClaveDespachador");
+        usuarioid = Long.parseLong(db.getUsuarioId()); //getIntent().getLongExtra("IdUsuario",0);
+        usuario = db.getClave();//getIntent().getStringExtra("ClaveDespachador");
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nip");
 
@@ -288,7 +288,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         bar.setIcon(R.drawable.gas);
         bar.setCancelable(false);
         bar.show();
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/clave/"+usuario;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+empleadoNumero;
 
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new com.android.volley.Response.Listener<String>() {

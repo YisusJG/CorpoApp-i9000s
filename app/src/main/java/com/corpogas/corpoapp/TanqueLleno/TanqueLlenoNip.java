@@ -78,14 +78,23 @@ public class TanqueLlenoNip extends AppCompatActivity {
         } else {
             NIPCliente = pass;
             ObtieneNipMD5();
-            Intent intent = new Intent(getApplicationContext(), ClaveEmpleado.class); //ClaveDespachadorTL
-            //bundle.putString("track",track2);
-            intent.putExtra("track",track2);
-            intent.putExtra("nipTanqueLleno", NIPCliente);
-            intent.putExtra("nipTanqueLlenoMd5", NIPmd5Cliente);
-            intent.putExtra("LugarProviene", "Tanque");
-            startActivity(intent);
+//            Intent intent = new Intent(getApplicationContext(), ClaveEmpleado.class); //ClaveDespachadorTL
+//            //bundle.putString("track",track2);
+//            intent.putExtra("track",track2);
+//            intent.putExtra("nipTanqueLleno", NIPCliente);
+//            intent.putExtra("nipTanqueLlenoMd5", NIPmd5Cliente);
+//            intent.putExtra("LugarProviene", "Tanque");
+//            startActivity(intent);
+//            finish();
+            Intent intent5 = new Intent(getApplicationContext(), PosicionCargaTLl.class);
+//            intent5.putExtra("IdUsuario", idusuario);
+            intent5.putExtra("track", track2);
+            intent5.putExtra("nipCliente", NIPCliente);
+            intent5.putExtra("nipMd5Cliente", NIPmd5Cliente);
+            intent5.putExtra("pagoconpuntada", "no");
+            startActivity(intent5);
             finish();
+
         }
     }
     private void ObtieneNipMD5(){
