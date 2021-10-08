@@ -51,7 +51,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center_horizontal"
-        android:text="Jose Alberto Neri Gonzalez"
+        android:text="Nombre"
         android:textColor="#000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
         android:layout_marginRight="8dp"
         style="@style/TextAppearance.AppCompat.Body2"
         android:textColor="#000"
-        android:text="Despachador"
+        android:text="Rol"
         android:gravity="center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="13"
+        android:text="No. Dispositivo"
         style="@style/TextAppearance.AppCompat.Body2"
         android:textColor="#000"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,26 +92,37 @@
         android:gravity="center_horizontal"/>
 
     <TextView
+        android:id="@+id/txtCerrarSesionTemporalMainNav"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/border"
+        android:drawableLeft="@drawable/exit"
+        android:text="   Cerrar sesion temporal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtIdDispositivoMainNav" />
+
+    <TextView
         android:id="@+id/txtCerrarSesionMainNav"
         style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/border"
         android:drawableLeft="@drawable/exit"
         android:gravity="center_vertical"
         android:text="   Cerrar sesion"
         android:textColor="#000"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtIdDispositivoMainNav" />
+        app:layout_constraintTop_toBottomOf="@+id/txtCerrarSesionTemporalMainNav" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

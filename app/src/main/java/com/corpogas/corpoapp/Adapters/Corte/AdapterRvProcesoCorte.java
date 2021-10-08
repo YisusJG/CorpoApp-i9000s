@@ -23,7 +23,7 @@ import com.corpogas.corpoapp.Fragments.Corte.FajillasMonedasFragment;
 import com.corpogas.corpoapp.Fragments.Corte.FormasPagoFragment;
 import com.corpogas.corpoapp.Fragments.Corte.GranTotalFragment;
 import com.corpogas.corpoapp.Fragments.Corte.LecturasMecanicasFragment;
-import com.corpogas.corpoapp.Fragments.Corte.PicosFragment;
+import com.corpogas.corpoapp.Corte.Fragments.PicosFragment;
 import com.corpogas.corpoapp.Fragments.Corte.ProcesoCorteFragment;
 import com.corpogas.corpoapp.Fragments.Corte.ProductosFaltantesFragment;
 import com.corpogas.corpoapp.Fragments.Corte.ProductosFragment;

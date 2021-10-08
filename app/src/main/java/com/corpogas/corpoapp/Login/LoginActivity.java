@@ -37,8 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     long  sucursalIdApi, estacionIdApi, rolIdApi, idApi;
     boolean activoApi;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

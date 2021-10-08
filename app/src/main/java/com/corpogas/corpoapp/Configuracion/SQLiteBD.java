@@ -10,7 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
+import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,9 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_DATOS_TARJETERO);
         db.execSQL(TBL_ACTUALIZADOR_APP);
         db.execSQL(TBL_EMPLEADO);
+        db.execSQL(TBL_PRECIO_FAJILLAS);
+        db.execSQL(TBL_FAJILLAS);
+        db.execSQL(TBL_PICOS);
     }
 
     @Override
@@ -532,6 +538,22 @@ public class SQLiteBD extends SQLiteOpenHelper {
     }
 //<----------------------------------------------------------------------SELECTS DE TABLA EMPLEADO -------------------------------------------------------->
 
+        public List<Empleado> getDatosEmpleado(){
+        SQLiteDatabase base =getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM DatosEmpleado", null);
+        List<Empleado> lEmpleado = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            do{
+                lEmpleado.add(new Empleado(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getString(4),cursor.getString(5),
+                              cursor.getString(6),cursor.getString(7),cursor.getInt(8),cursor.getString(9),cursor.getInt(10) != 0,cursor.getString(11),
+                              cursor.getString(12)));
+
+            }while(cursor.moveToNext());
+
+        }
+        return lEmpleado;
+    }
+
     public String getNumeroEmpleado(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT NumeroEmpleado FROM DatosEmpleado", null);
@@ -556,21 +578,257 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return tipo;
     }
 
-    public List<Empleado> getDatosEmpleado(){
-        SQLiteDatabase base =getReadableDatabase();
-        Cursor cursor = base.rawQuery("SELECT * FROM DatosEmpleado", null);
-        List<Empleado> lEmpleado = new ArrayList<>();
+    public String getNombreCompleto(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT NombreCompleto FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String nombreCompleto = cursor.getString(0);
+        return nombreCompleto;
+    }
+
+    public String getRol(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT RolId FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String rol = cursor.getString(0);
+        return rol;
+    }
+
+    //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
+
+           //<-------------------------------------------------------PARAMETROS DE LA TABLA FAJILLAS------------------------------------------------>
+
+    public static class DatosFajillas implements BaseColumns{
+        public static final String nombreTabla = "Fajillas";
+        public static final String fajillasBilletes = "FajillasBilletes";
+        public static final String fajillasMonedas = "FajillasMonedas";
+        public static final String tipoFajilla = "TipoFajilla";
+
+    }
+
+    //<------------------------------------------------------------------CREACION DE TABLA FAJILLAS---------------------------------------------------------------------->
+
+    public  static final String TBL_FAJILLAS = "CREATE TABLE " + DatosFajillas.nombreTabla+ "("+
+            DatosFajillas._ID + " INTEGER PRIMARY KEY," +
+            DatosFajillas.fajillasBilletes + " INTEGER," +
+            DatosFajillas.fajillasMonedas + " INTEGER," +
+            DatosFajillas.tipoFajilla + " INTEGER)";
+
+    public static final String SQL_DELETE_TBL_FAJILLAS =
+            "DROP TABLE IF EXISTS" + DatosFajillas.nombreTabla;
+
+    //    <----------------------------------------------------------------------INSERT DE TABLA FAJILLAS------------------------------------------------------------------->
+
+    public void InsertarFajillas(int fajillasBilletes, int fajillasMonedas, long tipoFajilla){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosFajillas.fajillasBilletes, fajillasBilletes);
+        values.put(DatosFajillas.fajillasMonedas, fajillasMonedas);
+        values.put(DatosFajillas.tipoFajilla, tipoFajilla);
+
+        long newRowId = base.insert(DatosFajillas.nombreTabla,null,values);
+    }
+
+    //<----------------------------------------------------------------------SELECTS DE TABLA FAJILLAS -------------------------------------------------------->
+
+    public List<CierreFajilla> getFajillas(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM Fajillas", null);
+        List<CierreFajilla> lFajillas = new ArrayList<>();
         if (cursor.moveToFirst()){
             do{
-                lEmpleado.add(new Empleado(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getString(4),cursor.getString(5),
-                              cursor.getString(6),cursor.getString(7),cursor.getInt(8),cursor.getString(9),cursor.getInt(10) != 0,cursor.getString(11),
-                              cursor.getString(12)));
-
-            }while(cursor.moveToNext());
-
+                lFajillas.add(new CierreFajilla(cursor.getInt(1), cursor.getInt(2), cursor.getLong(3)));
+            }while (cursor.moveToNext());
         }
-        return lEmpleado;
+        return lFajillas;
     }
+
+    //<----------------------------------------------------------------------UPDATE DE TABLA FAJILLAS -------------------------------------------------------->
+
+    public boolean updateFajillas(int fajillasBilletes, int fajillasMonedas, long tipoFajilla){
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatosFajillas.fajillasBilletes,fajillasBilletes);
+        contentValues.put(DatosFajillas.fajillasMonedas,fajillasMonedas);
+
+        int datos = base.update(DatosFajillas.nombreTabla, contentValues, DatosFajillas.tipoFajilla + " = ? ",
+                new String[]{String.valueOf(tipoFajilla)});
+        if (datos!=0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
+
+    //<-------------------------------------------------------PARAMETROS DE LA TABLA PICOS------------------------------------------------>
+
+    public static class DatosPicos implements BaseColumns{
+
+        public static final String nombreTabla = "Picos";
+        public static final String sucursalId = "SucursalId";
+        public static final String turnoId = "TurnoId";
+        public static final String tipoFajilla = "TipoFajilla";
+        public static final String cantidad = "Cantidad";
+        public static final String denominacion = "Denominacion";
+        public static final String picosMonedas = "PicosMonedas";
+        public static final String sumaBilletes = "sumaBilletes";
+
+    }
+
+    //<------------------------------------------------------------------CREACION DE TABLA PICOS---------------------------------------------------------------------->
+
+    private static final String TBL_PICOS = "CREATE TABLE " + DatosPicos.nombreTabla+ "("+
+            DatosPicos._ID + " INTEGER PRIMARY KEY," +
+            DatosPicos.sucursalId + " INTEGER," +
+            DatosPicos.turnoId + " INTEGER," +
+            DatosPicos.tipoFajilla + " INTEGER," +
+            DatosPicos.cantidad + " INTEGER," +
+            DatosPicos.denominacion + " INTEGER," +
+            DatosPicos.picosMonedas + " REAL," +
+            DatosPicos.sumaBilletes + " INTEGER)";
+
+    public static final String SQL_DELETE_TBL_PICOS=
+            "DROP TABLE IF EXISTS " + DatosPicos.nombreTabla;
+
+    //    <----------------------------------------------------------------------INSERT DE TABLA PICOS------------------------------------------------------------------->
+
+    public void InsertarPicos(long sucursalId, long turnoId, long tipoFajilla, long cantidad, int denominacion, double picosMonedas, int sumaBilletes){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosPicos.sucursalId, sucursalId);
+        values.put(DatosPicos.turnoId, turnoId);
+        values.put(DatosPicos.tipoFajilla, tipoFajilla);
+        values.put(DatosPicos.cantidad, cantidad);
+        values.put(DatosPicos.denominacion, denominacion);
+        values.put(DatosPicos.picosMonedas, picosMonedas);
+        values.put(DatosPicos.sumaBilletes, sumaBilletes);
+
+        long newRowId = base.insert(DatosPicos.nombreTabla,null,values);
+    }
+
+    //<----------------------------------------------------------------------SELECTS DE TABLA PICOS -------------------------------------------------------->
+
+    public List<RecepcionFajilla> getPicos(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM Picos", null);
+        List<RecepcionFajilla> lCierreFajilla = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            do {
+                lCierreFajilla.add(new RecepcionFajilla(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getInt(4), cursor.getDouble(5), cursor.getDouble(6), cursor.getInt(7)));
+            }while (cursor.moveToNext());
+        }
+
+        return lCierreFajilla;
+    }
+
+    //<----------------------------------------------------------------------UPDATE DE TABLA PICOS -------------------------------------------------------->
+
+    public boolean  updatePicos(int cantidad,int sumaBilletes,double denominacion,int tipoFajilla)
+    {
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatosPicos.cantidad,cantidad);
+        contentValues.put(DatosPicos.sumaBilletes,sumaBilletes);
+        int datos = base.update(DatosPicos.nombreTabla, contentValues, DatosPicos.denominacion + " = ? "+
+                        "and "+DatosPicos.tipoFajilla+ " = ? ",
+                new String[]{String.valueOf(denominacion),String.valueOf(tipoFajilla)});
+        if(datos!=0)
+        {
+            return  true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean  updatePicos(double denominacion,int tipoFajilla)
+    {
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatosPicos.denominacion,denominacion);
+        int datos = base.update(DatosPicos.nombreTabla, contentValues, DatosPicos.tipoFajilla + " = ? ",
+                new String[]{String.valueOf(tipoFajilla)});
+        if(datos!=0)
+        {
+            return  true;
+        }else{
+            return false;
+        }
+    }
+
+    //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
+
+    //<-------------------------------------------------------PARAMETROS DE LA TABLA PRECIOFAJILLAS------------------------------------------------>
+
+    public static class PrecioFajillas implements BaseColumns {
+
+        public static final String nombreTabla = "PrecioFajillas";
+        public static final String sucursalId = "SucursalId";
+        public static final String bankRollType = "BankRollType";
+        public static final String price = "Price";
+    }
+
+    //<------------------------------------------------------------------CREACION DE TABLA PRECIOFAJILLAS---------------------------------------------------------------------->
+
+    private static final String TBL_PRECIO_FAJILLAS = "CREATE TABLE " + PrecioFajillas.nombreTabla+ "("+
+            PrecioFajillas._ID + " INTEGER PRIMARY KEY," +
+            PrecioFajillas.sucursalId + " INTEGER," +
+            PrecioFajillas.bankRollType + " INTEGER," +
+            PrecioFajillas.price + " INTEGER)";
+
+    public static final String SQL_DELETE_TBL_PRECIO_FAJILLAS=
+            "DROP TABLE IF EXISTS " + PrecioFajillas.nombreTabla;
+
+    //    <----------------------------------------------------------------------INSERT DE TABLA PRECIOFAJILLAS------------------------------------------------------------------->
+
+    public void InsertarPrecioFajillas(long sucursalId, long bankRollType, int price){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PrecioFajillas.sucursalId, sucursalId);
+        values.put(PrecioFajillas.bankRollType, bankRollType);
+        values.put(PrecioFajillas.price, price);
+
+        long newRowId = base.insert(PrecioFajillas.nombreTabla,null,values);
+    }
+
+    //<----------------------------------------------------------------------SELECTS DE TABLA PICOS -------------------------------------------------------->
+
+    public List<PriceBankRoll> getPrecioFajillas(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM PrecioFajillas", null);
+        List<PriceBankRoll> lPrecioFajillas = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            do {
+                lPrecioFajillas.add(new PriceBankRoll(cursor.getLong(1),cursor.getLong(2),cursor.getInt(3)));
+            }while (cursor.moveToNext());
+        }
+
+        return lPrecioFajillas;
+    }
+
+    public Integer getPrecioFajillaBillete(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT Price FROM PrecioFajillas WHERE BankRollType = 1", null);
+        cursor.moveToFirst();
+        Integer precioFajillaBillete = cursor.getInt(0);
+        return precioFajillaBillete;
+    }
+
+    public Integer getPrecioFajillaMoneda(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT Price FROM PrecioFajillas WHERE BankRollType = 2", null);
+        cursor.moveToFirst();
+        Integer precioFajillaMoneda = cursor.getInt(0);
+        return precioFajillaMoneda;
+    }
+
+    //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
+
+    //<-------------------------------------------------------PARAMETROS DE LA TABLA RECEPCION FAJILLAS Y PICOS------------------------------------------------>
+
+
+
 }
 
 

@@ -249,29 +249,30 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                             if(numeroRastreo.isEmpty()){
                                 txtNumRastreo.setError("Ingresa un numero de rastreo");
                             }
-                            else{
-                                String comparaNumeroRastreo = numeroRastreo.substring(0,numeroEstacion.length());
+                            else {
+                                if (numeroRastreo.length() < 5) {
+                                    txtNumRastreo.setError("Verifica tu numero de rastreo");
+                                } else {
+                                    String comparaNumeroRastreo = numeroRastreo.substring(0, numeroEstacion.length());
 
-                                if(numeroEstacion.equals(comparaNumeroRastreo))
-                                {
+                                    if (numeroEstacion.equals(comparaNumeroRastreo)) {
 //                                    boolean existeNumeroRastreo = lstNumeroRastreo.contains(numeroRastreo);
-                                    if (lstNumeroRastreo.contains(numeroRastreo)) {
-                                        txtNumRastreo.setError("Este número de rastreo ya lo has agregado");
+                                        if (lstNumeroRastreo.contains(numeroRastreo)) {
+                                            txtNumRastreo.setError("Este número de rastreo ya lo has agregado");
+                                        } else {
+                                            lstNumeroRastreo.add(numeroRastreo);
+                                            adapter.notifyDataSetChanged();
+                                            txtNumRastreo.setText(null);
+                                        }
+
+
                                     } else {
-                                        lstNumeroRastreo.add(numeroRastreo);
-                                        adapter.notifyDataSetChanged();
-                                        txtNumRastreo.setText(null);
+                                        txtNumRastreo.setError("El número de rastreo no pertenece a la sucursal");
+                                        //queda pendiente el toas aqui para validar que pertnezca a la estacion donde se saco el tricket
+
                                     }
-
-
-                                }else
-                                {
-                                    txtNumRastreo.setError("El número de rastreo no pertenece a la sucursal");
-                                    //queda pendiente el toas aqui para validar que pertnezca a la estacion donde se saco el tricket
-
                                 }
                             }
-
                         }
                     });
 

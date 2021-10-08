@@ -18,14 +18,31 @@ public class CierreFajilla implements Serializable {
     public int FolioInicial;
     public int FolioFinal;
     public double Denominacion;
+    public double PicosMonedas;
+    public int Total;
+    public int FajillasBilletes;
+    public int FajillasMonedas;
 
-    public CierreFajilla(long sucursalId, long cierreId, long tipoFajilla, int folioInicial, int folioFinal, double denominacion ){
+    public CierreFajilla(int folioFinal, int folioInicial, long sucursalId, double picosMonedas,  long tipoFajilla, double denominacion, int total) {
         SucursalId = sucursalId;
-        CierreId = cierreId;
         TipoFajilla = tipoFajilla;
         FolioInicial = folioInicial;
         FolioFinal = folioFinal;
         Denominacion = denominacion;
+        PicosMonedas = picosMonedas;
+        Total = total;
+
+    }
+
+    public CierreFajilla(int fajillasBilletes, int fajillasMonedas, long tipoFajilla) {
+        FajillasBilletes = fajillasBilletes;
+        FajillasMonedas = fajillasMonedas;
+        TipoFajilla = tipoFajilla;
+
+    }
+
+    public CierreFajilla(){
+
     }
 
     public long getSucursalId() { return SucursalId; }
@@ -76,4 +93,28 @@ public class CierreFajilla implements Serializable {
     public double getDenominacion() { return Denominacion; }
 
     public void setDenominacion(double denominacion) { Denominacion = denominacion; }
+
+    public double getPicosMonedas() {
+        return PicosMonedas;
+    }
+
+    public void setPicosMonedas(double picosMonedas) {
+        PicosMonedas = picosMonedas;
+    }
+
+    public int getTotal() {
+        return Total;
+    }
+
+    public void setTotal(int total) {
+        Total = total;
+    }
+
+    public int getFajillasBilletes() { return FajillasBilletes; }
+
+    public void setFajillasBilletes(int fajillasBilletes) { FajillasBilletes = fajillasBilletes; }
+
+    public int getFajillasMonedas() { return FajillasMonedas; }
+
+    public void setFajillasMonedas(int fajillasMonedas) { FajillasMonedas = fajillasMonedas; }
 }

@@ -131,7 +131,7 @@ public class FajillasBilletesFragment extends Fragment {
 
     public void enviarFoliosBilletes(){
 
-        arrayListCierreFajillas.add(new CierreFajilla(sucursalId,cierreId,1,0,Integer.parseInt(billetes),fajillaBilletes));
+//        arrayListCierreFajillas.add(new CierreFajilla(sucursalId,cierreId,1,0,Integer.parseInt(billetes),fajillaBilletes));
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")

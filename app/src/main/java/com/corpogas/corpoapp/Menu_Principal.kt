@@ -38,9 +38,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.provider.Settings.Secure;
 import android.widget.*
 import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
+import com.corpogas.corpoapp.Corte.Fragments.PicosFragment
+import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas
 import com.corpogas.corpoapp.Gastos.ClaveGastos
 import com.corpogas.corpoapp.Jarreos.Jarreos
+import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
@@ -57,6 +60,10 @@ class Menu_Principal : AppCompatActivity() {
     lateinit var downloadController:DownloadController
     lateinit var txtVersionApk:TextView
     lateinit var txtCerrarSesion: TextView
+    lateinit var txtNombreUsuarioMainNav: TextView
+    lateinit var txtRolMainNav: TextView
+    lateinit var txtIdDispositivoMainNav: TextView
+    lateinit var txtCerrarSesionTemporalMainNav: TextView
 
     //-------Variables necesarias para ininicalizar el lector de huellas
     private val GENERAL_ACTIVITY_RESULT = 1
@@ -70,6 +77,7 @@ class Menu_Principal : AppCompatActivity() {
     var imagen: ImageView? = null
     var ImageDisplay: Boolean? = null
     var applicationUpdate: RespuestaApi<Update>? = null
+    var respuestaApiArqueo: RespuestaApi<List<Arqueo>>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
@@ -116,12 +124,20 @@ class Menu_Principal : AppCompatActivity() {
 //        imagen!!.setImageResource(R.drawable.gasolinera)
 //        txtVersionApk =findViewById(R.id.txtVersionApk)
 //        txtVersionApk.text = "CorpoApp Versión: ${data.versionApk}"
+        txtNombreUsuarioMainNav = findViewById(R.id.txtNombreUsuarioMainNav)
+        txtRolMainNav =  findViewById(R.id.txtRolMainNav)
         txtCerrarSesion = findViewById(R.id.txtCerrarSesionMainNav)
+        txtIdDispositivoMainNav = findViewById(R.id.txtIdDispositivoMainNav)
+        txtCerrarSesionTemporalMainNav = findViewById(R.id.txtCerrarSesionTemporalMainNav)
         ImageDisplay = true
         BuscarActualizacion
-
+        txtNombreUsuarioMainNav.setText(data.nombreCompleto)
+        txtRolMainNav.setText(data.rol)
         txtCerrarSesion.setOnClickListener{
             deleteDatos()
+        }
+        txtCerrarSesionTemporalMainNav.setOnClickListener{
+            cerrarSesionTemporal()
         }
 
     }
@@ -142,10 +158,92 @@ class Menu_Principal : AppCompatActivity() {
 
     }
 
+    fun cerrarSesionTemporal(){
+        obtenerArqueo()
+
+
+
+//        val mensajes = "¿CUENTAS CON PICOS PARA ENTREGAR?"
+//        val modales = Modales(this)
+//        val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
+//        viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
+//            intent = Intent(applicationContext, EntregaPicos::class.java)
+//            startActivity(intent)
+//        }
+//        viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener {
+//            val data = SQLiteBD(applicationContext)
+//            data.execSQL(SQL_DELETE_TBL_EMPLEADO)
+//            intent = Intent(applicationContext, LoginActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//            modales.alertDialog.dismiss()
+//
+//        }
+
+
+
+//        val titulo = "Cerrar sesion"
+//        val mensaje = "INGRESA TUS PICOS PARA CONTINUAR"
+//        val modales = Modales(this)
+//        val viewPicos = modales.MostrarDialogoInsertaDato(this, mensaje, titulo)
+//        viewPicos.findViewById<View>(R.id.buttonYes).setOnClickListener{
+//
+//        }
+//        viewPicos.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
+    }
+
+    fun obtenerArqueo(){
+        val data = SQLiteBD(applicationContext)
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val obtenerArqueo = retrofit.create(EndPoints::class.java)
+        val call = obtenerArqueo.getArqueo((data.idSucursal).toLong(),data.numeroEmpleado)
+        call.timeout().timeout(60, TimeUnit.SECONDS)
+        call.enqueue(object : Callback<RespuestaApi<List<Arqueo>>> {
+            override fun onResponse(call: Call<RespuestaApi<List<Arqueo>>>, response: Response<RespuestaApi<List<Arqueo>>> ) {
+                if (!response.isSuccessful) {
+//                    mJsonTxtView.setText("Codigo: "+ response.code());
+                    return
+                }
+                respuestaApiArqueo = response.body()
+                if(respuestaApiArqueo?.isCorrecto == true){
+                    var entregaEfectivo = 0.0
+                    for (item in respuestaApiArqueo?.objetoRespuesta!!){
+                        entregaEfectivo = item.efectivoPorEntregar
+                    }
+                    if (entregaEfectivo != 1.0){
+                        val mensajes = "Tienes $" + entregaEfectivo + " en efectivo para entregar"
+                        val modales = Modales(this@Menu_Principal)
+                        val viewLectura = modales.MostrarDialogoAlerta(this@Menu_Principal, mensajes, "ENTREGAR", "CANCELAR")
+                        viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
+                            intent = Intent(applicationContext, EntregaPicos::class.java)
+                            startActivity(intent)
+                        }
+                        viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener {
+                            modales.alertDialog.dismiss()
+
+                        }
+                    }else{
+                        deleteDatos()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<RespuestaApi<List<Arqueo>>>, t: Throwable) {
+                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
 
     private val BuscarActualizacion: Unit
         private get() {
             val data = SQLiteBD(applicationContext)
+
             val retrofit = Retrofit.Builder()
                     .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
                     .addConverterFactory(GsonConverterFactory.create())

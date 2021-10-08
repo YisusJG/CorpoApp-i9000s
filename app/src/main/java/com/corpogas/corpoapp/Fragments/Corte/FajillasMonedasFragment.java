@@ -131,7 +131,7 @@ public class FajillasMonedasFragment extends Fragment {
 
     public void enviarFoliosMorralla(){
 
-        arrayListCierreFajillas.add(new CierreFajilla(sucursalId,cierreId,2,0,Integer.parseInt(morralla),fajillaMorralla));
+//        arrayListCierreFajillas.add(new CierreFajilla(sucursalId,cierreId,2,0,Integer.parseInt(morralla),fajillaMorralla));
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")

@@ -2,14 +2,21 @@ package com.corpogas.corpoapp.Entities.Sucursales;
 
 import com.corpogas.corpoapp.Entities.TipoFajilla;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
 
 public class PriceBankRoll implements Serializable {
 
     public long BranchId;
     public Branch Branch;
-    public Long BankRollType;
+    public long BankRollType;
     public int Price;
+
+    public PriceBankRoll(long branchId, long bankRollType, int price){
+        this.BranchId = branchId;
+        this.BankRollType = bankRollType;
+        this.Price = price;
+    }
 
     public long getBranchId() {
         return BranchId;

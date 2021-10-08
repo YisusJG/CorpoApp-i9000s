@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.Fragments.Corte;
+package com.corpogas.corpoapp.Corte.Fragments;
 
 import android.os.Bundle;
 

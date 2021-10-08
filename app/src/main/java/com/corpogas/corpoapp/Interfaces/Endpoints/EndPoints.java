@@ -17,6 +17,8 @@ import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
+import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
+import com.corpogas.corpoapp.Entities.Estaciones.ResumenFajilla;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
@@ -26,6 +28,8 @@ import com.corpogas.corpoapp.Entities.Tarjetas.RespuestaTanqueLleno;
 import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
+import com.corpogas.corpoapp.Entities.Virtuales.Arqueo;
+import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
@@ -103,6 +107,16 @@ public interface EndPoints {
     @GET("api/asignacionDispositivos/validaNip/{nip}/dispositivoId/{dispositivoId}")
     Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId);
 
+    //Metodo para obtener Precio fajillas y Denominaciones de Billetes
+
+    @GET("api/cierreVariables/sucursalId/{sucursalId}")
+    Call<RespuestaApi<CierreVariables>> getCierreVariables(@Path("sucursalId") long sucursalId);
+
+    // METODO PARA OBTENER LA VENTA DESGLOSADA DEL DESPACHADOR
+
+    @GET("api/arqueos/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    Call<RespuestaApi<List<Arqueo>>> getArqueo(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
 
 //   METODOS POST
 
@@ -136,13 +150,25 @@ public interface EndPoints {
 //    @POST("api/tanqueLleno/EnviarProductos")
 //    Call<RespuestaEnviarProductos> getEnviaProductos(@Body RespuestaEnviarProductos respuestaEnviarProductos);
 
+    //Metodo para enviar Picos Billetes
+    @POST("api/cierreFajillas/picoBillete/usuario/{usuarioId}") //Metodo para enviar Picos Billetes
+    Call<RespuestaApi<List<CierreFajilla>>> postGuardaPicoBilletes(@Body List<CierreFajilla> cierreFajillas, @Path("usuarioId") long usuarioId);
+
+    //Metodo para enviar Picos Morralla
+    @POST("api/cierreFajillas/usuario/{usuarioId}")
+    Call<RespuestaApi<CierreFajilla>> postGuardaFoliosCierreFajillas(@Body CierreFajilla cierreFajilla, @Path("usuarioId") long usuarioId);
+
     // METODOS PARA SOLICITUD DE FACTURAS
 
     @POST("api/facturas/Rfc")
     Call<RespuestaApi<List<RespuestaRFC>>> postObtenerRfcs(@Body PeticionRFC peticionRFC);
 
-    @POST("sucursalId/{sucursalId}/usuarioId/{usuarioId}/Factura")
+    @POST("api/facturas/sucursalId/{sucursalId}/usuarioId/{usuarioId}/Factura")
     Call<RespuestaApi<RespuestaSolicitudFactura>> postSolicitarFactura(@Path("sucursalId") long sucursalId, @Path("usuarioId") long usuarioId, @Body SolicitudFactura solicitudFactura);
+
+    //Metodo para guardar picos billetes y picos monedas
+    @POST("api/recepcionFajillas/guardaFajilla/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
+    Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body RecepcionFajilla recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
 
 
 //    METODOS DELETE

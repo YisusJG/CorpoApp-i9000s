@@ -10,12 +10,13 @@ public class CierreVariables implements Serializable {
 
     public DiferenciaPermitida DiferenciaPermitida;
     public List<PriceBankRoll> PrecioFajillas;
+    public List<Integer> Denominaciones;
 
-    public com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida getDiferenciaPermitida() {
+    public DiferenciaPermitida getDiferenciaPermitida() {
         return DiferenciaPermitida;
     }
 
-    public void setDiferenciaPermitida(com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida diferenciaPermitida) {
+    public void setDiferenciaPermitida(DiferenciaPermitida diferenciaPermitida) {
         DiferenciaPermitida = diferenciaPermitida;
     }
 
@@ -26,4 +27,8 @@ public class CierreVariables implements Serializable {
     public void setPrecioFajillas(List<PriceBankRoll> precioFajillas) {
         PrecioFajillas = precioFajillas;
     }
+
+    public List<Integer> getDenominaciones() { return Denominaciones; }
+
+    public void setDenominaciones(List<Integer> denominaciones) { Denominaciones = denominaciones; }
 }

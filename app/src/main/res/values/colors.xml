@@ -16,4 +16,5 @@
     <color name="colorInsertarDato">#17a2b8</color>
     <color name="colorNeutral">#434343</color>
     <color name="darkGrayColor">#A9A9A9</color>
+    <color name="lightGray">#ededed</color>
 </resources>
