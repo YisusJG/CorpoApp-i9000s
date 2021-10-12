@@ -168,7 +168,7 @@ public interface EndPoints {
 
     //Metodo para guardar picos billetes y picos monedas
     @POST("api/recepcionFajillas/guardaFajilla/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
-    Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body RecepcionFajilla recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
+    Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body List<RecepcionFajilla> recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
 
 
 //    METODOS DELETE

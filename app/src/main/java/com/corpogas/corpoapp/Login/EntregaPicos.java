@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Corte.ProcesoCorte;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
@@ -26,6 +29,7 @@ import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.Adapters.RVAdapterPicos;
+import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.google.gson.Gson;
@@ -63,7 +67,7 @@ public class EntregaPicos extends AppCompatActivity {
     RespuestaApi<List<ResumenFajilla>> respuestaApiPicosMorralla;
 
     CierreFajilla cierreFajilla;
-    RecepcionFajilla recepcionFajilla;
+    List<RecepcionFajilla> recepcionFajilla = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -247,7 +251,7 @@ public class EntregaPicos extends AppCompatActivity {
 
     }
 
-    private void insertarPicosMorrala() {
+    private void insertarPicosMorralla() {
         db.InsertarPicos(sucursalId,1, 4,1, (int) cantiMorralla, 0, 0);
     }
 
@@ -258,48 +262,48 @@ public class EntregaPicos extends AppCompatActivity {
             obtenerPicosMorralla();
         } else {
 
-//            Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//
-//            lPicos = lPicos.stream().filter(x -> x.Cantidad != 0).collect(Collectors.toList());
-//            String json = new Gson().toJson(lPicos);
-//
-//            EndPoints guardaPicoBilletes = retrofit.create(EndPoints.class);
-//            Call<RespuestaApi<List<ResumenFajilla>>> call = guardaPicoBilletes.postGuardaFajillas(lPicos, db.getNumeroEmpleado(), db.getNumeroEmpleado());
-//            call.timeout().timeout(60, TimeUnit.SECONDS);
-//            call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
-//
-//                @Override
-//                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, Response<RespuestaApi<List<ResumenFajilla>>> response) {
-//                    if (!response.isSuccessful()) {
-//                        return;
-//                    }
-//                    respuestaApiPicosBilletes = response.body();
-//                    boolean correcto = respuestaApiPicosBilletes.Correcto;
-//                    if (correcto == true) {
-//                        obtenerPicosMorralla();
-//                    } else {
-//                        titulo = "AVISO";
-//                        mensaje = respuestaApiPicosBilletes.Mensaje;
-//                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
-//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                modales.alertDialog.dismiss();
-//
-//                            }
-//                        });
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
-//                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-//                }
-//
-//            });
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            lPicos = lPicos.stream().filter(x -> x.Cantidad != 0).collect(Collectors.toList());
+            String json = new Gson().toJson(lPicos);
+
+            EndPoints guardaPicoBilletes = retrofit.create(EndPoints.class);
+            Call<RespuestaApi<List<ResumenFajilla>>> call = guardaPicoBilletes.postGuardaFajillas(lPicos, db.getNumeroEmpleado(), db.getNumeroEmpleado());
+            call.timeout().timeout(60, TimeUnit.SECONDS);
+            call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+
+                @Override
+                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, Response<RespuestaApi<List<ResumenFajilla>>> response) {
+                    if (!response.isSuccessful()) {
+                        return;
+                    }
+                    respuestaApiPicosBilletes = response.body();
+                    boolean correcto = respuestaApiPicosBilletes.Correcto;
+                    if (correcto == true) {
+                        obtenerPicosMorralla();
+                    } else {
+                        titulo = "AVISO";
+                        mensaje = respuestaApiPicosBilletes.Mensaje;
+                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+            });
 
         }
     }
@@ -317,27 +321,34 @@ public class EntregaPicos extends AppCompatActivity {
 
         } else {
             if (Double.parseDouble(cantidadMorralla) > fajillaMorralla) {
+                btnAceptar.setEnabled(true);
                 editTextMorralla.setError("No puedes superar el valor de una fajilla");
 
             } else {
                 if (Double.parseDouble(cantidadMorralla) == fajillaMorralla) {
+                    btnAceptar.setEnabled(true);
                     editTextMorralla.setError("Tu cantidad puede ser una fajilla");
 
                 } else {
 
                     cantiMorralla = Double.parseDouble(cantidadMorralla);
-
+                    lPicos = db.getPicos();
                     lCierreMorralla = lPicos.stream().filter(x -> x.getTipoFajilla() == 4).collect(Collectors.toList());
-                    if (lCierreMorralla.size() == 0) insertarPicosMorrala();
+                    if (lCierreMorralla.size() == 0) insertarPicosMorralla();
                     db.updatePicos(cantiMorralla, 4);
-                    recepcionFajilla = new RecepcionFajilla();
+//                    recepcionFajilla = new RecepcionFajilla();
+//                    recepcionFajilla = new ArrayList<>();
                     lCierreMorralla = db.getPicos().stream().filter(x -> x.getTipoFajilla() == 4).collect(Collectors.toList());
+
                     for (RecepcionFajilla item : lCierreMorralla) {
-                        recepcionFajilla.SucursalId = sucursalId;
-                        recepcionFajilla.TurnoId = 1;
-                        recepcionFajilla.TipoFajilla = item.getTipoFajilla();
-                        recepcionFajilla.Cantidad = item.getCantidad();
-                        recepcionFajilla.Denominacion = item.getDenominacion();
+
+                        recepcionFajilla.add(new RecepcionFajilla(sucursalId,1,item.getTipoFajilla(),item.getCantidad(),item.getDenominacion(),0.0,0));
+
+//                        recepcionFajilla.SucursalId = sucursalId;
+//                        recepcionFajilla.TurnoId = 1;
+//                        recepcionFajilla.TipoFajilla = item.getTipoFajilla();
+//                        recepcionFajilla.Cantidad = item.getCantidad();
+//                        recepcionFajilla.Denominacion = item.getDenominacion();
 
                     }
 
@@ -390,7 +401,7 @@ public class EntregaPicos extends AppCompatActivity {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-             String json = new Gson().toJson(recepcionFajilla);
+//            String json = new Gson().toJson(recepcionFajilla);
 
             EndPoints postGuardaPicosMorralla = retrofit.create(EndPoints.class);
             Call<RespuestaApi<List<ResumenFajilla>>> call = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado());
@@ -412,9 +423,15 @@ public class EntregaPicos extends AppCompatActivity {
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-
-                                    btnAceptar.setEnabled(true);
+                                    db.getWritableDatabase().delete("Picos",null,null);
+                                    db.getWritableDatabase().delete("Fajillas",null,null);
+                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
+//                                    btnAceptar.setEnabled(true);
                                     modales.alertDialog.dismiss();
+                                    db.close();
+                                    finish();
                                 }
                             });
 
@@ -426,9 +443,16 @@ public class EntregaPicos extends AppCompatActivity {
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    db.getWritableDatabase().delete("Picos",null,null);
+                                    db.getWritableDatabase().delete("Fajillas",null,null);
+                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
 
-                                    btnAceptar.setEnabled(true);
+//                                    btnAceptar.setEnabled(true);
                                     modales.alertDialog.dismiss();
+                                    db.close();
+                                    finish();
                                 }
                             });
                         }
@@ -458,6 +482,14 @@ public class EntregaPicos extends AppCompatActivity {
             });
         }
 
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+        startActivity(intent);
+        finish();
     }
 
 

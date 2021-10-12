@@ -127,6 +127,15 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+
 
 
 }

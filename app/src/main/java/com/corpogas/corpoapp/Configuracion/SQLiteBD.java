@@ -46,6 +46,8 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_DATOS_TARJETERO);
         db.execSQL(SQL_DELETE_ACTUALIZADOR_APP);
         db.execSQL(SQL_DELETE_TBL_EMPLEADO);
+        db.execSQL(SQL_DELETE_TBL_PICOS);
+        db.execSQL(SQL_DELETE_TBL_PRECIO_FAJILLAS);
         onCreate(db);
 
     }
@@ -690,7 +692,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
             DatosPicos.sumaBilletes + " INTEGER)";
 
     public static final String SQL_DELETE_TBL_PICOS=
-            "DROP TABLE IF EXISTS " + DatosPicos.nombreTabla;
+            "DROP TABLE " + DatosPicos.nombreTabla;
 
     //    <----------------------------------------------------------------------INSERT DE TABLA PICOS------------------------------------------------------------------->
 
@@ -725,7 +727,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     //<----------------------------------------------------------------------UPDATE DE TABLA PICOS -------------------------------------------------------->
 
-    public boolean  updatePicos(int cantidad,int sumaBilletes,double denominacion,int tipoFajilla)
+    public boolean  updatePicos(int cantidad,int sumaBilletes,double denominacion,long tipoFajilla)
     {
         SQLiteDatabase base = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

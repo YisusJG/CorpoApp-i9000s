@@ -7,7 +7,7 @@ public class ResumenFajilla implements Serializable {
     public long IslaId;
     public int NumeroIsla;
     public String NombreEmpleado;
-    public List<Byte> TipoFajilla;
+    public long TipoFajilla;
     public int Cantidad;
     public double ImporteTotal;
     public String FechaUltimaFajilla;
@@ -36,11 +36,11 @@ public class ResumenFajilla implements Serializable {
         NombreEmpleado = nombreEmpleado;
     }
 
-    public List<Byte> getTipoFajilla() {
+    public long getTipoFajilla() {
         return TipoFajilla;
     }
 
-    public void setTipoFajilla(List<Byte> tipoFajilla) {
+    public void setTipoFajilla(long tipoFajilla) {
         TipoFajilla = tipoFajilla;
     }
 

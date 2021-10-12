@@ -149,9 +149,10 @@ class Menu_Principal : AppCompatActivity() {
         val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
         viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
             val data = SQLiteBD(applicationContext)
-            data.execSQL(SQL_DELETE_TBL_EMPLEADO)
+            data.getWritableDatabase().delete("DatosEmpleado", null, null)
             intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
+            data.close()
             finish()
         }
         viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
@@ -214,7 +215,7 @@ class Menu_Principal : AppCompatActivity() {
                     for (item in respuestaApiArqueo?.objetoRespuesta!!){
                         entregaEfectivo = item.efectivoPorEntregar
                     }
-                    if (entregaEfectivo != 1.0){
+                    if (entregaEfectivo != 0.0){
                         val mensajes = "Tienes $" + entregaEfectivo + " en efectivo para entregar"
                         val modales = Modales(this@Menu_Principal)
                         val viewLectura = modales.MostrarDialogoAlerta(this@Menu_Principal, mensajes, "ENTREGAR", "CANCELAR")
@@ -228,6 +229,17 @@ class Menu_Principal : AppCompatActivity() {
                         }
                     }else{
                         deleteDatos()
+                    }
+                }else{
+                    if(respuestaApiArqueo?.isCorrecto == false){
+                        val titulo = "AVISO"
+                        val mensaje = respuestaApiArqueo?.Mensaje!!
+                        val modales = Modales(this@Menu_Principal)
+                        val view1 = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensaje, titulo)
+                        view1.findViewById<View>(R.id.buttonYes).setOnClickListener {
+                            modales.alertDialog.dismiss()
+                        }
+
                     }
                 }
             }

@@ -28,8 +28,6 @@ public class RecepcionFajilla implements Serializable {
     public double PicosMonedas;
     public int Total;
 
-
-
     public RecepcionFajilla(long sucursalId, long turnoId, long tipoFajilla, int cantidad, double denominacion, double picosMonedas, int total){
         this.SucursalId = sucursalId;
         this.TurnoId = turnoId;
