@@ -135,27 +135,15 @@
 
                         <ImageView
                             android:onClick="onClickMenuPrincipal"
-                            android:id="@+id/btnImgFacturacion"
-                            android:src="@drawable/facturacion"
+                            android:id="@+id/btnImgTickets"
+                            android:src="@drawable/reimprimir"
                             android:layout_width="80dp"
                             android:layout_height="80dp"/>
-
-
-                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
-                        <!--                            android:id="@+id/btnImgFacturacion"-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:onClick="onClickMenuPrincipal"-->
-                        <!--                            app:lottie_autoPlay="false"-->
-                        <!--                            app:lottie_fileName="factura.json"-->
-                        <!--                            app:lottie_imageAssetsFolder="assets"-->
-                        <!--                            app:lottie_loop="true" />-->
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:text="Facturación"
+                            android:text="Tickets"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -186,7 +174,7 @@
                         <ImageView
                             android:onClick="onClickMenuPrincipal"
                             android:id="@+id/btnImgMonederos"
-                            android:src="@drawable/puntadatarjeta"
+                            android:src="@drawable/monederos"
                             android:layout_width="80dp"
                             android:layout_height="80dp"/>
                         <!--                        <com.airbnb.lottie.LottieAnimationView-->
@@ -203,7 +191,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:text="Fidelidad"
+                            android:text="Tarjetas"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -257,102 +245,8 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="15dp"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <ImageView
-                            android:onClick="onClickMenuPrincipal"
-                            android:id="@+id/btnImgReimpresiones"
-                            android:src="@drawable/reimpresiones"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"/>
-
-                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
-                        <!--                            android:id="@+id/btnImgReimpresiones"-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:onClick="onClickMenuPrincipal"-->
-                        <!--                            app:lottie_autoPlay="false"-->
-                        <!--                            app:lottie_fileName="tickets.json"-->
-                        <!--                            app:lottie_imageAssetsFolder="assets"-->
-                        <!--                            app:lottie_loop="true" />-->
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="Reimpresión"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-
-                            />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
 
 
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="15dp"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <ImageView
-                            android:onClick="onClickMenuPrincipal"
-                            android:id="@+id/btnImgPendientes"
-                            android:src="@drawable/pendientes"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"/>
-                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
-                        <!--                            android:id="@+id/btnImgPendientes"-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:onClick="onClickMenuPrincipal"-->
-                        <!--                            app:lottie_autoPlay="false"-->
-                        <!--                            app:lottie_fileName="pendientes.json"-->
-                        <!--                            app:lottie_imageAssetsFolder="assets"-->
-                        <!--                            app:lottie_loop="true" />-->
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="Pendientes"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-
-                            />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -402,6 +296,46 @@
 
                 </androidx.cardview.widget.CardView>
 
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="15dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:onClick="onClickMenuPrincipal"
+                            android:id="@+id/btnImgCortes"
+                            android:src="@drawable/cortes"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="Cortes"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+
+                            />
+
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -438,55 +372,6 @@
 
 
                 </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="15dp"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <ImageView
-                            android:onClick="onClickMenuPrincipal"
-                            android:id="@+id/btnImgCortes"
-                            android:src="@drawable/cortes"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"/>
-                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
-                        <!--                            android:id="@+id/btnImgCortes"-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:onClick="onClickMenuPrincipal"-->
-                        <!--                            app:lottie_autoPlay="false"-->
-                        <!--                            app:lottie_fileName="cortes2.json"-->
-                        <!--                            app:lottie_imageAssetsFolder="assets"-->
-                        <!--                            app:lottie_loop="true" />-->
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="Cortes"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-
-                            />
-
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
 
 
 

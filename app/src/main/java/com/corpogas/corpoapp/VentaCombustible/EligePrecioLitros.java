@@ -13,24 +13,33 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.MyListAdapter;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EligePrecioLitros extends AppCompatActivity {
     ListView list;
@@ -48,11 +57,12 @@ public class EligePrecioLitros extends AppCompatActivity {
     EditText Cantidad;
     TextView EtiquetaCantidad;
     String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
-
-
     Button btnLibre, btnPredeterminado, btnCobrar, btnCombustibleCobrar, btnPerifericosCobrar;
     SQLiteBD data;
-    String EstacionId,  ipEstacion, sucursalId;
+    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre;
+    String mensaje = "", correcto = "";
+    JSONArray myArray = new JSONArray();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +75,22 @@ public class EligePrecioLitros extends AppCompatActivity {
         EstacionId = data.getIdEstacion();
         sucursalId = data.getIdSucursal();
         ipEstacion = data.getIpEstacion();
+        numerodispositivo = data.getIdTarjtero();
 
         posicionCarga = getIntent().getStringExtra("posicionCarga");
-        usuarioid = getIntent().getStringExtra("numeroEmpleado");
+        usuarioid = data.getNumeroEmpleado();
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
         claveProducto = getIntent().getStringExtra("claveProducto");
         precio = getIntent().getStringExtra("precioProducto");
+        despacholibre = getIntent().getStringExtra("despacholibre");
+
+        btnPredeterminado = (Button) findViewById(R.id.btnPredeterminadoInicia);
+        btnCombustibleCobrar = (Button) findViewById(R.id.btnCombustibleCobrar);
+        btnCombustibleCobrar.setEnabled(false);
+        Cantidad = findViewById(R.id.CantidadPrecio);
+        EtiquetaCantidad = findViewById(R.id.EtiquetaPrecioLista);
+        btnLibre = (Button) findViewById(R.id.btnDespachoLibre);
+        list= findViewById(R.id.lstOpcionesPrecio);
 
         btnPerifericosCobrar = findViewById(R.id.btnPerifericosCobrar);
         btnPerifericosCobrar.setOnClickListener(new View.OnClickListener() {
@@ -84,15 +104,9 @@ public class EligePrecioLitros extends AppCompatActivity {
                 intent.putExtra("NumeroEmpleado", usuarioid);
                 intent.putExtra("posicionCarga", posicionCarga);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
-        btnCombustibleCobrar = findViewById(R.id.btnCombustibleCobrar);
-        btnCombustibleCobrar.setEnabled(false);
-        Cantidad = findViewById(R.id.CantidadPrecio);
-        EtiquetaCantidad = findViewById(R.id.EtiquetaPrecioLista);
-        btnLibre = (Button) findViewById(R.id.btnDespachoLibre);
-        list= findViewById(R.id.lstOpcionesPrecio);
 
 
         btnLibre.setOnClickListener(new View.OnClickListener() {
@@ -108,26 +122,15 @@ public class EligePrecioLitros extends AppCompatActivity {
             }
         });
 
-        btnPredeterminado = (Button) findViewById(R.id.btnPredeterminadoInicia);
         btnPredeterminado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cargaOpciones();
                 Toast.makeText(EligePrecioLitros.this, "Se habilito el predeterminado", Toast.LENGTH_SHORT).show();
                 list.setEnabled(true);
                 Cantidad.setEnabled(true);
                 btnLibre.setEnabled(false);
                 btnPredeterminado.setEnabled(true);
-
-                Intent intent = new Intent(getApplicationContext(), ValesPapel.class);
-                intent.putExtra("numeroEmpleado", usuarioid);
-                intent.putExtra("posicionCarga", posicionCarga);
-                intent.putExtra("estacionjarreo", estacionJarreo);
-                intent.putExtra("claveProducto", claveProducto);
-                intent.putExtra("montoenCanasta", "200");
-                startActivity(intent);
-                finish();
-
-
             }
         });
 
@@ -135,25 +138,151 @@ public class EligePrecioLitros extends AppCompatActivity {
         btnCobrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 ValidaTransaccionActiva();
             }
         });
 
         list.setEnabled(false);
+        if (despacholibre.equals("si")){
+            btnPredeterminado.setEnabled(false);
+        }
 
-        cargaOpciones();
 
     }
 
+
+    private void EnviarProductosPredeterminado() {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
+            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + posicionCarga;
+            RequestQueue queue = Volley.newRequestQueue(this);
+            JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
+                    new com.android.volley.Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            //Get Final response
+                            if (correcto.equals("true")) {
+                                String titulo = "AVISO";
+                                String mensajes = "Listo para Iniciar Despacho";
+                                final Modales modales = new Modales(EligePrecioLitros.this);
+
+                                View view1 = modales.MostrarDialogoCorrecto(EligePrecioLitros.this, mensajes);
+                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+//                                        Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                        startActivity(intent1);
+//                                        finish();
+                                    }
+                                });
+                            } else {
+                                try {
+                                    String titulo = "AVISO";
+                                    final Modales modales = new Modales(EligePrecioLitros.this);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(EligePrecioLitros.this, mensaje, titulo);
+                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                                            startActivity(intent1);
+                                            finish();
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    //VolleyLog.e("Error: ", volleyError.getMessage());
+                    String algo = new String(volleyError.networkResponse.data);
+                    try {
+                        //creamos un json Object del String algo
+                        JSONObject errorCaptado = new JSONObject(algo);
+                        //Obtenemos el elemento ExceptionMesage del errro enviado
+                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                        try {
+                            String titulo = "AVISO";
+                            String mensajes = "" + errorMensaje;
+                            Modales modales = new Modales(EligePrecioLitros.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(EligePrecioLitros.this, mensajes, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intente);
+                                    finish();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<String, String>();
+                    // Add headers
+                    return headers;
+                }
+
+                //Important part to convert response to JSON Array Again
+                @Override
+                protected com.android.volley.Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                    String responseString;
+                    JSONArray array = new JSONArray();
+                    if (response != null) {
+
+                        try {
+                            responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            //transaccionId =
+
+                            JSONObject respuesta = new JSONObject(responseString);
+                            correcto = respuesta.getString("Correcto");
+                            mensaje = respuesta.getString("Mensaje");
+                            //String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //return array;
+
+                    return com.android.volley.Response.success(myArray, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+
+
+            request_json.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+            queue.add(request_json);
+        }
+    }
+
+
+
+
+
     private void ValidaTransaccionActiva() {
-//        if (!Conexion.compruebaConexion(this)) {
-//            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-//
-//            startActivity(intent1);
-//            finish();
-//        } else {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
         String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
@@ -202,13 +331,12 @@ public class EligePrecioLitros extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
                             }else{
                                 String titulo = "AVISO";
                                 String mensajes = "Error";
                                 Modales modales = new Modales(EligePrecioLitros.this);
                                 View view1 = modales.MostrarDialogoError(EligePrecioLitros.this,Mensaje);
-                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         modales.alertDialog.dismiss();
@@ -231,17 +359,17 @@ public class EligePrecioLitros extends AppCompatActivity {
         eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(eventoReq);
 
-//        }
+        }
     }
 
 
     private void solicitarDespacho() {
-//        if (!Conexion.compruebaConexion(this)) {
-//            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-//            startActivity(intent1);
-//            finish();
-//        }else {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        }else {
 
         String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + posicionCarga + "/usuarioId/" + usuarioid; //usuarioid
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -282,7 +410,7 @@ public class EligePrecioLitros extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
-//        }
+        }
     }
 
     private void enviaMunu() {
@@ -352,21 +480,21 @@ public class EligePrecioLitros extends AppCompatActivity {
 
     private void calculos() {
         //Se lee el password del objeto y se asigna a variable
-        String cantidad;
+        String cantidadNueva;
 
-        cantidad = Cantidad.getText().toString();
-        if (cantidad.isEmpty()) {
+        cantidadNueva = Cantidad.getText().toString();
+        if (cantidadNueva.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Ingresa la Cantidad", Toast.LENGTH_SHORT).show();
         } else {
-            if (cantidad.equals("0")){
+            if (cantidadNueva.equals("0")){
                 Toast.makeText(getApplicationContext(), "Ingresa una Cantidad mayor a 0", Toast.LENGTH_SHORT).show();
             }else{
                 String mensaje;
                 String titulo = "No podrás cambiar los datos posteriormente";
                 if (TipoSeleccionado == "L") {
-                    mensaje = "Estás seguro de que deseas cargar : " + cantidad + " LITROS";
+                    mensaje = "Estás seguro de que deseas cargar : " + cantidadNueva + " LITROS";
                 }else{
-                    mensaje = "Estás seguro de que deseas cargar : " + cantidad + " PESOS";
+                    mensaje = "Estás seguro de que deseas cargar : " + cantidadNueva + " PESOS";
                 }
                 Modales modales = new Modales(EligePrecioLitros.this);
                 View viewLectura = modales.MostrarDialogoAlerta(EligePrecioLitros.this, mensaje,  "Ok", "Cancelar");
@@ -375,19 +503,12 @@ public class EligePrecioLitros extends AppCompatActivity {
                     public void onClick(View view) {
                         modales.alertDialog.dismiss();
                         btnCobrar.setEnabled(true);
-                        //Intent intent = new Intent(getApplicationContext(), eligeCombustible.class);
-                        //intent.putExtra("posicion", posicion);
-                        //intent.putExtra("usuario", usuarioid);
-                        //intent.putExtra("Cantidad", cantidad);
-                        //intent.putExtra("TipoSeleccionado", TipoSeleccionado);
-                        //startActivity(intent);
-                        //finish();
-                    }
+                        EnviarProductosPredeterminado();                    }
                 });
-
                 viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Cantidad.setText("");
                         modales.alertDialog.dismiss();
                     }
                 });

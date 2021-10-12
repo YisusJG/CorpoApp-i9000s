@@ -18,7 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Menu_Principal;
+import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 
 import org.json.JSONArray;
@@ -30,7 +33,7 @@ import java.util.List;
 
 public class VentaProductos extends AppCompatActivity {
     SQLiteBD data;
-    String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo;
+    String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid;
 
     Button btnCombustibleVenta, btnPerifericosVentas, btnIncrementarProducto, btnDecrementarProducto, btnEscanearProducto;
     ListView lstProductos;
@@ -96,17 +99,83 @@ public class VentaProductos extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(VentaProductos.this, "Entro Boton Escanear Venta", Toast.LENGTH_SHORT).show();
-
+                solicitarDespacho();
             }
         });
         ActivaDesactiva (false);
 //        btnDecrementarProducto.setEnabled(false);
 //        btnIncrementarProducto.setEnabled(false);
-//        btnEscanearProducto.setEnabled(false);
+        btnEscanearProducto.setEnabled(true);
 
         cargaProductos("1");
 
     }
+
+    private void solicitarDespacho() {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        }else {
+
+            String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject respuesta = new JSONObject(response);
+                        String correctoautoriza = respuesta.getString("Correcto");
+                        String mensajeautoriza = respuesta.getString("Mensaje");
+                        String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                        if (correctoautoriza.equals("true")) {
+                            String titulo = "AVISO";
+                            String mensaje = "Listo para Iniciar Despacho";
+                            final Modales modales = new Modales(VentaProductos.this);
+                            View view1 = modales.MostrarDialogoCorrecto(VentaProductos.this,mensaje);
+                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
+                                    intent.putExtra("numeroEmpleado", idUsuario);
+                                    intent.putExtra("posicionCarga", poscicionCarga);
+                                    intent.putExtra("estacionjarreo", estacionJarreo);
+                                    intent.putExtra("despacholibre", "si");
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                        } else {
+                            String titulo = "AVISO";
+                            String mensaje = "La posición de carga se encuentra Ocupada";
+                            Modales modales = new Modales(VentaProductos.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(VentaProductos.this,mensaje,titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                            //Toast.makeText(getApplicationContext(), "Posiciín Ocupada",mensajeautoriza, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
+        }
+    }
+
+
 
     private void init() {
         data = new SQLiteBD(getApplicationContext());
@@ -114,8 +183,9 @@ public class VentaProductos extends AppCompatActivity {
         EstacionId = data.getIdEstacion();
         sucursalId = data.getIdSucursal();
         ipEstacion = data.getIpEstacion();
+        usuarioid = data.getNumeroEmpleado();
         poscicionCarga = getIntent().getStringExtra("posicionCarga");
-        idUsuario = getIntent().getStringExtra("numeroEmpleado");
+        idUsuario = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
 
     }
@@ -239,7 +309,7 @@ public class VentaProductos extends AppCompatActivity {
                     intent.putExtra("estacionjarreo", estacionJarreo);
                     intent.putExtra("claveProducto", claveProducto);
                     intent.putExtra("precioProducto", precio);
-
+                    intent.putExtra("despacholibre", "no");
                     startActivity(intent);
                     finish();
                 }

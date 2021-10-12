@@ -22,6 +22,7 @@ import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.TanqueLleno.NFC.TarjetaNFC;
+import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 import com.corpogas.corpoapp.VentaCombustible.Ventas;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class seccionTanqueLleno extends AppCompatActivity {
         lTanqueLleno = new ArrayList<>();
         lTanqueLleno.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
-        lTanqueLleno.add(new RecyclerViewHeaders("Planchado","Planchado de Tarjeta",R.drawable.tanquelleno));
+        lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Atorización Telefónica",R.drawable.tanquelleno));
 
 
     }
@@ -93,12 +94,12 @@ public class seccionTanqueLleno extends AppCompatActivity {
                     Intent intent1 = new Intent(getApplicationContext(), TarjetaNFC.class);
                     startActivity(intent1);
                     finish();
-                } else if (titulo.equals("Planchado")) {
-                    Intent intent1 = new Intent(getApplicationContext(), ClaveEmpleado.class); //claveFinVenta
-//                    intent1.putExtra("LugarProviene", "FinalizaVenta");
-//                    intent1.putExtra("device_name", m_deviceName);
+                } else if (titulo.equals("Autorización")) {
+//                    Long posicionA = Long.valueOf(2215);
+                    Intent intent1 = new Intent(getApplicationContext(), PosicionCargaTLl.class); //PlanchadoTanqueLleno
+                    intent1.putExtra("lugarproviene", "Planchado");
 //                    intent1.putExtra("banderaHuella", banderaHuella);
-//                    startActivity(intent1);
+                    startActivity(intent1);
                     finish();
                 }
 

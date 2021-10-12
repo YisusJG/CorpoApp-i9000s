@@ -60,6 +60,14 @@ public interface EndPoints {
     @GET("api/accesoUsuarios/sucursal/{sucursalId}/clave/{clave}")
     Call<RespuestaApi<AccesoUsuario>> getAccesoUsuario(@Path("sucursalId") long sucursalId, @Path("clave") String clave);
 
+    @GET("api/accesoUsuarios/sucursal/{sucursalId}/NumeroEmpleado/{numeroempleado}")
+    Call<RespuestaApi<AccesoUsuario>> getAccesoUsuarionumeroempleado(@Path("sucursalId") long sucursalId, @Path("numeroempleado") String numeroempleado);
+
+    //AGERGADO MIKEL
+    @GET("api/accesoUsuarios/sucursal/{sucursalId}")
+    Call<RespuestaApi<AccesoUsuario>> getAccesoUsuariosucursal(@Path("sucursalId") long sucursalId);
+
+
     @GET("api/sucursalFormaPagos/sucursal/{sucursalId}")
     Call<List<BranchPaymentMethod>> getFormaPagos(@Path("sucursalId") long sucursalId);
 

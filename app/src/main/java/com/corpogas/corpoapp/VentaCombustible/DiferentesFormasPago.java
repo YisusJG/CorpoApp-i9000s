@@ -69,13 +69,13 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
         MontoenCanasta = getIntent().getStringExtra("montoencanasta");
         PosicionCarga = getIntent().getStringExtra("posicioncarga");
-        Usuarioid = getIntent().getStringExtra("idusuario");
+        Usuarioid = db.getUsuarioId();//getIntent().getStringExtra("idusuario");
         BanderaHuella = getIntent().getStringExtra("banderaHuella");
         enviadoDesde = getIntent().getStringExtra("Enviadodesde");
-        Clavedespachador = getIntent().getStringExtra("claveusuario");
+        Clavedespachador = db.getClave();//getIntent().getStringExtra("claveusuario");
         OperativaId = getIntent().getStringExtra("idoperativa");
         NombreCompletoVenta = getIntent().getStringExtra("NombreCompleto");
-        numeroempleado = getIntent().getStringExtra("numeroempleadosucursal");
+        numeroempleado = db.getNumeroEmpleado(); //getIntent().getStringExtra("numeroempleadosucursal");
         saldoPuntada = getIntent().getStringExtra("saldoPuntada");
         tarjetaNumero = getIntent().getStringExtra("tarjetaNumero");
         pagoConPuntada = getIntent().getStringExtra("pagoconpuntada");

@@ -46,6 +46,7 @@ import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
+import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
 import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
@@ -639,8 +640,8 @@ class Menu_Principal : AppCompatActivity() {
         var intent: Intent
         when (v.id) {
             R.id.btnImgVentas -> {
-                intent = Intent(applicationContext, ProcesoVenta::class.java)
-//                intent.putExtra("device_name", m_deviceName)
+                intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
+                intent.putExtra("lugarproviene", "Ventas")
                 intent.putExtra("IdUsuario", "10045353")
                 intent.putExtra("clave", "4444")
                 startActivity(intent)
@@ -652,64 +653,52 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 //            }
             R.id.btnImgMonederos -> {
-//                var manufacturer: String
-                var model: String
-                var identificador: String
-//                manufacturer = Build.MANUFACTURER
-                model = Build.MODEL
-//                identificador = manufacturer + " " + model
-
-                if (model == "i9000S") {
-                    intent = Intent(applicationContext, MonederosElectronicos::class.java)
-                    intent.putExtra("Enviadodesde", "menuprincipal")
-                    intent.putExtra("tipoTarjeta", "Puntada")
-                    startActivity(intent)
-
-//                    intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
+                intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
+                startActivity(intent)
+////                var manufacturer: String
+//                var model: String
+//                var identificador: String
+////                manufacturer = Build.MANUFACTURER
+//                model = Build.MODEL
+////                identificador = manufacturer + " " + model
+//
+//                if (model == "i9000S") {
+//                    intent = Intent(applicationContext, MonederosElectronicos::class.java)
 //                    intent.putExtra("Enviadodesde", "menuprincipal")
+//                    intent.putExtra("tipoTarjeta", "Puntada")
 //                    startActivity(intent)
-                } else {
-                    val titulo = "AVISO"
-                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
-                    val modales = Modales(this@Menu_Principal)
-                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes, titulo)
-                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
-                        modales.alertDialog.dismiss()
-                    }
-                }
-
-//                Toast.makeText(applicationContext,"El id del dispositivo es"+ model ,Toast.LENGTH_LONG).show()
-//                id = Secure.getString(applicationContext.contentResolver, Secure.NAME)
-//                Toast.makeText(applicationContext,"El id del dispositivo es"+ id ,Toast.LENGTH_LONG).show()
-//                intent = Intent(applicationContext, EnDesarrollo::class.java)
-//                startActivity(intent)
-
-//                intent = Intent(applicationContext, MonederosElectronicos::class.java)
-//                intent.putExtra("Enviadodesde", "menuprincipal")
-//                startActivity(intent)
-
+//
+//                } else {
+//                    val titulo = "AVISO"
+//                    val mensajes = "El dispositivo no cuenta con lector de tarjetas."
+//                    val modales = Modales(this@Menu_Principal)
+//                    val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes, titulo)
+//                    viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
+//                        modales.alertDialog.dismiss()
+//                    }
+//                }
             }
 //            R.id.btnImgProductos -> {
 //                intent = Intent(applicationContext, EnDesarrollo::class.java)
 //                startActivity(intent)
 //            }
-//            R.id.btnImgCortes -> {
-//                intent = Intent(applicationContext, Clave::class.java)
-//                startActivity(intent)
-//            }
+            R.id.btnImgCortes -> {
+                intent = Intent(applicationContext, Clave::class.java)
+                startActivity(intent)
+            }
 //            R.id.btnImgPendientes -> {
 //                intent = Intent(applicationContext, EnDesarrollo::class.java)
 //                startActivity(intent)
 //            }
-//            R.id.btnImgGastos -> {
-//                intent = Intent(applicationContext, ClaveEmpleado::class.java)
-//                intent.putExtra("LugarProviene", "Gastos")
-//                startActivity(intent)
-//            }
-//            R.id.btnImgReimpresiones -> {
-//                intent = Intent(applicationContext, EnDesarrollo::class.java)
-//                startActivity(intent)
-//            }
+            R.id.btnImgGastos -> {
+                intent = Intent(applicationContext, ClaveEmpleado::class.java)
+                intent.putExtra("LugarProviene", "Gastos")
+                startActivity(intent)
+            }
+            R.id.btnImgTickets -> {
+                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                startActivity(intent)
+            }
             R.id.btnImgFacturacion -> {
 
                 intent = Intent(applicationContext, ClienteFacturas::class.java)
@@ -720,11 +709,11 @@ class Menu_Principal : AppCompatActivity() {
 //                intent.putExtra("device_name", m_deviceName)
                 startActivity(intent)
             }
-            R.id.btnImgJarreo -> {
-                intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
-                intent.putExtra("LugarProviene", "JarreoTodaEstacion")
-                startActivity(intent)
-            }
+//            R.id.btnImgJarreo -> {
+//                intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
+//                intent.putExtra("LugarProviene", "JarreoTodaEstacion")
+//                startActivity(intent)
+//            }
         }
     }
 

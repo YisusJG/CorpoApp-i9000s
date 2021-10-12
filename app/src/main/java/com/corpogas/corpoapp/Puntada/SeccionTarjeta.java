@@ -14,7 +14,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Adapters.RVAdapter;
+import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
@@ -28,12 +30,16 @@ public class SeccionTarjeta extends AppCompatActivity {
     List<RecyclerViewHeaders> lrecyclerViewHeaders;
     Button btnTutorial;
     String NumeroTarjeta;
-
+    SQLiteBD data;
+    String PuntadaProceso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seccion_tarjeta);
+        data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+
         init();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewSeccionTarjeta.setLayoutManager(linearLayoutManager);
@@ -49,8 +55,11 @@ public class SeccionTarjeta extends AppCompatActivity {
     private void initializeData() {
         lrecyclerViewHeaders = new ArrayList<>();
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir","Paga con Puntos",R.drawable.redimirpuntada));
-//        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir QR","Lee QR para Pago con Puntos",R.drawable.redimirpuntada));
+
+        //        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Consulta Saldo","Saldo Tarjeta",R.drawable.registrarpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada App","Descarga App de Puntada",R.drawable.registrarpuntada));
 
         NumeroTarjeta = getIntent().getStringExtra("track");
     }
@@ -62,12 +71,23 @@ public class SeccionTarjeta extends AppCompatActivity {
             public void onClick(View v) {
                 switch (lrecyclerViewHeaders.get(recyclerViewSeccionTarjeta.getChildAdapterPosition(v)).getTitulo()) {
                     case "Puntada Consulta Saldo": //Consulta Saldo
+                        PuntadaProceso = "ConsultaSaldoPuntada";
                         RedencionConsultaPuntada("ConsultaSaldoPuntada" );
                         break;
                     case "Puntada Redimir"://Redimir
+                        PuntadaProceso = "Redimir";
                         RedencionConsultaPuntada("Redimir");
                         break;
                     case "Puntada Registrar"://Registrar
+                        break;
+                    case "Puntada App":
+                        Intent intentApp = new Intent(getApplicationContext(), PuntadaQr.class);
+                        startActivity(intentApp);
+                        finish();
+                        break;
+                    case "Puntada Redimir QR":
+                        PuntadaProceso = "RedimirQr";
+                        RedencionConsultaPuntada("RedimirQr");
                         break;
                     default:
                         break;
@@ -78,6 +98,7 @@ public class SeccionTarjeta extends AppCompatActivity {
         recyclerViewSeccionTarjeta.setAdapter(adapter);
     }
     private void RedencionConsultaPuntada(String ProcesoARealizar){
+        String proceso = ProcesoARealizar;
         try {
             String titulo = "PUNTADA";
             String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
@@ -93,16 +114,25 @@ public class SeccionTarjeta extends AppCompatActivity {
                         edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
                     }else {
                         String NIPCliente = cantidad;
-//                        Intent intent2 = new Intent(getApplicationContext(), ClaveEmpleado.class);
-//                        intent2.putExtra("LugarProviene", ProcesoARealizar);
-//                        intent2.putExtra("Nip", NIPCliente);
-//                        intent2.putExtra("NumeroTarjeta", NumeroTarjeta);
-                        Intent intent4 = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
-                        intent4.putExtra("track", NumeroTarjeta);
-                        intent4.putExtra("nip", NIPCliente);
-                        intent4.putExtra("lugarproviene", "Redimir");
-                        startActivity(intent4);
-                        finish();
+//                        Intent intent4 = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
+//                        intent4.putExtra("track", NumeroTarjeta);
+//                        intent4.putExtra("nip", NIPCliente);
+//                        intent4.putExtra("lugarproviene", PuntadaProceso);
+//                        startActivity(intent4);
+//                        finish();
+                        if (PuntadaProceso.equals("RedimirQr")){
+                            Intent intentQr = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
+                            intentQr.putExtra("nip", NIPCliente);
+                            startActivity(intentQr);
+                            finish();
+                        }else{
+                            Intent intentMonedero = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                            intentMonedero.putExtra("Enviadodesde", "menuprincipal");
+                            intentMonedero.putExtra("tipoTarjeta", "Puntada");
+                            intentMonedero.putExtra("lugarproviene", PuntadaProceso);
+                            intentMonedero.putExtra("nip", NIPCliente);
+                            startActivity(intentMonedero);
+                        }
                     }
                 }
             });

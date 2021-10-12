@@ -8,12 +8,11 @@
 
     <EditText
         android:id="@+id/iva"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="45dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -24,7 +23,8 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subTot"
-        app:layout_constraintVertical_bias="0.255" />
+        app:layout_constraintVertical_bias="0.255"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/subTotal3"
@@ -33,7 +33,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:text="IVA $"
         android:textColor="#070707"
@@ -41,14 +40,14 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.365"
+        app:layout_constraintHorizontal_bias="0.599"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subTotal2"
-        app:layout_constraintVertical_bias="0.387" />
+        app:layout_constraintVertical_bias="0.362" />
 
     <EditText
         android:id="@+id/subTot"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="45dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
@@ -61,7 +60,8 @@
         app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descripcion"
-        app:layout_constraintVertical_bias="0.079" />
+        app:layout_constraintVertical_bias="0.079"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/subTotal2"
@@ -78,7 +78,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.219"
+        app:layout_constraintHorizontal_bias="0.57"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descripcion"
         app:layout_constraintVertical_bias="0.067" />
@@ -98,7 +98,8 @@
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subTotal"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintVertical_bias="0.037"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/subTotal"
@@ -159,7 +160,8 @@
         android:inputType="text"
         android:textSize="20sp"
         android:visibility="invisible"
-        tools:visibility="invisible" />
+        tools:visibility="invisible"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/monto"
@@ -172,7 +174,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="invisible"
-        tools:visibility="invisible" />
+        tools:visibility="invisible"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/txtClave"
@@ -184,5 +187,31 @@
         android:textSize="15sp"
         android:textStyle="bold"
         android:visibility="invisible"
-        tools:visibility="invisible" />
+        tools:visibility="invisible"
+        tools:ignore="MissingConstraints" />
+
+    <RadioGroup
+        android:layout_width="204dp"
+        android:layout_height="101dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.029"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descripcion">
+
+        <RadioButton
+            android:id="@+id/radioButton5"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Con Factura" />
+
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Sin Factura" />
+    </RadioGroup>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

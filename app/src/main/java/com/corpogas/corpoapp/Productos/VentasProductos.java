@@ -2,6 +2,7 @@
 
     import android.annotation.SuppressLint;
     import android.app.AlertDialog;
+    import android.app.ProgressDialog;
     import android.content.BroadcastReceiver;
     import android.content.Context;
     import android.content.DialogInterface;
@@ -19,6 +20,7 @@
     import android.widget.EditText;
     import android.widget.ImageButton;
     import android.widget.ListView;
+    import android.widget.ProgressBar;
     import android.widget.TextView;
     import android.widget.Toast;
 
@@ -36,10 +38,13 @@
     import com.android.volley.toolbox.JsonArrayRequest;
     import com.android.volley.toolbox.StringRequest;
     import com.android.volley.toolbox.Volley;
+    import com.corpogas.corpoapp.Conexion;
     import com.corpogas.corpoapp.Configuracion.SQLiteBD;
     import com.corpogas.corpoapp.Menu_Principal;
     import com.corpogas.corpoapp.Modales.Modales;
     import com.corpogas.corpoapp.R;
+    import com.corpogas.corpoapp.ValesPapel.ValesPapel;
+    import com.corpogas.corpoapp.VentaCombustible.confirmaVenta;
 
     import org.json.JSONArray;
     import org.json.JSONException;
@@ -100,7 +105,7 @@
         String lugarproviene ;
         Long NumeroEmpleado, islaId;
         Integer Propina = 5;
-
+        ProgressDialog bar;
 
         @SuppressLint("WrongViewCast")
         @Override
@@ -137,7 +142,7 @@
             empleado=findViewById(R.id.empleado);
             empleado.setText(getIntent().getStringExtra("NumeroEmpleado"));
 
-            posicion = getIntent().getStringExtra("posicion");
+            posicion = getIntent().getStringExtra("posicionCarga");
             usuario = getIntent().getStringExtra("NumeroEmpleado");
 
 
@@ -195,16 +200,16 @@
                             }
                         });
                     } else {
-//                        Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
-//                        intent.putExtra("posicion", posicion);
-//                        intent.putExtra("usuario", usuario);
-//                        intent.putExtra("cadenaproducto", myArrayPaso.toString());
-//                        intent.putExtra("lugarproviene", lugarproviene);
+                        Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
+                        intent.putExtra("posicion", posicion);
+                        intent.putExtra("usuario", usuario);
+                        intent.putExtra("cadenaproducto", myArrayPaso.toString());
+                        intent.putExtra("lugarproviene", lugarproviene);
 //                        intent.putExtra("numeroOpertativa", numerooperativa);
-//                        intent.putExtra("numeroisla", islaId);
+                        intent.putExtra("numeroisla", islaId);
 //                        intent.putExtra("numeroempleado", NumeroEmpleado);
-//                        startActivity(intent);
-//                        finish();
+                        startActivity(intent);
+                        finish();
 
                     }
                 }
@@ -762,17 +767,23 @@
         }
 
         private void MostrarProductos() {
-//            if (!Conexion.compruebaConexion(this)) {
-//                Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
-//                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-//                startActivity(intent1);
-//                finish();
-//            } else {
+            if (!Conexion.compruebaConexion(this)) {
+                Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                startActivity(intent1);
+                finish();
+            } else {
+                bar = new ProgressDialog(VentasProductos.this);
+                bar.setTitle("Cargando Productos");
+                bar.setMessage("Ejecutando... ");
+                bar.setIcon(R.drawable.productos);
+                bar.setCancelable(false);
+                bar.show();
                 String url;
                 if (lugarproviene.equals("Corte")){
                     url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/islaId/1"; //+ islaId;
                 }else{
-                    url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/2211"; //+ posicion;
+                    url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/"+ posicion;
                 }
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                     @Override
@@ -784,12 +795,13 @@
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                        bar.cancel();
                     }
                 });
                 RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
                 stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 requestQueue.add(stringRequest);
-//            }
+            }
         }
 
         private void mostrarProductosExistencias(String response){
@@ -856,6 +868,7 @@
                         ACategoria.add(categoriaid);
                     }
                 }
+                bar.cancel();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1170,13 +1183,13 @@
         //Metodo para regresar a la actividad principal
         @Override
         public void onBackPressed() {
-            if (lugarproviene.equals("Corte")){
+//            if (lugarproviene.equals("Corte")){
                 finish();
-            }else{
-                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                startActivity(intent);
-                finish();
-            }
+//            }else{
+//                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+//                startActivity(intent);
+//                finish();
+//            }
         }
 
         // disable the power key when the device is boot from alarm but not ipo boot

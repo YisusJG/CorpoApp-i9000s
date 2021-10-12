@@ -8,6 +8,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -30,8 +33,13 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PosicionCargaTLl;
+import com.corpogas.corpoapp.VentaCombustible.Adaptador;
+import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
+import com.corpogas.corpoapp.VentaCombustible.VentaCombustibleAceites;
+import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,8 +74,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     SQLiteBD db;
     RespuestaApi<AccesoUsuario> accesoUsuario;
     List<RecyclerViewHeaders> lrcvPosicionCarga;
-
-
+    Button btnCargarTodasPC;
+    String descuento;
+    Double descuentoPorLitro;
     ProgressDialog bar;
 
     @Override
@@ -78,7 +87,15 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
         rcvPosicionCarga.setHasFixedSize(true);
-        PosicionCarga();
+        PosicionCarga(1);
+        btnCargarTodasPC = (Button) findViewById(R.id.btnCargarTodasPC);
+        btnCargarTodasPC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PosicionCarga(2);
+            }
+        });
+
 
     }
 
@@ -94,12 +111,167 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
         lugarproviene = getIntent().getStringExtra("lugarproviene");
         usuarioid = Long.parseLong(db.getUsuarioId()); //getIntent().getLongExtra("IdUsuario",0);
-        usuario = db.getClave();//getIntent().getStringExtra("ClaveDespachador");
+        usuario = db.getNumeroEmpleado();//getIntent().getStringExtra("ClaveDespachador");   getClave()
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nip");
 
+
     }
-    private void PosicionCarga(){
+
+    public void PosicionCarga(Integer Identificador){
+        bar = new ProgressDialog(PosicionPuntadaRedimir.this);
+        bar.setTitle("Buscando Posiciones de Carga");
+        bar.setMessage("Ejecutando... ");
+        bar.setIcon(R.drawable.gas);
+        bar.setCancelable(false);
+        bar.show();
+
+        String url;
+        if (Identificador.equals(1)){
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + usuario;
+        }else{
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+        }
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    String posicionCarga,  disponible, estado , pendientdecobro, descripcionOperativa , numeroPosicionCarga, descripcion;
+                    JSONObject jsonObject = new JSONObject(response);
+                    String correcto = jsonObject.getString("Correcto");
+                    String mensaje = jsonObject.getString("Mensaje");
+                    String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+
+//                    JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+
+                    if (correcto.equals("false")){
+                        String titulo = "AVISO";
+                        Modales modales = new Modales(PosicionPuntadaRedimir.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this,mensaje,titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+//                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                startActivity(intent1);
+//                                finish();
+                                bar.cancel();
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+                    }else{
+                        lrcvPosicionCarga = new ArrayList<>();
+                        banderaposicionCarga= false;
+
+                        JSONArray control1 = new JSONArray(ObjetoRespuesta);
+                        for (int i = 0; i < control1.length(); i++) {
+                            JSONObject posiciones = control1.getJSONObject(i);
+                            posicionCargaId = posiciones.getLong("Posicioncarga");
+                            long posicionCargaNumeroInterno = posiciones.getLong("NumeroPosicionCarga");
+
+                            boolean pocioncargadisponible = posiciones.getBoolean("Disponible");
+                            estado = posiciones.getString("Estado");
+                            boolean pocioncargapendientecobro = posiciones.getBoolean("PendienteCobro");
+                            String descripcionoperativa = posiciones.getString("DescripcionOperativa");
+                            descripcion = posiciones.getString("Descripcion");
+                            numeroOperativa = posiciones.getLong("Operativa");
+                            Boolean banderacarga ;
+                            if (pocioncargapendientecobro == true){
+                                banderacarga = false;
+                            }else{
+                                banderacarga = true;
+                            }
+                            if (banderacarga.equals(true)) {
+                                if (numeroOperativa == 5){
+                                }else {
+                                    if (numeroOperativa == 6){
+
+                                    }else{
+                                        if (numeroOperativa == 20){
+
+                                        }else{
+                                            if (numeroOperativa == 21){
+
+                                            }else{
+                                                String titulo = "PC " + posicionCargaNumeroInterno;
+                                                String subtitulo = "";//
+                                                //    subtitulo = "Magna  |  Premium  |  Diesel";
+                                                subtitulo =descripcionoperativa;//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno));//
+                                                banderaposicionCarga = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        bar.cancel();
+                        //AQUI VA EL ADAPTADOR
+                        if (banderaposicionCarga.equals(false)){
+//                        //Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
+                            String titulo = "AVISO";
+                            String mensajes="";
+                            mensajes = "No hay posiciones de carga disponiles";
+                            Modales modales = new Modales(PosicionPuntadaRedimir.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this,mensajes,titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intent1);
+                                    finish();
+                                }
+                            });
+                        }else {
+                            initializeAdapter();
+                            bar.cancel();
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String algo = new String(error.networkResponse.data);
+                try {
+                    //creamos un json Object del String algo
+                    JSONObject errorCaptado = new JSONObject(algo);
+                    //Obtenemos el elemento ExceptionMesage del errro enviado
+                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                    try {
+                        String titulo = "Jarreo";
+                        String mensajes = errorMensaje;
+                        Modales modales = new Modales(PosicionPuntadaRedimir.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
+    }
+
+
+
+
+
+
+    private void PosicionCargaRetro(){
         bar = new ProgressDialog(PosicionPuntadaRedimir.this);
         bar.setTitle("Cargando Posiciones de Carga");
         bar.setMessage("Ejecutando... ");
@@ -107,14 +279,15 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         bar.setCancelable(false);
         bar.show();
 
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, usuario);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
+            Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario); //getAccesoUsuario
+            call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
 
             @Override
@@ -126,10 +299,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 String mensajes =  accesoUsuario.getMensaje();  // jsonObject.getString("Mensaje");
                 boolean correcto =  accesoUsuario.isCorrecto();  //jsonObject.getString("Correcto");
 
-                if(accesoUsuario.getObjetoRespuesta() == null)
-                {
-                    if(correcto == false)
-                    {
+                if(accesoUsuario.getObjetoRespuesta() == null) {
+                    if(correcto == false) {
 
                         //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
                         String titulo = "AVISO";
@@ -146,8 +317,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                 finish();
                             }
                         });
-                    }else
-                    {
+                    }else {
                         //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
                         String titulo = "AVISO";
                         String mensaje = "El usuario no tiene asignadas posiciones de carga. " ;
@@ -264,8 +434,12 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     case "Registrar":
                         RegistraTarjeta();
                         break;
+                    case "RedimirQR":
                     case "Redimir":
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
+                        break;
+                    case "Ventas":
+                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), "5", "false");
                         break;
                     default:
                         Toast.makeText(PosicionPuntadaRedimir.this, "No se selecciono ninguna opción válida", Toast.LENGTH_SHORT).show();
@@ -280,6 +454,180 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         rcvPosicionCarga.setAdapter(adapter);
     }
 
+
+
+    private void ValidaTransaccionActiva(String posicionCarga, String numerooperativa, String Estacionjarreo) {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+
+            startActivity(intent1);
+            finish();
+        } else {
+
+        String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    String disponible, estado , pendientdecobro, descripcionOperativa , numeroPosicionCarga, descripcion;
+
+                    JSONObject jsonObject = new JSONObject(response);
+                    String correcto = jsonObject.getString("Correcto");
+                    String mensaje = jsonObject.getString("Mensaje");
+                    String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+
+//                    JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+
+                    if (correcto.equals("false")){
+                        Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
+                        intent.putExtra("numeroEmpleado", empleadoNumero);
+                        intent.putExtra("posicionCarga", posicionCarga);
+                        intent.putExtra("estacionjarreo", Estacionjarreo);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Boolean banderaConDatos;
+                        if (ObjetoRespuesta.equals("null")) {
+                            banderaConDatos = false;
+                        } else {
+                            if (ObjetoRespuesta.equals("[]")) {
+                                banderaConDatos = false;
+                            } else {
+                                banderaConDatos = true;
+                            }
+                        }
+
+                        if (banderaConDatos.equals(true)){
+                            Toast.makeText(PosicionPuntadaRedimir.this, "Posicion Ocupada", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            Double MontoenCanasta = 0.00;
+                            try {
+                                JSONArray ArregloCadenaRespuesta = new JSONArray(ObjetoRespuesta);
+                                for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
+                                    JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
+                                    String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
+
+                                    Double aTotal;
+                                    String fTotal;
+                                    aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
+                                    MontoenCanasta = MontoenCanasta + aTotal;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            int IdOperativa = Integer.parseInt(numerooperativa);
+                            if (IdOperativa == 21){ //TarjetaPuntada Redimir
+                                //                                        imprimirticket(posicionCarga, "REDIMIR", MontoenCanasta.toString());
+                            }else{
+                                Intent intent = new Intent(getApplicationContext(), VentaCombustibleAceites.class);
+                                intent.putExtra("estacionjarreo", Estacionjarreo);
+                                //                                        intent.putExtra("clavedespachador", ClaveDespachador);
+                                //                                        intent.putExtra("numeroempleadosucursal", numeroempleado);
+                                switch (IdOperativa) {
+                                    case 1: //              Operativa normal
+                                    case 3:
+                                    case 20://Operativa Puntada P
+                                        //                                                intent.putExtra("posicioncarga", posicionCarga);
+                                        //                                                intent.putExtra("IdOperativa", numerooperativa);
+                                        //                                                intent.putExtra("IdUsuario", IdUsuario);
+                                        //                                                intent.putExtra("nombrecompleto", nombreCompletoempleado);
+                                        //                                                intent.putExtra("estacionjarreo", Estacionjarreo);
+                                        //                                                intent.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
+                                        //                                                intent.putExtra("montocanasta", MontoenCanasta.toString());
+                                        //                                                startActivity(intent);
+                                        //                                                finish();
+                                        break;
+                                    case 2://                Operativa Autoservicio
+                                        break;
+                                    case 4://                Operativa Tanque Lleno Arillo
+                                        break;
+                                    case 5://                Operativa Tanque Lleno Tarjeta
+                                        //                                                imprimirticket(posicionCarga, "TLLENO", MontoenCanasta.toString());
+                                        break;
+                                    case 6://                Operativa Cliente Estacion E
+                                        break;
+                                    case 7://                Operativa Yena Y
+                                        break;
+                                    case 8://                Operativa Yena Ñ
+                                        break;
+                                    case 10://                Operrativa Puntada Q
+                                        break;
+                                    case 11://                Operativa Desconocida
+                                        break;
+                                    case 54://                Operativa Predeterminada
+                                        break;
+                                    case 55://                Operativa Jarreo
+                                        break;
+                                    case 31://    Autojarreo
+                                        //                                                Intent intent1 = new Intent(getApplicationContext(), formaPagoEstacionJarreo.class); //
+                                        //                                                intent1.putExtra("posicioncarga",posicionCarga);
+                                        //                                                intent1.putExtra("IdOperativa", numerooperativa);
+                                        //                                                intent1.putExtra("IdUsuario", IdUsuario);
+                                        //                                                intent1.putExtra("nombrecompleto", nombreCompletoempleado);
+                                        //                                                intent1.putExtra("montocanasta", MontoenCanasta.toString());
+                                        //                                                intent1.putExtra("numeroempleadosucursal", numeroempleado);
+                                        //                                                intent1.putExtra("posicioncargarid", posicioncargaid);
+                                        //                                                startActivity(intent1);
+                                        //                                                finish();
+                                        break;
+                                    case 41:// Mercado Pago
+                                        //                                                imprimirticket(posicionCarga, "MERCADOPAGO", MontoenCanasta.toString());
+                                        break;
+                                    default://                No se encontro ninguna forma de operativa
+                                        break;
+                                }
+                            }
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String algo = new String(error.networkResponse.data);
+                try {
+                    //creamos un json Object del String algo
+                    JSONObject errorCaptado = new JSONObject(algo);
+                    //Obtenemos el elemento ExceptionMesage del errro enviado
+                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                    try {
+                        String titulo = "Posiciones de Carga";
+                        String mensajes = errorMensaje;
+                        Modales modales = new Modales(PosicionPuntadaRedimir.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
+        }
+    }
+
+    private void enviarSiguientePantallaVentas(){
+
+
+    }
+
+
     public void obtieneSaldoTarjeta(String PosicionDeCarga) {
         String Posi = PosicionDeCarga;
         bar = new ProgressDialog(PosicionPuntadaRedimir.this);
@@ -288,7 +636,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         bar.setIcon(R.drawable.gas);
         bar.setCancelable(false);
         bar.show();
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+empleadoNumero;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+usuario;
 
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new com.android.volley.Response.Listener<String>() {
@@ -308,18 +656,14 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                     String NipTarjeta = getIntent().getStringExtra("nip");
 
                                     switch (Proviene) {
+                                        case "RedimirQR":
                                         case "Redimir": //Consulta Saldo
                                             //String carga = getIntent().getStringExtra("pos");
-                                        Intent intent = new Intent(getApplicationContext(), ProductosARedimir.class);
-                                        intent.putExtra("pos", Posi);
-                                        intent.putExtra("saldo", saldo);
-                                        intent.putExtra("clave", Claveusuario);
-                                        intent.putExtra("empleadoid", Idusuario);
-                                        intent.putExtra("track", track);
-                                        intent.putExtra("nip", NipTarjeta);
-//                                        intent.putExtra("nombreatendio", nombreatendio);
-                                        startActivity(intent);
-                                        finish();
+                                            try {
+                                                enviarProductosARedimir(Posi, saldo, Claveusuario, Idusuario, track, NipTarjeta );
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                             break;
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
@@ -395,7 +739,22 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                String titulo = "AVISO";
+                String mensajes;
+                mensajes = "Sin conexón con la consola";
+                Modales modales = new Modales(PosicionPuntadaRedimir.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this,mensajes,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bar.cancel();
+                        modales.alertDialog.dismiss();
+                        Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                        startActivity(intent1);
+                        finish();
+                    }
+                });
             }
         }){
             @Override
@@ -404,12 +763,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 String sproducto = "[]";
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("EmpleadoId", String.valueOf(usuarioid));
-                params.put("SucursalId", sucursalId.toString());
                 params.put("RequestID","33");
+                params.put("SucursalId", sucursalId.toString());
                 params.put("PosicionCarga", String.valueOf(posicionCargaId));
-                params.put("Tarjeta", numerotarjeta);
                 params.put("NuTarjetero", numerotarjetero.toString());
+                params.put("Tarjeta", numerotarjeta);
                 params.put("NIP", NipCliente);
                 params.put("Productos", sproducto);
 
@@ -422,6 +780,26 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(eventoReq);
+    }
+
+
+    private void enviarProductosARedimir(String Posi, String saldo, String Claveusuario, Long Idusuario, String track, String NipTarjeta){
+        descuento = getIntent().getStringExtra("descuento");
+        descuentoPorLitro = Double.parseDouble(descuento);
+
+        Intent intent = new Intent(getApplicationContext(), ProductosARedimir.class);
+        intent.putExtra("pos", Posi);
+        intent.putExtra("saldo", saldo);
+        intent.putExtra("clave", db.getClave()); //Claveusuario
+        intent.putExtra("empleadoid", db.getUsuarioId()); //Idusuario)
+        intent.putExtra("track", track);
+        intent.putExtra("nip", NipTarjeta);
+        intent.putExtra("descuentouno", descuentoPorLitro);
+        intent.putExtra("lugarproviene", lugarproviene);
+        startActivity(intent);
+        finish();
+
+
     }
 
     private void RegistraTarjeta() {

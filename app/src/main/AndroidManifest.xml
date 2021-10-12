@@ -20,15 +20,32 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Puntada.PuntadaRedimirQr"
+            android:exported="true" />
+        <activity
+            android:name=".Puntada.PuntadaQr"
+            android:exported="true" />
+        <activity
+            android:name=".TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno"
+            android:exported="true" />
+        <activity
             android:name=".Login.EntregaPicos"
             android:exported="true" />
-        <!-- Modulo Facturacion -->
+        <activity
+            android:name=".TanqueLleno.NFC.TarjetaNFC"
+            android:exported="true" /> <!-- Modulo Facturacion -->
         <activity android:name=".Facturacion.ClienteFacturas" /> <!-- Termina modulo de facturacion -->
+        <activity
+            android:name=".ValesPapel.ValesPapel"
+            android:exported="true" />
         <activity
             android:name=".Login.LoginActivity"
             android:exported="true" />
         <activity
             android:name=".VentaCombustible.ValesPalel"
+            android:exported="true" />
+        <activity
+            android:name=".VentaCombustible.confirmaVenta"
             android:exported="true" />
         <activity
             android:name=".VentaCombustible.VentaProductos"

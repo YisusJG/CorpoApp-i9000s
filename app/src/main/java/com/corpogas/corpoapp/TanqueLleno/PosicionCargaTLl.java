@@ -33,6 +33,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -56,7 +57,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
     Long sucursalId;
     String ipEstacion;
     String lugarproviene;
-    String usuario;
+    String usuario, numeroempleado;
     String numerotarjeta;
     String NipCliente;
     String NipClientemd5;
@@ -98,6 +99,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nipCliente");
         NipClientemd5 = getIntent().getStringExtra("nipMd5Cliente");
+        numeroempleado = data.getNumeroEmpleado();
 
     }
 
@@ -115,7 +117,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, usuario);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, numeroempleado);
         call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
 
@@ -256,7 +258,14 @@ public class PosicionCargaTLl extends AppCompatActivity {
                 posicionCargaId=lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getPosicionCargaId();
                 cargaNumeroInterno = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getPosicioncarganumerointerno();
                     //ValidaTransaccionActiva();
-                enviardatos();
+                if (lugarproviene.equals("Planchado")){
+                    Intent intent1 = new Intent(getApplicationContext(), PlanchadoTanqueLleno.class); //PlanchadoTanqueLleno
+                    intent1.putExtra("cargaPosicion", posicionCargaId);
+                    startActivity(intent1);
+                    finish();
+                }else{
+                    enviardatos();
+                }
 
             }
         });
@@ -659,6 +668,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                     params.put("SucursalId", data.getIdSucursal()); //EstacionId
                     params.put("PosicionCarga", String.valueOf(posicionCargaId));
                     params.put("TarjetaCliente", numerotarjeta);
+                    params.put("NIP", NipClientemd5);
                     return params;
                 }
             };

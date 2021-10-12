@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
@@ -261,13 +262,23 @@ public class FormasPago extends AppCompatActivity {
                 String numpago1 = IdFormaPago.get(position);
                 String idoperativa = getIntent().getStringExtra("IdOperativa");
                 String posicioncarga = getIntent().getStringExtra("posicioncarga");
-                String idusuario = getIntent().getStringExtra("IdUsuario");
+                String idusuario = data.getUsuarioId(); //getIntent().getStringExtra("IdUsuario");
                 String ClaveDespachador = getIntent().getStringExtra("clavedespachador");
 //                int operativa = Integer.parseInt(idoperativa);
 
                 switch (Integer.parseInt(formapago)) {
                     case 20: //                    Puntada Acumular
 //                        ObtenerTicketPuntadaAcumular(posicioncarga, idusuario, numpago);
+                        break;
+                    case 2:
+                        Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);//DiferentesFormasPagoPuntada
+                        intentVale.putExtra("Enviadodesde", "formaspago");
+                        intentVale.putExtra("posicioncarga", posicioncarga);
+                        intentVale.putExtra("idoperativa", idoperativa);
+                        intentVale.putExtra("formapagoid", numpago);
+                        intentVale.putExtra("montoencanasta", MontoCanasta);
+                        startActivity(intentVale);
+                        finish();
                         break;
                     case 3: // Ticket Nomal
                     case 1:
@@ -335,6 +346,7 @@ public class FormasPago extends AppCompatActivity {
                                 intent.putExtra("numeroempleadosucursal", sucursalnumeroempleado);
                                 startActivity(intent);
                                 finish();
+
                             } else {
                                 if (numpago == 3 || numpago == 5 || numpago == 13 ) { //numpago == 4 || numpago == 5 || numpago == 6 AMEX, VISA, GASCARD
                                     String titulo = "PUNTADA";
@@ -446,52 +458,69 @@ public class FormasPago extends AppCompatActivity {
         MuestraFormaEfectivo();
     }
     private void MuestraFormaEfectivo(){
-        String titulo = "RECIBI";
-        String mensaje = "Ingresa el monto" ;
+//        String titulo = "RECIBI";
+//        String mensaje = "Ingresa el monto" ;
+//        Modales modalesEfectivo = new Modales(FormasPago.this);
+//        View viewLectura = modalesEfectivo.MostrarDialogoInsertaDato(FormasPago.this, mensaje, titulo);
+//        EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+//        edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+//        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Boolean banderaSigue = true;
+//                String cantidad = edtProductoCantidad.getText().toString();
+//                if (cantidad.isEmpty()){
+//                    edtProductoCantidad.setError("Ingresa el monto");
+//                }else {
+//                    Double cambio = Double.parseDouble(cantidad)-MontoCanasta;
+//                    String tituloEfectivo = "Venta";
+//                    Modales modales = new Modales(FormasPago.this);
+//                    View viewVenta = modales.MostrarDialogoEfectivoMi(FormasPago.this, String.valueOf(MontoCanasta), cantidad, cambio.toString(), tituloEfectivo );
+//                    viewVenta.findViewById(R.id.btnAceptarVales).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            modales.alertDialog.dismiss();
+//                            FinalizaVenta();
+//                        }
+//                    });
+//                    viewVenta.findViewById(R.id.btnCancelarVales).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            modales.alertDialog.dismiss();
+//                            list.setEnabled(true);
+//
+//                        }
+//                    });
+//                }
+//                modalesEfectivo.alertDialog.dismiss();
+//            }
+//        });
+        String tituloEfectivo = "Venta";
         Modales modalesEfectivo = new Modales(FormasPago.this);
-        View viewLectura = modalesEfectivo.MostrarDialogoInsertaDato(FormasPago.this, mensaje, titulo);
-        EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-        edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+        View viewVenta = modalesEfectivo.MostrarDialogoEfectivo(FormasPago.this, String.valueOf(MontoCanasta), tituloEfectivo);
+        viewVenta.findViewById(R.id.btnAceptarVales).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Boolean banderaSigue = true;
-                String cantidad = edtProductoCantidad.getText().toString();
-                if (cantidad.isEmpty()){
-                    edtProductoCantidad.setError("Ingresa el monto");
-                }else {
-                    Double cambio = Double.parseDouble(cantidad)-MontoCanasta;
-                    String tituloEfectivo = "Venta";
-                    Modales modales = new Modales(FormasPago.this);
-                    View viewVenta = modales.MostrarDialogoEfectivo(FormasPago.this, String.valueOf(MontoCanasta), cantidad, cambio.toString(), tituloEfectivo);
-                    viewVenta.findViewById(R.id.btnAceptarVales).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            modales.alertDialog.dismiss();
-                            FinalizaVenta();
-                        }
-                    });
-                    viewVenta.findViewById(R.id.btnCancelarVales).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            modales.alertDialog.dismiss();
-                            list.setEnabled(true);
-
-                        }
-                    });
-                }
                 modalesEfectivo.alertDialog.dismiss();
+                FinalizaVenta();
+            }
+        });
+        viewVenta.findViewById(R.id.btnCancelarVales).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modalesEfectivo.alertDialog.dismiss();
+                list.setEnabled(true);
             }
         });
     }
 
     private void FinalizaVenta() {
-//        if (!Conexion.compruebaConexion(this)) {
-//            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-//            startActivity(intent1);
-//            finish();
-//        } else {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
             //Utilizamos el metodo POST para  finalizar la Venta
             String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado ;
             StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
@@ -565,5 +594,5 @@ public class FormasPago extends AppCompatActivity {
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(eventoReq);
         }
-//    }
+    }
 }

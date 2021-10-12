@@ -13,6 +13,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="28dp"
         android:text="-"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/btnAumentar"
         app:layout_constraintTop_toBottomOf="@+id/txtDescripcionVenta" />
 
@@ -39,6 +40,7 @@
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +92,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="28dp"
         android:text="+"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/txtTotalAceites"
         app:layout_constraintTop_toBottomOf="@+id/txtDescripcionVenta" />
 
@@ -98,7 +101,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Escanear Producto"
+        android:text="Despacho Libre"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"

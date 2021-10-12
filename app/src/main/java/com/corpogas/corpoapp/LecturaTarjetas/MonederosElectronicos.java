@@ -60,7 +60,7 @@ public class MonederosElectronicos extends AppCompatActivity {
     ProgressDialog bar;
     private MagReadService mReadService;
     private ToneGenerator tg = null;
-    String Enviadodesde;
+    String Enviadodesde, lugarProviene, NIP;
     long idSucursal;
     SQLiteBD data;
     RespuestaApi<Bin> respuestaApiBin;
@@ -117,10 +117,14 @@ public class MonederosElectronicos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_monederos_electronicos);
+        data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
 
 //        mNo = (EditText) findViewById(R.id.editText1);
 //        mAlertTv = (TextView) findViewById(R.id.textView1);
         Enviadodesde = getIntent().getStringExtra( "Enviadodesde");
+        lugarProviene = getIntent().getStringExtra( "lugarproviene");
+        NIP = getIntent().getStringExtra( "nip");
         PagoPuntada = getIntent().getStringExtra("pagoconpuntada");
         tipoTarjeta = getIntent().getStringExtra("tipoTarjeta");
         numeroempleadosucursal = getIntent().getStringExtra("numeroEmpleado");
@@ -131,7 +135,6 @@ public class MonederosElectronicos extends AppCompatActivity {
         EstacionId = data.getIdEstacion();
         ipEstacion = data.getIpEstacion();
         numeroTarjetero = data.getIdTarjtero();
-
         tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         mReadService = new MagReadService(this, mHandler);
     }
@@ -222,8 +225,11 @@ public class MonederosElectronicos extends AppCompatActivity {
                                 }
                             });
                         }else{
-                            Intent intent = new Intent(getApplicationContext(), SeccionTarjeta.class);
+                            Intent intent = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class); //ENVIABA A SeccionTarjeta cambio a PosicionPuntadaRedimir
                             intent.putExtra("track",mesanje);
+                            intent.putExtra("nip", NIP);
+                            intent.putExtra("lugarproviene", lugarProviene);
+                            intent.putExtra("descuento", "0");
                             startActivity(intent);
                             finish();
                         }
@@ -235,17 +241,18 @@ public class MonederosElectronicos extends AppCompatActivity {
 //                        }
 
 
-                        //Toast.makeText(getApplicationContext(),"A qui va seccion de tarjetas",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), SeccionTarjeta.class);
-                        intent.putExtra("track",mesanje);
-//                        intent.putExtra("banderaHuella", banderaHuella);
-                        startActivity(intent);
-                        finish();
+//                        //Toast.makeText(getApplicationContext(),"A qui va seccion de tarjetas",Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(getApplicationContext(), SeccionTarjeta.class);
+//                        intent.putExtra("track",mesanje);
+////                        intent.putExtra("banderaHuella", banderaHuella);
+//                        startActivity(intent);
+//                        finish();
                     }else {
                         if (idMonedero == 2 && formaPagoId == 11) { //TANQUE LLENO CENTRO
 //                            Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
                             intent.putExtra("track",mesanje);
+                            intent.putExtra("lugarProviene", Enviadodesde);
                             startActivity(intent);
 
                         }
@@ -253,6 +260,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
+                            intent.putExtra("lugarProviene", Enviadodesde);
                             intent.putExtra("track",mesanje);
                             startActivity(intent);
                         }

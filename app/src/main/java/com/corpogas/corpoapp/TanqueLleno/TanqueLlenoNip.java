@@ -24,7 +24,7 @@ public class TanqueLlenoNip extends AppCompatActivity {
     SQLiteBD data;
     EditText Nippasword;
     String NIPCliente, NIPmd5Cliente;
-    String track2;
+    String track2, lugarProviene;
     String banderaHuella, m_deviceName;
 
     ImageButton btnTutorial,btnTutorial2,btnTutorial3;
@@ -54,6 +54,7 @@ public class TanqueLlenoNip extends AppCompatActivity {
 //        btnTutorial3.setVisibility(View.INVISIBLE);
         Nippasword = findViewById(R.id.nippasword);
         track2 =  getIntent().getStringExtra("track");
+        lugarProviene = getIntent().getStringExtra("lugarProviene");
     }
 
     //procedimiento para  cachar el Enter del teclado
@@ -92,6 +93,7 @@ public class TanqueLlenoNip extends AppCompatActivity {
             intent5.putExtra("nipCliente", NIPCliente);
             intent5.putExtra("nipMd5Cliente", NIPmd5Cliente);
             intent5.putExtra("pagoconpuntada", "no");
+            intent5.putExtra("lugarproviene", lugarProviene);
             startActivity(intent5);
             finish();
 

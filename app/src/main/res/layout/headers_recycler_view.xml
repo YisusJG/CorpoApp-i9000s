@@ -17,10 +17,9 @@
 
         <ImageView
             android:id="@+id/imgHeader"
-            android:layout_width="123dp"
-            android:layout_height="78dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="120dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,10 +27,11 @@
             android:id="@+id/txtTituloHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
             android:textColor="@color/black"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/imgHeader"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +40,7 @@
             android:id="@+id/txtSubtituloHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"
             android:text="TextView"
             android:textColor="@color/black"

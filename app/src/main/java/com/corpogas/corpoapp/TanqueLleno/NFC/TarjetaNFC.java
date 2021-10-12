@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.TanqueLleno.TanqueLlenoNip;
 
@@ -62,9 +63,16 @@ public class TarjetaNFC extends AppCompatActivity {
             0x0e, 0x0f
     };
 
+    SQLiteBD data;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+
         setContentView(R.layout.activity_tarjeta_nfc);
         tvApdu = (TextView) findViewById(R.id.rev_data);
         bCheck = (Button) findViewById(R.id.picc_check);
@@ -137,6 +145,8 @@ public class TarjetaNFC extends AppCompatActivity {
 //                        SoundTool.getMySound(MainActivity.this).playMusic("success");
                         Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
                         intent.putExtra("track", uid);
+                        intent.putExtra("lugarProviene", "NFC");
+
                         startActivity(intent);
                         finish();
 

@@ -2,6 +2,7 @@ package com.corpogas.corpoapp.Puntada;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -62,11 +63,12 @@ public class ProductosARedimir extends AppCompatActivity {
     List<String> CodigoBarras;
     List<String> ExistenciaProductos;
     List<String> ProductoId, CategoriaId, tipoprod;
-    String tipoproductofinal, productoIdfinal, numeroInternofinal, Descripcionfinal, cantidadfinal, preciofinal, precio1 ;
+    String tipoproductofinal, productoIdfinal, numeroInternofinal, Descripcionfinal, cantidadfinal, preciofinal, enviadoDesde ;
     EditText productoIdSeleccionado, totalproductosaCargar;
     String TipoCombustible= "1";
     String banderaProducto, banderaCombustible, fechaTicket="", posicionCarga,  nombreatendio;
     Long idUsuario;
+    Double descuento;
 
     //variables para imprimir
     public String tag = "PrintActivity-Robert2";
@@ -81,6 +83,10 @@ public class ProductosARedimir extends AppCompatActivity {
     //    final int PRINT_VALE_ELCTRONICA =3;
     int ret = -1;
     SQLiteBD db;
+
+    ProgressDialog bar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +108,10 @@ public class ProductosARedimir extends AppCompatActivity {
         idUsuario = getIntent().getLongExtra("empleadoid", 0);
         nombreatendio = getIntent().getStringExtra("nombreatendio");
 
-//      enviamos el saldo disponible para poder visualizar
+        descuento = getIntent().getDoubleExtra("descuentouno", 0.0);
+        enviadoDesde = getIntent().getStringExtra("lugarproviene");
+
+ //      enviamos el saldo disponible para poder visualizar
 
         txtpesos = findViewById(R.id.txtPesos);
         txtcantidad = findViewById(R.id.etiquetacantidad);
@@ -549,6 +558,13 @@ public class ProductosARedimir extends AppCompatActivity {
     };
 
     private void MostrarProductos(String TipoProducto) {
+        bar = new ProgressDialog(ProductosARedimir.this);
+        bar.setTitle("Cargando Productos");
+        bar.setMessage("Ejecutando... ");
+        bar.setIcon(R.drawable.redimirpuntada);
+        bar.setCancelable(false);
+        bar.show();
+
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+posicionCarga;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -626,7 +642,7 @@ public class ProductosARedimir extends AppCompatActivity {
 
                 }
             }
-
+            bar.cancel();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -673,17 +689,20 @@ public class ProductosARedimir extends AppCompatActivity {
         String clave = getIntent().getStringExtra("clave");
         String nip = getIntent().getStringExtra("nip");
         String empleadoid = getIntent().getStringExtra("empleadoid");
+        String numeroempleado = db.getNumeroEmpleado();
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/clave/"+clave;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/NumeroEmpleado/"+numeroempleado;
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            datos.put("EmpleadoId", empleadoid);
-            datos.put("SucursalId", sucursalId);
             datos.put("RequestID","37");
+            datos.put("SucursalId", sucursalId);
             datos.put("PosicionCarga",PosicionDeCarga);
-            datos.put("Tarjeta", NumeroDeTarjeta);
             datos.put("NuTarjetero", numeroTarjetero); // data.getIdTarjtero());
+            datos.put("Tarjeta", NumeroDeTarjeta);
             datos.put("NIP", nip);
+            if (enviadoDesde.equals("RedimirQR")){
+                datos.put("importedescuento", descuento);
+            }
             datos.put("Productos", array1);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -785,6 +804,7 @@ public class ProductosARedimir extends AppCompatActivity {
         };
         queue.add(request_json);
     }
+
 
 
 
