@@ -262,7 +262,7 @@ public class CargaGasto extends AppCompatActivity {
             String empleadoId = getIntent().getStringExtra("empleadoid");
             final String empleado = getIntent().getStringExtra("empleado");
 
-            String URL = "http://" + ipEstacion + "/CorpogasService/api/Gastos/usuarioId/" + empleadoId + "/dispositivoId/" + db.getIdTarjtero();
+            String URL = "http://" + ipEstacion + "/CorpogasService/api/Gastos/usuarioId/" + empleadoId; //+ "/dispositivoId/" + db.getIdTarjtero();
             final JSONObject mjason = new JSONObject();
             RequestQueue queue = Volley.newRequestQueue(this);
             try {

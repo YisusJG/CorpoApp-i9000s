@@ -2,6 +2,7 @@ package com.corpogas.corpoapp.VentaCombustible;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -55,13 +56,14 @@ public class EligePrecioLitros extends AppCompatActivity {
             R.drawable.gas, R.drawable.fajillas_monedas,
     };
     EditText Cantidad;
-    TextView EtiquetaCantidad;
+    TextView EtiquetaCantidad, tvTipoDespachoLP;
     String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
     Button btnLibre, btnPredeterminado, btnCobrar, btnCombustibleCobrar, btnPerifericosCobrar;
     SQLiteBD data;
-    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre;
+    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre, combustible;
     String mensaje = "", correcto = "";
     JSONArray myArray = new JSONArray();
+    ProgressDialog bar;
 
 
     @Override
@@ -83,7 +85,9 @@ public class EligePrecioLitros extends AppCompatActivity {
         claveProducto = getIntent().getStringExtra("claveProducto");
         precio = getIntent().getStringExtra("precioProducto");
         despacholibre = getIntent().getStringExtra("despacholibre");
+        combustible = getIntent().getStringExtra("combustible");
 
+        tvTipoDespachoLP = (TextView) findViewById(R.id.tvTipoDespachoLP);
         btnPredeterminado = (Button) findViewById(R.id.btnPredeterminadoInicia);
         btnCombustibleCobrar = (Button) findViewById(R.id.btnCombustibleCobrar);
         btnCombustibleCobrar.setEnabled(false);
@@ -126,7 +130,7 @@ public class EligePrecioLitros extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 cargaOpciones();
-                Toast.makeText(EligePrecioLitros.this, "Se habilito el predeterminado", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(EligePrecioLitros.this, "Se habilito el predeterminado", Toast.LENGTH_SHORT).show();
                 list.setEnabled(true);
                 Cantidad.setEnabled(true);
                 btnLibre.setEnabled(false);
@@ -147,7 +151,7 @@ public class EligePrecioLitros extends AppCompatActivity {
             btnPredeterminado.setEnabled(false);
         }
 
-
+        tvTipoDespachoLP.setText("PC: " + posicionCarga  + "  TIPO DESPACHO ");//+ ", " + combustible
     }
 
 
@@ -158,6 +162,28 @@ public class EligePrecioLitros extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
+            JSONObject datos = new JSONObject();
+            try {
+                datos.put("TipoProducto","1");
+                datos.put("ProductoId", claveProducto);
+                datos.put("NumeroInterno", claveProducto);
+                datos.put("Descripcion",combustible);
+                datos.put("Cantidad", Double.parseDouble(Cantidad.getText().toString()));
+                datos.put("Precio", precio);
+                //datos.put("Precio", litros);
+                if (TipoSeleccionado.equals("L")){
+                    datos.put("Importe", false);
+                }else{
+                    datos.put("Importe", true);
+                }
+
+                myArray.put(datos);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
             String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + posicionCarga;
             RequestQueue queue = Volley.newRequestQueue(this);
             JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
@@ -306,30 +332,48 @@ public class EligePrecioLitros extends AppCompatActivity {
                                         banderaConDatos = true;
                                     }
                                 }
+                                if (banderaConDatos.equals(true)){
+                                    Double MontoenCanasta = 0.00;
+                                    try {
+                                        JSONArray ArregloCadenaRespuesta = new JSONArray(CadenaObjetoRespuesta);
+                                        for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
+                                            JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
+                                            String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
 
-                                Double MontoenCanasta = 0.00;
-                                try {
-                                    JSONArray ArregloCadenaRespuesta = new JSONArray(CadenaObjetoRespuesta);
-                                    for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
-                                        JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
-                                        String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
+                                            Double aTotal;
+                                            String fTotal;
+                                            aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
+                                            MontoenCanasta = MontoenCanasta + aTotal;
+                                        }
+                                        if (MontoenCanasta.equals(0.00)) {
+                                            Reintenta();
+//                                        Toast.makeText(EligePrecioLitros.this, "Monto en CERO", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Intent intent = new Intent(getApplicationContext(), FormasPago.class);
+                                            intent.putExtra("numeroEmpleado", usuarioid);
+                                            intent.putExtra("posicionCarga", posicionCarga);
+                                            intent.putExtra("estacionjarreo", estacionJarreo);
+                                            intent.putExtra("claveProducto", claveProducto);
+                                            intent.putExtra("montoenCanasta", MontoenCanasta);
+                                            startActivity(intent);
+                                            finish();
+                                        }
 
-                                        Double aTotal;
-                                        String fTotal;
-                                        aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
-                                        MontoenCanasta = MontoenCanasta + aTotal;
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                    Intent intent = new Intent(getApplicationContext(), FormasPago.class);
-                                    intent.putExtra("numeroEmpleado", usuarioid);
-                                    intent.putExtra("posicionCarga", posicionCarga);
-                                    intent.putExtra("estacionjarreo", estacionJarreo);
-                                    intent.putExtra("claveProducto", claveProducto);
-                                    intent.putExtra("montoenCanasta", MontoenCanasta);
-                                    startActivity(intent);
-                                    finish();
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                }else{
+                                    String titulo = "AVISO";
+                                    String mensajes = "Error";
+                                    Modales modales = new Modales(EligePrecioLitros.this);
+                                    View view1 = modales.MostrarDialogoError(EligePrecioLitros.this,"Aun no concluye el despacho");
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                            bar.cancel();
+                                        }
+                                    });
                                 }
                             }else{
                                 String titulo = "AVISO";
@@ -340,6 +384,7 @@ public class EligePrecioLitros extends AppCompatActivity {
                                     @Override
                                     public void onClick(View view) {
                                         modales.alertDialog.dismiss();
+                                        bar.cancel();
                                     }
                                 });
                             }
@@ -362,6 +407,15 @@ public class EligePrecioLitros extends AppCompatActivity {
         }
     }
 
+    private void Reintenta(){
+        bar = new ProgressDialog(EligePrecioLitros.this);
+        bar.setTitle("Cargando Productos");
+        bar.setMessage("Ejecutando... ");
+        bar.setIcon(R.drawable.gas);
+        bar.setCancelable(false);
+        bar.show();
+        ValidaTransaccionActiva();
+    }
 
     private void solicitarDespacho() {
         if (!Conexion.compruebaConexion(this)) {

@@ -115,7 +115,7 @@
     <ListView
         android:id="@+id/lstPosicionCarga"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
+        android:layout_height="300dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
@@ -134,7 +134,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
-        android:text="Puntada SALDO DISPOBLE  $"
+        android:text="Monto cargado en Vales Papel  $"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="14sp"

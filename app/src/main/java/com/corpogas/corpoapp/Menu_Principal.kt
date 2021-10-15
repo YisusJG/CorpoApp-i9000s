@@ -41,6 +41,7 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
 import com.corpogas.corpoapp.Corte.Fragments.PicosFragment
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas
+import com.corpogas.corpoapp.Fajillas.OpcionFajillas
 import com.corpogas.corpoapp.Gastos.ClaveGastos
 import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.EntregaPicos
@@ -709,6 +710,14 @@ class Menu_Principal : AppCompatActivity() {
 //                intent.putExtra("device_name", m_deviceName)
                 startActivity(intent)
             }
+
+
+            R.id.btnFajillas -> {
+                intent = Intent(applicationContext, OpcionFajillas::class.java)
+                startActivity(intent)
+            }
+
+
 //            R.id.btnImgJarreo -> {
 //                intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
 //                intent.putExtra("LugarProviene", "JarreoTodaEstacion")

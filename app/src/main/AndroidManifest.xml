@@ -20,6 +20,15 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Fajillas.AutorizaFajillas"
+            android:exported="true" />
+        <activity
+            android:name=".Fajillas.EntregaFajillas"
+            android:exported="true" />
+        <activity
+            android:name=".Fajillas.OpcionFajillas"
+            android:exported="true" />
+        <activity
             android:name=".Puntada.PuntadaRedimirQr"
             android:exported="true" />
         <activity

@@ -1,11 +1,14 @@
 package com.corpogas.corpoapp.Modales;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -14,10 +17,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 
 
 public class Modales extends Dialog implements
@@ -284,11 +289,46 @@ public class Modales extends Dialog implements
         builder.setView(view);
         ((TextView) view.findViewById(R.id.textTitleEfectivo)).setText(titulo);
         ((TextView) view.findViewById(R.id.textMonto)).setText(monto);
-        //((TextView) view.findViewById(R.id.textMontoVales)).setText(recibi);
-        EditText cantidadRecibida = view.findViewById(R.id.textMonto);
-        //String montoRecibido = cantidadRecibida.getText().toString();
-        Double vuelto = Double.parseDouble(cantidadRecibida.getText().toString()) - Double.parseDouble(monto);
-        ((TextView) view.findViewById(R.id.textCambio)).setText(vuelto.toString());
+        EditText cantidadRecibida = view.findViewById(R.id.textMontoVales);
+
+        cantidadRecibida.addTextChangedListener(new TextWatcher() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                ((TextView) view.findViewById(R.id.textCambio)).setText("$0.00");
+                ((Button) view.findViewById(R.id.btnAceptarVales)).setText("ACEPTAR");
+            }
+
+            @SuppressLint("DefaultLocale")
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String cantidadObtenida = cantidadRecibida.getText().toString();
+                if (!cantidadObtenida.equals("")) {
+                    Double vuelto = Double.parseDouble(cantidadObtenida) - Double.parseDouble(monto);
+                    ((TextView) view.findViewById(R.id.textCambio)).setText(String.format("$%.2f", vuelto));
+
+//                    ((Button) view.findViewById(R.id.btnAceptarVales)).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            if (vuelto > 0) {
+//                                alertDialog.dismiss();
+//                                Toast.makeText(context, "Cantidad incompleta o inválida", Toast.LENGTH_LONG).show();
+//
+//                                //                                FormasPago formasPago = new FormasPago();
+////                                formasPago.FinalizaVenta();
+//                            }
+//
+//                        }
+//                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         ((Button) view.findViewById(R.id.btnAceptarVales)).setText("ACEPTAR");
         ((Button) view.findViewById(R.id.btnCancelarVales)).setText("CANCELAR");
 
