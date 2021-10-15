@@ -9,6 +9,7 @@ public class SolicitudFactura implements Serializable {
     public String email;
     public String IdCliente;
     public String IdAlias;
+    public String DispositivoId;
 
 
 
@@ -55,5 +56,9 @@ public class SolicitudFactura implements Serializable {
     public void setIdAlias(String idAlias) {
         IdAlias = idAlias;
     }
+
+    public String getDispositivoId() {return DispositivoId; }
+
+    public void  setDispositivoId(String dispositivoId) { DispositivoId = dispositivoId;}
 
 }

@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.device.PrinterManager;
+//import android.device.PrinterManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +114,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
 
 
         // Variable para Imprimir
-        private PrinterManager printer = new PrinterManager();
+        //private PrinterManager printer = new PrinterManager();
         private final static String STR_PRNT_SALE = "sale";
 
         //termina aqui
@@ -302,9 +302,11 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                         public void onClick(View view) {
                             clienteFacturas.ObtenProgressDialog("Enviando Factura al correo...");
                             solicitudFactura = new SolicitudFactura();
+                            solicitudFactura.setDispositivoId(db.getIdTarjtero());
                             solicitudFactura.setTickets(lstNumeroRastreo);
                             solicitudFactura.setRfc(respuestaRFCDatos.getRFC());
                             solicitudFactura.setEmail(respuestaRFCDatos.getEmail()+"jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"); // "jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"
+                            //solicitudFactura.setEmail("abinadab.vazquez@gmail.com");
                             solicitudFactura.setIdCliente(respuestaRFCDatos.getIdCliente());
                             solicitudFactura.setIdAlias(db.getIdTarjtero());
                             ipEstacion = db.getIpEstacion();
@@ -353,9 +355,11 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                         public void onClick(View view) {
                             clienteFacturas.ObtenProgressDialog("En proceso de Facturación...");
                             solicitudFactura = new SolicitudFactura();
+                            solicitudFactura.setDispositivoId(db.getIdTarjtero());
                             solicitudFactura.setTickets(lstNumeroRastreo);
                             solicitudFactura.setRfc(respuestaRFCDatos.getRFC());
                             solicitudFactura.setEmail(respuestaRFCDatos.getEmail()+"jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"); // "jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"
+                            //solicitudFactura.setEmail("abinadab.vazquez@gmail.com");
                             solicitudFactura.setIdCliente(respuestaRFCDatos.getIdCliente());
                             solicitudFactura.setIdAlias(db.getIdTarjtero());
                             ipEstacion = db.getIpEstacion();
@@ -394,7 +398,10 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
 //                                                txtNumRastreo.setError(validaRespuestaFacturacion);
                                     }else{
 
-                                        doprintwork();
+                                        //Toast.makeText(mContext, "Ya Imprimió??", Toast.LENGTH_SHORT).show();
+                                        clienteFacturas.bar.cancel();
+                                        enviarPrincipal();
+                                        //doprintwork();
                                     }
                                 }
 
