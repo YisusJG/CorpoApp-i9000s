@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerValidacionNip = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), 13 );
+        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), 75 );
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override

@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_autoriza_fajillas.xml" value="0.23645833333333333" />
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_entregas.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_carga_gasto.xml" value="0.22" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_confirma_venta.xml" value="0.3066123188405797" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_alerta_aceptar.xml" value="0.22864583333333333" />
@@ -15,12 +17,10 @@
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_combustible_t_l.xml" value="0.28489583333333335" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_litros_precio.xml" value="0.25" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_precio_litros.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_fajillas.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_formas_pago.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_jarreos.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_monederos_electronicos.xml" value="0.23489583333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_opcion_fajillas.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_planchado_tanque_lleno.xml" value="0.2708333333333333" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_carga_tickets.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_puntada_redimir.xml" value="0.23489583333333333" />
