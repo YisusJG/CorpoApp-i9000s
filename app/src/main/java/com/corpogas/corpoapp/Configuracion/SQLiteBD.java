@@ -588,11 +588,11 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return nombreCompleto;
     }
 
-    public String getRol(){
+    public Long getRol(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT RolId FROM DatosEmpleado", null);
         cursor.moveToFirst();
-        String rol = cursor.getString(0);
+        Long rol = cursor.getLong(0);
         return rol;
     }
 

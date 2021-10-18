@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Corte.ProductosActivity">
+
+    <Button
+        android:id="@+id/btnrefresh"
+        android:layout_width="160dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Actualiza Pantalla"
+        android:background= "@drawable/boton_aceptar_dato"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.063"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnaceptar" />
+
+    <TextView
+        android:id="@+id/tvEntrega"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:text="Entrego"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/black"
+         />
+
+    <Button
+        android:id="@+id/btnsiguiente"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/b3"
+        android:enabled="true"
+        android:saveEnabled="true"
+        android:text="VENTA Productos Faltantes"
+        android:textColor="@color/a_normal"
+        android:visibility="visible"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnaceptar"
+        app:layout_constraintTop_toTopOf="@+id/btnaceptar" />
+
+    <ListView
+        android:id="@+id/lisproductos"
+        android:layout_width="338dp"
+        android:layout_height="360dp"
+        android:background="@drawable/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRecibi"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btnaceptar"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/b3"
+        android:text="Confirmar Inventario"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lisproductos" />
+
+    <TextView
+        android:id="@+id/tvRecibi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="12dp"
+        android:text="Recibí"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvEntrega"
+        app:layout_constraintHorizontal_bias="0.021"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/black"
+
+         />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
