@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, prub;
     SQLiteBD db;
     RespuestaApi<Empleado> respuestaApiEmpleado;
-    long  sucursalIdApi, estacionIdApi, rolIdApi, idApi;
+    long  sucursalIdApi, estacionIdApi, rolIdApi, idApi, idTarjetero;
     boolean activoApi;
 
     @Override
@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         db = new SQLiteBD(getApplicationContext());
         ipEstacion = db.getIpEstacion();
         edtNip = (EditText) findViewById(R.id.edtNip);
+        idTarjetero = Long.parseLong(db.getIdTarjtero());
 
     }
 
@@ -62,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
             activoApi = respuestaApiEmpleado.getObjetoRespuesta().isActivo();
             correoApi = respuestaApiEmpleado.getObjetoRespuesta().getCorreo();
             numeroEmpleadoApi = respuestaApiEmpleado.getObjetoRespuesta().getNumeroEmpleado();
+
             db.InsertarDatosEmpleado(sucursalIdApi, estacionIdApi,rolIdApi, nombreApi, apellidoPaternoApi, apellidoMaternoApi,
                                      nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi);
 
@@ -81,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerValidacionNip = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), 75 );
+        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero );
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override

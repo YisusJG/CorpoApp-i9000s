@@ -16,6 +16,7 @@ import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet
 import com.corpogas.corpoapp.Configuracion.ConfiguracionServidor
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
 import com.corpogas.corpoapp.Corte.Clave
+import com.corpogas.corpoapp.Corte.ResumenActivity
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo
 import com.corpogas.corpoapp.Encriptacion.EncriptarMAC
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
@@ -33,7 +34,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas
-import com.corpogas.corpoapp.Fajillas.OpcionFajillas
 import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
@@ -121,7 +121,7 @@ class Menu_Principal : AppCompatActivity() {
         ImageDisplay = true
         BuscarActualizacion
         txtNombreUsuarioMainNav.setText(data.nombreCompleto)
-        txtRolMainNav.setText(data.rol)
+        txtRolMainNav.setText((data.rol).toString())
         txtCerrarSesion.setOnClickListener{
             deleteDatos()
         }
@@ -671,7 +671,7 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 //            }
             R.id.btnImgCortes -> {
-                intent = Intent(applicationContext, Clave::class.java)
+                intent = Intent(applicationContext, ResumenActivity::class.java)
                 startActivity(intent)
             }
 //            R.id.btnImgPendientes -> {

@@ -2,4 +2,5 @@
 <resources>
     <color name="darkGrayColor">#A9A9A9</color>
     <color name="lightGray">#ededed</color>
+    <color name="a_normal">#FFFFFF</color>
 </resources>

@@ -29,6 +29,7 @@ import com.corpogas.corpoapp.Entities.Tickets.Ticket;
 import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo;
+import com.corpogas.corpoapp.Entities.Virtuales.CierreTicket;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
@@ -66,7 +67,6 @@ public interface EndPoints {
     //AGERGADO MIKEL
     @GET("api/accesoUsuarios/sucursal/{sucursalId}")
     Call<RespuestaApi<AccesoUsuario>> getAccesoUsuariosucursal(@Path("sucursalId") long sucursalId);
-
 
     @GET("api/sucursalFormaPagos/sucursal/{sucursalId}")
     Call<List<BranchPaymentMethod>> getFormaPagos(@Path("sucursalId") long sucursalId);
@@ -124,6 +124,13 @@ public interface EndPoints {
 
     @GET("api/arqueos/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<List<Arqueo>>> getArqueo(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
+    // METODO PARA OBTENER EL RESUMEN DEL CORTE POR USUARIO
+
+    @GET("api/cierreTickets/sucursal/{sucursalId}/numeroEmpleado{numeroEmpleado}")
+    Call<RespuestaApi<CierreTicket>> getCierreTicket(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
+
 
 
 //   METODOS POST
