@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ValesPapel.ValesPapel">
 
+    <Button
+        android:id="@+id/btnOtrasFormasPago"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:text="Agregar Otras Formas Pago"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAceptarValesPapel"
+        tools:ignore="TouchTargetSizeCheck" />
+
     <TextView
         android:id="@+id/tvMontoACargarPendiente"
         android:layout_width="81dp"
@@ -28,7 +38,7 @@
         android:layout_width="85dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="Pendiente $"
         android:textAlignment="center"
         android:textColor="#2196F3"
@@ -143,7 +153,7 @@
         android:layout_width="85dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="Por Pagar $"
         android:textAlignment="center"
         android:textSize="16sp"
@@ -169,7 +179,7 @@
         android:layout_width="354dp"
         android:layout_height="48dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="Agregar Vale"
         app:layout_constraintEnd_toEndOf="parent"
@@ -180,8 +190,8 @@
     <ListView
         android:id="@+id/lstValesPapel"
         android:layout_width="348dp"
-        android:layout_height="206dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -191,7 +201,7 @@
         android:id="@+id/btnAceptarValesPapel"
         android:layout_width="107dp"
         android:layout_height="52dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="Aceptar"
         app:layout_constraintEnd_toEndOf="parent"

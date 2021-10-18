@@ -25,6 +25,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
@@ -44,17 +45,18 @@ import java.util.Map;
 
 public class DiferentesFormasPago extends AppCompatActivity {
     SQLiteBD db;
-    String EstacionId, sucursalId, ipEstacion, MontoenCanasta, saldoPuntada, tarjetaNumero, pagoConPuntada;
+    String EstacionId, sucursalId, ipEstacion, saldoPuntada, tarjetaNumero, pagoConPuntada;
     ListView list;
     TextView txtMontoTotal, txtMontoFaltante, tvSaldo, tvSaldoPuntada;
     ImageView botonEnviar;
     JSONObject FormasPagoObjecto;
-    JSONArray FormasPagoArreglo;
+    JSONArray FormasPagoArreglo, ArregloFormaPagoVale;
     Bundle args = new Bundle();
     String CadenaFinal, numeroempleado;
     String BanderaHuella, enviadoDesde, Usuarioid, PosicionCarga, Clavedespachador, OperativaId, NombreCompletoVenta;
     Integer TipoTransacionImprimir;
-    String fechaTicket;
+    String arregloVales;
+    Double MontoenCanasta, montoVales;
 
 
     @Override
@@ -66,8 +68,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
+        db.getIdTarjtero();
 
-        MontoenCanasta = getIntent().getStringExtra("montoencanasta");
+        MontoenCanasta = getIntent().getDoubleExtra("montoencanasta", 0.00);
         PosicionCarga = getIntent().getStringExtra("posicioncarga");
         Usuarioid = db.getUsuarioId();//getIntent().getStringExtra("idusuario");
         BanderaHuella = getIntent().getStringExtra("banderaHuella");
@@ -80,31 +83,42 @@ public class DiferentesFormasPago extends AppCompatActivity {
         tarjetaNumero = getIntent().getStringExtra("tarjetaNumero");
         pagoConPuntada = getIntent().getStringExtra("pagoconpuntada");
 
+        txtMontoTotal= (TextView) findViewById(R.id.txtMontoTotal);
+        txtMontoFaltante= (TextView)findViewById(R.id.txtmontofaltante);
+        tvSaldoPuntada= (TextView)findViewById(R.id.tvsaldopuntada);
+        tvSaldo=(TextView) findViewById(R.id.tvsaldo2);
 
-        txtMontoTotal=findViewById(R.id.txtMontoTotal);
-        txtMontoFaltante=findViewById(R.id.txtmontofaltante);
-        tvSaldoPuntada=findViewById(R.id.tvsaldopuntada);
-        tvSaldo=findViewById(R.id.tvsaldopuntada);
+        if (enviadoDesde.equals("valespapel")){
+            montoVales = getIntent().getDoubleExtra("montoencanastavales", 0.00);
+            arregloVales= getIntent().getStringExtra("arregloVales");
+            tvSaldo.setText(montoVales.toString());
+            try {
+                FormasPagoArreglo = new JSONArray(arregloVales);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         obtenerformasdepago();
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
         simbolos.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("####.00##",simbolos);
         df.setMaximumFractionDigits(2);
-        MontoenCanasta = df.format(Double.parseDouble(MontoenCanasta));
-        tvSaldo.setText(df.format(Double.parseDouble(saldoPuntada)));
+//        MontoenCanasta = MontoenCanasta;
+//        tvSaldo.setText(df.format(Double.parseDouble(saldoPuntada)));
 
 
-        if (saldoPuntada.equals("0")){
-            tvSaldoPuntada.setVisibility(View.INVISIBLE);
-            tvSaldo.setVisibility(View.INVISIBLE);
-
-        }else{
+//        if (saldoPuntada.equals("0")){
+//            tvSaldoPuntada.setVisibility(View.INVISIBLE);
+//            tvSaldo.setVisibility(View.INVISIBLE);
+//
+//        }else{
             tvSaldoPuntada.setVisibility(View.VISIBLE);
             tvSaldo.setVisibility(View.VISIBLE);
-        }
-        txtMontoTotal.setText(MontoenCanasta);
-        txtMontoFaltante.setText(MontoenCanasta);
+//        }
+        txtMontoTotal.setText(MontoenCanasta.toString());
+        txtMontoFaltante.setText(MontoenCanasta.toString());
         botonEnviar = findViewById(R.id.imprimir);
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,21 +152,22 @@ public class DiferentesFormasPago extends AppCompatActivity {
     }
 
     private void EnviaArregloDiferentesFormasPagos() {
-//        if (!Conexion.compruebaConexion(this)) {
-//            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-//            startActivity(intent1);
-//            finish();
-//        } else {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
             JSONObject datos = new JSONObject();
             String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
-
                 datos.put("PosicionCargaId", PosicionCarga);
                 datos.put("IdUsuario", numeroempleado);
                 datos.put("SucursalId", sucursalId);
                 datos.put("IdFormasPago", FormasPagoArreglo);
+                datos.put("SucursalId", sucursalId);
+                datos.put("ConfiguracionAplicacionId", db.getIdTarjtero());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -186,97 +201,18 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         } else {
-                            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-                            simbolos.setDecimalSeparator('.');
-                            DecimalFormat df = new DecimalFormat("####.00##",simbolos);
-                            df.setMaximumFractionDigits(2);
-
-                            String pie = response.getString("Pie");
-                            JSONObject mensaje = new JSONObject(pie);
-                            final JSONArray names = mensaje.getJSONArray("Mensaje");
-                            String nombretarjeta = mensaje.getString("NombreTarjeta");
-                            String numerotarjeta = mensaje.getString("NumeroTarjeta");
-                            String odometro = mensaje.getString("Odometro");
-                            String saldo = mensaje.getString("Saldo");
-                            String puntos = mensaje.getString("Puntos");
-
-                            JSONObject det = new JSONObject(detalle);
-                            final String numerorecibo = det.getString("NoRecibo");
-                            final String numerotransaccion = det.getString("NoTransaccion");
-                            final String numerorastreo = det.getString("NoRastreo");
-                            final String poscarga = det.getString("PosCarga");
-                            final String despachador = det.getString("Desp");
-
-                            //String formapago = det.getString("FormaPago");
-                            String proticFP = new String();
-                            String PagoFormas = det.getString("TicketFormaPagos");
-                            JSONArray formasPago = new JSONArray(PagoFormas);
-                            for (int i = 0; i < formasPago.length(); i++) {
-                                JSONObject formaPagoObject = formasPago.getJSONObject(i);
-
-                                String PagoImporte = "$ " + df.format(Double.parseDouble(formaPagoObject.getString("Importe")));
-                                String DescripcionFormaPagoObjeto = formaPagoObject.getString("FormaPago");
-
-                                JSONObject Descripcionformapago = new JSONObject(DescripcionFormaPagoObjeto);
-                                String FormaPagoDescripcion = Descripcionformapago.getString("ShortDescription");
-                                proticFP += FormaPagoDescripcion + " | " + PagoImporte + "\n";
-
-                            }
-
-                            String TipoTransaccion = det.getString("TipoTransaccion");
-                            JSONObject TransaccionTipo = new JSONObject(TipoTransaccion);
-                            String NumeroInternoTransaccion = TransaccionTipo.getString("Id");
-                            String DescripcionTransaccion = TransaccionTipo.getString("Description");
-
-                            if (NumeroInternoTransaccion.equals("1")) {
-//                                TipoTransacionImprimir = PRINT_OTRAS_TARJETAS;
-                            } else {
-                                if (NumeroInternoTransaccion.equals("20")) {
-//                                    TipoTransacionImprimir = PRINT_ACUMULAR;
-                                } else {
-//                                    TipoTransacionImprimir = PRINT_OTRAS_TARJETAS;
+                            String titulo = "AVISO";
+                            Modales modales = new Modales(DiferentesFormasPago.this);
+                            View view1 = modales.MostrarDialogoCorrecto(DiferentesFormasPago.this, "Ticket Impreso en Impresora Central");
+                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intent);
+                                    finish();
+                                    modales.alertDialog.dismiss();
                                 }
-                            }
-                            String vendedor = det.getString("Vend");
-
-                            String prod = det.getString("Productos");
-                            fechaTicket = det.getString("Fecha");
-                            JSONArray producto = det.getJSONArray("Productos");
-                            String protic = new String();
-                            final String finalProtic = protic;
-
-                            for (int i = 0; i < producto.length(); i++) {
-                                JSONObject p1 = producto.getJSONObject(i);
-                                String value = "" + df.format(Double.parseDouble(p1.getString("Cantidad")));
-
-                                String descripcion = p1.getString("Descripcion");
-
-                                String importe = "" + df.format(Double.parseDouble(p1.getString("Importe")));
-
-                                String prec = "" + df.format(Double.parseDouble(p1.getString("Precio")));
-
-                                protic += value + "  | " + descripcion + " | " + prec + " | " + importe + "\n";
-                            }
-
-                            final String subtotal = det.getString("Subtotal");
-                            final String iva = det.getString("IVA");
-                            final String total = det.getString("Total");
-                            final String totaltexto = det.getString("TotalTexto");
-                            final String nombreCompleto = det.getString("NombreEmpleadoImpresion");
-
-
-                            String clave = det.getString("Clave");
-                            String carga = getIntent().getStringExtra("car");
-                            String user = getIntent().getStringExtra("user");
-//                        String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
-                            ProgressDialog bar = new ProgressDialog(DiferentesFormasPago.this);
-                            bar.setTitle("Imprimir Ticket");
-                            bar.setMessage("Ejecutando... ");
-                            bar.setIcon(R.drawable.ventas);
-                            bar.setCancelable(false);
-                            bar.show();
-//                            printThread = new DiferentesFormasPago.Print_Thread_Tickets(Integer.parseInt(NumeroInternoTransaccion),numerorecibo,numerotransaccion,numerorastreo,despachador,subtotal,iva,total,totaltexto,poscarga,NombreCompletoVenta,protic,names, proticFP);
-//                            printThread.start();
+                            });
                         }
 
                     } catch (JSONException e) {
@@ -310,7 +246,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                 }
             };
             queue.add(request_json);
-//        }
+        }
     }
 
 
@@ -395,29 +331,34 @@ public class DiferentesFormasPago extends AppCompatActivity {
                 String visible = numerointernoobject.getString("IsFrontVisible");
                 String facturable = numerointernoobject.getString("IsBillable");
 
-                if (facturable == "true") {
-                    if (numero_pago.equals("14")) {
+//                if (facturable == "true") {
+                if (visible == "true") {
+                    if (numero_pago.equals("14")) {//MERCADO PAGO
                     }else{
-                        numerotickets.add(numero_ticket);
-                        maintitle.add(nombre_pago);
-                        subtitle.add("$0.00" );
-                        IdFormaPago.add(numero_pago);
-                        colocarformapago = true;
-                    }
-                }else{
-                    if (numero_pago.equals("0")){
-                        if (pagoConPuntada.equals("si")){
-                            if (saldoPuntada.equals("0")){
-                            }else{
-                                numerotickets.add("1");
-                                maintitle.add("Puntada Redención");
-                                subtitle.add("$0.00" );
-                                IdFormaPago.add("12"); //numero_pago
-                                colocarformapago = true;
-                            }
+                        if (enviadoDesde.equals("valespapel") && numero_pago.equals("2")){
+                        }else{
+                            numerotickets.add(numero_ticket);
+                            maintitle.add(nombre_pago);
+                            subtitle.add("$0.00" );
+                            IdFormaPago.add(numero_pago);
+                            colocarformapago = true;
                         }
                     }
                 }
+//                }else{
+//                    if (numero_pago.equals("0")){
+////                        if (pagoConPuntada.equals("si")){
+////                            if (saldoPuntada.equals("0")){
+////                            }else{
+////                                numerotickets.add("1");
+////                                maintitle.add("Puntada Redención");
+////                                subtitle.add("$0.00" );
+////                                IdFormaPago.add("12"); //numero_pago
+////                                colocarformapago = true;
+////                            }
+////                        }
+//                    }
+//                }
 
                 if (colocarformapago.equals(true)){
                     int idpago = Integer.parseInt(internonumero); //numero_pago
@@ -500,40 +441,40 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                 String montosinpesos;
                                 montosinpesos  = subtitle.get(position);
                                 montoSeleccionado =montosinpesos.replace("$", "");
-                                if (position == 0 && pagoConPuntada.equals("si"))  {
-                                    if (Double.parseDouble(cantidad) > Double.parseDouble(saldoPuntada) ){
-                                        banderaSigue = false;
-                                        String titulo = "AVISO";
-                                        String mensaje = "La cantidad no puede ser mayor que el Saldo de la Tarjeta Puntada";
-                                        Modales modales = new Modales(DiferentesFormasPago.this);
-                                        View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                modales.alertDialog.dismiss();
-                                            }
-                                        });
-                                    }else{
-                                        if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
-                                            try {
-                                                banderaSigue = false;
-                                                String titulo = "AVISO";
-                                                String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
-                                                Modales modales = new Modales(DiferentesFormasPago.this);
-                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-                                                        modales.alertDialog.dismiss();
-                                                    }
-                                                });
-
-                                            }catch (Exception e){
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                }else{
+//                                if (position == 0 && pagoConPuntada.equals("si"))  {
+//                                    if (Double.parseDouble(cantidad) > Double.parseDouble(saldoPuntada) ){
+//                                        banderaSigue = false;
+//                                        String titulo = "AVISO";
+//                                        String mensaje = "La cantidad no puede ser mayor que el Saldo de la Tarjeta Puntada";
+//                                        Modales modales = new Modales(DiferentesFormasPago.this);
+//                                        View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+//                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(View view) {
+//                                                modales.alertDialog.dismiss();
+//                                            }
+//                                        });
+//                                    }else{
+//                                        if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
+//                                            try {
+//                                                banderaSigue = false;
+//                                                String titulo = "AVISO";
+//                                                String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
+//                                                Modales modales = new Modales(DiferentesFormasPago.this);
+//                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+//                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(View view) {
+//                                                        modales.alertDialog.dismiss();
+//                                                    }
+//                                                });
+//
+//                                            }catch (Exception e){
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//                                    }
+//                                }else{
                                     if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
                                         if (montoSeleccionado.equals("0.00")){
                                             try {
@@ -612,7 +553,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                                 }
                                             }
                                         }
-                                    }
+//                                    }
                                 }
 
                                 if (banderaSigue.equals(true)){
@@ -633,7 +574,15 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                     Double cantidadObtenida;
                                     cantidadObtenida = 0.00;
                                     CadenaFinal="";
-                                    FormasPagoArreglo = new JSONArray();
+                                    if (enviadoDesde.equals("valespapel")){
+                                        try {
+                                            FormasPagoArreglo = new JSONArray(arregloVales);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }else{
+                                        FormasPagoArreglo = new JSONArray();
+                                    }
                                     String  FormaPagoId;
                                     String cadenaArreglo="";
                                     for (int g= 0; g< list.getCount(); g++)

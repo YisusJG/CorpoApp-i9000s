@@ -275,7 +275,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onDestroy();
+//                            onDestroy();
                             modales.alertDialog.dismiss();
                             Intent intent = new Intent(MonederosElectronicos.this, Menu_Principal.class);
                             startActivity(intent);

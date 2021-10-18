@@ -22,6 +22,7 @@ import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
 
 import org.json.JSONArray;
@@ -35,7 +36,7 @@ public class VentaProductos extends AppCompatActivity {
     SQLiteBD data;
     String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid;
 
-    Button btnCombustibleVenta, btnPerifericosVentas, btnIncrementarProducto, btnDecrementarProducto, btnEscanearProducto;
+    Button btnCombustibleVenta, btnPerifericosVentas, btnIncrementarProducto, btnDecrementarProducto, btnEscanearProducto, btnAceites;
     ListView lstProductos;
 
     List<String> NombreProducto;
@@ -75,6 +76,16 @@ public class VentaProductos extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ActivaDesactiva (true);
+                Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
+                intent.putExtra("numeroOperativa", usuarioid);
+                intent.putExtra("cadenaproducto", "");
+                intent.putExtra("lugarproviene", "Venta");
+                intent.putExtra("NumeroIsla", "1");
+                intent.putExtra("NumeroEmpleado", usuarioid);
+                intent.putExtra("posicionCarga", posicionCarga);
+                startActivity(intent);
+//                finish();
+
 //                Toast.makeText(VentaProductos.this, "Entro Boton Perifericos Venta", Toast.LENGTH_SHORT).show();
             }
         });
@@ -304,7 +315,7 @@ public class VentaProductos extends AppCompatActivity {
                     String precio = PrecioProducto.get(i);
                     String claveProducto = ClaveProducto.get(i);
                     Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
-                    intent.putExtra("numeroEmpleado", idUsuario);
+                    intent.putExtra("combustible", ID.get(i));
                     intent.putExtra("posicionCarga", poscicionCarga);
                     intent.putExtra("estacionjarreo", estacionJarreo);
                     intent.putExtra("claveProducto", claveProducto);

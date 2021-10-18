@@ -498,7 +498,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             }
                         }
 
-                        if (banderaConDatos.equals(true)){
+                        if (banderaConDatos.equals(false)){
                             Toast.makeText(PosicionPuntadaRedimir.this, "Posicion Ocupada", Toast.LENGTH_SHORT).show();
                         } else {
 
