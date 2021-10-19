@@ -20,60 +20,57 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Entregas.EntregaValesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Entregas.OpcionesEntregaActivity"
+            android:exported="false" />
+        <activity
             android:name=".Corte.ProductosActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".Corte.ResumenActivity"
-            android:exported="true" android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".Puntada.PuntadaRedimirQr"
-            android:exported="true" android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".Puntada.PuntadaQr"
-            android:exported="true" android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno"
-            android:exported="true" android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".Login.EntregaPicos"
-            android:exported="true" android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".TanqueLleno.NFC.TarjetaNFC"
             android:exported="true" /> <!-- Modulo Facturacion -->
         <activity android:name=".Facturacion.ClienteFacturas" /> <!-- Termina modulo de facturacion -->
         <activity
             android:name=".ValesPapel.ValesPapel"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".Login.LoginActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.ValesPalel"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.confirmaVenta"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.VentaProductos"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.DiferentesFormasPago"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.FormasPago"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.VentaCombustibleAceites"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true" />
         <activity
             android:name=".Tickets.PosicionCargaTickets"
             android:exported="true" />
@@ -124,6 +121,7 @@
         <activity
             android:name=".Configuracion.ConfiguracionServidor"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
+            android:exported="true"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -33,6 +33,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
+import com.corpogas.corpoapp.Entregas.OpcionesEntregaActivity
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas
 import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
@@ -700,14 +701,14 @@ class Menu_Principal : AppCompatActivity() {
 
 
             R.id.btnFajillas -> {
-                intent = Intent(applicationContext, OpcionFajillas::class.java)
-                startActivity(intent)
+//                intent = Intent(applicationContext, OpcionFajillas::class.java)
+//                startActivity(intent)
             }
 
             R.id.btnEntregas -> {
-//                intent = Intent(applicationContext, EntregasFragment::class.java)
-//                startActivity(intent)
-                Toast.makeText(applicationContext, "Hola", Toast.LENGTH_SHORT).show()
+                intent = Intent(applicationContext, OpcionesEntregaActivity::class.java)
+                startActivity(intent)
+//                Toast.makeText(applicationContext, "Hola", Toast.LENGTH_SHORT).show()
             }
 
 

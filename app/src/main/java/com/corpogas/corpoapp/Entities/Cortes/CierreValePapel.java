@@ -1,8 +1,8 @@
 package com.corpogas.corpoapp.Entities.Cortes;
 
-import com.corpogas.corpoapp.Entities.Catalogos.PaperVoucherType;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sucursales.Branch;
+import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
 
 import java.io.Serializable;
 

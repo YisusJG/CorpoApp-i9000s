@@ -2,7 +2,6 @@ package com.corpogas.corpoapp.Interfaces.Endpoints;
 
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
-import com.corpogas.corpoapp.Entities.Catalogos.PaperVoucherType;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
@@ -31,6 +30,7 @@ import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreTicket;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
+import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
 import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
@@ -108,7 +108,7 @@ public interface EndPoints {
     Call<RespuestaApi<List<CierreFormaPago>>> getFormaPagosUltimoTurno(@Path("sucursalId") long sucursalId, @Path("islaId") long islaId);
 
     @GET("api/TipoValePapeles")
-    Call<PaperVoucherType> getTipoValePapel();
+    Call<List<PaperVoucherType>> getTipoValePapel();
 
     // METODO PARA VALIDAR NIP DE USUARIO
 
