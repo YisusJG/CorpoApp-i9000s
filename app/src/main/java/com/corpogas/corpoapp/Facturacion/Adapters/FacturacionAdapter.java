@@ -350,68 +350,68 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                         }
                     });
 
-                    viewFactura.findViewById(R.id.btnImprimirFactura).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            clienteFacturas.ObtenProgressDialog("En proceso de Facturación...");
-                            solicitudFactura = new SolicitudFactura();
-                            solicitudFactura.setDispositivoId(db.getIdTarjtero());
-                            solicitudFactura.setTickets(lstNumeroRastreo);
-                            solicitudFactura.setRfc(respuestaRFCDatos.getRFC());
-                            solicitudFactura.setEmail(respuestaRFCDatos.getEmail()+"jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"); // "jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"
-                            //solicitudFactura.setEmail("abinadab.vazquez@gmail.com");
-                            solicitudFactura.setIdCliente(respuestaRFCDatos.getIdCliente());
-                            solicitudFactura.setIdAlias(db.getIdTarjtero());
-                            ipEstacion = db.getIpEstacion();
-                            id = Long.parseLong(db.getIdSucursal());
-//                            String json = new Gson().toJson(solicitudFactura);
-
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
-
-                            EndPoints solicitarFactura = retrofit.create(EndPoints.class);
-                            Call<RespuestaApi<RespuestaSolicitudFactura>> call = solicitarFactura.postSolicitarFactura(id,Long.parseLong(idUsuario),solicitudFactura);
-                            call.enqueue(new Callback<RespuestaApi<RespuestaSolicitudFactura>>() {
-
-                                @Override
-                                public void onResponse(Call<RespuestaApi<RespuestaSolicitudFactura>> call, Response<RespuestaApi<RespuestaSolicitudFactura>> response) {
-                                    if (!response.isSuccessful()) {
-                                        return;
-                                    }
-                                    respuestaCFDI = response.body();
-
-                                    if(respuestaCFDI.isCorrecto() == false)
-                                    {
-                                        if(respuestaCFDI.getAlertaHttp() == null)
-                                        {
-                                            String mensaje = respuestaCFDI.getMensaje();
-                                            Toast.makeText(mContext, mensaje, Toast.LENGTH_LONG).show();
-                                        }else
-                                        {
-                                            String validaRespuestaFacturacion = respuestaCFDI.getAlertaHttp().getError().getMensajeSistema();
-                                            Toast.makeText(mContext, validaRespuestaFacturacion, Toast.LENGTH_LONG).show();
-                                        }
-                                        clienteFacturas.bar.cancel();
-
-//                                                txtNumRastreo.setError(validaRespuestaFacturacion);
-                                    }else{
-
-                                        //Toast.makeText(mContext, "Ya Imprimió??", Toast.LENGTH_SHORT).show();
-                                        clienteFacturas.bar.cancel();
-                                        enviarPrincipal();
-                                        //doprintwork();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<RespuestaApi<RespuestaSolicitudFactura>> call, Throwable t) {
-                                    Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
+//                    viewFactura.findViewById(R.id.btnImprimirFactura).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            clienteFacturas.ObtenProgressDialog("En proceso de Facturación...");
+//                            solicitudFactura = new SolicitudFactura();
+//                            solicitudFactura.setDispositivoId(db.getIdTarjtero());
+//                            solicitudFactura.setTickets(lstNumeroRastreo);
+//                            solicitudFactura.setRfc(respuestaRFCDatos.getRFC());
+//                            solicitudFactura.setEmail(respuestaRFCDatos.getEmail()+"jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"); // "jesus.gomez@corpogas.com.mx,miguel.reyes@corpogas.com.mx,amairani.delgado@corpogas.com.mx"
+//                            //solicitudFactura.setEmail("abinadab.vazquez@gmail.com");
+//                            solicitudFactura.setIdCliente(respuestaRFCDatos.getIdCliente());
+//                            solicitudFactura.setIdAlias(db.getIdTarjtero());
+//                            ipEstacion = db.getIpEstacion();
+//                            id = Long.parseLong(db.getIdSucursal());
+////                            String json = new Gson().toJson(solicitudFactura);
+//
+//                            Retrofit retrofit = new Retrofit.Builder()
+//                                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                                    .addConverterFactory(GsonConverterFactory.create())
+//                                    .build();
+//
+//                            EndPoints solicitarFactura = retrofit.create(EndPoints.class);
+//                            Call<RespuestaApi<RespuestaSolicitudFactura>> call = solicitarFactura.postSolicitarFactura(id,Long.parseLong(idUsuario),solicitudFactura);
+//                            call.enqueue(new Callback<RespuestaApi<RespuestaSolicitudFactura>>() {
+//
+//                                @Override
+//                                public void onResponse(Call<RespuestaApi<RespuestaSolicitudFactura>> call, Response<RespuestaApi<RespuestaSolicitudFactura>> response) {
+//                                    if (!response.isSuccessful()) {
+//                                        return;
+//                                    }
+//                                    respuestaCFDI = response.body();
+//
+//                                    if(respuestaCFDI.isCorrecto() == false)
+//                                    {
+//                                        if(respuestaCFDI.getAlertaHttp() == null)
+//                                        {
+//                                            String mensaje = respuestaCFDI.getMensaje();
+//                                            Toast.makeText(mContext, mensaje, Toast.LENGTH_LONG).show();
+//                                        }else
+//                                        {
+//                                            String validaRespuestaFacturacion = respuestaCFDI.getAlertaHttp().getError().getMensajeSistema();
+//                                            Toast.makeText(mContext, validaRespuestaFacturacion, Toast.LENGTH_LONG).show();
+//                                        }
+//                                        clienteFacturas.bar.cancel();
+//
+////                                                txtNumRastreo.setError(validaRespuestaFacturacion);
+//                                    }else{
+//
+//                                        //Toast.makeText(mContext, "Ya Imprimió??", Toast.LENGTH_SHORT).show();
+//                                        clienteFacturas.bar.cancel();
+//                                        enviarPrincipal();
+//                                        //doprintwork();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<RespuestaApi<RespuestaSolicitudFactura>> call, Throwable t) {
+//                                    Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//
+//                        }
 //                        @Override
 //                        public void onClick(View view) {
 //                            clienteFacturas.ObtenProgressDialog("En proceso de Facturación... ");
@@ -467,7 +467,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
 //
 ////                            Toast.makeText(mContext, "a qui va la impresion", Toast.LENGTH_SHORT).show();
 //                        }
-                    });
+//                    });
 
                 }
             });

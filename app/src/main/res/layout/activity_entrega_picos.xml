@@ -107,7 +107,8 @@
         android:layout_height="41dp"
         android:layout_marginTop="35dp"
         android:background="@drawable/b3"
-        android:text="ACEPTAR"
+        android:text="ACEPTAR
+"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

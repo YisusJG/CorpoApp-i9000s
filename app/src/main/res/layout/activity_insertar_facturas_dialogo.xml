@@ -130,9 +130,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btncancelarFactura"
-        app:layout_constraintEnd_toStartOf="@+id/btnImprimirFactura"
         app:layout_constraintTop_toBottomOf="@+id/layoutDialog"/>
-    <Button
+
+    <!-- <Button
         android:id="@+id/btnImprimirFactura"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -144,6 +144,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnEnviarFactura"
-        app:layout_constraintTop_toBottomOf="@+id/layoutDialog"/>
+        app:layout_constraintTop_toBottomOf="@+id/layoutDialog"/> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

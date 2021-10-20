@@ -31,6 +31,7 @@ import com.corpogas.corpoapp.Entities.Virtuales.VentaCombustibleTotal;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.EntregaPicos;
 import com.corpogas.corpoapp.Login.LoginActivity;
+import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 
@@ -46,7 +47,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ResumenActivity extends AppCompatActivity {
 
     ConstraintLayout expandableCombustible, expandableFajilla, expandablePico, expandableVale, expandableFormaPago, expandableJarreo;
-    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, btnAgregarFajillasResumenActivity;
+    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, btnAgregarFajillasResumenActivity, btnValidarEntrega;
     CardView cardViewCombustible, cardViewFajilla, cardViewPico, cardViewVale, cardViewFormaPago, cardViewJarreo;
     RecyclerView rcvGasopass, rcvEfectivale, rcvAccor, rcvSiVale, rcvFormaPago;
     ImageButton btnListaProductosResumenActivity;
@@ -54,6 +55,7 @@ public class ResumenActivity extends AppCompatActivity {
     SQLiteBD db;
     String ipEstacion, idusuario, titulo, mensaje;
     long sucursalId;
+    double importeDiferenciaTotal;
 
     RespuestaApi<CierreTicket> respuestaApiCierreTicket;
     Modales modales;
@@ -212,6 +214,7 @@ public class ResumenActivity extends AppCompatActivity {
 
         btnAgregarFajillasResumenActivity = findViewById(R.id.btnAgregarFajillasResumenActivity);
         btnListaProductosResumenActivity = findViewById(R.id.btnListaProductosResumenActivity);
+        btnValidarEntrega = findViewById(R.id.btnValidarEntrega);
 
 //        imgTotalPicos = findViewById(R.id.imgTotalPicos);
 //        imgTotalFajillas = findViewById(R.id.imgTotalFajillas);
@@ -334,7 +337,38 @@ public class ResumenActivity extends AppCompatActivity {
                     }
                 });
             }
+        });
 
+        btnValidarEntrega.setOnClickListener(view -> {
+            importeDiferenciaTotal = respuestaApiCierreTicket.getObjetoRespuesta().getImporteDiferenciaTotal();
+            if (importeDiferenciaTotal == 0.0){
+
+                titulo = "CORRECTO";
+                mensaje = "Sin diferencias. Puedes continuar.";
+                View view1 = modales.MostrarDialogoCorrecto(ResumenActivity.this, titulo, mensaje, "ACEPTAR");
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        db.getWritableDatabase().delete("DatosEmpleado",null,null);
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        modales.alertDialog.dismiss();
+
+                    }
+                });
+
+            }else{
+                titulo = "AVISO";
+                mensaje = "Existe una diferencia en tu efectivo. Verifica con tu Rey.";
+                View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+
+                    }
+                });
+            }
 
         });
     }
@@ -422,12 +456,32 @@ public class ResumenActivity extends AppCompatActivity {
                     return;
                 }
                 respuestaApiCierreTicket = response.body();
+                if (respuestaApiCierreTicket.Correcto == true ){
+
 //                obtenerDiferencias();
-                inicializaControles();
+                    inicializaControles();
 //                SetRecyclerView();
-                setTotalVales();
-                setTotalFormasPago();
-                // ImprimirTicketCierre();
+                    setTotalVales();
+                    setTotalFormasPago();
+                    // ImprimirTicketCierre();
+                }else{
+                    titulo = "AVISO";
+                    mensaje = respuestaApiCierreTicket.Mensaje;
+                    View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                            startActivity(intent);
+                            modales.alertDialog.dismiss();
+                            finish();
+
+                        }
+                    });
+
+
+                }
+
 
             }
 

@@ -234,9 +234,9 @@ public class Modales extends Dialog implements
         );
         builder.setView(view);
         ((TextView) view.findViewById(R.id.textTitle)).setText(tituloHeader);
-        ((Button) view.findViewById(R.id.btnEnviarFactura)).setText("Enviar");
+        ((Button) view.findViewById(R.id.btnEnviarFactura)).setText("GENERAR FACTURA");
         ((Button) view.findViewById(R.id.btncancelarFactura)).setText(R.string.cancelar);
-        ((Button) view.findViewById(R.id.btnImprimirFactura)).setText("Imprimir");
+//        ((Button) view.findViewById(R.id.btnImprimirFactura)).setText("Imprimir");
         ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_agregar_dato);
 
         alertDialog = builder.create();

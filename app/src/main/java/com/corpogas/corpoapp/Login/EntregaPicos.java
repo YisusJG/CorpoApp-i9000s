@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Corte.ProcesoCorte;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
@@ -63,11 +64,14 @@ public class EntregaPicos extends AppCompatActivity {
     List<RecepcionFajilla> lPicos, lCierreMorralla;
     RespuestaApi<CierreVariables> respuestaApiCierreVariables;
     RespuestaApi<List<ResumenFajilla>> respuestaApiPicosBilletes;
-//    RespuestaApi<CierreFajilla> respuestaApiPicosMorralla;
+    //    RespuestaApi<CierreFajilla> respuestaApiPicosMorralla;
     RespuestaApi<List<ResumenFajilla>> respuestaApiPicosMorralla;
-
+    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
     CierreFajilla cierreFajilla;
     List<RecepcionFajilla> recepcionFajilla = new ArrayList<>();
+
+    EditText edtNipAutorizacion;
+    String nipAutorizacion;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -246,8 +250,8 @@ public class EntregaPicos extends AppCompatActivity {
 
     private void obtenerValorFajillas() {
 
-                fajillaBilletes = db.getPrecioFajillaBillete();
-                fajillaMorralla = db.getPrecioFajillaMoneda();
+        fajillaBilletes = db.getPrecioFajillaBillete();
+        fajillaMorralla = db.getPrecioFajillaMoneda();
 
     }
 
@@ -259,57 +263,122 @@ public class EntregaPicos extends AppCompatActivity {
     private void enviarPicosBilletes() {
 
         if (sumaTotal == 0) {
-            obtenerPicosMorralla();
+            obtenerPicosMorralla(2);
         } else {
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
 
-            lPicos = lPicos.stream().filter(x -> x.Cantidad != 0).collect(Collectors.toList());
-            String json = new Gson().toJson(lPicos);
-
-            EndPoints guardaPicoBilletes = retrofit.create(EndPoints.class);
-            Call<RespuestaApi<List<ResumenFajilla>>> call = guardaPicoBilletes.postGuardaFajillas(lPicos, db.getNumeroEmpleado(), db.getNumeroEmpleado());
-            call.timeout().timeout(60, TimeUnit.SECONDS);
-            call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
-
+            String titulo1 = "CONFIRMACION";
+            String mensaje1 = "Ingresa NIP de confirmación.";
+            Modales modales = new Modales(EntregaPicos.this);
+            View viewLectura = modales.MostrarDialogoInsertaDato(EntregaPicos.this, mensaje1, titulo1);
+            edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, Response<RespuestaApi<List<ResumenFajilla>>> response) {
-                    if (!response.isSuccessful()) {
+                public void onClick(View view) {
+                    nipAutorizacion = edtNipAutorizacion.getText().toString();
+                    if (nipAutorizacion.isEmpty()){
+                        edtNipAutorizacion.setError("Ingresa NIP");
                         return;
-                    }
-                    respuestaApiPicosBilletes = response.body();
-                    boolean correcto = respuestaApiPicosBilletes.Correcto;
-                    if (correcto == true) {
-                        obtenerPicosMorralla();
-                    } else {
-                        titulo = "AVISO";
-                        mensaje = respuestaApiPicosBilletes.Mensaje;
-                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    }else{
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
+                        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, nipAutorizacion);
+                        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+
+                            @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
+                            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                                if (!response.isSuccessful()) {
+                                    return;
+                                }
+                                respuestaApiAccesoUsuario = response.body();
+                                if(respuestaApiAccesoUsuario.Correcto){
+                                    if(respuestaApiAccesoUsuario.getObjetoRespuesta().getRolId() == 1 || respuestaApiAccesoUsuario.getObjetoRespuesta().getRolId() == 3){
+                                        Retrofit retrofit = new Retrofit.Builder()
+                                                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                                                .addConverterFactory(GsonConverterFactory.create())
+                                                .build();
+
+                                        lPicos = lPicos.stream().filter(x -> x.Cantidad != 0).collect(Collectors.toList());
+                                        String json = new Gson().toJson(lPicos);
+
+                                        EndPoints guardaPicoBilletes = retrofit.create(EndPoints.class);
+                                        Call<RespuestaApi<List<ResumenFajilla>>> call2 = guardaPicoBilletes.postGuardaFajillas(lPicos, db.getNumeroEmpleado(), db.getNumeroEmpleado());
+                                        call2.timeout().timeout(60, TimeUnit.SECONDS);
+                                        call2.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+
+                                            @Override
+                                            public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call2, Response<RespuestaApi<List<ResumenFajilla>>> response) {
+                                                if (!response.isSuccessful()) {
+                                                    return;
+                                                }
+                                                respuestaApiPicosBilletes = response.body();
+                                                boolean correcto = respuestaApiPicosBilletes.Correcto;
+                                                if (correcto == true) {
+                                                    obtenerPicosMorralla(1);
+
+                                                } else {
+                                                    titulo = "AVISO";
+                                                    mensaje = respuestaApiPicosBilletes.Mensaje;
+                                                    View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
+                                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            modales.alertDialog.dismiss();
+
+                                                        }
+                                                    });
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
+                                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+
+                                        });
+                                    }else
+                                    {
+                                        edtNipAutorizacion.setError("Solo el jefe de isla y gerente pueden confirmar.");
+                                        return;
+                                    }
+
+                                }else{
+                                    edtNipAutorizacion.setError(respuestaApiAccesoUsuario.getMensaje());
+                                    return;
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
                             }
                         });
                     }
+//                    modales.alertDialog.dismiss();
                 }
-
-                @Override
-                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
             });
+            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btnAceptar.setEnabled(true);
 
+                    modales.alertDialog.dismiss();
+                }
+            });
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void obtenerPicosMorralla() {
+    private void obtenerPicosMorralla(int tipoDePico) {
 
         obtenerValorFajillas();
         cantidadMorralla = editTextMorralla.getText().toString();
@@ -330,19 +399,20 @@ public class EntregaPicos extends AppCompatActivity {
                     editTextMorralla.setError("Tu cantidad puede ser una fajilla");
 
                 } else {
-
-                    cantiMorralla = Double.parseDouble(cantidadMorralla);
-                    lPicos = db.getPicos();
-                    lCierreMorralla = lPicos.stream().filter(x -> x.getTipoFajilla() == 4).collect(Collectors.toList());
-                    if (lCierreMorralla.size() == 0) insertarPicosMorralla();
-                    db.updatePicos(cantiMorralla, 4);
+                            if(tipoDePico == 2)
+                            {
+                                cantiMorralla = Double.parseDouble(cantidadMorralla);
+                                lPicos = db.getPicos();
+                                lCierreMorralla = lPicos.stream().filter(x -> x.getTipoFajilla() == 4).collect(Collectors.toList());
+                                if (lCierreMorralla.size() == 0) insertarPicosMorralla();
+                                db.updatePicos(cantiMorralla, 4);
 //                    recepcionFajilla = new RecepcionFajilla();
 //                    recepcionFajilla = new ArrayList<>();
-                    lCierreMorralla = db.getPicos().stream().filter(x -> x.getTipoFajilla() == 4).collect(Collectors.toList());
+                                lCierreMorralla = db.getPicos().stream().filter(x -> x.getTipoFajilla() == 4).collect(Collectors.toList());
 
-                    for (RecepcionFajilla item : lCierreMorralla) {
+                                for (RecepcionFajilla item : lCierreMorralla) {
 
-                        recepcionFajilla.add(new RecepcionFajilla(sucursalId,1,item.getTipoFajilla(),item.getCantidad(),item.getDenominacion(),0.0,0));
+                                    recepcionFajilla.add(new RecepcionFajilla(sucursalId,1,item.getTipoFajilla(),item.getCantidad(),item.getDenominacion(),0.0,0));
 
 //                        recepcionFajilla.SucursalId = sucursalId;
 //                        recepcionFajilla.TurnoId = 1;
@@ -350,9 +420,14 @@ public class EntregaPicos extends AppCompatActivity {
 //                        recepcionFajilla.Cantidad = item.getCantidad();
 //                        recepcionFajilla.Denominacion = item.getDenominacion();
 
-                    }
+                                }
 
-                    enviarPicosMorralla();
+                                enviarPicosMorralla(2);
+
+                            }else {
+                                enviarPicosMorralla(1);
+                            }
+
                 }
             }
         }
@@ -379,7 +454,7 @@ public class EntregaPicos extends AppCompatActivity {
 
     }
 
-    private void enviarPicosMorralla() {
+    private void enviarPicosMorralla(int tipoDePico) {
 
         if ((Double.parseDouble(cantidadMorralla) == 0) && (sumaTotal == 0)) {
 
@@ -394,95 +469,323 @@ public class EntregaPicos extends AppCompatActivity {
 
                 }
             });
-        } else {
+        }
+//        else if ((Double.parseDouble(cantidadMorralla) > 0) && (sumaTotal > 0)) {
+//            Toast.makeText(getApplicationContext(), "A qui van cuando los dos esten llenos", Toast.LENGTH_LONG).show();
+//        }
+        else {
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            if(tipoDePico == 2){
+                String titulo1 = "CONFIRMACION";
+                String mensaje1 = "Ingresa NIP de confirmación.";
+                Modales modales = new Modales(EntregaPicos.this);
+                View viewLectura = modales.MostrarDialogoInsertaDato(EntregaPicos.this, mensaje1, titulo1);
+                edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        nipAutorizacion = edtNipAutorizacion.getText().toString();
+                        if (nipAutorizacion.isEmpty()){
+                            edtNipAutorizacion.setError("Ingresa NIP");
+                            return;
+                        }else{
 
-//            String json = new Gson().toJson(recepcionFajilla);
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
 
-            EndPoints postGuardaPicosMorralla = retrofit.create(EndPoints.class);
-            Call<RespuestaApi<List<ResumenFajilla>>> call = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado());
-            call.timeout().timeout(60, TimeUnit.SECONDS);
-            call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+                            EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
+                            Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, nipAutorizacion);
+                            call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
-                @Override
-                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, Response<RespuestaApi<List<ResumenFajilla>>> response) {
-                    if (!response.isSuccessful()) {
-                        return;
-                    }
-                    respuestaApiPicosMorralla = response.body();
-                    boolean correcto = respuestaApiPicosMorralla.Correcto;
-                    if (correcto == true) {
-
-                        if (sumaTotal == 0) {
-                            mensaje = "Sus Picos han sido registrados. Total: $" + (cantidadMorralla) + " pesos";
-                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
-                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.N)
                                 @Override
-                                public void onClick(View v) {
-                                    db.getWritableDatabase().delete("Picos",null,null);
-                                    db.getWritableDatabase().delete("Fajillas",null,null);
-                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    startActivity(intent);
-//                                    btnAceptar.setEnabled(true);
-                                    modales.alertDialog.dismiss();
-                                    db.close();
-                                    finish();
+                                public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                                    if (!response.isSuccessful()) {
+                                        return;
+                                    }
+                                    respuestaApiAccesoUsuario = response.body();
+                                    if(respuestaApiAccesoUsuario.Correcto){
+                                        if(respuestaApiAccesoUsuario.getObjetoRespuesta().getRolId() == 1 || respuestaApiAccesoUsuario.getObjetoRespuesta().getRolId() == 3){
+
+                                            Retrofit retrofit = new Retrofit.Builder()
+                                                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                                                    .addConverterFactory(GsonConverterFactory.create())
+                                                    .build();
+
+                                            //            String json = new Gson().toJson(recepcionFajilla);
+
+                                            EndPoints postGuardaPicosMorralla = retrofit.create(EndPoints.class);
+                                            Call<RespuestaApi<List<ResumenFajilla>>> call2 = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado());
+                                            call2.timeout().timeout(60, TimeUnit.SECONDS);
+                                            call2.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+
+                                                @Override
+                                                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call2, Response<RespuestaApi<List<ResumenFajilla>>> response) {
+                                                    if (!response.isSuccessful()) {
+                                                        return;
+                                                    }
+                                                    respuestaApiPicosMorralla = response.body();
+                                                    boolean correcto = respuestaApiPicosMorralla.Correcto;
+                                                    if (correcto == true) {
+
+                                                        if (sumaTotal == 0) {
+                                                            mensaje = "Sus Picos han sido registrados. Total: $" + (cantidadMorralla) + " pesos";
+                                                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
+                                                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    db.getWritableDatabase().delete("Picos",null,null);
+                                                                    db.getWritableDatabase().delete("Fajillas",null,null);
+                                                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
+                                                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                                                    startActivity(intent);
+                                                                    //                                    btnAceptar.setEnabled(true);
+                                                                    modales.alertDialog.dismiss();
+                                                                    db.close();
+                                                                    finish();
+                                                                }
+                                                            });
+
+                                                        } else {
+
+                                                            double total = Double.parseDouble(cantidadMorralla) + Double.parseDouble(String.valueOf(sumaTotal));
+                                                            mensaje = "Sus Picos han sido registrados. Total: $" + (total) + " pesos";
+                                                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
+                                                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    db.getWritableDatabase().delete("Picos",null,null);
+                                                                    db.getWritableDatabase().delete("Fajillas",null,null);
+                                                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
+                                                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                                                    startActivity(intent);
+
+                                                                    //                                    btnAceptar.setEnabled(true);
+                                                                    modales.alertDialog.dismiss();
+                                                                    db.close();
+                                                                    finish();
+                                                                }
+                                                            });
+                                                        }
+                                                    } else {
+
+                                                        titulo = "AVISO";
+                                                        mensaje = respuestaApiPicosMorralla.Mensaje;
+                                                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
+                                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View view) {
+                                                                btnAceptar.setEnabled(true);
+                                                                modales.alertDialog.dismiss();
+
+                                                            }
+                                                        });
+                                                    }
+
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call2, Throwable t) {
+                                                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+
+                                                }
+
+                                            });
+                                        }else
+                                        {
+                                            edtNipAutorizacion.setError("Solo el jefe de isla y gerente pueden confirmar.");
+                                            return;
+                                        }
+
+                                    }else{
+                                        edtNipAutorizacion.setError(respuestaApiAccesoUsuario.getMensaje());
+                                        return;
+                                    }
+
                                 }
-                            });
 
-                        } else {
-
-                            double total = Double.parseDouble(cantidadMorralla) + Double.parseDouble(String.valueOf(sumaTotal));
-                            mensaje = "Sus Picos han sido registrados. Total: $" + (total) + " pesos";
-                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
-                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    db.getWritableDatabase().delete("Picos",null,null);
-                                    db.getWritableDatabase().delete("Fajillas",null,null);
-                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    startActivity(intent);
+                                public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
-//                                    btnAceptar.setEnabled(true);
-                                    modales.alertDialog.dismiss();
-                                    db.close();
-                                    finish();
                                 }
                             });
                         }
-                    } else {
-
-                        titulo = "AVISO";
-                        mensaje = respuestaApiPicosMorralla.Mensaje;
-                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                btnAceptar.setEnabled(true);
-                                modales.alertDialog.dismiss();
-
-                            }
-                        });
+//                    modales.alertDialog.dismiss();
                     }
+                });
+                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        btnAceptar.setEnabled(true);
 
-                }
+                        modales.alertDialog.dismiss();
+                    }
+                });
+            }else {
+                double total = Double.parseDouble(cantidadMorralla) + Double.parseDouble(String.valueOf(sumaTotal));
+                mensaje = "Sus Picos han sido registrados. Total: $" + (total) + " pesos";
+                View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
+                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.getWritableDatabase().delete("Picos",null,null);
+                        db.getWritableDatabase().delete("Fajillas",null,null);
+                        db.getWritableDatabase().delete("PrecioFajillas",null,null);
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
 
-                @Override
-                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                        //                                    btnAceptar.setEnabled(true);
+                        modales.alertDialog.dismiss();
+                        db.close();
+                        finish();
+                    }
+                });
+            }
 
-                }
 
-            });
+
+
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//
+////            String json = new Gson().toJson(recepcionFajilla);
+//
+//            EndPoints postGuardaPicosMorralla = retrofit.create(EndPoints.class);
+//            Call<RespuestaApi<List<ResumenFajilla>>> call = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado());
+//            call.timeout().timeout(60, TimeUnit.SECONDS);
+//            call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+//
+//                @Override
+//                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, Response<RespuestaApi<List<ResumenFajilla>>> response) {
+//                    if (!response.isSuccessful()) {
+//                        return;
+//                    }
+//                    respuestaApiPicosMorralla = response.body();
+//                    boolean correcto = respuestaApiPicosMorralla.Correcto;
+//                    if (correcto == true) {
+//
+//                        if (sumaTotal == 0) {
+//                            mensaje = "Sus Picos han sido registrados. Total: $" + (cantidadMorralla) + " pesos";
+//                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
+//                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    db.getWritableDatabase().delete("Picos",null,null);
+//                                    db.getWritableDatabase().delete("Fajillas",null,null);
+//                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
+//                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                                    startActivity(intent);
+////                                    btnAceptar.setEnabled(true);
+//                                    modales.alertDialog.dismiss();
+//                                    db.close();
+//                                    finish();
+//                                }
+//                            });
+//
+//                        } else {
+//
+//                            double total = Double.parseDouble(cantidadMorralla) + Double.parseDouble(String.valueOf(sumaTotal));
+//                            mensaje = "Sus Picos han sido registrados. Total: $" + (total) + " pesos";
+//                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
+//                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    db.getWritableDatabase().delete("Picos",null,null);
+//                                    db.getWritableDatabase().delete("Fajillas",null,null);
+//                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
+//                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                                    startActivity(intent);
+//
+////                                    btnAceptar.setEnabled(true);
+//                                    modales.alertDialog.dismiss();
+//                                    db.close();
+//                                    finish();
+//                                }
+//                            });
+//                        }
+//                    } else {
+//
+//                        titulo = "AVISO";
+//                        mensaje = respuestaApiPicosMorralla.Mensaje;
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                btnAceptar.setEnabled(true);
+//                                modales.alertDialog.dismiss();
+//
+//                            }
+//                        });
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
+//                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+//
+//                }
+//
+//            });
         }
 
     }
+
+//    public void confirmaAutorizacion(){
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
+//        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, nipAutorizacion);
+//        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+//
+//            @RequiresApi(api = Build.VERSION_CODES.N)
+//            @Override
+//            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+//                if (!response.isSuccessful()) {
+//                    return;
+//                }
+//                respuestaApiAccesoUsuario = response.body();
+//                usuarioCorrecto();
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+//
+//    }
+
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public void usuarioCorrecto(){
+//        boolean correcto = respuestaApiAccesoUsuario.Correcto;
+//        if (correcto == true) {
+//            if (respuestaApiAccesoUsuario.getObjetoRespuesta().getClave().equals(nipAutorizacion) && ((respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 3))||(respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 1)) {
+//
+//
+//            } else {
+//                edtNipAutorizacion.setError("Usuario no autorizado");
+//            }
+//
+//        } else {
+//            edtNipAutorizacion.setError(respuestaApiAccesoUsuario.Mensaje);
+//
+//        }
+//
+//    }
 
     //Metodo para regresar a la actividad principal
     @Override
