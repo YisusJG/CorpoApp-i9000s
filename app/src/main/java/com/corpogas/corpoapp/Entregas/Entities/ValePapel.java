@@ -1,17 +1,24 @@
 package com.corpogas.corpoapp.Entregas.Entities;
 
 public class ValePapel {
-    public long NumeroTipoVale;
+    public long TipoValePapelId;
     public String TipoVale;
     public int Cantidad;
     public Double Denominacion;
 
-    public long getNumeroTipoVale() {
-        return NumeroTipoVale;
+    public ValePapel(long tipoValePapelId, String tipoVale, int cantidad, Double denominacion) {
+        TipoValePapelId = tipoValePapelId;
+        TipoVale = tipoVale;
+        Cantidad = cantidad;
+        Denominacion = denominacion;
     }
 
-    public void setNumeroTipoVale(long numeroTipoVale) {
-        NumeroTipoVale = numeroTipoVale;
+    public long getTipoValePapelId() {
+        return TipoValePapelId;
+    }
+
+    public void setTipoValePapelId(long tipoValePapelId) {
+        TipoValePapelId = tipoValePapelId;
     }
 
     public String getTipoVale() {

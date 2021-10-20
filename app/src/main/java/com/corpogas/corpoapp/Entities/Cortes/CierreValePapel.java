@@ -117,4 +117,12 @@ public class CierreValePapel implements Serializable {
     public void setImporte(double importe) {
         Importe = importe;
     }
+
+    public String getNombreVale() {
+        return NombreVale;
+    }
+
+    public void setNombreVale(String nombreVale) {
+        NombreVale = nombreVale;
+    }
 }

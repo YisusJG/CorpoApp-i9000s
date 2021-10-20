@@ -7,7 +7,7 @@ public class RecepcionVale {
 //    public virtual Branch Sucursal;
 //    public long EstacionId;
 //    public Estacion Estacion;
-    public long PosicionCargaId;
+    public String Clave;
 //    public virtual PosicionCarga Isla;
 //    public long TurnoId;
 //    public virtual Shift Turno;
@@ -31,12 +31,12 @@ public class RecepcionVale {
         SucursalId = sucursalId;
     }
 
-    public long getPosicionCargaId() {
-        return PosicionCargaId;
+    public String getClave() {
+        return Clave;
     }
 
-    public void setPosicionCargaId(long posicionCargaId) {
-        PosicionCargaId = posicionCargaId;
+    public void setClave(String clave) {
+        Clave = clave;
     }
 
     public List<ValePapel> getValesPapelRecepcion() {

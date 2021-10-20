@@ -185,8 +185,8 @@ public interface EndPoints {
     @POST("api/recepcionFajillas/guardaFajillas/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
     Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body List<RecepcionFajilla> recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
 
-    @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
-    Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale);
+    @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}")
+    Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
 
 

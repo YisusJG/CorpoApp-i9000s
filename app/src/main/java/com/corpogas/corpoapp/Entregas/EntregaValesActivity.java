@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -24,7 +25,12 @@ import com.corpogas.corpoapp.Entities.Cortes.CierreValePapel;
 import com.corpogas.corpoapp.Entregas.Adapters.AdapterValesPapel;
 import com.corpogas.corpoapp.Entregas.Adapters.RVAdapterValesPapel;
 import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
+import com.corpogas.corpoapp.Entregas.Entities.RecepcionVale;
+import com.corpogas.corpoapp.Entregas.Entities.ResumenVale;
+import com.corpogas.corpoapp.Entregas.Entities.ValePapel;
+import com.corpogas.corpoapp.FormasPago.FormasDePago;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 
@@ -42,8 +48,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class EntregaValesActivity extends AppCompatActivity {
 
     List<PaperVoucherType> paperVoucherType;
-    String ipEstacion,tituloValePapel;
-    long idValePapel,sucursalId,estacionId,cierreId,islaId,usuarioId;
+    String ipEstacion,tituloValePapel,numeroEmpleado;
+    long idValePapel,sucursalId,estacionId,cierreId;
     CorteDB dbCorte;
     SQLiteBD db;
     Spinner snipperTipoVales;
@@ -52,7 +58,7 @@ public class EntregaValesActivity extends AppCompatActivity {
     TextView txtTituloCantidad, txtTituloDenominacion, txtTituloTotal,txtTituloDesgloceVales,valesImporteTxt;
     RecyclerView rcvValesPapel,recyclerView;
     List<CierreValePapel> lCierreValesPapel;
-    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
+    RespuestaApi<List<ResumenVale>> respuestaGuardaVales;
 //    boolean mostrarDegloceVales;
 
 
@@ -119,6 +125,7 @@ public class EntregaValesActivity extends AppCompatActivity {
         ipEstacion = db.getIpEstacion();
         sucursalId = Long.parseLong(db.getIdSucursal());
         estacionId = Long.parseLong(db.getIdEstacion());
+        numeroEmpleado = db.getNumeroEmpleado();
         cierreId =   getIntent().getLongExtra("cierreId",0);
         rcvValesPapel = findViewById(R.id.rcvValesPapel);
         snipperTipoVales = findViewById(R.id.idSpinnerFragment);
@@ -214,8 +221,6 @@ public class EntregaValesActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onclicks() {
         imgDetalleVales.setOnClickListener(v -> {
-                lCierreValesPapel = new ArrayList<>();
-                lCierreValesPapel = dbCorte.getAllCierreValePapel();
 
             String titulo = "CONFIRMACION";
             String mensaje = "Ingresa NIP de confirmación.";
@@ -231,48 +236,69 @@ public class EntregaValesActivity extends AppCompatActivity {
                         edtNipAutorizacion.setError("Ingresa NIP");
                         return;
                     }else{
+                        List<ValePapel> lValespapelRecepcion = new ArrayList<>();
+                        RecepcionVale recepcionVale = new RecepcionVale();
+                        lCierreValesPapel = new ArrayList<>();
+                        lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() > 1).collect(Collectors.toList());
+
+                        for (CierreValePapel item: lCierreValesPapel)
+                        {
+                            int cantidad = (int) item.getCantidad();
+                            lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
+                        }
+
+                        recepcionVale.SucursalId = sucursalId;
+                        recepcionVale.Clave = nipAutorizacion;
+                        recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
+
                         Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
 
-                        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-                        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, nipAutorizacion);
-                        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
-                            @RequiresApi(api = Build.VERSION_CODES.N)
+                        EndPoints guardarVales = retrofit.create(EndPoints.class);
+                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
+                        call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
                             @Override
-                            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                            public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
                                 if (!response.isSuccessful()) {
                                     return;
                                 }
-                                respuestaApiAccesoUsuario = response.body();
-                                if(respuestaApiAccesoUsuario.Correcto){
-                                    if(respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 3
-                                    ||(respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 1)){
-                                        Retrofit retrofit = new Retrofit.Builder()
-                                                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                                                .addConverterFactory(GsonConverterFactory.create())
-                                                .build();
-
-                                        EndPoints enviarVales = retrofit.create(EndPoints.class);
-                                    }else{
-                                        edtNipAutorizacion.setError("Solo el jefe de isla o gerente pueden confirmar");
-                                    }
-
-                                }else{
-                                    edtNipAutorizacion.setError(respuestaApiAccesoUsuario.getMensaje());
+                                respuestaGuardaVales = response.body();
+                                if(respuestaGuardaVales.Correcto)
+                                {
+                                    modales.alertDialog.dismiss();
+                                    String mensajes = respuestaGuardaVales.getMensaje();
+                                    final Modales modales = new Modales(EntregaValesActivity.this);
+                                    View view1 = modales.MostrarDialogoCorrecto(EntregaValesActivity.this,mensajes);
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                            dbCorte.getWritableDatabase().delete("TipoValesPapel",null,null);
+                                            dbCorte.getWritableDatabase().delete("CierreValePapel",null,null);
+                                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                }else
+                                {
+                                    edtNipAutorizacion.setError(respuestaGuardaVales.getMensaje());
+                                    return;
                                 }
-
 
                             }
 
                             @Override
-                            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                            public void onFailure(Call<RespuestaApi<List<ResumenVale>>> call, Throwable t) {
                                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
                             }
                         });
+
+
+
                     }
 //                    modales.alertDialog.dismiss();
                 }
