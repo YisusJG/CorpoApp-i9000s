@@ -20,6 +20,9 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Entregas.EntregaPicosActivity"
+            android:exported="false" />
+        <activity
             android:name=".Entregas.EntregaValesActivity"
             android:exported="false" />
         <activity

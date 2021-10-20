@@ -185,11 +185,12 @@ public interface EndPoints {
     Call<RespuestaApi<RespuestaSolicitudFactura>> postSolicitarFactura(@Path("sucursalId") long sucursalId, @Path("usuarioId") long usuarioId, @Body SolicitudFactura solicitudFactura);
 
     //Metodo para guardar picos billetes y picos monedas
-    @POST("api/recepcionFajillas/guardaFajilla/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
+    @POST("api/recepcionFajillas/guardaFajillas/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
     Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body List<RecepcionFajilla> recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
 
     @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
     Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale);
+
 
 
 

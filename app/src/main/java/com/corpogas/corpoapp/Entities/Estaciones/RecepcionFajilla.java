@@ -36,8 +36,18 @@ public class RecepcionFajilla implements Serializable {
         this.Denominacion = denominacion;
         this.PicosMonedas = picosMonedas;
         this.Total = total;
-
     }
+
+
+    public RecepcionFajilla(long sucursalId, long tipoFajilla, int cantidad, double denominacion, double importe){
+        this.SucursalId = sucursalId;
+        this.TipoFajilla = tipoFajilla;
+        this.Cantidad = cantidad;
+        this.Denominacion = denominacion;
+        this.Importe = importe;
+        this.Total = (int) importe;
+    }
+
 
     public RecepcionFajilla(){
 

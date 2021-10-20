@@ -11,6 +11,7 @@ import com.corpogas.corpoapp.Configuracion.CorteDB;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Login.EntregaPicos;
 import com.corpogas.corpoapp.R;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpcionesEntregaActivity extends AppCompatActivity {
     Button btnEntregaVales;
+    Button btnEntregaPicos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,13 @@ public class OpcionesEntregaActivity extends AppCompatActivity {
         btnEntregaVales = findViewById(R.id.btnEntregarVales);
         btnEntregaVales.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), EntregaValesActivity.class);
+            startActivity(intent);
+        });
+
+
+        btnEntregaPicos = findViewById(R.id.btnEntregaPicos);
+        btnEntregaPicos.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), EntregaPicosActivity.class);
             startActivity(intent);
         });
     }

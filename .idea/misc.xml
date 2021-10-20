@@ -3,9 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable-xhdpi/verified_user_24.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_picos.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_opciones_entrega.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_entregas.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_picos.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_carga_gasto.xml" value="0.22" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_confirma_venta.xml" value="0.3066123188405797" />
         <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_alerta_aceptar.xml" value="0.22864583333333333" />
