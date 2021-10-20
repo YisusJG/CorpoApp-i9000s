@@ -29,7 +29,9 @@
             android:name=".Entregas.OpcionesEntregaActivity"
             android:exported="false" />
         <activity
-            android:name=".Corte.ProductosActivity"
+            android:name=".LecturaCodigoBarrasQR.ScanManagerDemo"/>
+        <activity
+            android:name=".Fajillas.EntregaFajillas"
             android:exported="true" />
         <activity
             android:name=".Corte.ResumenActivity"

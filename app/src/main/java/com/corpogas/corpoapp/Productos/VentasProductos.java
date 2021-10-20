@@ -40,6 +40,7 @@
     import com.android.volley.toolbox.Volley;
     import com.corpogas.corpoapp.Conexion;
     import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+    import com.corpogas.corpoapp.LecturaCodigoBarrasQR.ScanManagerDemo;
     import com.corpogas.corpoapp.Menu_Principal;
     import com.corpogas.corpoapp.Modales.Modales;
     import com.corpogas.corpoapp.R;
@@ -82,7 +83,7 @@
         TextView txtproductos;
         String cadenaproducto = "";
         String textoresultado, numerooperativa;
-        private ImageButton b_auto, btnbuscar, btnborrartodo;
+        private ImageButton b_auto, btnbuscar, btnborrartodo, btnScanner;
 //        private MVBarcodeScanner.ScanningMode modo_Escaneo;
         private TextView text_cod_escaneado;
         private int CODE_SCAN = 1;
@@ -133,6 +134,8 @@
             NumeroEmpleado = getIntent().getLongExtra("NumeroEmpleado", 0);
 
             txtproductos=findViewById(R.id.txtproductos);
+            btnScanner = findViewById(R.id.btnscanner);
+
             if (cadenaproducto.length()>0){
                 txtproductos.setText(myArrayVer.toString());
             }else{
@@ -260,6 +263,16 @@
                 @Override
                 public void onClick(View view) {
                     buscaCodigoInterno(Producto.getText().toString());
+
+
+                }
+            });
+
+            btnScanner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
+                    startActivity(intent);
                 }
             });
 
@@ -291,7 +304,6 @@
                     //Toast.makeText(VentasProductos.this, "Se vacio la canasta de productos", Toast.LENGTH_SHORT).show();
                 }
             });
-
 
         }
 
@@ -494,7 +506,7 @@
                 existencias.setText(existencia);
                 productoIdentificador.setText(idproduc);
                 tipoproductoid.setText(tipop);
-            }else{
+            } else {
                 Toast.makeText(getApplicationContext(), "Producto no encontrado en la lista", Toast.LENGTH_LONG).show();
                 Producto.setText("");
                 txtDescripcion.setText("");

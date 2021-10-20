@@ -106,7 +106,6 @@ public class FormasDePago extends AppCompatActivity {
 
         call.enqueue(new Callback<List<BranchPaymentMethod>>() {
 
-
             @Override
             public void onResponse(Call<List<BranchPaymentMethod>> call, Response<List<BranchPaymentMethod>> response) {
                 if (!response.isSuccessful()) {
@@ -115,7 +114,6 @@ public class FormasDePago extends AppCompatActivity {
                 respuestaListaSucursalFormasPago = response.body();
                 initializeDataFormasDePago();
                 initializeAdapterFormasDePago();
-
             }
 
             @Override
