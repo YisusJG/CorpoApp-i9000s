@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="1dp"
+    app:cardUseCompatPadding="true"
+    android:id="@+id/cv">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dp">
+
+        <TextView
+            android:id="@+id/txtCantidadVales"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="6dp"
+            android:text="100"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/txtDenominacionVales"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="47dp"
+            android:layout_marginTop="6dp"
+            android:text="1000"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/txtCantidadVales"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtTotalVales"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="42dp"
+            android:layout_marginTop="6dp"
+            android:text="100000"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/txtDenominacionVales"
+            app:layout_constraintTop_toTopOf="parent" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imgAgregarCantidadVale"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/txtTotalVales"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/ic_agregar_cantidad_vale" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imgEditarCantidadVale"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginStart="2dp"-->
+<!--            android:layout_marginTop="0dp"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/imgAgregarCantidadVale"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/ic_editar_vale" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imgEliminarCantidadVale"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginStart="2dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/imgAgregarCantidadVale"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/ic_eliminar_vale" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imgDetalleVale"-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="33dp"-->
+<!--            android:layout_marginStart="2dp"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/imgEliminarCantidadVale"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/ic_detalles_vale" />-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

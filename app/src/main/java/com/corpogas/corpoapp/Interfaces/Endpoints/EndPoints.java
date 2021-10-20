@@ -31,6 +31,9 @@ import com.corpogas.corpoapp.Entities.Virtuales.Arqueo;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreTicket;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
+import com.corpogas.corpoapp.Entregas.Entities.RecepcionVale;
+import com.corpogas.corpoapp.Entregas.Entities.ResumenVale;
+import com.corpogas.corpoapp.Entregas.Entities.ValePapel;
 import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
@@ -184,6 +187,11 @@ public interface EndPoints {
     //Metodo para guardar picos billetes y picos monedas
     @POST("api/recepcionFajillas/guardaFajilla/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
     Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body List<RecepcionFajilla> recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
+
+    @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
+    Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale);
+
+
 
 
 //    METODOS DELETE

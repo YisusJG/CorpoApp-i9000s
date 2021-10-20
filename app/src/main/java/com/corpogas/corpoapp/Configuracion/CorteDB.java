@@ -10,6 +10,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 
+import com.corpogas.corpoapp.Entities.Cortes.CierreValePapel;
 import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
 
 import java.util.ArrayList;
@@ -511,34 +512,34 @@ public class CorteDB extends SQLiteOpenHelper {
         return lTipoValePapeles;
     }
 
-//    public List<CierreValePapel> getAllCierreValePapel(){
-//        SQLiteDatabase base = getReadableDatabase();
-//        Cursor cursor = base.rawQuery("SELECT * FROM CierreValePapel", null);
-//        List<CierreValePapel> lCierreValePapel = new ArrayList<>();
-//        if(cursor.moveToFirst()){
-//            do {
-//                lCierreValePapel.add(new CierreValePapel(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-//                        cursor.getDouble(5),cursor.getDouble(6),cursor.getDouble(7),cursor.getString(8)));
-//            }while (cursor.moveToNext());
-//        }
+    public List<CierreValePapel> getAllCierreValePapel(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM CierreValePapel", null);
+        List<CierreValePapel> lCierreValePapel = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            do {
+                lCierreValePapel.add(new CierreValePapel(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                        cursor.getDouble(5),cursor.getDouble(6),cursor.getDouble(7),cursor.getString(8)));
+            }while (cursor.moveToNext());
+        }
+
+        return lCierreValePapel;
+    }
 //
-//        return lCierreValePapel;
-//    }
 //
-//
-//    public List<CierreValePapel> getIdValePapel(long tipoValePapelId){
-//        SQLiteDatabase base = getReadableDatabase();
-//        Cursor cursor = base.rawQuery("SELECT * FROM CierreValePapel WHERE tipoValePapelId = "+tipoValePapelId+"", null);
-//        List<CierreValePapel> lCierreValePapel = new ArrayList<>();
-//        if(cursor.moveToFirst()){
-//            do {
-//                lCierreValePapel.add(new CierreValePapel(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-//                        cursor.getDouble(5),cursor.getDouble(6),cursor.getDouble(7),cursor.getString(8)));
-//            }while (cursor.moveToNext());
-//        }
-//
-//        return lCierreValePapel;
-//    }
+    public List<CierreValePapel> getIdValePapel(long tipoValePapelId){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM CierreValePapel WHERE tipoValePapelId = "+tipoValePapelId+"", null);
+        List<CierreValePapel> lCierreValePapel = new ArrayList<>();
+        if(cursor.moveToFirst()){
+            do {
+                lCierreValePapel.add(new CierreValePapel(cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                        cursor.getDouble(5),cursor.getDouble(6),cursor.getDouble(7),cursor.getString(8)));
+            }while (cursor.moveToNext());
+        }
+
+        return lCierreValePapel;
+    }
 //
 //    public List<ProcesoCorteMenu> getProcesoCorte(){
 //

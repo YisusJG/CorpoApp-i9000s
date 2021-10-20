@@ -19,6 +19,18 @@ public class CierreValePapel implements Serializable {
     public double Cantidad;
     public double Denominacion;
     public double Importe;
+    public String NombreVale;
+
+    public CierreValePapel(long sucursalId, long estacionId, long cierreId, long tipoValePapelId, double cantidad, double denominacion, double importe, String nombreVale) {
+        SucursalId = sucursalId;
+        EstacionId = estacionId;
+        CierreId = cierreId;
+        TipoValePapelId = tipoValePapelId;
+        Cantidad = cantidad;
+        Denominacion = denominacion;
+        Importe = importe;
+        NombreVale = nombreVale;
+    }
 
     public long getSucursalId() {
         return SucursalId;
