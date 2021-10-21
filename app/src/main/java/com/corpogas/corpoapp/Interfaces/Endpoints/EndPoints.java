@@ -19,6 +19,7 @@ import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajillaEntregada;
 import com.corpogas.corpoapp.Entities.Estaciones.ResumenFajilla;
+import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;

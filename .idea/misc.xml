@@ -3,6 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2890625" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_configuracion_servidor.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_monederos_electronicos.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_proceso_venta.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_scan_manager_demo.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_seccion_tarjeta.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_productos.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas_productos.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_combustibles.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/xml/scan_settings.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/xml/scan_settings_pro.xml" value="0.27291666666666664" />
         <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_autoriza_fajillas.xml" value="0.20520833333333333" />
         <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_confirma_venta.xml" value="0.24479166666666666" />
         <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_detail.xml" value="0.20520833333333333" />

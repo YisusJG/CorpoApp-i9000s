@@ -125,11 +125,11 @@ public class ScanManagerDemo extends AppCompatActivity {
     private static final int MSG_SHOW_SCAN_RESULT = 1;
     private static final int MSG_SHOW_SCAN_IMAGE = 2;
 
-    private ScanSettingsFragment mScanSettingsFragment = new ScanSettingsFragment();
+    private final ScanSettingsFragment mScanSettingsFragment = new ScanSettingsFragment();
 
     private static final int[] SCAN_KEYCODE = {520, 521, 522, 523};
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -179,6 +179,16 @@ public class ScanManagerDemo extends AppCompatActivity {
         }
     };
 
+//    http://10.0.1.40/CorpogasService/api/asignacionDispositivos/GuardaAsignacionDispositivo/empleado/100049486
+//{
+//    "sucursalId": 497,
+//        "estacionId": 0,
+//        "nip": 0,
+//        "configuracionAplicacionId": 76,
+//        "empleadoId": 132,
+//        "turnoId": 1041,
+//        "islaId": 768
+//}
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -222,7 +232,7 @@ public class ScanManagerDemo extends AppCompatActivity {
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     LogD("onTouch button Down");
-                    mScan.setText(R.string.scan_trigger_end);
+                     mScan.setText(R.string.scan_trigger_end);
                     startDecode();
                 }
             }
@@ -290,8 +300,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     private void initView() {
-        boolean enable = getDecodeScanShared(DECODE_ENABLE);
-        mScanEnable = enable;
+        mScanEnable = getDecodeScanShared(DECODE_ENABLE);
         showScanResult = (EditText) findViewById(R.id.scan_result);
         mScan = (Button) findViewById(R.id.scan_trigger);
         ButtonListener listener = new ButtonListener();

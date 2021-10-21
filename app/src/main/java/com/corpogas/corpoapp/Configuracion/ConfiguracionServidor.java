@@ -46,6 +46,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
     ConfiguracionAplicacion configuracionAplicacionApi;
     RespuestaApi<Update> applicationUpdate;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,19 +186,16 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
                 StringBuilder res1 = new StringBuilder();
                 for (byte b : macBytes) {
-                    mac = String.valueOf(res1.append(Integer.toHexString(b & 0xFF) + ":"));
+                    mac = String.valueOf(res1.append(Integer.toHexString(b & 0xFF)));
                 }
 
-                if (res1.length() > 0) {
-                    mac = String.valueOf(res1.deleteCharAt(res1.length() - 1));
-
-                }
 
                 return res1.toString();
             }
         } catch (Exception ex) {
             Log.e("Error", ex.getMessage());
         }
+        String verMac = mac;
         return "";
     }
 
@@ -336,6 +334,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void obtenerNumeroTarjetero(final long sucursalid) {
 
 //        Conexion conexion = new Conexion(sucursalid,7,mac);
+        String verMac = mac;
         ConfiguracionAplicacion configuracionAplicacion = new ConfiguracionAplicacion(sucursalid,0,3,"",mac,0,false,true,0);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://"+ip2+"/CorpogasService/")
