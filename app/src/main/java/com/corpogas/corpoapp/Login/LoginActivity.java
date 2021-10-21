@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
@@ -31,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginActivity extends AppCompatActivity {
 
     EditText edtNip;
+    TextView txtNumeroDispositivoLogin;
     String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, prub;
     SQLiteBD db;
     RespuestaApi<Empleado> respuestaApiEmpleado;
@@ -45,6 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         ipEstacion = db.getIpEstacion();
         edtNip = (EditText) findViewById(R.id.edtNip);
         idTarjetero = Long.parseLong(db.getIdTarjtero());
+        txtNumeroDispositivoLogin = findViewById(R.id.txtNumeroDispositivoLogin);
+        txtNumeroDispositivoLogin.setText("No. Dispositivo: " + db.getIdTarjtero());
+
 
     }
 

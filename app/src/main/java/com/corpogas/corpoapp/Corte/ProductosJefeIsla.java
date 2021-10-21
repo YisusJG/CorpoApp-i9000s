@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductosActivity extends AppCompatActivity {
+public class ProductosJefeIsla extends AppCompatActivity {
 
     int resultado;
     Button btnAutorizacion, btnVentaProductos, btnRefresh;

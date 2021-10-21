@@ -138,7 +138,9 @@ class Menu_Principal : AppCompatActivity() {
         ImageDisplay = true
         BuscarActualizacion
         txtNombreUsuarioMainNav.setText(data.nombreCompleto)
-        txtRolMainNav.setText((data.rol).toString())
+//        txtRolMainNav.setText((data.rol).toString())
+        txtRolMainNav.setText("Jefe Isla")
+        txtIdDispositivoMainNav.setText("No. Dispositivo: " + data.idTarjtero)
         txtCerrarSesion.setOnClickListener{
             deleteDatos()
         }

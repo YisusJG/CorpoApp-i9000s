@@ -29,7 +29,6 @@ import com.corpogas.corpoapp.Entities.Virtuales.FajillaTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.FormaPagoTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.VentaCombustibleTotal;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
-import com.corpogas.corpoapp.Login.EntregaPicos;
 import com.corpogas.corpoapp.Login.LoginActivity;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
@@ -323,19 +322,27 @@ public class ResumenActivity extends AppCompatActivity {
         btnListaProductosResumenActivity.setOnClickListener(view -> {
 
             if (db.getRol() == 3){
-                Intent intent = new Intent(getApplicationContext(), ProductosActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ProductosVendedor.class);
                 startActivity(intent);
-            }else{
-                titulo = "AVISO";
-                mensaje = "No eres Jefe de Isla.";
-                View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
-                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        modales.alertDialog.dismiss();
 
-                    }
-                });
+            }else {
+                if (db.getRol() == 1) {
+                    Intent intent = new Intent(getApplicationContext(), ProductosVendedor.class);
+                    startActivity(intent);
+
+                } else {
+
+                    titulo = "AVISO";
+                    mensaje = "No eres Jefe de Isla.";
+                    View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
+                        }
+                    });
+                }
             }
         });
 

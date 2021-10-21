@@ -33,6 +33,9 @@
             android:name=".Fajillas.MuestreoFajillasEntregadasRecibidas"
             android:exported="true" />
         <activity
+            android:name=".Corte.ProductosVendedor"
+            android:exported="true" />
+        <activity
             android:name=".Entregas.EntregaPicosActivity"
             android:exported="false" />
         <activity
@@ -41,8 +44,7 @@
         <activity
             android:name=".Entregas.OpcionesEntregaActivity"
             android:exported="false" />
-        <activity
-            android:name=".LecturaCodigoBarrasQR.ScanManagerDemo"/>
+        <activity android:name=".LecturaCodigoBarrasQR.ScanManagerDemo" />
         <activity
             android:name=".Fajillas.EntregaFajillas"
             android:exported="true" />
@@ -139,8 +141,8 @@
         <activity
             android:name=".Configuracion.ConfiguracionServidor"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
