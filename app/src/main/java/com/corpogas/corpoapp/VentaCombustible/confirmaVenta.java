@@ -106,7 +106,7 @@ public class confirmaVenta extends AppCompatActivity {
                 txtdespachosolicitado.setVisibility(View.INVISIBLE);
 
             }else{
-                txtdespachosolicitado.setVisibility(View.VISIBLE);
+//                txtdespachosolicitado.setVisibility(View.VISIBLE);
             }
         }
 

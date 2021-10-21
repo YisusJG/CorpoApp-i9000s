@@ -28,11 +28,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
+import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
 
 import org.json.JSONArray;
@@ -97,7 +99,44 @@ public class ValesPapel extends AppCompatActivity {
         btnAceptarValesPapel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EnviarValesPapel();
+                String titulo = "PUNTADA";
+                String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                Modales modalesPuntada = new Modales(ValesPapel.this);
+                View viewLectura = modalesPuntada.MostrarDialogoAlerta(ValesPapel.this, mensajes,  "SI", "NO");
+                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String banderaHuella = getIntent().getStringExtra( "banderaHuella");
+                        String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
+                        //LeeTarjeta();
+                        Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                        //intent.putExtra("device_name", m_deviceName);
+                        intent.putExtra("Enviadodesde", "formaspago");
+                        intent.putExtra("numeroEmpleado", data.getNumeroEmpleado());
+                        intent.putExtra("idoperativa", 1);
+                        intent.putExtra("formapagoid", "2");
+                        intent.putExtra("NombrePago", "Vales");
+                        intent.putExtra("NombreCompleto", data.getNombreCompleto());
+                        intent.putExtra("montoenlacanasta", montoaCobrar);
+                        intent.putExtra("posicioncargaid", posicionCarga);
+                        intent.putExtra("tipoTarjeta", "Puntada");
+                        intent.putExtra("pagoconpuntada", "no");
+
+                        startActivity(intent);
+                        modalesPuntada.alertDialog.dismiss();
+                    }
+                });
+                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
+                        modalesPuntada.alertDialog.dismiss();
+//                                    SeleccionaPesosDoalares();
+                        EnviarValesPapel();
+                    }
+                });
+
+
             }
         });
 
@@ -183,9 +222,9 @@ public class ValesPapel extends AppCompatActivity {
                 }else{
                     montoPendiente = Double.parseDouble(tvMontoACargarPendiente.getText().toString());
 
-                    if (Double.parseDouble(tvDenominacionMonto.getText().toString()) > montoPendiente){
-                        Toast.makeText(ValesPapel.this, "El monto de los vales no puede ser mayor que el monto Total", Toast.LENGTH_SHORT).show();
-                    }else{
+//                    if (Double.parseDouble(tvDenominacionMonto.getText().toString()) > montoPendiente){
+//                        Toast.makeText(ValesPapel.this, "El monto de los vales no puede ser mayor que el monto Total", Toast.LENGTH_SHORT).show();
+//                    }else{
 
                         boolean bandera=false;
                         for(Integer m = 0; m<MontoVale.size(); m++){
@@ -256,7 +295,7 @@ public class ValesPapel extends AppCompatActivity {
                         }else{
                             Toast.makeText(ValesPapel.this, "El folio No. "+ tvFolioMonto.getText().toString() +" ya fue agregado", Toast.LENGTH_SHORT).show();
                         }
-                    }
+//                    }
                 }
             }
         }
@@ -576,4 +615,4 @@ public class ValesPapel extends AppCompatActivity {
     }
 
 
-    }
+}

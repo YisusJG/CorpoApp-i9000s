@@ -347,6 +347,73 @@ public class Modales extends Dialog implements
 
     }
 
+    public View MostrarDialogoEfectivoDolares(Context context, String monto, String tipocambio, String titulo){
+        Double tipocambiocantidad = Double.parseDouble(tipocambio);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.activity_dialogo_pago_dolares, (ConstraintLayout) findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitleEfectivoDolares)).setText(titulo);
+        ((TextView) view.findViewById(R.id.textMontoDolares)).setText(monto);
+        EditText cantidadRecibida = view.findViewById(R.id.textMontoRecibiDolares);
+
+        cantidadRecibida.addTextChangedListener(new TextWatcher() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                ((TextView) view.findViewById(R.id.textCambioDolares)).setText("$0.00");
+                ((Button) view.findViewById(R.id.btnAceptarDolares)).setText("ACEPTAR");
+            }
+
+            @SuppressLint("DefaultLocale")
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String cantidadObtenida = cantidadRecibida.getText().toString();
+                if (!cantidadObtenida.equals("")) {
+                    Double vuelto = Double.parseDouble(cantidadObtenida) - Double.parseDouble(monto);
+                    ((TextView) view.findViewById(R.id.textCambioDolares)).setText(String.format("$%.2f", vuelto));
+                    ((TextView) view.findViewById(R.id.textCambioPesos)).setText(String.format("$%.2f", vuelto * tipocambiocantidad));
+
+//                    ((Button) view.findViewById(R.id.btnAceptarVales)).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            if (vuelto > 0) {
+//                                alertDialog.dismiss();
+//                                Toast.makeText(context, "Cantidad incompleta o inválida", Toast.LENGTH_LONG).show();
+//
+//                                //                                FormasPago formasPago = new FormasPago();
+////                                formasPago.FinalizaVenta();
+//                            }
+//
+//                        }
+//                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        ((Button) view.findViewById(R.id.btnAceptarDolares)).setText("ACEPTAR");
+        ((Button) view.findViewById(R.id.btnCancelarDolares)).setText("CANCELAR");
+
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_warning);
+
+        alertDialog = builder.create();
+
+        if(alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        return view;
+
+    }
 
 
 

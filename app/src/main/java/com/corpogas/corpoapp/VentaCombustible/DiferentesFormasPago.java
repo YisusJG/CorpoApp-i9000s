@@ -114,8 +114,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //            tvSaldo.setVisibility(View.INVISIBLE);
 //
 //        }else{
-            tvSaldoPuntada.setVisibility(View.VISIBLE);
-            tvSaldo.setVisibility(View.VISIBLE);
+//            tvSaldoPuntada.setVisibility(View.VISIBLE);
+//            tvSaldo.setVisibility(View.VISIBLE);
 //        }
         txtMontoTotal.setText(MontoenCanasta.toString());
         txtMontoFaltante.setText(MontoenCanasta.toString());
@@ -162,6 +162,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
             String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
+
                 datos.put("PosicionCargaId", PosicionCarga);
                 datos.put("IdUsuario", numeroempleado);
                 datos.put("SucursalId", sucursalId);
@@ -258,24 +259,24 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //            startActivity(intent1);
 //            finish();
 //        } else {
-            String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
-            StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            formadepago(response);
-                        }
-                        //funcion para capturar errores
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            // Añade la peticion a la cola
-            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-            eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            requestQueue.add(eventoReq);
+        String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
+        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        formadepago(response);
+                    }
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(eventoReq);
 //        }
     }
 
@@ -333,7 +334,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
 //                if (facturable == "true") {
                 if (visible == "true") {
-                    if (numero_pago.equals("14")) {//MERCADO PAGO
+                    if (numero_pago.equals("2") || numero_pago.equals("6") || numero_pago.equals("14") || numero_pago.equals("16") || numero_pago.equals("17")) {//2=VALES, 6=VALE ELECTRONICO, 14=MERCADO PAGO,  16 = PAGO DOLARES, 17= VALES PROPIOS
                     }else{
                         if (enviadoDesde.equals("valespapel") && numero_pago.equals("2")){
                         }else{
@@ -398,6 +399,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
                             break;
                         case 92:
                             imgid.add(R.drawable.jarreo); //Autojarreo
+                            break;
+                        case 16://USD
+                            imgid.add(R.drawable.usd);
                             break;
                         //case 10:
                         //    imgid.add(R.drawable.monedero);
@@ -475,12 +479,51 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //                                        }
 //                                    }
 //                                }else{
-                                    if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
-                                        if (montoSeleccionado.equals("0.00")){
+                                if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
+                                    if (montoSeleccionado.equals("0.00")){
+                                        try {
+                                            banderaSigue = false;
+                                            String titulo = "AVISO";
+                                            String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
+                                            Modales modales = new Modales(DiferentesFormasPago.this);
+                                            View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    modales.alertDialog.dismiss();
+                                                }
+                                            });
+
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }else{
+                                        //                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
+                                        //                                            try {
+                                        //                                                banderaSigue = false;
+                                        //                                                String titulo = "AVISO";
+                                        //                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
+                                        //                                                Modales modales = new Modales(DiferentesFormasPago.this);
+                                        //                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                        //                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        //                                                    @Override
+                                        //                                                    public void onClick(View view) {
+                                        //                                                        modales.alertDialog.dismiss();
+                                        //                                                    }
+                                        //                                                });
+                                        //                                                banderaSigue = false;
+                                        //                                            }catch (Exception e){
+                                        //                                                e.printStackTrace();
+                                        //                                            }
+                                        //                                        }
+                                    }
+                                }else{
+                                    if (montoSeleccionado.equals("0.00")){
+                                        if (Double.parseDouble(txtMontoFaltante.getText().toString())==0.00){
                                             try {
                                                 banderaSigue = false;
                                                 String titulo = "AVISO";
-                                                String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
+                                                String mensaje = "Ya se completó el monto Total, con las diferentes formas de pago";
                                                 Modales modales = new Modales(DiferentesFormasPago.this);
                                                 View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
                                                 view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -489,70 +532,31 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                                         modales.alertDialog.dismiss();
                                                     }
                                                 });
-
+                                                banderaSigue = false;
                                             }catch (Exception e){
                                                 e.printStackTrace();
                                             }
-                                        }else{
-                                            //                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
-                                            //                                            try {
-                                            //                                                banderaSigue = false;
-                                            //                                                String titulo = "AVISO";
-                                            //                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
-                                            //                                                Modales modales = new Modales(DiferentesFormasPago.this);
-                                            //                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                            //                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                            //                                                    @Override
-                                            //                                                    public void onClick(View view) {
-                                            //                                                        modales.alertDialog.dismiss();
-                                            //                                                    }
-                                            //                                                });
-                                            //                                                banderaSigue = false;
-                                            //                                            }catch (Exception e){
-                                            //                                                e.printStackTrace();
-                                            //                                            }
-                                            //                                        }
                                         }
                                     }else{
-                                        if (montoSeleccionado.equals("0.00")){
-                                            if (Double.parseDouble(txtMontoFaltante.getText().toString())==0.00){
-                                                try {
-                                                    banderaSigue = false;
-                                                    String titulo = "AVISO";
-                                                    String mensaje = "Ya se completó el monto Total, con las diferentes formas de pago";
-                                                    Modales modales = new Modales(DiferentesFormasPago.this);
-                                                    View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View view) {
-                                                            modales.alertDialog.dismiss();
-                                                        }
-                                                    });
-                                                    banderaSigue = false;
-                                                }catch (Exception e){
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }else{
-                                            if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
-                                                try {
-                                                    banderaSigue = false;
-                                                    String titulo = "AVISO";
-                                                    String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
-                                                    Modales modales = new Modales(DiferentesFormasPago.this);
-                                                    View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View view) {
-                                                            modales.alertDialog.dismiss();
-                                                        }
-                                                    });
-                                                    banderaSigue = false;
-                                                }catch (Exception e){
-                                                    e.printStackTrace();
-                                                }
+                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
+                                            try {
+                                                banderaSigue = false;
+                                                String titulo = "AVISO";
+                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
+                                                Modales modales = new Modales(DiferentesFormasPago.this);
+                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        modales.alertDialog.dismiss();
+                                                    }
+                                                });
+                                                banderaSigue = false;
+                                            }catch (Exception e){
+                                                e.printStackTrace();
                                             }
                                         }
+                                    }
 //                                    }
                                 }
 

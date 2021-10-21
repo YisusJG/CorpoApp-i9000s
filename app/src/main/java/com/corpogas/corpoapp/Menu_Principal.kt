@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -23,8 +24,11 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi
 //import com.corpogas.corpoapp.Entities2.Estaciones.ConfiguracionAplicaciones
 import com.corpogas.corpoapp.Entities.Sucursales.Update
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos
+import com.corpogas.corpoapp.Menu_Principal
 import com.corpogas.corpoapp.Modales.Modales
 import com.corpogas.corpoapp.TanqueLleno.seccionTanqueLleno
+import com.corpogas.corpoapp.VentaCombustible.Ventas
 import com.google.android.material.snackbar.Snackbar
 import com.szzcs.corpoapp.ActualizadorAPP.*
 import retrofit2.Call
@@ -32,14 +36,26 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.provider.Settings.Secure;
+import android.widget.*
+import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
+//import com.corpogas.corpoapp.Corte.Fragments.PicosFragment
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
 import com.corpogas.corpoapp.Entregas.OpcionesEntregaActivity
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas
+import com.corpogas.corpoapp.Fajillas.OpcionFajillas
+import com.corpogas.corpoapp.Gastos.AutorizacionGastos
+import com.corpogas.corpoapp.Gastos.ClaveGastos
+import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
+import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
+import com.corpogas.corpoapp.SmartPayment.VentaPagoTarjeta
+import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
+import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -680,12 +696,13 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 //            }
             R.id.btnImgGastos -> {
-                intent = Intent(applicationContext, ClaveEmpleado::class.java)
+                intent = Intent(applicationContext, AutorizacionGastos::class.java)
                 intent.putExtra("LugarProviene", "Gastos")
                 startActivity(intent)
             }
             R.id.btnImgTickets -> {
-                intent = Intent(applicationContext, EnDesarrollo::class.java)
+                intent = Intent(applicationContext, VentaPagoTarjeta::class.java) //EnDesarrollo
+                intent.putExtra("montoencanasta", "$20.00")
                 startActivity(intent)
             }
             R.id.btnImgFacturacion -> {
@@ -701,16 +718,14 @@ class Menu_Principal : AppCompatActivity() {
 
 
             R.id.btnFajillas -> {
-//                intent = Intent(applicationContext, OpcionFajillas::class.java)
-//                startActivity(intent)
+                intent = Intent(applicationContext, OpcionFajillas::class.java)
+                startActivity(intent)
             }
 
             R.id.btnEntregas -> {
                 intent = Intent(applicationContext, OpcionesEntregaActivity::class.java)
                 startActivity(intent)
-//                Toast.makeText(applicationContext, "Hola", Toast.LENGTH_SHORT).show()
             }
-
 
 
 //            R.id.btnImgJarreo -> {

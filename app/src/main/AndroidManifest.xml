@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.corpogas.corpoapp">
 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -19,6 +20,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".VentaCombustible.ImprimePuntada"
+            android:exported="true" />
+        <activity
+            android:name=".SmartPayment.DetailActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SmartPayment.VentaPagoTarjeta"
+            android:exported="true" />
+        <activity
+            android:name=".Fajillas.MuestreoFajillasEntregadasRecibidas"
+            android:exported="true" />
         <activity
             android:name=".Entregas.EntregaPicosActivity"
             android:exported="false" />

@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Service.PrintBillService;
+import com.corpogas.corpoapp.VentaCombustible.EligePrecioLitros;
+import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,12 +50,15 @@ public class CargaGasto extends AppCompatActivity {
     TextView txtDescripcion, txtClave;
     String isla,turno,usuario;
     TextView subTotal, iva, total, Descripcion;
-    String EstacionId, sucursalId, ipEstacion;
+    String EstacionId, sucursalId, ipEstacion, NumeroEmpleado, EmpleadoId;
+    Boolean ConSinFactura;
     String idisla, idTurno;
     Bundle args = new Bundle();
     SQLiteBD db;
     DecimalFormat df = new DecimalFormat("#.00");
     ProgressDialog bar;
+    RadioButton rbConFactura, rbSinFactura;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +70,17 @@ public class CargaGasto extends AppCompatActivity {
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
+        NumeroEmpleado = db.getNumeroEmpleado();
+        EmpleadoId = db.getUsuarioId();
         txtDescripcion = findViewById(R.id.txtDescripcion);
         txtClave = findViewById(R.id.txtClave);
         subTotal = findViewById(R.id.subTot);
         iva = findViewById(R.id.iva);
         total = findViewById(R.id.total);
         Descripcion = findViewById(R.id.descripcion);
+        rbConFactura = (RadioButton) findViewById(R.id.rbConFactura);
+        rbSinFactura = (RadioButton) findViewById(R.id.rbSinFactura);
 
-        isla = getIntent().getStringExtra("isla");
         cargaTipoGastos();
 
     }
@@ -255,118 +264,126 @@ public class CargaGasto extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            final String[] numeroticket = new String[1];
-
-            turno = getIntent().getStringExtra("turno");
-
-            String empleadoId = getIntent().getStringExtra("empleadoid");
-            final String empleado = getIntent().getStringExtra("empleado");
-
-            String URL = "http://" + ipEstacion + "/CorpogasService/api/Gastos/usuarioId/" + empleadoId; //+ "/dispositivoId/" + db.getIdTarjtero();
-            final JSONObject mjason = new JSONObject();
-            RequestQueue queue = Volley.newRequestQueue(this);
-            try {
-                mjason.put("SucursalId", sucursalId);
-                mjason.put("EstacionId", "");
-                mjason.put("IslaId", isla);
-//            mjason.put("IslaEstacionId",EstacionId);
-                mjason.put("TurnoId", turno); //turno.getText().toString());
-//            mjason.put("TurnoSucursalId",sucursalId); //turno.getText().toString());Sucursal
-                mjason.put("ConceptoGastoId", txtClave.getText().toString());
-                mjason.put("Descripcion", Descripcion.getText().toString());
-                mjason.put("Subtotal", subTotal.getText().toString());
-                mjason.put("Iva", iva.getText().toString());
-//            mjason.put("Id", 0);
-//            mjason.put("SucursalEmpleadoSucursalId", sucursalId);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-
-                    try {
-                        String correcto = response.getString("Correcto");
-                        String mensajes = response.getString("Mensaje");
-                        String objetorespuesta = response.getString("ObjetoRespuesta");
-                        JSONObject respuestaobjeto = new JSONObject(objetorespuesta);
-                        if (correcto.equals("true")) {
-                            numeroticket[0] = respuestaobjeto.getString("Id");
-                            String titulo = "AVISO";
-                            String mensaje = "Gasto cargado exitosamente";
-                            final Modales modales = new Modales(CargaGasto.this);
-                            View view1 = modales.MostrarDialogoCorrecto(CargaGasto.this, mensaje);
-                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-
-                                    Intent intentService = new Intent(CargaGasto.this, PrintBillService.class);
-                                    intentService.putExtra("SPRT", "expenses");
-                                    intentService.putExtra("Subtotal", subTotal.getText().toString());
-                                    intentService.putExtra("Iva", iva.getText().toString());
-                                    intentService.putExtra("Descripcion", Descripcion.getText().toString());
-                                    intentService.putExtra("NumeroTicket", numeroticket);
-                                    intentService.putExtra("NombreEmpleado", empleado);
-                                    intentService.putExtra("DescripcionGasto", txtDescripcion.getText().toString());
-                                    intentService.putExtra("TipoGasto", "Gasto");
-                                    startService(intentService);
-                                    //ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket[0], empleado);
-                                    //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
-
-                                }
-                            });
-
-                        } else {
-                            String titulo = "AVISO";
-                            String mensaje = mensajes;
-                            final Modales modales = new Modales(CargaGasto.this);
-                            View view1 = modales.MostrarDialogoError(CargaGasto.this, mensaje);
-                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                }
-                            });
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            Double totalAceptado;
+            totalAceptado = Double.parseDouble(subTotal.getText().toString()) + Double.parseDouble(iva.getText().toString());
+            if (totalAceptado>=2000) {
+                String titulo = "AVISO";
+                final Modales modales = new Modales(CargaGasto.this);
+                View view1 = modales.MostrarDialogoCorrecto(CargaGasto.this,"Los gastos no pueden ser mayores a $2,000");
+                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
                     }
+                });
+            }else{
 
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
 
+                if (rbConFactura.isChecked()){
+                    ConSinFactura = true;
                 }
-            }) {
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<String, String>();
-                    return headers;
+                if (rbSinFactura.isChecked()){
+                    ConSinFactura = false;
                 }
 
-                protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
-                    if (response != null) {
+                final String[] numeroticket = new String[1];
+
+                turno = getIntent().getStringExtra("turno");
+
+                String empleaddoAutoriza = getIntent().getStringExtra("empleadoid");
+                final String empleado = getIntent().getStringExtra("empleado");
+
+                String URL = "http://" + ipEstacion + "/CorpogasService/api/Gastos/numeroEmpleado/" + NumeroEmpleado + "/empleadoAutoriza/" + empleaddoAutoriza + "/dispositivoId/" + db.getIdTarjtero();
+                final JSONObject mjason = new JSONObject();
+                RequestQueue queue = Volley.newRequestQueue(this);
+                try {
+                    mjason.put("SucursalId", sucursalId);
+                    mjason.put("EstacionId", "");
+                    mjason.put("TurnoId", turno); //turno.getText().toString());
+                    mjason.put("ConceptoGastoId", txtClave.getText().toString());
+                    mjason.put("Descripcion", Descripcion.getText().toString());
+                    mjason.put("Subtotal", subTotal.getText().toString());
+                    mjason.put("Iva", iva.getText().toString());
+                    mjason.put("Factura", ConSinFactura);
+                    mjason.put("EstatusId", 1);
+//                    mjason.put("FechaTrabajo", "2021-10-18 00:00:00.000");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
                         try {
-                            String responseString;
-                            JSONObject datos = new JSONObject();
-                            responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            String correcto = response.getString("Correcto");
+                            String mensajes = response.getString("Mensaje");
+                            if (correcto.equals("true")) {
+                                String objetorespuesta = response.getString("ObjetoRespuesta");
+                                JSONObject respuestaobjeto = new JSONObject(objetorespuesta);
+                                String titulo = "AVISO";
+                                String mensaje = "Gasto cargado exitosamente";
+                                final Modales modales = new Modales(CargaGasto.this);
+                                View view1 = modales.MostrarDialogoCorrecto(CargaGasto.this, mensaje);
+                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
 
-                        } catch (UnsupportedEncodingException e) {
+                            } else {
+                                String titulo = "AVISO";
+                                String mensaje = mensajes;
+                                final Modales modales = new Modales(CargaGasto.this);
+                                View view1 = modales.MostrarDialogoError(CargaGasto.this, mensaje);
+                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+                                    }
+                                });
+
+                            }
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
-                    return Response.success(mjason, HttpHeaderParser.parseCacheHeaders(response));
-                }
-            };
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headers = new HashMap<String, String>();
+                        return headers;
+                    }
+
+                    protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                        if (response != null) {
+
+                            try {
+                                String responseString;
+                                JSONObject datos = new JSONObject();
+                                responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return Response.success(mjason, HttpHeaderParser.parseCacheHeaders(response));
+                    }
+                };
 
 //        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-            request_json.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            queue.add(request_json);
-
+                request_json.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                queue.add(request_json);
+            }
         }
     }
 

@@ -5,19 +5,22 @@ import java.util.List;
 
 public class Bin implements Serializable {
 
-    public long Id;
+    public List<String> Pistas;
 
-    /// <summary>
-    /// Identificador de la entidad TipoMonedero
-    /// NOTA: Id de la tabla(este es computado)
-    /// </summary> 
-    public long TipoMonederoId;
+    public Bin(List<String> pistas) {
+        Pistas = pistas;
+    }
+
+    public long ElectronicWalletTypeId;
 
     /// <summary>
     /// Relacion con la entidad de TipoMonedero del esquema catalogos
     /// Llave foranea
     /// </summary>
-    public ElectronicWalletType TipoMonedero;
+    public volatile ElectronicWalletType ElectronicWalletType;
+
+    public volatile ElectronicWalletType TipoMonedero;
+
 
     /// <summary>
     /// Mascara de la tarjeta de tal manera que
@@ -25,89 +28,71 @@ public class Bin implements Serializable {
     /// y los otros valores deben de aparecer en el orden especificado
     /// ademas recordando que la suma total de caracteres debe ser igual a la
     /// especificada en la mascara
-    /// de tal manera que 
-    /// Ejemplos: 
+    /// de tal manera que
+    /// Ejemplos:
     /// 399999********** TanqueLleno centro
     /// 399996********** TanqueLleno Sureste
     /// 400000********** Puntada
     /// 3XXXXX********** Donde:
     ///             XXXXX = # Estacion Cliente estacion
     /// </summary>
-    public String Mascara;
+    public String Mask;
 
     /// <summary>
     /// Indicador que indica la pista donde se encuentra el bin esperado
     /// </summary>
-    public int Pista;
+    public int TrackNumber;
 
     /// <summary>
     /// Bandera que indica si el registro es de un numero de tarjeta
     /// </summary>
-    public boolean NumeroTarjeta;
+    public Boolean CardNumber;
 
-
-    public List<String> Pistas;
-
-    public Bin(List<String> pistas) {
-        Pistas = pistas;
+    public long getElectronicWalletTypeId() {
+        return ElectronicWalletTypeId;
     }
 
-
-
-    public long getId() {
-        return Id;
+    public void setElectronicWalletTypeId(long electronicWalletTypeId) {
+        ElectronicWalletTypeId = electronicWalletTypeId;
     }
 
-    public void setId(long id) {
-        Id = id;
+    public com.corpogas.corpoapp.Entities.Catalogos.ElectronicWalletType getElectronicWalletType() {
+        return ElectronicWalletType;
     }
 
-    public long getTipoMonederoId() {
-        return TipoMonederoId;
+    public void setElectronicWalletType(com.corpogas.corpoapp.Entities.Catalogos.ElectronicWalletType electronicWalletType) {
+        ElectronicWalletType = electronicWalletType;
     }
 
-    public void setTipoMonederoId(long tipoMonederoId) {
-        TipoMonederoId = tipoMonederoId;
-    }
-
-    public ElectronicWalletType getTipoMonedero() {
+    public com.corpogas.corpoapp.Entities.Catalogos.ElectronicWalletType getTipoMonedero() {
         return TipoMonedero;
     }
 
-    public void setTipoMonedero(ElectronicWalletType tipoMonedero) {
+    public void setTipoMonedero(com.corpogas.corpoapp.Entities.Catalogos.ElectronicWalletType tipoMonedero) {
         TipoMonedero = tipoMonedero;
     }
 
-    public String getMascara() {
-        return Mascara;
+    public String getMask() {
+        return Mask;
     }
 
-    public void setMascara(String mascara) {
-        Mascara = mascara;
+    public void setMask(String mask) {
+        Mask = mask;
     }
 
-    public int getPista() {
-        return Pista;
+    public int getTrackNumber() {
+        return TrackNumber;
     }
 
-    public void setPista(int pista) {
-        Pista = pista;
+    public void setTrackNumber(int trackNumber) {
+        TrackNumber = trackNumber;
     }
 
-    public boolean isNumeroTarjeta() {
-        return NumeroTarjeta;
+    public Boolean getCardNumber() {
+        return CardNumber;
     }
 
-    public void setNumeroTarjeta(boolean numeroTarjeta) {
-        NumeroTarjeta = numeroTarjeta;
-    }
-
-
-    public List<String> getPistas() {
-        return Pistas;
-    }
-
-    public void setPistas(List<String> pistas) {
-        Pistas = pistas;
+    public void setCardNumber(Boolean cardNumber) {
+        CardNumber = cardNumber;
     }
 }

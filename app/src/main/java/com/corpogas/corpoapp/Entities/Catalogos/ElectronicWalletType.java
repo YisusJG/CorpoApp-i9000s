@@ -4,11 +4,6 @@ import java.io.Serializable;
 
 public class ElectronicWalletType implements Serializable {
 
-    /// <summary>
-    /// Identificador de la entidad TipoConexion
-    /// </summary>
-
- //    public TipoConexion ConnectionTypeId; CHECAR
 
     /// <summary>
     /// Identificador de la entidad TipoConexion
@@ -19,12 +14,12 @@ public class ElectronicWalletType implements Serializable {
     /// Relacion con la entidad de TipoConexion
     /// Llave foranea
     /// </summary>
-    public PaymentMethod PaymentMethod;
+    public volatile PaymentMethod PaymentMethod;
 
     /// <summary>
     /// Description del monedero, de como sera conocido en la sucursal
-    /// Ejemplo: 
-    /// ->TANQUE LLENO CENTRO 
+    /// Ejemplo:
+    /// ->TANQUE LLENO CENTRO
     /// ->TANQUE LLENO SURESTE
     /// ->PUNTADA
     /// ->YENA
@@ -40,6 +35,8 @@ public class ElectronicWalletType implements Serializable {
     /// ->99997 (PUNTADA)
     /// </summary>
     public String OriginStation;
+
+    public long Id;
 
     public long getPaymentMethodId() {
         return PaymentMethodId;
@@ -71,5 +68,13 @@ public class ElectronicWalletType implements Serializable {
 
     public void setOriginStation(String originStation) {
         OriginStation = originStation;
+    }
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
     }
 }

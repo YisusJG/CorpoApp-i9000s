@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,11 +32,13 @@ import com.corpogas.corpoapp.Entities.TanqueLleno.RespuestaIniAuto;
 import com.corpogas.corpoapp.Entities.Tarjetas.RespuestaTanqueLleno;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +73,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
     SQLiteBD data;
     RespuestaApi<AccesoUsuario> accesoUsuario;
     List<RecyclerViewHeaders> lrcvPosicionCarga;
+    Button btnCargarTodasPCTll;
 
 
     ProgressDialog bar;
@@ -83,7 +87,14 @@ public class PosicionCargaTLl extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
         rcvPosicionCarga.setHasFixedSize(true);
-        posicionCargaFinaliza();
+        posicionCargaFinaliza(1);
+
+        btnCargarTodasPCTll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                posicionCargaFinaliza(2);
+            }
+        });
 
     }
 
@@ -100,91 +111,66 @@ public class PosicionCargaTLl extends AppCompatActivity {
         NipCliente = getIntent().getStringExtra("nipCliente");
         NipClientemd5 = getIntent().getStringExtra("nipMd5Cliente");
         numeroempleado = data.getNumeroEmpleado();
+        btnCargarTodasPCTll = (Button) findViewById(R.id.btnCargarTodasPCTll);
 
     }
 
-    public void posicionCargaFinaliza(){
+    public void posicionCargaFinaliza(Integer Identificador){
         bar = new ProgressDialog(PosicionCargaTLl.this);
-        bar.setTitle("Cargando Posiciones de Carga");
+        bar.setTitle("Buscando Posiciones de Carga");
         bar.setMessage("Ejecutando... ");
         bar.setIcon(R.drawable.gas);
         bar.setCancelable(false);
         bar.show();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, numeroempleado);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-
-
+        String url;
+        if (Identificador.equals(1)){
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + numeroempleado;
+        }else{
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+        }
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                accesoUsuario = response.body();
-                String mensajes =  accesoUsuario.getMensaje();  // jsonObject.getString("Mensaje");
-                boolean correcto =  accesoUsuario.isCorrecto();  //jsonObject.getString("Correcto");
+            public void onResponse(String response) {
+                try {
+                    String posicionCarga,  disponible, estado , pendientdecobro, descripcionOperativa , numeroPosicionCarga, descripcion;
+                    JSONObject jsonObject = new JSONObject(response);
+                    String correcto = jsonObject.getString("Correcto");
+                    String mensaje = jsonObject.getString("Mensaje");
+                    String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
 
-                if(accesoUsuario.getObjetoRespuesta() == null)
-                {
-                    if(correcto == false)
-                    {
+//                    JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
 
-                        //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
+                    if (correcto.equals("false")){
                         String titulo = "AVISO";
-                        String mensaje = "" + mensajes;
                         Modales modales = new Modales(PosicionCargaTLl.this);
                         View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this,mensaje,titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+//                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                startActivity(intent1);
+//                                finish();
                                 bar.cancel();
                                 modales.alertDialog.dismiss();
-                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                                startActivity(intent1);
-                                finish();
                             }
                         });
-                    }else
-                    {
-                        //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
-                        String titulo = "AVISO";
-                        String mensaje = "El usuario no tiene asignadas posiciones de carga. " ;
-                        Modales modales = new Modales(PosicionCargaTLl.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this,mensaje,titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                                startActivity(intent1);
-                                finish();
-                            }
-                        });
+                    }else{
+                        lrcvPosicionCarga = new ArrayList<>();
+                        banderaposicionCarga= false;
 
-                    }
+                        JSONArray control1 = new JSONArray(ObjetoRespuesta);
+                        for (int i = 0; i < control1.length(); i++) {
+                            JSONObject posiciones = control1.getJSONObject(i);
+                            posicionCargaId = posiciones.getLong("Posicioncarga");
+                            long posicionCargaNumeroInterno = posiciones.getLong("NumeroPosicionCarga");
 
-                }else {
-                    lrcvPosicionCarga = new ArrayList<>();
-                    banderaposicionCarga= false;
-                    empleadoNumero = accesoUsuario.getObjetoRespuesta().getNumeroEmpleado();
-                    for(Control control : accesoUsuario.getObjetoRespuesta().getControles())
-                    {
-                        for( Posicion posicion : control.getPosiciones() )
-                        {
-
-                            posicionCargaId = posicion.getPosicionCargaId();
-                            long posicionCargaNumeroInterno = posicion.getNumeroInterno();
-                            boolean pocioncargadisponible = posicion.isDisponible();
-                            boolean pocioncargapendientecobro = posicion.isPendienteCobro();
-                            String descripcionoperativa =  posicion.getDescripcionOperativa();
-                            String descripcion = posicion.getDescripcion();
-                            numeroOperativa = posicion.getOperativa();
+                            boolean pocioncargadisponible = posiciones.getBoolean("Disponible");
+                            estado = posiciones.getString("Estado");
+                            boolean pocioncargapendientecobro = posiciones.getBoolean("PendienteCobro");
+                            String descripcionoperativa = posiciones.getString("DescripcionOperativa");
+                            descripcion = posiciones.getString("Descripcion");
+                            numeroOperativa = posiciones.getLong("Operativa");
                             Boolean banderacarga ;
                             if (pocioncargapendientecobro == true){
                                 banderacarga = false;
@@ -214,40 +200,67 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                     }
                                 }
                             }
-
+                        }
+                        bar.cancel();
+                        //AQUI VA EL ADAPTADOR
+                        if (banderaposicionCarga.equals(false)){
+//                        //Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
+                            String titulo = "AVISO";
+                            String mensajes="";
+                            mensajes = "No hay posiciones de carga disponiles";
+                            Modales modales = new Modales(PosicionCargaTLl.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this,mensajes,titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intent1);
+                                    finish();
+                                }
+                            });
+                        }else {
+                            initializeAdapter();
+                            bar.cancel();
                         }
 
                     }
-
-                    if (banderaposicionCarga.equals(false)){
-//                        //Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
-                        String titulo = "AVISO";
-                        String mensaje="";
-                        mensaje = "No hay posiciones de carga disponiles";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String algo = new String(error.networkResponse.data);
+                try {
+                    //creamos un json Object del String algo
+                    JSONObject errorCaptado = new JSONObject(algo);
+                    //Obtenemos el elemento ExceptionMesage del errro enviado
+                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                    try {
+                        String titulo = "Jarreo";
+                        String mensajes = errorMensaje;
                         Modales modales = new Modales(PosicionCargaTLl.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this,mensaje,titulo);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this, mensajes, titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
-                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                                startActivity(intent1);
-                                finish();
                             }
                         });
-                    }else {
-                        initializeAdapter();
-                        bar.cancel();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                bar.cancel();
-            }
         });
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
     }
 
     private void initializeAdapter() {

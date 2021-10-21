@@ -28,6 +28,7 @@ import com.corpogas.corpoapp.Entities.Estaciones.BodegaProducto;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.ProductControl;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
@@ -75,6 +76,8 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
     TextView txtleyendaTl;
     boolean pasa, banderaDatos;
 
+    JSONArray datosTarjeta = new JSONArray();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
 //        numerodispositivo= db.getIdTarjtero();
         numerointernoSucursal = db.getNumeroFranquicia();
         numerodispositivo = db.getIdTarjtero();
-        usuario = db.getUsuarioId();
+        usuario = db.getNumeroEmpleado();  // getUsuarioId();
 
         init();
         cargaCombustible();
@@ -124,7 +127,8 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                     }
 
                     if (banderaDatos){
-                        EnviarProductos();
+                        validaTarjetaPuntada();
+//                        EnviarProductos(); MIKEL
                     }else{
                         String titulo = "AVISO";
                         Modales modales = new Modales(PlanchadoTanqueLleno.this);
@@ -153,7 +157,110 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             }
         });
     }
+    private void validaTarjetaPuntada(){
 
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+
+            startActivity(intent1);
+            finish();
+        } else {
+            SQLiteBD data = new SQLiteBD(getApplicationContext());
+            String URL = "http://" + data.getIpEstacion() + "/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            final JSONObject jsonObject = new JSONObject();
+
+            try {
+                String tk1 =  tvDenominaNumeroClienteTl.getText().toString()+"00000000";
+                datosTarjeta.put("");
+                datosTarjeta.put(tk1);
+                datosTarjeta.put("");
+                jsonObject.put("Pistas", datosTarjeta);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        String correcto = response.getString("Correcto");
+                        if (correcto.equals("true")) {
+                            String mesanje = response.getString("Mensaje");
+                            String objetorespuesta = response.getString("ObjetoRespuesta");
+                            JSONObject jsonObjectoRespuesta = new JSONObject(objetorespuesta);
+                            String moned = jsonObjectoRespuesta.getString("TipoMonedero");
+                            JSONObject numerointerno = new JSONObject(moned);
+                            String formaPagoId = numerointerno.getString("PaymentMethodId");
+                            String modenerotipo = numerointerno.getString("Id");
+                            if (modenerotipo.equals("2") && formaPagoId.equals("11")) { //PUNTADA    modenerotipo.equals("3")
+                               EnviarProductos();
+                            } else {
+                                String titulo = "DEBE PASAR UNA TARJETA PUNTADA";
+                                String mensaje = "Tarjeta inválida";
+                                Modales modales = new Modales(PlanchadoTanqueLleno.this);
+                                View view1 = modales.MostrarDialogoAlertaAceptar(PlanchadoTanqueLleno.this, mensaje, titulo);
+                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+                                    }
+                                });
+                            }
+                        } else {
+                            String titulo = "AVISO";
+                            String mensaje = "Tarjeta invalida";
+                            Modales modales = new Modales(PlanchadoTanqueLleno.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(PlanchadoTanqueLleno.this, mensaje, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                        }
+
+                    } catch (JSONException e) {
+                        onDestroy();
+                        Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+                        startActivity(intente);
+                    }
+                }
+
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    onDestroy();
+                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+                    startActivity(intente);
+                }
+            }) {
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<String, String>();
+                    return headers;
+                }
+
+                protected com.android.volley.Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                    if (response != null) {
+
+                        try {
+                            String responseString;
+                            JSONObject datos = new JSONObject();
+                            responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return com.android.volley.Response.success(jsonObject, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            request_json.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            queue.add(request_json);
+        }
+    }
 
     private void cargaCombustible(){
         //Declaracion de variables
@@ -403,8 +510,17 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     String error1 = error.networkResponse.data.toString();
-                    Toast.makeText(PlanchadoTanqueLleno.this, "error: "+error1, Toast.LENGTH_SHORT).show();
-                    pasa = false;
+//                    Toast.makeText(PlanchadoTanqueLleno.this, "error: "+error1, Toast.LENGTH_SHORT).show();
+                    String titulo = "TARJETA TANQUELLENO";
+                    String mensaje = "Fallo en la conexión con consola";
+                    Modales modales = new Modales(PlanchadoTanqueLleno.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(PlanchadoTanqueLleno.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                            pasa = false;                        }
+                    });
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {

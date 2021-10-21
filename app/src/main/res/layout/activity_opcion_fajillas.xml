@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".Fajillas.OpcionFajillas">
 
-    <ListView
-        android:id="@+id/listOpcionFajillas"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvOpcionFajillas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -123,6 +123,8 @@ public class SeccionTarjeta extends AppCompatActivity {
                         if (PuntadaProceso.equals("RedimirQr")){
                             Intent intentQr = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
                             intentQr.putExtra("nip", NIPCliente);
+                            intentQr.putExtra("lugarProviene", "Redimir");
+
                             startActivity(intentQr);
                             finish();
                         }else{

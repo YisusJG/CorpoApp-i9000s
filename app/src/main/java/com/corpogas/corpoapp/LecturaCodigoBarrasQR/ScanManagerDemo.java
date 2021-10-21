@@ -50,6 +50,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.VentaCombustible.EligePrecioLitros;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +75,7 @@ import java.util.Map;
  * 11.Can set parameters before closing the scan service.
  */
 public class ScanManagerDemo extends AppCompatActivity {
-
+    String NIP, lugarProviene;
     private static final String TAG = "ScanManagerDemo";
     private static final boolean DEBUG = true;
 
@@ -158,10 +159,22 @@ public class ScanManagerDemo extends AppCompatActivity {
                 String scanResult = new String(barcode, 0, barcodeLen);
                 // print scan results.
 //                scanResult = " length：" + barcodeLen + "\nbarcode：" + scanResult + "\nbytesToHexString：" + bytesToHexString(barcode) + "\nbarcodeStr:" + barcodeStr;
-                scanResult = "barcode：" + scanResult;
+                scanResult = "barcode Mi：" + scanResult;
+//                if (lugarProviene.equals("Acumular"))            {
+                Intent intentElige = new Intent(getApplicationContext(), EligePrecioLitros.class);
+                intent.putExtra("combustible", "1");
+                intent.putExtra("TarjetaDescuento", scanResult);
+                startActivity(intentElige);
+                finish();
+
+//                }
+
                 Message msg = mHandler.obtainMessage(MSG_SHOW_SCAN_RESULT);
                 msg.obj = scanResult;
                 mHandler.sendMessage(msg);
+
+
+
             }
         }
     };
@@ -727,6 +740,8 @@ public class ScanManagerDemo extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_scan_manager_demo);
         initView();
+        NIP = getIntent().getStringExtra("nip");
+        lugarProviene = getIntent().getStringExtra("lugarProviene");
     }
 
     @Override

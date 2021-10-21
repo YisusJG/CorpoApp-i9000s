@@ -37,6 +37,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Service.MagReadService;
 import com.corpogas.corpoapp.TanqueLleno.TanqueLlenoNip;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
+import com.corpogas.corpoapp.VentaCombustible.ImprimePuntada;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -67,7 +68,7 @@ public class MonederosElectronicos extends AppCompatActivity {
     JSONArray datos = new JSONArray();
     String banderaHuella, posiciondeCarga, numeroempleadosucursal, PagoPuntada, tipoTarjeta;
 
-
+    boolean pasa;
 
     private final Handler mHandler = new Handler() {
         @Override
@@ -207,7 +208,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 {
                     String mesanje = respuestaApiBin.Mensaje;
                     long formaPagoId = respuestaApiBin.getObjetoRespuesta().getTipoMonedero().PaymentMethodId;    //tiopoMonedero.getString("PaymentMethodId"); //TipoMonederoId
-                    long idMonedero = respuestaApiBin.getObjetoRespuesta().getTipoMonederoId();//tiopoMonedero.getString("Id");
+                    long idMonedero = respuestaApiBin.getObjetoRespuesta().getTipoMonedero().Id;//tiopoMonedero.getString("Id");
                     if ( idMonedero == 1 &&  formaPagoId ==12 ){ //PUNTADA
                         if (tipoTarjeta.equals("TanqueLleno")){
                             String titulo = "AVISO";
@@ -254,7 +255,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                             intent.putExtra("track",mesanje);
                             intent.putExtra("lugarProviene", Enviadodesde);
                             startActivity(intent);
-
+                            finish();
                         }
                         if (idMonedero == 3 && formaPagoId == 11) { //TANQUE LLENO SURESTE
                             Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
@@ -263,6 +264,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                             intent.putExtra("lugarProviene", Enviadodesde);
                             intent.putExtra("track",mesanje);
                             startActivity(intent);
+                            finish();
                         }
 
                     }
@@ -459,16 +461,17 @@ public class MonederosElectronicos extends AppCompatActivity {
                             String mesanje = response.getString("Mensaje");
                             String objetorespuesta = response.getString("ObjetoRespuesta");
                             JSONObject jsonObjectoRespuesta = new JSONObject(objetorespuesta);
-                            String modenerotipo = jsonObjectoRespuesta.getString("TipoMonederoId");
                             String moned = jsonObjectoRespuesta.getString("TipoMonedero");
                             JSONObject numerointerno = new JSONObject(moned);
                             String formaPagoId = numerointerno.getString("PaymentMethodId");
+                            String modenerotipo = numerointerno.getString("Id");
+
                             if (modenerotipo.equals("1") && formaPagoId.equals("12")) { //PUNTADA    modenerotipo.equals("3")
 //                            if (modenerotipo.equals("1")) {
                                 if (PagoPuntada.equals("si")){
                                     EnviaProcesoPuntadaRedimir(mesanje);
                                 }else{
-                                    EnviaProcesoPuntadaAcumularNew(mesanje);
+                                    EnviaProcesoPuntadaAcumular(mesanje);
                                 }
                             } else {
                                 String titulo = "DEBE PASAR UNA TARJETA PUNTADA";
@@ -637,9 +640,9 @@ public class MonederosElectronicos extends AppCompatActivity {
                                         public void onClick(View view) {
                                             bar.cancel();
                                             modales.alertDialog.dismiss();
-                                            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                                            startActivity(intent1);
-                                            finish();
+//                                            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                            startActivity(intent1);
+//                                            finish();
                                         }
                                     });
                                 }catch (Exception e){
@@ -676,7 +679,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         };
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        eventoReq.setRetryPolicy(new DefaultRetryPolicy(150000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(500000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(eventoReq);
 
     }
@@ -731,7 +734,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                     if (estado.equals("true")) {
                         if (Enviadodesde.equals("formaspago")) {
                             if (tipoTarjeta.equals("Puntadaformapago")){
-                                String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");
+                                Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
                                 //Enviamos a la pantalla de captura de diferentes formas de pago   MontoenCanasta
                                 String banderaHuella = getIntent().getStringExtra( "banderaHuella");
                                 String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
@@ -752,18 +755,15 @@ public class MonederosElectronicos extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }else{
-                                String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");
-//                                Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
-//                                intente.putExtra("idusuario", idusuario);
-//                                intente.putExtra("posicioncarga", posicionCarga);
-//                                intente.putExtra("claveusuario", clave);
-//                                intente.putExtra("idoperativa", idoperativa);
-//                                intente.putExtra("idformapago", numpago);
-//                                intente.putExtra("nombrepago", nombrepago);
-//                                intente.putExtra("nombreCompletoVenta", nombreCompleto);
-//                                intente.putExtra("montoencanasta", MontoenCarrito);
-//                                startActivity(intente);
-//                                finish();
+                                Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
+                                Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
+                                intente.putExtra("posicioncarga", posiciondeCarga);
+                                intente.putExtra("idoperativa", idoperativa);
+                                intente.putExtra("idformapago", numpago);
+                                intente.putExtra("nombrepago", nombrepago);
+                                intente.putExtra("montoencanasta", MontoenCarrito);
+                                startActivity(intente);
+                                finish();
                             }
                         } else {
                             String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");

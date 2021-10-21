@@ -272,6 +272,7 @@
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
+
                     startActivity(intent);
                 }
             });

@@ -17,6 +17,7 @@ import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
+import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajillaEntregada;
 import com.corpogas.corpoapp.Entities.Estaciones.ResumenFajilla;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
@@ -189,6 +190,9 @@ public interface EndPoints {
     Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
 
+
+    @GET("api/recepcionFajillas/getFajillas/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    Call<RespuestaApi<RecepcionFajillaEntregada>> getFajillas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") long numeroEmpleado);
 
 
 

@@ -58,8 +58,7 @@ public class AutorizaFajillas extends AppCompatActivity {
     final JSONObject datos = new JSONObject();
     private boolean m_reset = false;
     boolean ejecutar = true;
-    //termina variables para huellas
-
+    SQLiteBD db;
 
     Button btnhuella;
     private byte[] isoFeatureTmp;
@@ -102,12 +101,13 @@ public class AutorizaFajillas extends AppCompatActivity {
         EstacionId = data.getIdEstacion();
         ipEstacion = data.getIpEstacion();
         numeroTarjetero = data.getIdTarjtero();
+        numeroEmpleadoSale = Long.parseLong(data.getNumeroEmpleado());
 //        Globals.DefaultImageProcessing = Reader.ImageProcessing.IMG_PROC_DEFAULT;
         banderaHuella = data.getLectorHuella();//getIntent().getStringExtra( "banderaHuella");
 //        btnhuella  =  findViewById(R.id.btnhuella);
         // btnhuella.setOnClickListener(despachdorclave.this);
         mHandler = new Handler(Looper.getMainLooper());
-        animationView7 = findViewById(R.id.animationView2);
+        animationView7 = findViewById(R.id.animationView3);
 //        fragmentFajillas = new FajillasFragment();
         //lee valores usuario y carga
 //        usuario= findViewById(R.id.usuario);
@@ -155,14 +155,14 @@ public class AutorizaFajillas extends AppCompatActivity {
                 }
                 break;
             case "EntregaFajillas":
-                empleadoNumeroActual =  getIntent().getLongExtra("numeroEmpleadoJI", 0);
+                empleadoNumeroActual =  Long.parseLong(data.getNumeroEmpleado()); //getIntent().getLongExtra("numeroEmpleadoJI", 0);
                 txtEtiqueta.setText("CONFIRMA Entrega Fajillas");
-                if (banderaHuella.equals("true")){
-                    titulo.setText("Ingresa tu Huella de Jefe de Isla");
-                    animationView7.setAnimation("fingerprint.json");
-                }else{
+//                if (banderaHuella.equals("true")){
+//                    titulo.setText("Ingresa tu Huella de Jefe de Isla");
+                    animationView7.setAnimation("confirmation.json");
+//                }else{
                     titulo.setText("Ingresa tu Contraseña de Jefe de Isla");
-                }
+//                }
                 break;
 
 
@@ -517,8 +517,6 @@ public class AutorizaFajillas extends AppCompatActivity {
 //            claveUsuario = getIntent().getStringExtra("ClaveUsuarioActual");
             totalFajillas = getIntent().getLongExtra("TotalFajillas", 0);
             valorTipoFajilla = getIntent().getLongExtra("TipoFajilla", 0);
-            numeroEmpleadoSale = getIntent().getLongExtra("numeroEmpleadoJI", 0);
-            islaId = getIntent().getStringExtra("NumeroIsla");
 
             String URL;
             if (lugarProviene.equals("corteFajillas")){
@@ -531,7 +529,6 @@ public class AutorizaFajillas extends AppCompatActivity {
             try {
                 datosFajillas = new JSONObject();
                 datosFajillas.put("SucursalId", sucursalId);
-                datosFajillas.put("IslaId", islaId);
                 datosFajillas.put("TipoFajilla", valorTipoFajilla);
                 datosFajillas.put("Cantidad", totalFajillas);
             } catch (JSONException e) {

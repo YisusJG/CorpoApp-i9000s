@@ -8,6 +8,17 @@
 
 
     <Button
+        android:id="@+id/btnQR"
+        android:layout_width="88dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="16dp"
+        android:text="QR"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/CantidadPrecio"
+        app:layout_constraintTop_toBottomOf="@+id/lstOpcionesPrecio" />
+
+    <Button
         android:id="@+id/btnDespachoLibre"
         android:layout_width="160dp"
         android:layout_height="50dp"
@@ -36,16 +47,18 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:text="COBRAR"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CantidadPrecio" />
+        app:layout_constraintTop_toBottomOf="@+id/CantidadPrecio"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvSelecciona"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="SELECCIONA UNA OPCION"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -83,11 +96,11 @@
         android:id="@+id/CantidadPrecio"
         android:layout_width="150dp"
         android:layout_height="45dp"
-        android:layout_marginTop="15dp"
-        android:visibility="invisible"
+        android:layout_marginTop="16dp"
         android:inputType="numberDecimal"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintHorizontal_bias="0.135"
         app:layout_constraintStart_toEndOf="@+id/EtiquetaPrecioLista"
         app:layout_constraintTop_toBottomOf="@+id/lstOpcionesPrecio"
         tools:ignore="MissingConstraints" />

@@ -7,45 +7,17 @@
     tools:context=".VentaCombustible.VentaProductos">
 
     <Button
-        android:id="@+id/btnDisminuir"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnCobrarPeriferico"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="28dp"
-        android:text="-"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/btnAumentar"
-        app:layout_constraintTop_toBottomOf="@+id/txtDescripcionVenta" />
-
-    <TextView
-        android:id="@+id/txtTotalAceites"
-        android:layout_width="94dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/border"
-        android:text="1"
-        android:textAlignment="textEnd"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDescripcionVenta" />
-
-    <TextView
-        android:id="@+id/txtDescripcionVenta"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="20dp"
-        android:textColor="#070707"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="10dp"
+        android:enabled="false"
+        android:text="Cobrar Periferico"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lstProductos"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintHorizontal_bias="0.928"
+        app:layout_constraintStart_toEndOf="@+id/btnEscanearProducto"
+        app:layout_constraintTop_toBottomOf="@+id/lstProductos" />
 
     <ListView
         android:id="@+id/lstProductos"
@@ -76,7 +48,7 @@
         android:id="@+id/btnAceitesVentas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="10dp"
         android:text="@string/_perifericos"
@@ -86,25 +58,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnAumentar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="28dp"
-        android:text="+"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@+id/txtTotalAceites"
-        app:layout_constraintTop_toBottomOf="@+id/txtDescripcionVenta" />
-
-    <Button
         android:id="@+id/btnEscanearProducto"
-        android:layout_width="0dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="104dp"
         android:text="Despacho Libre"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAumentar" />
+        app:layout_constraintTop_toBottomOf="@+id/lstProductos" />
 </androidx.constraintlayout.widget.ConstraintLayout>

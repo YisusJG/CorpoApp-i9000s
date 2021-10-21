@@ -30,6 +30,7 @@ import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PosicionCargaTLl;
@@ -439,7 +440,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;
                     case "Ventas":
-                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), "5", "false");
+                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), "false");
                         break;
                     default:
                         Toast.makeText(PosicionPuntadaRedimir.this, "No se selecciono ninguna opción válida", Toast.LENGTH_SHORT).show();
@@ -499,7 +500,12 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         }
 
                         if (banderaConDatos.equals(false)){
-                            Toast.makeText(PosicionPuntadaRedimir.this, "Posicion Ocupada", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
+                            intent.putExtra("numeroEmpleado", empleadoNumero);
+                            intent.putExtra("posicionCarga", posicionCarga);
+                            intent.putExtra("estacionjarreo", Estacionjarreo);
+                            startActivity(intent);
+                            finish();
                         } else {
 
                             Double MontoenCanasta = 0.00;
@@ -514,71 +520,21 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                     aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
                                     MontoenCanasta = MontoenCanasta + aTotal;
                                 }
+                                Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);
+                                //se envia el id seleccionado a la clase Usuario Producto
+                                intente.putExtra("posicion", posicionCarga);
+                                intente.putExtra("usuario", usuarioid);
+                                intente.putExtra("cadenaproducto", "");
+                                intente.putExtra("lugarproviene", "Despacho");
+                                intente.putExtra("numeroOperativa", numeroOperativa);
+                                intente.putExtra("cadenarespuesta", ObjetoRespuesta);
+                                //Ejecuta la clase del Usuario producto
+                                startActivity(intente);
+                                //Finaliza activity
+                                finish();
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }
-
-                            int IdOperativa = Integer.parseInt(numerooperativa);
-                            if (IdOperativa == 21){ //TarjetaPuntada Redimir
-                                //                                        imprimirticket(posicionCarga, "REDIMIR", MontoenCanasta.toString());
-                            }else{
-                                Intent intent = new Intent(getApplicationContext(), VentaCombustibleAceites.class);
-                                intent.putExtra("estacionjarreo", Estacionjarreo);
-                                //                                        intent.putExtra("clavedespachador", ClaveDespachador);
-                                //                                        intent.putExtra("numeroempleadosucursal", numeroempleado);
-                                switch (IdOperativa) {
-                                    case 1: //              Operativa normal
-                                    case 3:
-                                    case 20://Operativa Puntada P
-                                        //                                                intent.putExtra("posicioncarga", posicionCarga);
-                                        //                                                intent.putExtra("IdOperativa", numerooperativa);
-                                        //                                                intent.putExtra("IdUsuario", IdUsuario);
-                                        //                                                intent.putExtra("nombrecompleto", nombreCompletoempleado);
-                                        //                                                intent.putExtra("estacionjarreo", Estacionjarreo);
-                                        //                                                intent.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
-                                        //                                                intent.putExtra("montocanasta", MontoenCanasta.toString());
-                                        //                                                startActivity(intent);
-                                        //                                                finish();
-                                        break;
-                                    case 2://                Operativa Autoservicio
-                                        break;
-                                    case 4://                Operativa Tanque Lleno Arillo
-                                        break;
-                                    case 5://                Operativa Tanque Lleno Tarjeta
-                                        //                                                imprimirticket(posicionCarga, "TLLENO", MontoenCanasta.toString());
-                                        break;
-                                    case 6://                Operativa Cliente Estacion E
-                                        break;
-                                    case 7://                Operativa Yena Y
-                                        break;
-                                    case 8://                Operativa Yena Ñ
-                                        break;
-                                    case 10://                Operrativa Puntada Q
-                                        break;
-                                    case 11://                Operativa Desconocida
-                                        break;
-                                    case 54://                Operativa Predeterminada
-                                        break;
-                                    case 55://                Operativa Jarreo
-                                        break;
-                                    case 31://    Autojarreo
-                                        //                                                Intent intent1 = new Intent(getApplicationContext(), formaPagoEstacionJarreo.class); //
-                                        //                                                intent1.putExtra("posicioncarga",posicionCarga);
-                                        //                                                intent1.putExtra("IdOperativa", numerooperativa);
-                                        //                                                intent1.putExtra("IdUsuario", IdUsuario);
-                                        //                                                intent1.putExtra("nombrecompleto", nombreCompletoempleado);
-                                        //                                                intent1.putExtra("montocanasta", MontoenCanasta.toString());
-                                        //                                                intent1.putExtra("numeroempleadosucursal", numeroempleado);
-                                        //                                                intent1.putExtra("posicioncargarid", posicioncargaid);
-                                        //                                                startActivity(intent1);
-                                        //                                                finish();
-                                        break;
-                                    case 41:// Mercado Pago
-                                        //                                                imprimirticket(posicionCarga, "MERCADOPAGO", MontoenCanasta.toString());
-                                        break;
-                                    default://                No se encontro ninguna forma de operativa
-                                        break;
-                                }
                             }
                         }
 

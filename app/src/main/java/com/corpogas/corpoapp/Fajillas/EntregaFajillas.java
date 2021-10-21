@@ -29,20 +29,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class EntregaFajillas extends AppCompatActivity {
     long numeroIslas, valorTipoFajilla=1 ;
     Spinner spnFajillas;
     EditText cantidad;
     Button aceptar, btnIncrementar, btnDecrementar;
-    String [] opciones = {"Fajillas Billete", "Fajillas Morralla"}; //, "Fajillas  Billetes Pico", "Fajillas Morralla Pico"
+//    String [] opciones = {"Fajillas Billete", "Fajillas Morralla"}; //, "Fajillas  Billetes Pico", "Fajillas Morralla Pico"
     String lugarProviene, m_deviceName, ipEstacion, claveUsuario, nombreCompleto,  password, islaId, descripciones ;
 
-    String[] opciones2 = new String[2];
+//    String[] opciones2 = new String[2];
 
     SQLiteBD db;
     Long sucursalId, idUsuario, totalFajillas ;
 
-    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
+//    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
 
 
 
@@ -60,19 +62,19 @@ public class EntregaFajillas extends AppCompatActivity {
     }
 
     private void init(){
-
-        m_deviceName = getIntent().getStringExtra("device_name");
-        islaId = getIntent().getStringExtra("IslaId");
+        db = new SQLiteBD(getApplicationContext());
+//        m_deviceName = getIntent().getStringExtra("device_name");
+//        islaId = getIntent().getStringExtra("IslaId");
         lugarProviene = getIntent().getStringExtra("lugarProviene");
 
 
         if (lugarProviene.equals("corteFajillas")){
             idUsuario = getIntent().getLongExtra("idusuario", 0);
         }else{
-            respuestaApiAccesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
-            nombreCompleto = respuestaApiAccesoUsuario.getObjetoRespuesta().getNombreCompleto();
-            idUsuario = respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroEmpleado();
-            password = respuestaApiAccesoUsuario.getObjetoRespuesta().getClave();
+//            respuestaApiAccesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+            nombreCompleto = db.getNombreCompleto();//respuestaApiAccesoUsuario.getObjetoRespuesta().getNombreCompleto();
+            idUsuario = Long.parseLong(db.getUsuarioId());//respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroEmpleado();
+            password = db.getClave();//respuestaApiAccesoUsuario.getObjetoRespuesta().getClave();
         }
 
     }
@@ -100,12 +102,8 @@ public class EntregaFajillas extends AppCompatActivity {
                                 //ENVIA AUTORIZACION
                                 Intent intent1 = new Intent(EntregaFajillas.this, AutorizaFajillas.class); //despachdorclave
                                 intent1.putExtra("LugarProviene", lugarProviene);
-                                intent1.putExtra("numeroEmpleadoJI", idUsuario);
-                                intent1.putExtra("ClaveUsuarioActual", claveUsuario);
-                                intent1.putExtra("device_name", m_deviceName);
                                 intent1.putExtra("TotalFajillas", totalFajillas);
                                 intent1.putExtra("TipoFajilla", valorTipoFajilla);
-                                intent1.putExtra("NumeroIsla", islaId);
                                 startActivity(intent1);
                                 finish();
                             }
@@ -127,6 +125,8 @@ public class EntregaFajillas extends AppCompatActivity {
     }
 
     private void ObtieneFajillas(){
+        ArrayList<String> comboTipoFajilla = new ArrayList<String>();
+
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
@@ -152,9 +152,10 @@ public class EntregaFajillas extends AppCompatActivity {
                                 JSONObject respuestaTipoFajilla = tiposFajilla.getJSONObject(i);
                                 String describeTipoFajilla = respuestaTipoFajilla.getString("TipoFajilla");
                                 String idFajilla = respuestaTipoFajilla.getString("Price");
-                                opciones2[i] = describeTipoFajilla + " - $" + idFajilla;
+//                                opciones[i] = describeTipoFajilla + " - $" + idFajilla;
+                                comboTipoFajilla.add(describeTipoFajilla + " - $" + idFajilla);
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(EntregaFajillas.this, R.layout.support_simple_spinner_dropdown_item, opciones2);
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(EntregaFajillas.this, R.layout.support_simple_spinner_dropdown_item, comboTipoFajilla);
                             spnFajillas.setAdapter(adapter);
                             spnFajillas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override

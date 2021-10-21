@@ -60,7 +60,7 @@ public class EligePrecioLitros extends AppCompatActivity {
     String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
     Button btnLibre, btnPredeterminado, btnCobrar, btnCombustibleCobrar, btnPerifericosCobrar;
     SQLiteBD data;
-    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre, combustible;
+    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre, combustible, numeroTarjeta, descuento, lugarProviene;
     String mensaje = "", correcto = "";
     JSONArray myArray = new JSONArray();
     ProgressDialog bar;
@@ -86,6 +86,9 @@ public class EligePrecioLitros extends AppCompatActivity {
         precio = getIntent().getStringExtra("precioProducto");
         despacholibre = getIntent().getStringExtra("despacholibre");
         combustible = getIntent().getStringExtra("combustible");
+        numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
+        descuento = getIntent().getStringExtra("descuento");
+        lugarProviene = getIntent().getStringExtra("lugarProviene");
 
         tvTipoDespachoLP = (TextView) findViewById(R.id.tvTipoDespachoLP);
         btnPredeterminado = (Button) findViewById(R.id.btnPredeterminadoInicia);
@@ -152,6 +155,11 @@ public class EligePrecioLitros extends AppCompatActivity {
         }
 
         tvTipoDespachoLP.setText("PC: " + posicionCarga  + "  TIPO DESPACHO ");//+ ", " + combustible
+
+        if (lugarProviene.equals("puntadaAcumularQr")){
+            btnLibre.setEnabled(false);
+        }
+
     }
 
 
@@ -162,6 +170,7 @@ public class EligePrecioLitros extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
+
             JSONObject datos = new JSONObject();
             try {
                 datos.put("TipoProducto","1");
@@ -175,6 +184,9 @@ public class EligePrecioLitros extends AppCompatActivity {
                     datos.put("Importe", false);
                 }else{
                     datos.put("Importe", true);
+                }
+                if (lugarProviene.equals("puntadaAcumularQr")){
+                    datos.put("importedescuento", descuento);
                 }
 
                 myArray.put(datos);
@@ -550,6 +562,7 @@ public class EligePrecioLitros extends AppCompatActivity {
                 }else{
                     mensaje = "Estás seguro de que deseas cargar : " + cantidadNueva + " PESOS";
                 }
+                Cantidad.setEnabled(false);
                 Modales modales = new Modales(EligePrecioLitros.this);
                 View viewLectura = modales.MostrarDialogoAlerta(EligePrecioLitros.this, mensaje,  "Ok", "Cancelar");
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
