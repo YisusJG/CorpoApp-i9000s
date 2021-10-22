@@ -25,7 +25,8 @@ public class CierreTicket implements Serializable {
     public double ImporteFormaPagoTotal;
     public double ImporteTotalJarreos;
     public double ImporteTotalAutoJarreos;
-    public double GastosTotal;
+    public List<GastoTotal> GastosTotal;
+    public double ImporteGastosTotal;
     public double Total;
     public List<DiferenciaTotal> DiferenciasTotal;
     public double ImporteDiferenciaTotal;
@@ -175,12 +176,20 @@ public class CierreTicket implements Serializable {
         ImporteTotalAutoJarreos = importeTotalAutoJarreos;
     }
 
-    public double getGastosTotal() {
+    public List<GastoTotal> getGastosTotal() {
         return GastosTotal;
     }
 
-    public void setGastosTotal(double gastosTotal) {
+    public void setGastosTotal(List<GastoTotal> gastosTotal) {
         GastosTotal = gastosTotal;
+    }
+
+    public double getImporteGastosTotal() {
+        return ImporteGastosTotal;
+    }
+
+    public void setImporteGastosTotal(double importeGastosTotal) {
+        ImporteGastosTotal = importeGastosTotal;
     }
 
     public double getTotal() {

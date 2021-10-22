@@ -3,6 +3,7 @@ package com.corpogas.corpoapp.VentaCombustible;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,6 +66,7 @@ public class confirmaVenta extends AppCompatActivity {
     Long NumeroEmpleado, islaId;
     int idSeleccionado;
     JSONObject myJOProductosFaltantes;
+    SQLiteBD db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class confirmaVenta extends AppCompatActivity {
         setContentView(R.layout.activity_confirma_venta);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
@@ -161,7 +163,7 @@ public class confirmaVenta extends AppCompatActivity {
     }
 
     private void EnviarProductosCorte() {  //final String posicionCarga, final String Usuarioid, final Integer ProductoIdEntero
-            String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProducto/sucursal/"+sucursalId+"/usuario/"+usuario+"/islaId/"+islaId;
+            String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProducto/sucursal/"+sucursalId+"/numeroEmpleado/"+ db.getNumeroEmpleado();
             RequestQueue queue = Volley.newRequestQueue(this);
 
             JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, myJOProductosFaltantes, new Response.Listener<JSONObject>() {

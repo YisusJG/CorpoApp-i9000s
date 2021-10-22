@@ -3,8 +3,13 @@ package com.corpogas.corpoapp.Corte;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +23,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Corte.Adapters.ListAdapterProductos;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.ProductosFaltantes;
+import com.corpogas.corpoapp.Entregas.EntregaPicosActivity;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Login.EntregaPicos;
+import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
 
 import org.json.JSONArray;
@@ -28,15 +40,22 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ProductosJefeIsla extends AppCompatActivity {
 
     int resultado;
     Button btnAutorizacion, btnVentaProductos, btnRefresh;
     TextView tvEntregado, tvRecibi;
+    EditText edtNipAutorizacion;
     SQLiteBD db;
     Long sucursalId ;
+    ImageButton btnListaProductosResumenActivity;
 
-    String  idusuario, numerodispositivo, turnoId,  fechaTrabajo, ipEstacion, claveUsuario;
+    String  idusuario, numerodispositivo, turnoId,  fechaTrabajo, ipEstacion, claveUsuario, titulo, mensaje, nipAutorizacion;
     Long numeroEmpleado, islaId, cierreId;
     ListView listProductos;
 
@@ -64,6 +83,9 @@ public class ProductosJefeIsla extends AppCompatActivity {
     long cantidadAceites = 0;
     ArrayList<ProductosFaltantes> ArrayventasFaltantes = new ArrayList<ProductosFaltantes>();
 
+    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
+    Modales modales;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +93,7 @@ public class ProductosJefeIsla extends AppCompatActivity {
 
         init();
         setVariables();
+        onClicks();
         ObtieneProductosCierre(1);
     }
 
@@ -80,20 +103,85 @@ public class ProductosJefeIsla extends AppCompatActivity {
         btnAutorizacion = (Button) findViewById(R.id.btnaceptar);
         btnVentaProductos = (Button) findViewById(R.id.btnsiguiente);
         btnRefresh = (Button) findViewById(R.id.btnrefresh);
+        btnListaProductosResumenActivity = findViewById(R.id.btnListaProductosResumenActivity);
+
+
     }
+
 
     private void setVariables() {
         db = new SQLiteBD(getApplicationContext());
         sucursalId = Long.parseLong(db.getIdSucursal());
         ipEstacion = db.getIpEstacion();
         idusuario = db.getNumeroEmpleado();
+        claveUsuario = db.getClave();
+        modales = new Modales(ProductosJefeIsla.this);
+
+    }
+
+    private void onClicks(){
+
+        btnAutorizacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                titulo = "CONFIRMACION";
+                mensaje = "Ingresa NIP de confirmación.";
+                View viewLectura = modales.MostrarDialogoInsertaDato(ProductosJefeIsla.this, mensaje, titulo);
+                edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        nipAutorizacion = edtNipAutorizacion.getText().toString();
+                        if (nipAutorizacion.isEmpty()) {
+                            edtNipAutorizacion.setError("Ingresa NIP");
+                            return;
+                        }else{
+                            obtenerObjetoAccesoUsuario();
+                        }
+
+                    }
+                });
+
+                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+
+
+
+
+            }
+        });
+
+        btnVentaProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProductosJefeIsla.this, VentasProductos.class); //claveFinVenta
+                intent.putExtra("lugarproviene", "Corte");
+                intent.putExtra("NumeroEmpleado", idusuario);
+                intent.putExtra("usuario", claveUsuario);
+                intent.putExtra("cadenaproducto", "");
+//                intent.putExtra("device_name", m_deviceName);
+                startActivity(intent);
+            }
+        });
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ObtieneProductosCierre(1);
+            }
+        });
 
     }
 
     private void ObtieneProductosCierre(Integer integer) {
         btnAutorizacion.setEnabled(true);
 //            banderaSigue = true;
-        String url = "http://" + ipEstacion + "/CorpogasService/api/cierreDetalles/ObtieneVentasPorDespachador/sucursal/" + sucursalId + "/numeroEmpleado/" + idusuario;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -161,8 +249,8 @@ public class ProductosJefeIsla extends AppCompatActivity {
                 String productoclave = pA.getString("ProductoDescripcionCorta"); //ProductoDescripcion
                 String DescLarga = pA.getString("ProductoDescripcionCorta");//ProductoDescripcion
                 TProductoId = pA.getString("CategoriaProductoId");
-                JSONObject categoriaProducto = pA.getJSONObject("CategoriaProducto");
-                Long numeroInterno  = categoriaProducto.getLong("Id"); //NumeroInterno
+//                JSONObject categoriaProducto = pA.getJSONObject("CategoriaProducto");
+                int numeroInterno = 100;//categoriaProducto.getLong("Id"); //NumeroInterno
                 String idArticulo = pA.getString("ProductoId"); //NumeroInterno
                 String codigobar = pA.getString("CodigoBarras");
                 Long cantidadvendida = pA.getLong("Cantidad");
@@ -205,9 +293,59 @@ public class ProductosJefeIsla extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ListAdapterProductos adapterP = new ListAdapterProductos((Activity) getApplicationContext(), calculo, subtitle, maintitle);
+        ListAdapterProductos adapterP = new ListAdapterProductos(ProductosJefeIsla.this, calculo, subtitle, maintitle);
         listProductos.setTextFilterEnabled(true);
         listProductos.setAdapter(adapterP);
+
+    }
+
+    public void obtenerObjetoAccesoUsuario(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, nipAutorizacion);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                respuestaApiAccesoUsuario = response.body();
+                usuarioCorrecto();
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
+    public void usuarioCorrecto(){
+        boolean correcto = respuestaApiAccesoUsuario.Correcto;
+        if (correcto == true) {
+            if (respuestaApiAccesoUsuario.getObjetoRespuesta().getClave().equals(nipAutorizacion) && respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 3) {
+                int banderaConfirmaInventario = 1;
+                Intent intent = new Intent(getApplicationContext(), ResumenActivity.class); //IslasEstacion.class aqui iba antes
+                intent.putExtra("banderaConfirmaInventario", banderaConfirmaInventario);
+//                intent.putExtra("accesoUsuario", respuestaApiAccesoUsuario);
+                startActivity(intent);
+                finish();
+
+            } else {
+                edtNipAutorizacion.setError("No eres jefe de isla");
+            }
+
+        } else {
+            edtNipAutorizacion.setError(respuestaApiAccesoUsuario.Mensaje);
+        }
 
     }
 

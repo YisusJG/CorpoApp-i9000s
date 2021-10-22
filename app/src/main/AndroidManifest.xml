@@ -36,6 +36,9 @@
             android:name=".Corte.ProductosVendedor"
             android:exported="true" />
         <activity
+            android:name=".Corte.ProductosJefeIsla"
+            android:exported="true" />
+        <activity
             android:name=".Entregas.EntregaPicosActivity"
             android:exported="false" />
         <activity

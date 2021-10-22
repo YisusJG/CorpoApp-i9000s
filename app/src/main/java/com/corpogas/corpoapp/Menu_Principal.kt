@@ -139,7 +139,7 @@ class Menu_Principal : AppCompatActivity() {
         BuscarActualizacion
         txtNombreUsuarioMainNav.setText(data.nombreCompleto)
 //        txtRolMainNav.setText((data.rol).toString())
-        txtRolMainNav.setText("Jefe Isla")
+        txtRolMainNav.setText(data.rolDescripcion)
         txtIdDispositivoMainNav.setText("No. Dispositivo: " + data.idTarjtero)
         txtCerrarSesion.setOnClickListener{
             deleteDatos()

@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText edtNip;
     TextView txtNumeroDispositivoLogin;
-    String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, prub;
+    String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, rolDescripcionApi;
     SQLiteBD db;
     RespuestaApi<Empleado> respuestaApiEmpleado;
     long  sucursalIdApi, estacionIdApi, rolIdApi, idApi, idTarjetero;
@@ -68,9 +68,11 @@ public class LoginActivity extends AppCompatActivity {
             activoApi = respuestaApiEmpleado.getObjetoRespuesta().isActivo();
             correoApi = respuestaApiEmpleado.getObjetoRespuesta().getCorreo();
             numeroEmpleadoApi = respuestaApiEmpleado.getObjetoRespuesta().getNumeroEmpleado();
+            rolDescripcionApi = respuestaApiEmpleado.getObjetoRespuesta().getRol().Description;
+
 
             db.InsertarDatosEmpleado(sucursalIdApi, estacionIdApi,rolIdApi, nombreApi, apellidoPaternoApi, apellidoMaternoApi,
-                                     nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi);
+                                     nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi,rolDescripcionApi);
 
             Intent intent = new Intent(LoginActivity.this, Menu_Principal.class);
             startActivity(intent);

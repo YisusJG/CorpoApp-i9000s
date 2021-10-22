@@ -1,5 +1,6 @@
 package com.corpogas.corpoapp.Corte;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,12 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Corte.Adapters.RVAdapterResumenFormaPagos;
+import com.corpogas.corpoapp.Corte.Adapters.RVAdapterResumenGastos;
 import com.corpogas.corpoapp.Corte.Adapters.RVAdapterResumenVales;
 import com.corpogas.corpoapp.Corte.Entities.ValePapelTotal;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreTicket;
 import com.corpogas.corpoapp.Entities.Virtuales.FajillaTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.FormaPagoTotal;
+import com.corpogas.corpoapp.Entities.Virtuales.GastoTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.VentaCombustibleTotal;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.LoginActivity;
@@ -45,16 +48,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ResumenActivity extends AppCompatActivity {
 
-    ConstraintLayout expandableCombustible, expandableFajilla, expandablePico, expandableVale, expandableFormaPago, expandableJarreo;
-    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, btnAgregarFajillasResumenActivity, btnValidarEntrega;
-    CardView cardViewCombustible, cardViewFajilla, cardViewPico, cardViewVale, cardViewFormaPago, cardViewJarreo;
-    RecyclerView rcvGasopass, rcvEfectivale, rcvAccor, rcvSiVale, rcvFormaPago;
+    ConstraintLayout expandableCombustible, expandableFajilla, expandablePico, expandableVale, expandableFormaPago, expandableJarreo, expandableGastos;
+    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, arrowBtnGastos, btnAgregarFajillasResumenActivity, btnValidarEntrega;
+    CardView cardViewCombustible, cardViewFajilla, cardViewPico, cardViewVale, cardViewFormaPago, cardViewJarreo, cardViewGastos;
+    RecyclerView rcvGasopass, rcvEfectivale, rcvAccor, rcvSiVale, rcvFormaPago, rcvGastos;
     ImageButton btnListaProductosResumenActivity;
 
     SQLiteBD db;
     String ipEstacion, idusuario, titulo, mensaje;
     long sucursalId;
     double importeDiferenciaTotal;
+    int banderaConfirmaInventario;
 
     RespuestaApi<CierreTicket> respuestaApiCierreTicket;
     Modales modales;
@@ -135,6 +139,12 @@ public class ResumenActivity extends AppCompatActivity {
         rcvFormaPago.setLayoutManager(linearLayoutManager5);
         rcvFormaPago.setHasFixedSize(true);
 
+        rcvGastos = findViewById(R.id.rcvGastos);
+        Context context;
+        LinearLayoutManager linearLayoutManager6 = new LinearLayoutManager(getApplicationContext().getApplicationContext());
+        rcvGastos.setLayoutManager(linearLayoutManager6);
+        rcvGastos.setHasFixedSize(true);
+
         expandableCombustible = findViewById(R.id.expanVCombustibles);
         arrowBtnCombustible = findViewById(R.id.btnexpanCombustibles);
         cardViewCombustible = findViewById(R.id.crvCombustibles);
@@ -201,6 +211,10 @@ public class ResumenActivity extends AppCompatActivity {
 
         tvTotalGastos = findViewById(R.id.tvTotalGastos);
 
+        expandableGastos = findViewById(R.id.expanVGastos);
+        arrowBtnGastos = findViewById(R.id.btnExpanGastos);
+        cardViewGastos = findViewById(R.id.crvGastos);
+
 //        tvTotalJarreo = findViewById(R.id.tvTotalJarreo);
 
         imgTotalCombustible = findViewById(R.id.imgTotalCombustibles);
@@ -238,6 +252,13 @@ public class ResumenActivity extends AppCompatActivity {
         ipEstacion = db.getIpEstacion();
         sucursalId = Long.parseLong(db.getIdSucursal());
         idusuario = db.getNumeroEmpleado();
+        banderaConfirmaInventario = getIntent().getIntExtra("banderaConfirmaInventario",0);
+
+        if (banderaConfirmaInventario == 1){
+            btnListaProductosResumenActivity.setVisibility(View.INVISIBLE);
+            btnListaProductosResumenActivity.setEnabled(false);
+            return;
+        }
     }
 
     private void onClicks(){
@@ -302,6 +323,18 @@ public class ResumenActivity extends AppCompatActivity {
             }
         });
 
+        arrowBtnGastos.setOnClickListener(v -> {
+            if (expandableGastos.getVisibility() == View.GONE) {
+                TransitionManager.beginDelayedTransition(cardViewGastos, new AutoTransition());
+                expandableGastos.setVisibility(View.VISIBLE);
+                arrowBtnGastos.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+            } else {
+                TransitionManager.beginDelayedTransition(cardViewGastos, new AutoTransition());
+                expandableGastos.setVisibility(View.GONE);
+                arrowBtnGastos.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+            }
+        });
+
 //        arrowBtnJarreo.setOnClickListener(v -> {
 //            if (expandableJarreo.getVisibility() == View.GONE) {
 //                TransitionManager.beginDelayedTransition(cardViewJarreo, new AutoTransition());
@@ -322,7 +355,7 @@ public class ResumenActivity extends AppCompatActivity {
         btnListaProductosResumenActivity.setOnClickListener(view -> {
 
             if (db.getRol() == 3){
-                Intent intent = new Intent(getApplicationContext(), ProductosVendedor.class);
+                Intent intent = new Intent(getApplicationContext(), ProductosJefeIsla.class);
                 startActivity(intent);
 
             }else {
@@ -353,7 +386,7 @@ public class ResumenActivity extends AppCompatActivity {
                 titulo = "CORRECTO";
                 mensaje = "Sin diferencias. Puedes continuar.";
                 View view1 = modales.MostrarDialogoCorrecto(ResumenActivity.this, titulo, mensaje, "ACEPTAR");
-                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         db.getWritableDatabase().delete("DatosEmpleado",null,null);
@@ -366,9 +399,9 @@ public class ResumenActivity extends AppCompatActivity {
 
             }else{
                 titulo = "AVISO";
-                mensaje = "Existe una diferencia en tu efectivo. Verifica con tu Rey.";
+                mensaje = "Existe una diferencia en tu efectivo. Verifica con tu superior.";
                 View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
-                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         modales.alertDialog.dismiss();
@@ -448,7 +481,6 @@ public class ResumenActivity extends AppCompatActivity {
     private void obtenerResumenCorte(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + ipEstacion + "/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                //http://10.0.1.40/CorpogasService/api/cierreTickets/sucursal/497/isla/768
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -470,6 +502,7 @@ public class ResumenActivity extends AppCompatActivity {
 //                SetRecyclerView();
                     setTotalVales();
                     setTotalFormasPago();
+                    setTotalGastos();
                     // ImprimirTicketCierre();
                 }else{
                     titulo = "AVISO";
@@ -509,7 +542,7 @@ public class ResumenActivity extends AppCompatActivity {
         tvTotalPicos.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getImportePicoTotal());//nos falta el total de picos
         tvVales.setText(("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getImporteValesTotal()));
         tvFormaPago.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getImporteFormaPagoTotal());
-        tvTotalGastos.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getGastosTotal());
+        tvTotalGastos.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().ImporteGastosTotal);
         tvTotalPicoBillete.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getPicosBilletesTotal());
         tvTotalPicoMorralla.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getPicosMorrallasTotal());
 //        tvTotalCantidadJarreo.setText("$ " + respuestaApiCierreTicket.getObjetoRespuesta().getImporteTotalJarreos());
@@ -548,6 +581,23 @@ public class ResumenActivity extends AppCompatActivity {
         RVAdapterResumenFormaPagos rvAdapterResumenFormaPagos = new RVAdapterResumenFormaPagos(lFormaPagoTotal);
         rcvFormaPago.setAdapter(rvAdapterResumenFormaPagos);
         rcvFormaPago.setHasFixedSize(true);
+    }
+
+    private void setTotalGastos(){
+        List<GastoTotal> lGastosTotal;
+        lGastosTotal = respuestaApiCierreTicket.getObjetoRespuesta().GastosTotal;
+        RVAdapterResumenGastos rvAdapterResumenGastos = new RVAdapterResumenGastos(lGastosTotal);
+        rcvGastos.setAdapter(rvAdapterResumenGastos);
+        rcvGastos.setHasFixedSize(true);
+
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+        startActivity(intent);
+        finish();
     }
 
 

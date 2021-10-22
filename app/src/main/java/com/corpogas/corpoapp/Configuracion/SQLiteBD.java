@@ -493,6 +493,8 @@ public class SQLiteBD extends SQLiteOpenHelper {
         public static final String activo = "Activo";
         public static final String correo = "Correo";
         public static final String numeroEmpleado = "NumeroEmpleado";
+        public static final String rolDescripcion = "RolDescripcion";
+
 
     }
     //<------------------------------------------------------------------CREACION DE TABLA EMPLEADO---------------------------------------------------------------------->
@@ -510,7 +512,8 @@ public class SQLiteBD extends SQLiteOpenHelper {
             DatosEmpleado.clave + " TEXT," +
             DatosEmpleado.activo + " INTEGER," +
             DatosEmpleado.correo + " TEXT," +
-            DatosEmpleado.numeroEmpleado + " TEXT)";
+            DatosEmpleado.numeroEmpleado + " TEXT," +
+            DatosEmpleado.rolDescripcion + " TEXT)";
 
     public static final String SQL_DELETE_TBL_EMPLEADO =
             "DROP TABLE IF EXISTS " + DatosEmpleado.nombreTabla;
@@ -520,7 +523,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         //    <----------------------------------------------------------------------INSERT DE TABLA EMPLEADO------------------------------------------------------------------->
 
     public void InsertarDatosEmpleado(long sucursalId, long estacionId, long rolId, String nombre, String apellidoPaterno, String apellidoMaterno, String nombreCompleto,
-                                      long id, String clave, boolean activo, String correo, String numeroEmpleado){
+                                      long id, String clave, boolean activo, String correo, String numeroEmpleado, String rolDescripcion){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosEmpleado.sucursalId, sucursalId);
@@ -535,6 +538,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         values.put(DatosEmpleado.activo, activo);
         values.put(DatosEmpleado.correo, correo);
         values.put(DatosEmpleado.numeroEmpleado, numeroEmpleado);
+        values.put(DatosEmpleado.rolDescripcion, rolDescripcion);
 
         long newRowId = base.insert(DatosEmpleado.nombreTabla, null, values);
     }
@@ -594,6 +598,14 @@ public class SQLiteBD extends SQLiteOpenHelper {
         cursor.moveToFirst();
         Long rol = cursor.getLong(0);
         return rol;
+    }
+
+    public String getRolDescripcion(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT RolDescripcion FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
     }
 
     //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //

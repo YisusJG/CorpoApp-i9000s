@@ -132,7 +132,7 @@ public interface EndPoints {
 
     // METODO PARA OBTENER EL RESUMEN DEL CORTE POR USUARIO
 
-    @GET("api/cierreTickets/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    @GET("api/cierreTickets/turno/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<CierreTicket>> getCierreTicket(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
 
 //   METODOS POST

@@ -794,7 +794,7 @@
                 bar.show();
                 String url;
                 if (lugarproviene.equals("Corte")){
-                    url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/islaId/1"; //+ islaId;
+                    url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/islaId/768"; //+ islaId;
                 }else{
                     url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/"+ posicion;
                 }
