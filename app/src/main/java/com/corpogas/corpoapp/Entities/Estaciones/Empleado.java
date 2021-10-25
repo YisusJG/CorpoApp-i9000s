@@ -45,6 +45,8 @@ public class Empleado implements Serializable {
     /// </summary>
     public String NumeroEmpleado;
 
+    public List<EstacionControl> EstacionControles;
+
     public Empleado(long sucursalId, long estacionId, long rolId, String nombre, String apellidoPaterno, String apellidoMaterno, String nombreCompleto, long id,
                     String clave, boolean activo, String correo, String numeroEmpleado){
 
@@ -189,5 +191,13 @@ public class Empleado implements Serializable {
 
     public void setNumeroEmpleado(String numeroEmpleado) {
         NumeroEmpleado = numeroEmpleado;
+    }
+
+    public List<EstacionControl> getEstacionControles() {
+        return EstacionControles;
+    }
+
+    public void setEstacionControles(List<EstacionControl> estacionControles) {
+        EstacionControles = estacionControles;
     }
 }

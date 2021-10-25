@@ -15,7 +15,9 @@ import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
 import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SQLiteBD extends SQLiteOpenHelper {
@@ -494,6 +496,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         public static final String correo = "Correo";
         public static final String numeroEmpleado = "NumeroEmpleado";
         public static final String rolDescripcion = "RolDescripcion";
+        public static final String islaId = "IslaId";
 
 
     }
@@ -513,7 +516,8 @@ public class SQLiteBD extends SQLiteOpenHelper {
             DatosEmpleado.activo + " INTEGER," +
             DatosEmpleado.correo + " TEXT," +
             DatosEmpleado.numeroEmpleado + " TEXT," +
-            DatosEmpleado.rolDescripcion + " TEXT)";
+            DatosEmpleado.rolDescripcion + " TEXT," +
+            DatosEmpleado.islaId + " TEXT)";
 
     public static final String SQL_DELETE_TBL_EMPLEADO =
             "DROP TABLE IF EXISTS " + DatosEmpleado.nombreTabla;
@@ -523,7 +527,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         //    <----------------------------------------------------------------------INSERT DE TABLA EMPLEADO------------------------------------------------------------------->
 
     public void InsertarDatosEmpleado(long sucursalId, long estacionId, long rolId, String nombre, String apellidoPaterno, String apellidoMaterno, String nombreCompleto,
-                                      long id, String clave, boolean activo, String correo, String numeroEmpleado, String rolDescripcion){
+                                      long id, String clave, boolean activo, String correo, String numeroEmpleado, String rolDescripcion, long islaId){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosEmpleado.sucursalId, sucursalId);
@@ -539,6 +543,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         values.put(DatosEmpleado.correo, correo);
         values.put(DatosEmpleado.numeroEmpleado, numeroEmpleado);
         values.put(DatosEmpleado.rolDescripcion, rolDescripcion);
+        values.put(DatosEmpleado.islaId, islaId);
 
         long newRowId = base.insert(DatosEmpleado.nombreTabla, null, values);
     }
@@ -606,6 +611,14 @@ public class SQLiteBD extends SQLiteOpenHelper {
         cursor.moveToFirst();
         String tipo = cursor.getString(0);
         return tipo;
+    }
+
+    public Long getIslaId(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT IslaId FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        Long islaId = cursor.getLong(0);
+        return islaId;
     }
 
     //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //

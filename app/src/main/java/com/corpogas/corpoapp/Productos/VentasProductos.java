@@ -107,6 +107,7 @@
         Long NumeroEmpleado, islaId;
         Integer Propina = 5;
         ProgressDialog bar;
+        SQLiteBD db;
 
         @SuppressLint("WrongViewCast")
         @Override
@@ -117,7 +118,7 @@
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             textoresultado="";
-            SQLiteBD db = new SQLiteBD(getApplicationContext());
+            db = new SQLiteBD(getApplicationContext());
             this.setTitle(db.getRazonSocial());
             this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
 
@@ -130,7 +131,7 @@
             numerooperativa = getIntent().getStringExtra("numeroOperativa");
             cadenaproducto = getIntent().getStringExtra("cadenaproducto");
             lugarproviene = getIntent().getStringExtra("lugarproviene");
-            islaId = getIntent().getLongExtra("NumeroIsla", 0);
+            islaId = db.getIslaId();
             NumeroEmpleado = getIntent().getLongExtra("NumeroEmpleado", 0);
 
             txtproductos=findViewById(R.id.txtproductos);
@@ -794,7 +795,7 @@
                 bar.show();
                 String url;
                 if (lugarproviene.equals("Corte")){
-                    url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/islaId/768"; //+ islaId;
+                    url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/islaId/" + islaId; //+ islaId;
                 }else{
                     url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/"+ posicion;
                 }

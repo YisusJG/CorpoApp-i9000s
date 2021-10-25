@@ -249,8 +249,8 @@ public class ProductosJefeIsla extends AppCompatActivity {
                 String productoclave = pA.getString("ProductoDescripcionCorta"); //ProductoDescripcion
                 String DescLarga = pA.getString("ProductoDescripcionCorta");//ProductoDescripcion
                 TProductoId = pA.getString("CategoriaProductoId");
-//                JSONObject categoriaProducto = pA.getJSONObject("CategoriaProducto");
-                int numeroInterno = 100;//categoriaProducto.getLong("Id"); //NumeroInterno
+                JSONObject categoriaProducto = pA.getJSONObject("CategoriaProducto");
+                Long numeroInterno = categoriaProducto.getLong("Id");//; //NumeroInterno
                 String idArticulo = pA.getString("ProductoId"); //NumeroInterno
                 String codigobar = pA.getString("CodigoBarras");
                 Long cantidadvendida = pA.getLong("Cantidad");

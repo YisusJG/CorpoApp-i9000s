@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, rolDescripcionApi;
     SQLiteBD db;
     RespuestaApi<Empleado> respuestaApiEmpleado;
-    long  sucursalIdApi, estacionIdApi, rolIdApi, idApi, idTarjetero;
+    long  sucursalIdApi, estacionIdApi, rolIdApi, idApi, idTarjetero, islaId;
     boolean activoApi;
 
     @Override
@@ -70,9 +71,12 @@ public class LoginActivity extends AppCompatActivity {
             numeroEmpleadoApi = respuestaApiEmpleado.getObjetoRespuesta().getNumeroEmpleado();
             rolDescripcionApi = respuestaApiEmpleado.getObjetoRespuesta().getRol().Description;
 
+            for (EstacionControl item : respuestaApiEmpleado.getObjetoRespuesta().getEstacionControles()){
+                islaId = item.IslaId;
+            }
 
             db.InsertarDatosEmpleado(sucursalIdApi, estacionIdApi,rolIdApi, nombreApi, apellidoPaternoApi, apellidoMaternoApi,
-                                     nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi,rolDescripcionApi);
+                                     nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi,rolDescripcionApi,islaId);
 
             Intent intent = new Intent(LoginActivity.this, Menu_Principal.class);
             startActivity(intent);
