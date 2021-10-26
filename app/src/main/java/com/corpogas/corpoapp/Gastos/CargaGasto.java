@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -47,9 +48,9 @@ import java.util.Map;
 public class CargaGasto extends AppCompatActivity {
     //Declaracion de variables
     ListView list;
-    TextView txtDescripcion, txtClave;
+    TextView txtDescripcion, txtClave, total;
     String isla,turno,usuario;
-    TextView subTotal, iva, total, Descripcion;
+    EditText subTotal, iva, Descripcion;
     String EstacionId, sucursalId, ipEstacion, NumeroEmpleado, EmpleadoId;
     Boolean ConSinFactura;
     String idisla, idTurno;
@@ -179,8 +180,7 @@ public class CargaGasto extends AppCompatActivity {
     }
 
     private void calculos() {
-        if (txtClave.length() == 0)       //.length() >0)
-        {
+        if (txtClave.length() == 0) {
             String titulo = "AVISO";
             String mensaje = "Seleccione uno de los tipos de gasto";
             Modales modales = new Modales(CargaGasto.this);
@@ -226,7 +226,7 @@ public class CargaGasto extends AppCompatActivity {
                         String titulo = "AVISO";
                         String mensaje = "digite el IVA";
                         Modales modales = new Modales(CargaGasto.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(CargaGasto.this,mensaje,titulo);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(CargaGasto.this, mensaje, titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -235,9 +235,9 @@ public class CargaGasto extends AppCompatActivity {
                             }
                         });
                     }else {
-                        if(Double.parseDouble(iva.getText().toString())>= Double.parseDouble(subTotal.getText().toString())){
+                        if(rbConFactura.isChecked() && Double.parseDouble(iva.getText().toString()) <= 0){
                             String titulo = "AVISO";
-                            String mensaje = "El iva no puede ser mayor o igual que el subtotal cargado";
+                            String mensaje = "Con Factura requiere un IVA mayor a cero";
                             Modales modales = new Modales(CargaGasto.this);
                             View view1 = modales.MostrarDialogoAlertaAceptar(CargaGasto.this,mensaje,titulo);
                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -247,9 +247,23 @@ public class CargaGasto extends AppCompatActivity {
                                     modales.alertDialog.dismiss();
                                 }
                             });
-
                         }else{
-                            EnviarGastos();
+                            if(Double.parseDouble(iva.getText().toString())>= Double.parseDouble(subTotal.getText().toString())){
+                                String titulo = "AVISO";
+                                String mensaje = "El iva no puede ser mayor o igual que el subtotal cargado";
+                                Modales modales = new Modales(CargaGasto.this);
+                                View view1 = modales.MostrarDialogoAlertaAceptar(CargaGasto.this,mensaje,titulo);
+                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        iva.requestFocus();
+                                        modales.alertDialog.dismiss();
+                                    }
+                                });
+
+                            }else{
+                                EnviarGastos();
+                            }
                         }
                     }
                 }

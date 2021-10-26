@@ -115,7 +115,7 @@ public class AutorizaFajillas extends AppCompatActivity {
 //        carga = findViewById(R.id.carga);
 
 
-        lugarProviene =  getIntent().getStringExtra("LugarProviene");
+        lugarProviene =  getIntent().getStringExtra("lugarProviene");
 //        Button siguinte = findViewById(R.id.btnsiguientetic);
 //        siguinte.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -154,6 +154,16 @@ public class AutorizaFajillas extends AppCompatActivity {
                 }else{
                     titulo.setText("Ingresa tu Contraseña de Jefe de Isla");
                 }
+                break;
+            case "CancelarFajillas":
+//                empleadoNumeroActual =  Long.parseLong(data.getNumeroEmpleado()); //getIntent().getLongExtra("numeroEmpleadoJI", 0);
+                txtEtiqueta.setText("Cancelar Pago");
+//                if (banderaHuella.equals("true")){
+//                    titulo.setText("Ingresa tu Huella de Jefe de Isla");
+                animationView7.setAnimation("confirmation.json");
+//                }else{
+                titulo.setText("Ingresa tu Contraseña de Jefe de Isla");
+//                }
                 break;
             case "EntregaFajillas":
                 empleadoNumeroActual =  Long.parseLong(data.getNumeroEmpleado()); //getIntent().getLongExtra("numeroEmpleadoJI", 0);
@@ -255,7 +265,7 @@ public class AutorizaFajillas extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (banderaHuella.equals("true")){
-            if (lugarProviene.equals("CorteProductos") || lugarProviene.equals("corteFajillas")) {
+            if (lugarProviene.equals("CorteProductos") || lugarProviene.equals("corteFajillas") || lugarProviene.equals("CancelarFajillas")) {
                 Toast.makeText(this, "No se permite salir hasta confirmar con usuario", Toast.LENGTH_SHORT).show();
             }else{
                 Thread.interrupted();
@@ -270,7 +280,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                 finish();
             }
         }else{
-            if (lugarProviene.equals("CorteProductos") || lugarProviene.equals("corteFajillas")) {
+            if (lugarProviene.equals("CorteProductos") || lugarProviene.equals("corteFajillas") || lugarProviene.equals("CancelarFajillas")) {
                 Toast.makeText(this, "No se permite salir hasta confirmar con usuario", Toast.LENGTH_SHORT).show();
             }else{
                 //Se instancia y se llama a la clase Venta de Productos
@@ -361,6 +371,28 @@ public class AutorizaFajillas extends AppCompatActivity {
                                             });
                                         }
                                     }
+
+                                    if (lugarProviene.equals("CancelarFajillas")){
+                                        if (idRoll.equals("3") || idRoll.equals("1")){
+                                            Intent intent = new Intent(getApplicationContext(), CancelarPagoTransaccion.class);
+//                                            intent.putExtra("lugarproviene", "CancelarFajillas"); //
+                                            startActivity(intent);
+                                            finish();
+                                        }else{
+                                            String titulo = "AVISO";
+                                            String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                            Modales modales = new Modales(AutorizaFajillas.this);
+                                            View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
+                                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    modales.alertDialog.dismiss();
+                                                    pasword.setText("");
+                                                }
+                                            });
+                                        }
+                                    }
+
                                     if (lugarProviene.equals("Corte") || lugarProviene.equals("corteFajillas") || lugarProviene.equals("entregaFajillas")){ //|| lugarProviene.equals("EntregaFajillas")
                                         if (lugarProviene.equals("corteFajillas")){
                                             if (idRoll.equals("3")){

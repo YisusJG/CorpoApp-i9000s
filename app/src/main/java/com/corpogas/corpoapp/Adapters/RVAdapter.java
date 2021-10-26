@@ -37,8 +37,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RecyclerViewHeader
         }
     }
 
-
-
     public RVAdapter(List<RecyclerViewHeaders> recyclerViewHeaders){
         this.lrecyclerViewHeaders = recyclerViewHeaders;
     }

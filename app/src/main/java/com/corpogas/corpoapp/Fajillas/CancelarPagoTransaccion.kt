@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import com.corpogas.corpoapp.Configuracion.SQLiteBD
 import com.corpogas.corpoapp.JsonData
 import com.corpogas.corpoapp.MoneyTextWatcher
 import com.corpogas.corpoapp.R
@@ -26,6 +27,9 @@ class CancelarPagoTransaccion : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cancelar_pago_transaccion)
+        val db = SQLiteBD(this)
+        this.title = "${db.nombreEstacion} (EST.: ${db.numeroEstacion})"
+
         edtAmount = findViewById(R.id.amount)
         edtTip = findViewById(R.id.tip)
         edtReference = findViewById(R.id.reference)

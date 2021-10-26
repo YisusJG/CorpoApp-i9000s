@@ -298,7 +298,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:text="-----"
+                android:text="$ ---------"
                 android:textColor="#8A000000"
                 app:layout_constraintStart_toEndOf="@+id/viewFajillas"
                 app:layout_constraintTop_toBottomOf="@+id/nameFajillas" />

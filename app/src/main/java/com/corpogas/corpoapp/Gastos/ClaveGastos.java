@@ -269,7 +269,6 @@ public class ClaveGastos extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             }, new com.android.volley.Response.ErrorListener() {
                 @Override

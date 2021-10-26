@@ -74,7 +74,8 @@ public class OpcionFajillas extends AppCompatActivity {
                     data.close();
                     data.InsertarDatosPagoTarjeta("1","", "", Double.toString(0), "0", "3", "0", "", Double.toString(0), "", Double.toString(0));
 
-                    Intent intent1 = new Intent(getApplicationContext(), CancelarPagoTransaccion.class);
+                    Intent intent1 = new Intent(getApplicationContext(), AutorizaFajillas.class);
+                    intent1.putExtra("lugarProviene", "CancelarFajillas");
                     startActivity(intent1);
                     finish();
                 }

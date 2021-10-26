@@ -264,10 +264,6 @@ public class ProcesoVenta extends AppCompatActivity {
 
 
 
-
-
-
-
     private void ValidaTransaccionActiva(String posicionCarga, String numerooperativa, String Estacionjarreo) {
 //        if (!Conexion.compruebaConexion(this)) {
 //            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
