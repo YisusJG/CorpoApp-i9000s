@@ -104,8 +104,6 @@ public class ProductosJefeIsla extends AppCompatActivity {
         btnVentaProductos = (Button) findViewById(R.id.btnsiguiente);
         btnRefresh = (Button) findViewById(R.id.btnrefresh);
         btnListaProductosResumenActivity = findViewById(R.id.btnListaProductosResumenActivity);
-
-
     }
 
 
@@ -116,11 +114,9 @@ public class ProductosJefeIsla extends AppCompatActivity {
         idusuario = db.getNumeroEmpleado();
         claveUsuario = db.getClave();
         modales = new Modales(ProductosJefeIsla.this);
-
     }
 
     private void onClicks(){
-
         btnAutorizacion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +135,6 @@ public class ProductosJefeIsla extends AppCompatActivity {
                         }else{
                             obtenerObjetoAccesoUsuario();
                         }
-
                     }
                 });
 
@@ -149,9 +144,6 @@ public class ProductosJefeIsla extends AppCompatActivity {
                         modales.alertDialog.dismiss();
                     }
                 });
-
-
-
 
             }
         });
@@ -296,7 +288,6 @@ public class ProductosJefeIsla extends AppCompatActivity {
         ListAdapterProductos adapterP = new ListAdapterProductos(ProductosJefeIsla.this, calculo, subtitle, maintitle);
         listProductos.setTextFilterEnabled(true);
         listProductos.setAdapter(adapterP);
-
     }
 
     public void obtenerObjetoAccesoUsuario(){

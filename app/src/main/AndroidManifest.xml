@@ -41,6 +41,9 @@
             android:name=".Fajillas.OpcionFajillas"
             android:exported="true" />
         <activity
+            android:name=".Scaneo"
+            android:exported="false" />
+        <activity
             android:name=".VentaCombustible.ImprimePuntada"
             android:exported="true" />
         <activity

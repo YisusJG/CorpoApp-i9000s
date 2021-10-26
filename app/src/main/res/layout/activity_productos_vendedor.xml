@@ -17,11 +17,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
         android:id="@+id/listProductosVendedor"
-        android:layout_width="391dp"
-        android:layout_height="402dp"
-        android:layout_marginTop="15dp"
+        android:layout_width="338dp"
+        android:layout_height="360dp"
+        android:background="@drawable/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"

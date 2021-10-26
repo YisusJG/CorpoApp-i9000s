@@ -253,7 +253,6 @@ public class ResumenActivity extends AppCompatActivity {
         sucursalId = Long.parseLong(db.getIdSucursal());
         idusuario = db.getNumeroEmpleado();
         banderaConfirmaInventario = getIntent().getIntExtra("banderaConfirmaInventario",0);
-
         if (banderaConfirmaInventario == 1){
             btnListaProductosResumenActivity.setVisibility(View.INVISIBLE);
             btnListaProductosResumenActivity.setEnabled(false);
@@ -354,28 +353,24 @@ public class ResumenActivity extends AppCompatActivity {
 
         btnListaProductosResumenActivity.setOnClickListener(view -> {
 
-            if (db.getRol() == 3){
+            if (db.getRol() == 3) {
                 Intent intent = new Intent(getApplicationContext(), ProductosJefeIsla.class);
                 startActivity(intent);
 
-            }else {
-                if (db.getRol() == 1) {
-                    Intent intent = new Intent(getApplicationContext(), ProductosVendedor.class);
-                    startActivity(intent);
+            } else if (db.getRol() == 4) {
+                Intent intent = new Intent(getApplicationContext(), ProductosVendedor.class);
+                startActivity(intent);
 
-                } else {
-
-                    titulo = "AVISO";
-                    mensaje = "No eres Jefe de Isla.";
-                    View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
-                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            modales.alertDialog.dismiss();
-
-                        }
-                    });
-                }
+            } else {
+                titulo = "AVISO";
+                mensaje = "No eres Jefe de Isla o vendedor";
+                View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
             }
         });
 

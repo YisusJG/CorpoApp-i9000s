@@ -11,14 +11,14 @@ import com.corpogas.corpoapp.R;
 
 import java.util.List;
 
-public class ListAdapterProductos extends ArrayAdapter<String> {
+public class ListAdapterProductosVendedor extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] maintitle;
     private final String[] subtitle;
     private final String[] calculo;
 
-    public ListAdapterProductos(Activity context, List<String> maintitle, List<String> subtitle, List<String> total1) {
+    public ListAdapterProductosVendedor(Activity context, List<String> maintitle, List<String> subtitle, List<String> total1) {
         super(context, R.layout.list, maintitle);
 
         this.context = context;
@@ -29,15 +29,15 @@ public class ListAdapterProductos extends ArrayAdapter<String> {
 
     public View getView(int position, View view, ViewGroup parent){
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.list_cierre_formas_pago, null, true);
+        View rowView = inflater.inflate(R.layout.list_cierre_formas_pago_vendedor, null, true);
         rowView.setClickable(false);
         rowView.setEnabled(false);
         rowView.setActivated(false);
         rowView.setFocusable(false);
 
-        TextView cantidad = rowView.findViewById(R.id.txtNumeroFormasPago);
-        TextView formasPago = rowView.findViewById(R.id.txtFormasPago);
-        TextView total = rowView.findViewById(R.id.txtTotalFormasPago);
+        TextView cantidad = rowView.findViewById(R.id.txtNumeroFormasPagoVendedor);
+        TextView formasPago = rowView.findViewById(R.id.txtFormasPagoVendedor);
+        TextView total = rowView.findViewById(R.id.txtTotalFormasPagoVendedor);
 
         cantidad.setText(maintitle[position]);
         formasPago.setText(subtitle[position]);
@@ -46,3 +46,4 @@ public class ListAdapterProductos extends ArrayAdapter<String> {
         return rowView;
     }
 }
+

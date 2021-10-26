@@ -160,21 +160,16 @@ public class ScanManagerDemo extends AppCompatActivity {
                 // print scan results.
 //                scanResult = " length：" + barcodeLen + "\nbarcode：" + scanResult + "\nbytesToHexString：" + bytesToHexString(barcode) + "\nbarcodeStr:" + barcodeStr;
                 scanResult = "barcode Mi：" + scanResult;
-//                if (lugarProviene.equals("Acumular"))            {
+//                if (lugarProviene.equals("Acumular"))
                 Intent intentElige = new Intent(getApplicationContext(), EligePrecioLitros.class);
                 intent.putExtra("combustible", "1");
                 intent.putExtra("TarjetaDescuento", scanResult);
                 startActivity(intentElige);
                 finish();
 
-//                }
-
                 Message msg = mHandler.obtainMessage(MSG_SHOW_SCAN_RESULT);
                 msg.obj = scanResult;
                 mHandler.sendMessage(msg);
-
-
-
             }
         }
     };

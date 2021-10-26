@@ -166,7 +166,7 @@ public class EligePrecioLitros extends AppCompatActivity {
 
     private void EnviarProductosPredeterminado() {
         if (!Conexion.compruebaConexion(this)) {
-            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Sin conexión a la red", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
             startActivity(intent1);
             finish();
