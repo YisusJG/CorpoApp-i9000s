@@ -38,6 +38,7 @@ import com.corpogas.corpoapp.Service.MagReadService;
 import com.corpogas.corpoapp.TanqueLleno.TanqueLlenoNip;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.ImprimePuntada;
+import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -45,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +69,7 @@ public class MonederosElectronicos extends AppCompatActivity {
     SQLiteBD data;
     RespuestaApi<Bin> respuestaApiBin;
     JSONArray datos = new JSONArray();
-    String banderaHuella, posiciondeCarga, numeroempleadosucursal, PagoPuntada, tipoTarjeta;
+    String idformaPago, posiciondeCarga, numeroempleadosucursal, PagoPuntada, tipoTarjeta;
 
     boolean pasa;
 
@@ -111,7 +114,7 @@ public class MonederosElectronicos extends AppCompatActivity {
 
 
     String EstacionId, sucursalId, ipEstacion, numeroTarjetero;
-
+    Double montoenlacanasta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +133,8 @@ public class MonederosElectronicos extends AppCompatActivity {
         tipoTarjeta = getIntent().getStringExtra("tipoTarjeta");
         numeroempleadosucursal = getIntent().getStringExtra("numeroEmpleado");
         posiciondeCarga = getIntent().getStringExtra("posicioncargaid");
+        idformaPago = getIntent().getStringExtra("formapagoid");
+        montoenlacanasta = getIntent().getDoubleExtra("montoenlacanasta", 0);
         data= new SQLiteBD(getApplicationContext());
         idSucursal = Long.parseLong(data.getIdSucursal());
 
@@ -755,15 +760,34 @@ public class MonederosElectronicos extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }else{
-                                Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
-                                Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
-                                intente.putExtra("posicioncarga", posiciondeCarga);
-                                intente.putExtra("idoperativa", idoperativa);
-                                intente.putExtra("idformapago", numpago);
-                                intente.putExtra("nombrepago", nombrepago);
-                                intente.putExtra("montoencanasta", MontoenCarrito);
-                                startActivity(intente);
-                                finish();
+                                if (idformaPago.equals("3") || idformaPago.equals(5) || idformaPago.equals(13)){
+                                    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+                                    simbolos.setDecimalSeparator('.');
+                                    DecimalFormat df = new DecimalFormat("####.00##",simbolos);
+
+                                    df.setMaximumFractionDigits(2);
+                                    data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                                    data.close();
+                                    data.InsertarDatosPagoTarjeta("1",posiciondeCarga, idformaPago, Double.toString(montoenlacanasta), "0", "1", "0", "", "", "", Double.toString(montoenlacanasta));
+                                    Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
+                                    intentVisa.putExtra("lugarProviene", "formaspago");
+                                    intentVisa.putExtra("posicioncarga", posiciondeCarga);
+                                    intentVisa.putExtra("formapagoid", numpago);
+                                    intentVisa.putExtra("montoencanasta", "$"+ df.format(montoenlacanasta));
+                                    intentVisa.putExtra("numeroTarjeta", "");
+                                    startActivity(intentVisa);
+                                    finish();
+                                }else{
+                                    Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
+                                    Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
+                                    intente.putExtra("posicioncarga", posiciondeCarga);
+                                    intente.putExtra("idoperativa", idoperativa);
+                                    intente.putExtra("idformapago", numpago);
+                                    intente.putExtra("nombrepago", nombrepago);
+                                    intente.putExtra("montoencanasta", MontoenCarrito);
+                                    startActivity(intente);
+                                    finish();
+                                }
                             }
                         } else {
                             String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");

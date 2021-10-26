@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15sp"
-    android:orientation="vertical"
-    tools:context=".VentaPagoTarjeta">
+    tools:context=".VentaCombustible.FormaPagoTarjetasBancarias">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,17 +27,18 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+
         <EditText
-            android:id="@+id/amount"
+            android:id="@+id/amountventa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/border"
+            android:enabled="true"
             android:hint="$0.00"
             android:inputType="numberDecimal"
             android:maxLength="14"
             android:textAlignment="center"
             android:textSize="24sp" />
-
 
         <TextView
             android:layout_width="match_parent"
@@ -72,14 +73,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Cobrar" />
+            android:text="Cobrar"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/authenticate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Autenticar" />
+            android:text="Autenticar"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btnimprimeventas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Imprimir" />
 
     </LinearLayout>
-</ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,6 +37,7 @@ import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -340,6 +341,26 @@ public class AutorizaFajillas extends AppCompatActivity {
                                     ejecutar=false;
 //                                numerodispositivo.setText("Coloca cualquier dedo en el lector");
 //                                numerodispositivo.setVisibility(View.VISIBLE);
+                                    if (lugarProviene.equals("Reimprimir")){
+                                        if (idRoll.equals("3") || idRoll.equals("1")){
+                                            Intent intent = new Intent(getApplicationContext(), PosicionCargaTickets.class);
+                                            intent.putExtra("lugarproviene", "Reimprimir"); //
+                                            startActivity(intent);
+                                            finish();
+                                        }else{
+                                            String titulo = "AVISO";
+                                            String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                            Modales modales = new Modales(AutorizaFajillas.this);
+                                            View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
+                                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    modales.alertDialog.dismiss();
+                                                    pasword.setText("");
+                                                }
+                                            });
+                                        }
+                                    }
                                     if (lugarProviene.equals("Corte") || lugarProviene.equals("corteFajillas") || lugarProviene.equals("entregaFajillas")){ //|| lugarProviene.equals("EntregaFajillas")
                                         if (lugarProviene.equals("corteFajillas")){
                                             if (idRoll.equals("3")){
@@ -367,14 +388,15 @@ public class AutorizaFajillas extends AppCompatActivity {
                                                     @Override
                                                     public void onClick(View view) {
                                                         modales.alertDialog.dismiss();
-                                                        pasword.setText("");                                            }
+                                                        pasword.setText("");
+                                                    }
                                                 });
                                             }else{
-                                                if (idRoll.equals("3")){
+                                                if (idRoll.equals("3") || idRoll.equals("1")){
                                                     enviaActividadSiguiente(idusuario, pass, idRoll);
                                                 }else{
                                                     String titulo = "AVISO";
-                                                    String mensajes = "Usuario No es un Jefe de Isla";
+                                                    String mensajes = "Usuario No es un Jefe de Isla o Geremte";
                                                     Modales modales = new Modales(AutorizaFajillas.this);
                                                     View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
                                                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -388,7 +410,21 @@ public class AutorizaFajillas extends AppCompatActivity {
                                             }
                                         }
                                     }else{
-                                        enviaActividadSiguiente(idusuario, pass, idRoll);
+                                        if (idRoll.equals("3") || idRoll.equals("1")){
+                                            enviaActividadSiguiente(idusuario, pass, idRoll);
+                                        }else{
+                                            String titulo = "AVISO";
+                                            String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                            Modales modales = new Modales(AutorizaFajillas.this);
+                                            View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
+                                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    modales.alertDialog.dismiss();
+                                                    pasword.setText("");
+                                                }
+                                            });
+                                        }
                                     }
                                 } else {
                                     //Si no es valido se envia mensaje

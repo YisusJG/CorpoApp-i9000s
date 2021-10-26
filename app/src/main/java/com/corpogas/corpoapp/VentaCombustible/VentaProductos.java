@@ -33,7 +33,7 @@ import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.Puntada.PuntadaRedimirQr;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.SmartPayment.VentaPagoTarjeta;
+import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.corpoapp.TanqueLleno.ListAdapterConbustiblesTLl;
 import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 
@@ -267,6 +267,11 @@ public class VentaProductos extends AppCompatActivity {
                                     intent.putExtra("posicionCarga", poscicionCarga);
                                     intent.putExtra("estacionjarreo", estacionJarreo);
                                     intent.putExtra("despacholibre", "si");
+                                    intent.putExtra("lugarProviene", "ventas");
+                                    intent.putExtra("nip", "");
+                                    intent.putExtra("numeroTarjeta", "");
+                                    intent.putExtra("descuento", 0);
+
                                     startActivity(intent);
                                     finish();
                                 }
@@ -458,6 +463,8 @@ public class VentaProductos extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     modalesPuntada.alertDialog.dismiss();
+                                    String nip="-";
+                                    String tarjetanumero = "-";
 //                                    if(TipoProducto.equals("1")){
                                         String precio = PrecioProducto.get(i);
                                         String claveProducto = ClaveProducto.get(i);
@@ -469,6 +476,10 @@ public class VentaProductos extends AppCompatActivity {
                                         intent.putExtra("precioProducto", precio);
                                         intent.putExtra("despacholibre", "no");
                                         intent.putExtra("lugarProviene", "ventas");
+                                        intent.putExtra("nip", "");
+                                        intent.putExtra("numeroTarjeta", "");
+                                        intent.putExtra("descuento", 0);
+
                                         startActivity(intent);
                                         finish();
 //                                    }
@@ -632,6 +643,9 @@ public class VentaProductos extends AppCompatActivity {
                             intent.putExtra("claveProducto", claveProducto);
                             intent.putExtra("precioProducto", precio);
                             intent.putExtra("despacholibre", "no");
+                            intent.putExtra("nip", "");
+                            intent.putExtra("numeroTarjeta", "");
+                            intent.putExtra("descuento", 0);
                             startActivity(intent);
                             finish();
                         }

@@ -69,6 +69,14 @@ public class OpcionFajillas extends AppCompatActivity {
                     Intent intent1 = new Intent(getApplicationContext(), MuestreoFajillasEntregadasRecibidas.class);
                     startActivity(intent1);
                     finish();
+                }else if (titulo.equals("Cancelar Pago")) {
+                    data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                    data.close();
+                    data.InsertarDatosPagoTarjeta("1","", "", Double.toString(0), "0", "3", "0", "", Double.toString(0), "", Double.toString(0));
+
+                    Intent intent1 = new Intent(getApplicationContext(), CancelarPagoTransaccion.class);
+                    startActivity(intent1);
+                    finish();
                 }
             }
         });
@@ -79,6 +87,8 @@ public class OpcionFajillas extends AppCompatActivity {
         lOpcionFajillas = new ArrayList<>();
         lOpcionFajillas.add(new RecyclerViewHeaders("Entrega Fajillas","Entrega de Fajillas",R.drawable.fajillas_billetes));
         lOpcionFajillas.add(new RecyclerViewHeaders("Consulta Fajillas","Fajillas Entregadas/Recibidas",R.drawable.fajillas_picos));
+        lOpcionFajillas.add(new RecyclerViewHeaders("Cancelar Pago","Cancelación de Pagos Realizados",R.drawable.billete));
+
     }
 
     private void init() {

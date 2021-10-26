@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.SmartPayment
+package com.corpogas.corpoapp.Fajillas
 
 import android.content.ComponentName
 import android.content.Intent
@@ -8,50 +8,50 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import com.corpogas.corpoapp.JsonData
+import com.corpogas.corpoapp.MoneyTextWatcher
 import com.corpogas.corpoapp.R
 import com.google.gson.GsonBuilder
 
-class  VentaPagoTarjeta : AppCompatActivity() {
+class CancelarPagoTransaccion : AppCompatActivity() {
     private var edtAmount: EditText? = null
     private var edtTip: EditText? = null
+    private var edtReference: EditText? = null
+    //    private var edtDate: EditText? = null
     private var checkPrint: CheckBox? = null
 
-
     private var amount = ""
-    private var tip = "0.00"
-    val totalACobrar = 0.00
-    private var poscionCarga = ""
-    private var enviadoDesde = ""
+    private var tip = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_venta_pago_tarjeta)
-
-        val formaPagoId = intent.getStringExtra("formapagoid")
-        val enviadoDesde = intent.getStringExtra("Enviadodesde")
-        val poscionCarga = intent.getStringExtra("posicioncarga")
-        val total = intent.getStringExtra("montoencanasta")
-
+        setContentView(R.layout.activity_cancelar_pago_transaccion)
         edtAmount = findViewById(R.id.amount)
         edtTip = findViewById(R.id.tip)
+        edtReference = findViewById(R.id.reference)
+//        edtDate = findViewById(R.id.date)
         checkPrint = findViewById(R.id.print)
-        edtAmount!!.setText(total);
 
         edtAmount!!.addTextChangedListener(MoneyTextWatcher(edtAmount!!))
         edtTip!!.addTextChangedListener(MoneyTextWatcher(edtTip!!))
 
+//        findViewById<Button>(R.id.btnCobrar).setOnClickListener {
+//            getEdtValues()
+//            doSale(amount, tip)
+//        }
+//
+//        findViewById<Button>(R.id.btnAutentica).setOnClickListener {
+//            authenticate()
+//        }
 
-        findViewById<Button>(R.id.do_sale).setOnClickListener {
+        findViewById<Button>(R.id.btnCancel).setOnClickListener {
             getEdtValues()
-            doSale(amount, tip)
+            doCancel(amount, tip)
         }
 
-        findViewById<Button>(R.id.authenticate).setOnClickListener {
-            authenticate()
-        }
-
-
-//        edtAmount!!.setText()
+//        findViewById<Button>(R.id.btnConsultaTransaccion).setOnClickListener {
+////            doQueryTx(edtReference!!.text.toString(), edtDate!!.text.toString())
+//        }
     }
 
     //Function to get values from edittext
@@ -65,6 +65,18 @@ class  VentaPagoTarjeta : AppCompatActivity() {
         callSmartComponent(amount, tip, checkPrint!!.isChecked, false, "", "")
     }
 
+    //Function to do the cancel process
+    private fun doCancel(amount: String, tip: String) {
+        callSmartComponent(
+            amount,
+            tip,
+            checkPrint!!.isChecked,
+            true, // Para cancelación siempre activo
+            edtReference!!.text.toString(),  //12 Digitos
+            ""
+        )
+        finish()
+    }
 
     //Function to get the TXN by reference and date
     private fun doQueryTx(reference: String, date: String) {
@@ -94,9 +106,9 @@ class  VentaPagoTarjeta : AppCompatActivity() {
         intent.putExtra("cancel", cancel)
         intent.putExtra("reference", reference)
         intent.putExtra("tip", tip)
-        intent.putExtra("from", this.resources.getString(R.string.app_name))
+        intent.putExtra("from", "corpoapp")
         intent.putExtra("json", createJson(print))
-        intent.putExtra("date", date.replace("/", ""))
+        intent.putExtra("date", date)
 
         startActivity(intent)
     }
@@ -110,10 +122,7 @@ class  VentaPagoTarjeta : AppCompatActivity() {
 
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
         intent.component =
-            ComponentName(
-                SMART_PACKAGE,
-                "$SMART_PACKAGE.thirdparty.broadcast.AuthenticationBroadcast"
-            )
+            ComponentName(SMART_PACKAGE, "$SMART_PACKAGE.corpoapp.broadcast.AuthenticationBroadcast")
         sendBroadcast(intent)
     }
 
@@ -140,6 +149,5 @@ class  VentaPagoTarjeta : AppCompatActivity() {
     companion object {
         private const val SMART_PACKAGE = "com.smart.smart"
     }
-
 
 }

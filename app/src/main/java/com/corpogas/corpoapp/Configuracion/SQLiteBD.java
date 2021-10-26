@@ -39,6 +39,9 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_PRECIO_FAJILLAS);
         db.execSQL(TBL_FAJILLAS);
         db.execSQL(TBL_PICOS);
+        db.execSQL(TBL_PAGOTARJETA);
+        db.execSQL(TBL_PAGOTARJETA_DIFERENTESFORMASPAGO);
+
     }
 
     @Override
@@ -50,9 +53,11 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_TBL_EMPLEADO);
         db.execSQL(SQL_DELETE_TBL_PICOS);
         db.execSQL(SQL_DELETE_TBL_PRECIO_FAJILLAS);
+        db.execSQL(SQL_DELETE_PAGOTARJETA);
         onCreate(db);
 
     }
+
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -72,6 +77,46 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return checkDB != null;
     }
 
+    public void InsertarDatosPagoTarjeta(String id, String poscioncarga, String formapagoid,String monto, String puntada, String provienede, String correctoid, String numerotarjeta, String descuento, String nipcliente, String montoTotal){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosPagoTarjetas.Id, id);
+        values.put(DatosPagoTarjetas.posicionCarga, poscioncarga);
+        values.put(DatosPagoTarjetas.formaPagoId, formapagoid);
+        values.put(DatosPagoTarjetas.monto, monto);
+        values.put(DatosPagoTarjetas.puntadaid, puntada);
+        values.put(DatosPagoTarjetas.provieneid, provienede);
+        values.put(DatosPagoTarjetas.correctoid, correctoid);
+        values.put(DatosPagoTarjetas.numerotarjeta, numerotarjeta);
+        values.put(DatosPagoTarjetas.descuento, descuento);
+        values.put(DatosPagoTarjetas.nipcliente, nipcliente);
+        values.put(DatosPagoTarjetas.montototal, montoTotal);
+
+        long newRowId = base.insert(DatosPagoTarjetas.nombreTabla, null, values);
+    }
+
+
+    public void InsertarDatosPagoTarjetaDFP(String iddfp, String montototal, String formapagoiddfp,String montoparcial){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosPagoTarjetasDiferentesFormasPago.IdDFP, iddfp);
+        values.put(DatosPagoTarjetasDiferentesFormasPago.montoTotal, montototal);
+        values.put(DatosPagoTarjetasDiferentesFormasPago.formaPagoIdDFP, formapagoiddfp);
+        values.put(DatosPagoTarjetasDiferentesFormasPago.montoparcial, montoparcial);
+
+        long newRowId = base.insert(DatosPagoTarjetasDiferentesFormasPago.nombreTabla, null, values);
+    }
+
+
+
+
+    public static final String nombreTabla = "PagoTarjetaDiferentesFormasPago";
+    public static final String IdDFP = "IDFP";
+    public static final String montoTotal = "MontoTotal";
+    public static final String formaPagoIdDFP = "FormaPagoIdDFP";
+    public static final String montoparcial = "MontoParcial";
+
+
     public void InsertarDatosEstacion(String idempresa, String sucursalid,String siic,String correo, String empresaid, String ipestacion, String nombreestacion, String numerofranquicia, String numerointerno, String tipo){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -88,6 +133,95 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
         long newRowId = base.insert(Datosempresa.NOMBRE_TABLA, null, values);
     }
+
+
+    public String getposcioncarga(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT posicionCarga FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getformapagoid(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT formaPagoId FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getmonto(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT monto FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+
+    public String getmontototaldfp(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT montototal FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getbanderapuntada(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT puntadaid FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getlugarformapagodiferentes(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT provieneid FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getCorrectoIncorrecto()
+    {
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT correctoid FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+
+    public String getNumeroTarjetaIni()
+    {
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT numerotarjeta FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getDescuentoIni()
+    {
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT descuento FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+    public String getNipIni()
+    {
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT nipcliente FROM pagotarjeta", null);
+        cursor.moveToFirst();
+        String tipo = cursor.getString(0);
+        return tipo;
+    }
+
+
 
     public String getempresaid(){
         SQLiteDatabase base = getReadableDatabase();
@@ -689,6 +823,36 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
 
+   public static class DatosPagoTarjetas implements BaseColumns{
+       public static final String nombreTabla = "PagoTarjeta";
+       public static final String Id = "ID";
+       public static final String posicionCarga = "PosicionCarga";
+       public static final String formaPagoId = "FormaPagoId";
+       public static final String monto = "Monto";
+       public static final String puntadaid = "PuntadaId";
+       public static final String provieneid = "Provieneid";
+       public static final String correctoid = "Correctoid";
+       public static final String numerotarjeta = "NumeroTarjeta";
+       public static final String descuento = "Descuento";
+       public static final String nipcliente = "NipCliente";
+       public static final String montototal = "MontoTotal";
+
+    }
+
+
+    public static class DatosPagoTarjetasDiferentesFormasPago implements  BaseColumns{
+        public static final String nombreTabla = "PagoTarjetaDiferentesFormasPago";
+        public static final String IdDFP = "IDFP";
+        public static final String montoTotal = "MontoTotal";
+        public static final String formaPagoIdDFP = "FormaPagoIdDFP";
+        public static final String montoparcial = "MontoParcial";
+
+    }
+
+    public static final String SQL_DELETE_PAGOTARJETA=
+            "DROP TABLE " + DatosPagoTarjetas.nombreTabla;
+
+
     //<-------------------------------------------------------PARAMETROS DE LA TABLA PICOS------------------------------------------------>
 
     public static class DatosPicos implements BaseColumns{
@@ -703,6 +867,26 @@ public class SQLiteBD extends SQLiteOpenHelper {
         public static final String sumaBilletes = "sumaBilletes";
 
     }
+
+    private static final String TBL_PAGOTARJETA = "CREATE TABLE " + DatosPagoTarjetas.nombreTabla+ "("+
+            DatosPagoTarjetas.Id + " INTEGER PRIMARY KEY," +
+            DatosPagoTarjetas.posicionCarga + " INTEGER,"+
+            DatosPagoTarjetas.formaPagoId + " INTEGER,"+
+            DatosPagoTarjetas.monto+ " REAL," +
+            DatosPagoTarjetas.puntadaid+ " INTEGER,"+
+            DatosPagoTarjetas.provieneid + " INTEGER,"+
+            DatosPagoTarjetas.correctoid + " INTEGER,"+
+            DatosPagoTarjetas.numerotarjeta + " STRING,"+
+            DatosPagoTarjetas.descuento + " REAL,"+
+            DatosPagoTarjetas.nipcliente + " INTEGER," +
+            DatosPagoTarjetas.montototal + " REAL)";
+
+
+    private static final String TBL_PAGOTARJETA_DIFERENTESFORMASPAGO = "CREATE TABLE " + DatosPagoTarjetasDiferentesFormasPago.nombreTabla+ "("+
+            DatosPagoTarjetasDiferentesFormasPago.IdDFP + " INTEGER PRIMARY KEY," +
+            DatosPagoTarjetasDiferentesFormasPago.montoTotal + " REAL,"+
+            DatosPagoTarjetasDiferentesFormasPago.formaPagoIdDFP + " INTEGER,"+
+            DatosPagoTarjetasDiferentesFormasPago.montoparcial + " REAL)";
 
     //<------------------------------------------------------------------CREACION DE TABLA PICOS---------------------------------------------------------------------->
 
@@ -785,6 +969,22 @@ public class SQLiteBD extends SQLiteOpenHelper {
     }
 
     //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
+
+    public boolean  updatePagoTarjetaCorrecto(int correctoIncorrecto)
+    {
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatosPagoTarjetas.correctoid, correctoIncorrecto);
+        int datos = base.update(DatosPagoTarjetas.nombreTabla, contentValues, DatosPagoTarjetas.Id + " = ? ",
+                new String[]{String.valueOf("1")});
+        if(datos!=0)
+        {
+            return  true;
+        }else{
+            return false;
+        }
+    }
+
 
     //<-------------------------------------------------------PARAMETROS DE LA TABLA PRECIOFAJILLAS------------------------------------------------>
 

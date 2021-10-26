@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.SmartPayment
+package com.corpogas.corpoapp
 
 import android.text.Editable
 import android.text.TextWatcher

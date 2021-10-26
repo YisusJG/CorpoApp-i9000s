@@ -53,7 +53,8 @@ import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
 import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
-import com.corpogas.corpoapp.SmartPayment.VentaPagoTarjeta
+import com.corpogas.corpoapp.VentaPagoTarjeta
+import com.corpogas.corpoapp.Tickets.OpcionImprimir
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta
 import java.io.File
@@ -703,7 +704,7 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgTickets -> {
-                intent = Intent(applicationContext, VentaPagoTarjeta::class.java) //EnDesarrollo
+                intent = Intent(applicationContext, OpcionImprimir::class.java) //VentaPagoTarjeta
                 intent.putExtra("montoencanasta", "$20.00")
                 startActivity(intent)
             }

@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.SmartPayment
+package com.corpogas.corpoapp
 
 class JsonData {
     var packageStr: String? = null

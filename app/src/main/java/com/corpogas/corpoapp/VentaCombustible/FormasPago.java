@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -29,7 +30,7 @@ import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
-import com.corpogas.corpoapp.SmartPayment.VentaPagoTarjeta;
+import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 
 import org.json.JSONArray;
@@ -59,9 +60,10 @@ public class FormasPago extends AppCompatActivity {
     Integer TipoTransacionImprimir;
 
     String fechaTicket;
-    String posiciondecargaid, sucursalnumeroempleado, claveProducto;
+    String posiciondecargaid, sucursalnumeroempleado, claveProducto, numeroTarjeta, nipCliente;
 
-    Double totalPesos, totalDolares, tipoCambio;
+    Double totalPesos, totalDolares, tipoCambio, descuento;
+    String puntadaId, provieneDe = "1";
 
 
     @Override
@@ -79,7 +81,11 @@ public class FormasPago extends AppCompatActivity {
         MontoCanasta = getIntent().getDoubleExtra("montoenCanasta", 0);
         posiciondecargaid = getIntent().getStringExtra("posicionCarga");
         sucursalnumeroempleado = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
-        claveProducto = getIntent().getStringExtra("claveProducto");
+//        claveProducto = getIntent().getStringExtra("claveProducto");
+
+        numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
+        descuento = getIntent().getDoubleExtra("descuento",0);
+        nipCliente = getIntent().getStringExtra("nipCliente");
 
         obtenerformasdepago();
     }
@@ -136,6 +142,10 @@ public class FormasPago extends AppCompatActivity {
         //Lo asignamos a un nuevo ArrayList
         NumeroInternoFormaPago = new ArrayList<String>();
 
+        final List<String> AcumulaPuntosArreglo;
+        AcumulaPuntosArreglo = new ArrayList<String>();
+
+
 
         try {
             //JSONObject jsonObject = new JSONObject(response);
@@ -167,23 +177,25 @@ public class FormasPago extends AppCompatActivity {
                     String nombre_pago = numerointernoobject.getString("LongDescription"); //DescripcionLarga
                     String numero_ticket = numerointernoobject.getString("PrintsAllowed");
                     String visible = numerointernoobject.getString("IsFrontVisible"); //VisibleTarjetero
+                    String acumulaPuntos = numerointernoobject.getString("AccumulatePoints");
                     if (visible == "true") {
                         if (numero_pago.equals("14")){
                             //Nodesplega MErcadoPAgo
                         }else{
                             numerotickets.add(numero_ticket);
                             maintitle.add(nombre_pago);
-                            subtitle.add("ID Forma de Pago:" + numero_pago);
+                            subtitle.add("Forma de Pago:" + numero_pago);
                             IdFormaPago.add(numero_pago);
                             NumeroInternoFormaPago.add(internonumero);
                             colocarformapago = true;
+                            AcumulaPuntosArreglo.add(acumulaPuntos);
                         }
                     }else{
                         if (EstacionJarreo.equals("true")){
                             if (numero_pago.equals("91")){ //JArreo
                                 numerotickets.add(numero_ticket);
                                 maintitle.add(nombre_pago);
-                                subtitle.add("ID Forma de Pago:" + numero_pago); //numero_pago
+                                subtitle.add("Forma de Pago:" + numero_pago); //numero_pago
                                 IdFormaPago.add(numero_pago);
                                 NumeroInternoFormaPago.add(internonumero);
                                 colocarformapago = true;
@@ -273,8 +285,12 @@ public class FormasPago extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO Auto-generated method stub
                 list.setEnabled(false);
+                String acumularPuntada= "false";
                 int pos = position + 1;
                 formapago = NumeroInternoFormaPago.get(position);
+                if (Integer.parseInt(formapago)>0){
+                    acumularPuntada = AcumulaPuntosArreglo.get(position);
+                }
                 String formapagoid = IdFormaPago.get(position);//String.valueOf(pos);
                 nombrepago = maintitle.get(position);
                 String numticket = numerotickets.get(position);
@@ -288,7 +304,10 @@ public class FormasPago extends AppCompatActivity {
 
                 switch (Integer.parseInt(formapago)) {
                     case 0: //Diferentes Formas de Pago
-                        Intent intentDiferente = new Intent(getApplicationContext(), DiferentesFormasPago.class);//DiferentesFormasPagoPuntada
+                        data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                        data.close();
+                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                        Intent intentDiferente = new Intent(getApplicationContext(), DiferentesFormasPago.class);
                         intentDiferente.putExtra("Enviadodesde", "formaspago");
                         intentDiferente.putExtra("idusuario", idusuario);
                         intentDiferente.putExtra("posicioncarga", posiciondecargaid);
@@ -297,6 +316,9 @@ public class FormasPago extends AppCompatActivity {
                         intentDiferente.putExtra("formapagoid", numpago);
                         intentDiferente.putExtra("montoencanasta", MontoCanasta);
                         intentDiferente.putExtra("numeroempleadosucursal", sucursalnumeroempleado);
+                        intentDiferente.putExtra("numeroTarjeta", numeroTarjeta);
+                        intentDiferente.putExtra("descuento", descuento);
+                        intentDiferente.putExtra("nipCliente", nipCliente);
                         startActivity(intentDiferente);
                         finish();
                         break;
@@ -304,63 +326,100 @@ public class FormasPago extends AppCompatActivity {
 //                        ObtenerTicketPuntadaAcumular(posicioncarga, idusuario, numpago);
                         break;
                     case 2:
-                        Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);//DiferentesFormasPagoPuntada
-                        intentVale.putExtra("Enviadodesde", "formaspago");
-                        intentVale.putExtra("posicioncarga", posiciondecargaid);
-                        intentVale.putExtra("idoperativa", idoperativa);
-                        intentVale.putExtra("formapagoid", numpago);
-                        intentVale.putExtra("montoencanasta", MontoCanasta);
-                        startActivity(intentVale);
-                        finish();
+                        if (acumularPuntada.equals("true")) {
+                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+                        }else{
+                            Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
+                            intentVale.putExtra("Enviadodesde", "formaspago");
+                            intentVale.putExtra("posicioncarga", posiciondecargaid);
+                            intentVale.putExtra("idoperativa", idoperativa);
+                            intentVale.putExtra("formapagoid", numpago);
+                            intentVale.putExtra("montoencanasta", MontoCanasta);
+                            startActivity(intentVale);
+                            finish();
+                        }
+
                         break;
                     case 13://VALES ELECTRONICOS
                     case 3: //AMEX
                     case 5: //VISA
-                        String titulo = "PUNTADA";
-                        String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
-                        Modales modalesPuntada = new Modales(FormasPago.this);
-                        View viewLectura = modalesPuntada.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
-                        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String banderaHuella = getIntent().getStringExtra( "banderaHuella");
-                                String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
-                                //LeeTarjeta();
-                                Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
-                                //intent.putExtra("device_name", m_deviceName);
-                                intent.putExtra("banderaHuella", banderaHuella);
-                                intent.putExtra("Enviadodesde", "formaspago");
-                                intent.putExtra("idoperativa", idoperativa);
-                                intent.putExtra("formapagoid", formapago);
-                                intent.putExtra("NombrePago", nombrepago);
-                                intent.putExtra("montoenlacanasta", MontoCanasta);
-                                intent.putExtra("posicioncargaid", posiciondecargaid);
-                                intent.putExtra("tipoTarjeta", "Puntada");
-                                intent.putExtra("pagoconpuntada", "no");
+                        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+                        simbolos.setDecimalSeparator('.');
+                        DecimalFormat df = new DecimalFormat("####.00##",simbolos);
 
-                                startActivity(intent);
-                                modalesPuntada.alertDialog.dismiss();
-                            }
-                        });
-                        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-//                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
-                                modalesPuntada.alertDialog.dismiss();
-//                                    SeleccionaPesosDoalares();
-                                Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
-                                intentVisa.putExtra("Enviadodesde", "formaspago");
+                        df.setMaximumFractionDigits(2);
+
+                        String banderaHuella = getIntent().getStringExtra( "banderaHuella");
+                        String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
+                        if (numeroTarjeta.length() > 0){
+                            if (acumularPuntada.equals("true")) {
+                                predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+                            }else{
+                                data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                                data.close();
+                                data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+
+                                Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
+                                intentVisa.putExtra("lugarProviene", "formaspago");
                                 intentVisa.putExtra("posicioncarga", posiciondecargaid);
                                 intentVisa.putExtra("formapagoid", numpago);
-                                intentVisa.putExtra("montoencanasta", MontoCanasta);
+                                intentVisa.putExtra("montoencanasta", "$"+ df.format(MontoCanasta));
+                                intentVisa.putExtra("numeroTarjeta", "");
                                 startActivity(intentVisa);
                                 finish();
                             }
-                        });
+                        }else{
+                            String titulo = "PUNTADA";
+                            String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                            Modales modalesPuntada = new Modales(FormasPago.this);
+                            View viewLectura = modalesPuntada.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
+                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //LeeTarjeta();
+                                    data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                                    data.close();
+                                    data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+
+                                    Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                                    //intent.putExtra("device_name", m_deviceName);
+                                    intent.putExtra("banderaHuella", banderaHuella);
+                                    intent.putExtra("Enviadodesde", "formaspago");
+                                    intent.putExtra("idoperativa", idoperativa);
+                                    intent.putExtra("formapagoid", formapago);
+                                    intent.putExtra("NombrePago", nombrepago);
+                                    intent.putExtra("montoenlacanasta", MontoCanasta);
+                                    intent.putExtra("posicioncargaid", posiciondecargaid);
+                                    intent.putExtra("tipoTarjeta", "Puntada");
+                                    intent.putExtra("pagoconpuntada", "no");
+
+                                    startActivity(intent);
+                                    modalesPuntada.alertDialog.dismiss();
+                                }
+                            });
+                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modalesPuntada.alertDialog.dismiss();
+                                    data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                                    data.close();
+
+                                    data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                    Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
+                                    intentVisa.putExtra("Enviadodesde", "formaspago");
+                                    intentVisa.putExtra("posicioncarga", posiciondecargaid);
+                                    intentVisa.putExtra("formapagoid", numpago);
+                                    intentVisa.putExtra("montoencanasta", "$"+ df.format(MontoCanasta));
+                                    startActivity(intentVisa);
+                                    finish();
+                                }
+                            });
+
+                        }
                         break;
                     case 14: //MERCADO PAGO
                     case 17: // VALES PROPIOS
-                        titulo = "AVISO";
+                        String titulo = "AVISO";
                         final Modales modales = new Modales(FormasPago.this);
                         View view1 = modales.MostrarDialogoAlertaAceptar(FormasPago.this, "Proximamente", titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -373,64 +432,85 @@ public class FormasPago extends AppCompatActivity {
                         break;
                     case 16://PAGO DOLARES
                         //Ejecutar el endpoint para obtener el detalle de la transaccion
-                        ObtieneMontoDolares();
+
+                        if (numeroTarjeta.length() > 0){
+                            if (acumularPuntada.equals("true")) {
+                                predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+
+                            }else{
+                                ObtieneMontoDolares();
+                            }
+                        }else{
+                            ObtieneMontoDolares();
+                        }
                         break;
                     case 1:
-                        if (numpago == 0) { //DIFERENTES FORMAS DE PAGO
-                            Intent intent = new Intent(getApplicationContext(), DiferentesFormasPago.class);//DiferentesFormasPagoPuntada
-                            intent.putExtra("Enviadodesde", "formaspago");
-                            intent.putExtra("idusuario", idusuario);
-                            intent.putExtra("posicioncarga", posicioncarga);
-                            intent.putExtra("claveusuario", ClaveDespachador);
-                            intent.putExtra("idoperativa", idoperativa);
-                            intent.putExtra("formapagoid", numpago);
-                            intent.putExtra("montoencanasta", MontoCanasta);
-                            intent.putExtra("numeroempleadosucursal", sucursalnumeroempleado);
-                            startActivity(intent);
-                            finish();
-                        }
+//                        if (numpago == 0) { //DIFERENTES FORMAS DE PAGO
+//                            Intent intent = new Intent(getApplicationContext(), DiferentesFormasPago.class);
+//                            intent.putExtra("Enviadodesde", "formaspago");
+//                            intent.putExtra("idusuario", idusuario);
+//                            intent.putExtra("posicioncarga", posicioncarga);
+//                            intent.putExtra("claveusuario", ClaveDespachador);
+//                            intent.putExtra("idoperativa", idoperativa);
+//                            intent.putExtra("formapagoid", numpago);
+//                            intent.putExtra("montoencanasta", MontoCanasta);
+//                            intent.putExtra("numeroempleadosucursal", sucursalnumeroempleado);
+//
+//                            startActivity(intent);
+//                            finish();
+//                        }
                         if (numpago == 1) { //2 EFECTIVO
-                            titulo = "PUNTADA";
-                            mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
-                            Modales modalesEfectivo = new Modales(FormasPago.this);
-                            View viewLecturas = modalesEfectivo.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
-                            viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    String banderaHuella = getIntent().getStringExtra( "banderaHuella");
-                                    String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
-                                    //LeeTarjeta();
-                                    Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
-                                    //intent.putExtra("device_name", m_deviceName);
-                                    intent.putExtra("banderaHuella", banderaHuella);
-                                    intent.putExtra("Enviadodesde", "formaspago");
-                                    intent.putExtra("numeroEmpleado", sucursalnumeroempleado);
-                                    intent.putExtra("idoperativa", idoperativa);
-                                    intent.putExtra("formapagoid", numpago1);
-                                    intent.putExtra("NombrePago", nombrepago);
-                                    intent.putExtra("NombreCompleto", nombreCompletoVenta);
-                                    intent.putExtra("montoenlacanasta", MontoCanasta);
-                                    intent.putExtra("posicioncargaid", posiciondecargaid);
-                                    intent.putExtra("tipoTarjeta", "Puntada");
-                                    intent.putExtra("pagoconpuntada", "no");
+                            if (numeroTarjeta.length() > 0){
+                                if (acumularPuntada.equals("true")) {
+                                    predeterminarPuntadaAcumular(Integer.parseInt(formapago));
 
-                                    startActivity(intent);
-                                    modalesEfectivo.alertDialog.dismiss();
+                                }else{
+                                    MuestraFormaEfectivo();
                                 }
-                            });
-                            viewLecturas.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
+                            }else{
+                                titulo = "PUNTADA";
+                                String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                                Modales modalesEfectivo = new Modales(FormasPago.this);
+                                View viewLecturas = modalesEfectivo.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
+                                viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                            String banderaHuella = getIntent().getStringExtra( "banderaHuella");
+                                            String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
+                                            //LeeTarjeta();
+                                            Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                                            //intent.putExtra("device_name", m_deviceName);
+                                            intent.putExtra("banderaHuella", banderaHuella);
+                                            intent.putExtra("Enviadodesde", "formaspago");
+                                            intent.putExtra("numeroEmpleado", sucursalnumeroempleado);
+                                            intent.putExtra("idoperativa", idoperativa);
+                                            intent.putExtra("formapagoid", numpago1);
+                                            intent.putExtra("NombrePago", nombrepago);
+                                            intent.putExtra("NombreCompleto", nombreCompletoVenta);
+                                            intent.putExtra("montoenlacanasta", MontoCanasta);
+                                            intent.putExtra("posicioncargaid", posiciondecargaid);
+                                            intent.putExtra("tipoTarjeta", "Puntada");
+                                            intent.putExtra("pagoconpuntada", "no");
+
+                                            startActivity(intent);
+                                            modalesEfectivo.alertDialog.dismiss();
+                                            }
+
+                                });
+
+                                viewLecturas.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 //                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
                                     modalesEfectivo.alertDialog.dismiss();
 //                                    SeleccionaPesosDoalares();
                                     MuestraFormaEfectivo();
-                                }
-                            });
-
+                                    }
+                                });
+                            }
                         } else {
                             if (numpago == 2) {//3 VALES
-                                Intent intent = new Intent(getApplicationContext(), ValesPapel.class);//DiferentesFormasPagoPuntada
+                                Intent intent = new Intent(getApplicationContext(), ValesPapel.class);
                                 intent.putExtra("Enviadodesde", "formaspago");
                                 intent.putExtra("idusuario", idusuario);
                                 intent.putExtra("posicioncarga", posicioncarga);
@@ -525,6 +605,150 @@ public class FormasPago extends AppCompatActivity {
         });
     }
 
+    private void predeterminarPuntadaAcumular(Integer numpago){
+            if (!Conexion.compruebaConexion(this)) {
+                Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+
+                startActivity(intent1);
+                finish();
+            } else {
+                JSONObject datos = new JSONObject();
+
+                String idoperativa = getIntent().getStringExtra("idoperativa");
+                JSONArray myArray = new JSONArray();
+                SQLiteBD data = new SQLiteBD(getApplicationContext());
+                String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/" + sucursalnumeroempleado;
+                RequestQueue queue = Volley.newRequestQueue(this);
+                try {
+                    datos.put("NuTarjetero", data.getIdTarjtero() );
+                    datos.put("SucursalId", sucursalId);
+                    datos.put("RequestID", 35); // Esto es para cuando se termina de realizar el despacho, es pasa la tarjeta puntada y se acumula
+                    datos.put("PosicionCarga", posiciondecargaid); //posicionCarga
+                    datos.put("Tarjeta", numeroTarjeta);
+                    //datos.put("NIP", NipCliente);
+                    datos.put("Productos", myArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, datos, new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        String estado = null;
+                        String mensaje = null;
+                        try {
+                            estado = response.getString("Estado");
+                            mensaje = response.getString("Mensaje");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (estado.equals("true")) {
+
+
+                            switch (numpago) {
+                                case 1:
+                                    MuestraFormaEfectivo();
+                                    break;
+                                case 2:
+                                    Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
+                                    intentVale.putExtra("Enviadodesde", "formaspago");
+                                    intentVale.putExtra("posicioncarga", posiciondecargaid);
+                                    intentVale.putExtra("idoperativa", idoperativa);
+                                    intentVale.putExtra("formapagoid", numpago);
+                                    intentVale.putExtra("montoencanasta", MontoCanasta);
+                                    startActivity(intentVale);
+                                    finish();
+                                    break;
+                                case 13://VALES ELECTRONICOS
+                                case 3: //AMEX
+                                case 5: //VISA
+                                    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+                                    simbolos.setDecimalSeparator('.');
+                                    DecimalFormat df = new DecimalFormat("####.00##",simbolos);
+
+                                    df.setMaximumFractionDigits(2);
+                                    data.getWritableDatabase().delete("PagoTarjeta", null, null);
+                                    data.close();
+                                    data.InsertarDatosPagoTarjeta("1",posiciondecargaid, Integer.toString(numpago), Double.toString(MontoCanasta),  "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                    Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
+                                    intentVisa.putExtra("Enviadodesde", "formaspago");
+                                    intentVisa.putExtra("posicioncarga", posiciondecargaid);
+                                    intentVisa.putExtra("formapagoid", numpago);
+                                    intentVisa.putExtra("montoencanasta", "$"+ df.format(MontoCanasta));
+                                    intentVisa.putExtra("numeroTarjeta", "");
+                                    startActivity(intentVisa);
+                                    finish();
+
+                                    break;
+                                default:
+                            }
+
+
+//                                    Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
+//                                    Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
+//                                    intente.putExtra("posicioncarga", posiciondecargaid);
+//                                    intente.putExtra("idoperativa", idoperativa);
+//                                    intente.putExtra("idformapago", numpago);
+//                                    intente.putExtra("nombrepago", nombrepago);
+//                                    intente.putExtra("montoencanasta", MontoenCarrito);
+//                                    startActivity(intente);
+//                                    finish();
+                        } else {
+                            try {
+                                String titulo = "AVISO";
+                                String mensajes = "" + mensaje;
+                                Modales modales = new Modales(FormasPago.this);
+                                View view1 = modales.MostrarDialogoAlertaAceptar(FormasPago.this, mensajes, titulo);
+                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+                                        Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+                                        startActivity(intente);
+                                        finish();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                            }
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                    }
+                }) {
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headers = new HashMap<String, String>();
+                        return headers;
+                    }
+
+                    protected com.android.volley.Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                        if (response != null) {
+
+                            try {
+                                String responseString;
+                                JSONObject datos = new JSONObject();
+                                responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return com.android.volley.Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                request_json.setRetryPolicy(new DefaultRetryPolicy(500000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                queue.add(request_json);
+
+            }
+    }
 
     private void ObtieneMontoDolares(){
         String url = "http://" + ipEstacion + "/CorpogasService/api/transacciones/resumenultimaTransaccion/sucursalId/" + sucursalId + "/posicionCargaId/" + posiciondecargaid + "/formapago/16";

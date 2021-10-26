@@ -335,6 +335,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>
                         intent.putExtra("montoenCanasta", MontoenCanasta);
                         intent.putExtra("clavedespachador", usuarioclave);
                         intent.putExtra("numeroempleadosucursal", EmpleadoNumero);
+                        intent.putExtra("nip", "");
+                        intent.putExtra("numeroTarjeta", "");
+                        intent.putExtra("descuento", 0);
+
                         myActivity.startActivity(intent);
                         myActivity.finish();
                 }
@@ -347,6 +351,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>
             }
         });
     }
+
 
 
 

@@ -1,4 +1,4 @@
-package com.corpogas.corpoapp.SmartPayment
+package com.corpogas.corpoapp
 
 import android.content.BroadcastReceiver
 import android.content.Context

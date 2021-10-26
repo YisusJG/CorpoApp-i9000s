@@ -92,6 +92,8 @@ public class FormasDePago extends AppCompatActivity {
         usuarioid = getIntent().getLongExtra("IdUsuario",0);
         totalCarrito = getIntent().getDoubleExtra("totalCarrito",0);
 
+
+
     }
 
     private void obtenerformasdepago() {

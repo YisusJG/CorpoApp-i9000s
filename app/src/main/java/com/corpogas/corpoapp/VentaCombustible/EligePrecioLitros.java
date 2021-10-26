@@ -57,14 +57,14 @@ public class EligePrecioLitros extends AppCompatActivity {
     };
     EditText Cantidad;
     TextView EtiquetaCantidad, tvTipoDespachoLP;
-    String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
+    String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio, nipCliente;
     Button btnLibre, btnPredeterminado, btnCobrar, btnCombustibleCobrar, btnPerifericosCobrar;
     SQLiteBD data;
-    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre, combustible, numeroTarjeta, descuento, lugarProviene;
+    String EstacionId,  ipEstacion, sucursalId, numerodispositivo, despacholibre, combustible, numeroTarjeta,  lugarProviene;
     String mensaje = "", correcto = "";
     JSONArray myArray = new JSONArray();
     ProgressDialog bar;
-
+    Double descuento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +87,9 @@ public class EligePrecioLitros extends AppCompatActivity {
         despacholibre = getIntent().getStringExtra("despacholibre");
         combustible = getIntent().getStringExtra("combustible");
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
-        descuento = getIntent().getStringExtra("descuento");
+        descuento = getIntent().getDoubleExtra("descuento", 0);
         lugarProviene = getIntent().getStringExtra("lugarProviene");
+        nipCliente = getIntent().getStringExtra("nip");
 
         tvTipoDespachoLP = (TextView) findViewById(R.id.tvTipoDespachoLP);
         btnPredeterminado = (Button) findViewById(R.id.btnPredeterminadoInicia);
@@ -367,6 +368,9 @@ public class EligePrecioLitros extends AppCompatActivity {
                                             intent.putExtra("estacionjarreo", estacionJarreo);
                                             intent.putExtra("claveProducto", claveProducto);
                                             intent.putExtra("montoenCanasta", MontoenCanasta);
+                                            intent.putExtra("numeroTarjeta", numeroTarjeta);
+                                            intent.putExtra("descuento", descuento);
+                                            intent.putExtra("nipCliente", nipCliente);
                                             startActivity(intent);
                                             finish();
                                         }
@@ -383,7 +387,7 @@ public class EligePrecioLitros extends AppCompatActivity {
                                         @Override
                                         public void onClick(View view) {
                                             modales.alertDialog.dismiss();
-                                            bar.cancel();
+//                                            bar.cancel();
                                         }
                                     });
                                 }
@@ -396,7 +400,7 @@ public class EligePrecioLitros extends AppCompatActivity {
                                     @Override
                                     public void onClick(View view) {
                                         modales.alertDialog.dismiss();
-                                        bar.cancel();
+//                                        bar.cancel();
                                     }
                                 });
                             }

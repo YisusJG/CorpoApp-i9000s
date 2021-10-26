@@ -20,14 +20,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".Fajillas.CancelarPagoTransaccion"
+            android:exported="true" />
+
+        <activity
+            android:name=".VentaCombustible.FormaPagoTarjetasBancarias"
+            android:exported="true" />
+        <activity
+            android:name=".Tickets.ClaveTicketPendiente"
+            android:exported="true" />
+        <activity
+            android:name=".Fajillas.AutorizaFajillas"
+            android:exported="true" />
+        <activity
+            android:name=".Tickets.OpcionImprimir"
+            android:exported="true" />
+        <activity
+            android:name=".Fajillas.OpcionFajillas"
+            android:exported="true" />
         <activity
             android:name=".VentaCombustible.ImprimePuntada"
             android:exported="true" />
         <activity
-            android:name=".SmartPayment.DetailActivity"
+            android:name=".DetailActivity"
             android:exported="true" />
         <activity
-            android:name=".SmartPayment.VentaPagoTarjeta"
+            android:name=".VentaPagoTarjeta"
             android:exported="true" />
         <activity
             android:name=".Fajillas.MuestreoFajillasEntregadasRecibidas"

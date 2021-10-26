@@ -118,7 +118,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
 
     }
-
     public void PosicionCarga(Integer Identificador){
         bar = new ProgressDialog(PosicionPuntadaRedimir.this);
         bar.setTitle("Buscando Posiciones de Carga");
@@ -286,9 +285,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-            EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-            Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario); //getAccesoUsuario
-            call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario); //getAccesoUsuario
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
 
             @Override
@@ -442,6 +441,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     case "Ventas":
                         ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), "false");
                         break;
+                    case "Imprimir":
+                    case "Reimprimir":
+                    case "Ticket Pendiente":
                     default:
                         Toast.makeText(PosicionPuntadaRedimir.this, "No se selecciono ninguna opción válida", Toast.LENGTH_SHORT).show();
                         Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
@@ -466,115 +468,115 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             finish();
         } else {
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    String disponible, estado , pendientdecobro, descripcionOperativa , numeroPosicionCarga, descripcion;
+            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        String disponible, estado , pendientdecobro, descripcionOperativa , numeroPosicionCarga, descripcion;
 
-                    JSONObject jsonObject = new JSONObject(response);
-                    String correcto = jsonObject.getString("Correcto");
-                    String mensaje = jsonObject.getString("Mensaje");
-                    String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+                        JSONObject jsonObject = new JSONObject(response);
+                        String correcto = jsonObject.getString("Correcto");
+                        String mensaje = jsonObject.getString("Mensaje");
+                        String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
 
 //                    JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
 
-                    if (correcto.equals("false")){
-                        Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
-                        intent.putExtra("numeroEmpleado", empleadoNumero);
-                        intent.putExtra("posicionCarga", posicionCarga);
-                        intent.putExtra("estacionjarreo", Estacionjarreo);
-                        startActivity(intent);
-                        finish();
-                    }else{
-                        Boolean banderaConDatos;
-                        if (ObjetoRespuesta.equals("null")) {
-                            banderaConDatos = false;
-                        } else {
-                            if (ObjetoRespuesta.equals("[]")) {
-                                banderaConDatos = false;
-                            } else {
-                                banderaConDatos = true;
-                            }
-                        }
-
-                        if (banderaConDatos.equals(false)){
+                        if (correcto.equals("false")){
                             Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
                             intent.putExtra("numeroEmpleado", empleadoNumero);
                             intent.putExtra("posicionCarga", posicionCarga);
                             intent.putExtra("estacionjarreo", Estacionjarreo);
                             startActivity(intent);
                             finish();
-                        } else {
-
-                            Double MontoenCanasta = 0.00;
-                            try {
-                                JSONArray ArregloCadenaRespuesta = new JSONArray(ObjetoRespuesta);
-                                for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
-                                    JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
-                                    String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
-
-                                    Double aTotal;
-                                    String fTotal;
-                                    aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
-                                    MontoenCanasta = MontoenCanasta + aTotal;
+                        }else{
+                            Boolean banderaConDatos;
+                            if (ObjetoRespuesta.equals("null")) {
+                                banderaConDatos = false;
+                            } else {
+                                if (ObjetoRespuesta.equals("[]")) {
+                                    banderaConDatos = false;
+                                } else {
+                                    banderaConDatos = true;
                                 }
-                                Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);
-                                //se envia el id seleccionado a la clase Usuario Producto
-                                intente.putExtra("posicion", posicionCarga);
-                                intente.putExtra("usuario", usuarioid);
-                                intente.putExtra("cadenaproducto", "");
-                                intente.putExtra("lugarproviene", "Despacho");
-                                intente.putExtra("numeroOperativa", numeroOperativa);
-                                intente.putExtra("cadenarespuesta", ObjetoRespuesta);
-                                //Ejecuta la clase del Usuario producto
-                                startActivity(intente);
-                                //Finaliza activity
+                            }
+
+                            if (banderaConDatos.equals(false)){
+                                Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
+                                intent.putExtra("numeroEmpleado", empleadoNumero);
+                                intent.putExtra("posicionCarga", posicionCarga);
+                                intent.putExtra("estacionjarreo", Estacionjarreo);
+                                startActivity(intent);
                                 finish();
+                            } else {
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                Double MontoenCanasta = 0.00;
+                                try {
+                                    JSONArray ArregloCadenaRespuesta = new JSONArray(ObjetoRespuesta);
+                                    for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
+                                        JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
+                                        String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
+
+                                        Double aTotal;
+                                        String fTotal;
+                                        aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
+                                        MontoenCanasta = MontoenCanasta + aTotal;
+                                    }
+                                    Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);
+                                    //se envia el id seleccionado a la clase Usuario Producto
+                                    intente.putExtra("posicion", posicionCarga);
+                                    intente.putExtra("usuario", usuarioid);
+                                    intente.putExtra("cadenaproducto", "");
+                                    intente.putExtra("lugarproviene", "Despacho");
+                                    intente.putExtra("numeroOperativa", numeroOperativa);
+                                    intente.putExtra("cadenarespuesta", ObjetoRespuesta);
+                                    //Ejecuta la clase del Usuario producto
+                                    startActivity(intente);
+                                    //Finaliza activity
+                                    finish();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
+
                         }
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        String titulo = "Posiciones de Carga";
-                        String mensajes = errorMensaje;
-                        Modales modales = new Modales(PosicionPuntadaRedimir.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(stringRequest);
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String algo = new String(error.networkResponse.data);
+                    try {
+                        //creamos un json Object del String algo
+                        JSONObject errorCaptado = new JSONObject(algo);
+                        //Obtenemos el elemento ExceptionMesage del errro enviado
+                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                        try {
+                            String titulo = "Posiciones de Carga";
+                            String mensajes = errorMensaje;
+                            Modales modales = new Modales(PosicionPuntadaRedimir.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
         }
     }
 
@@ -596,6 +598,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new com.android.volley.Response.Listener<String>() {
+
                     @Override
                     public void onResponse(String response) {
                         try {
