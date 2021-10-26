@@ -69,7 +69,7 @@ public class EntregaFajillas extends AppCompatActivity {
 
 
         if (lugarProviene.equals("corteFajillas")){
-            idUsuario = getIntent().getLongExtra("idusuario", 0);
+            idUsuario = Long.valueOf(db.getUsuarioId());
         }else{
 //            respuestaApiAccesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
             nombreCompleto = db.getNombreCompleto();//respuestaApiAccesoUsuario.getObjetoRespuesta().getNombreCompleto();

@@ -178,7 +178,30 @@ public class ProductosJefeIsla extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                MostrarProductosCierre(response, integer);
+                try {
+                    JSONObject resultado = new JSONObject(response);
+                    String correcto = resultado.getString("Correcto");
+                    String mensajeApi = resultado.getString("Mensaje");
+                    if (correcto.equals("true")){
+                        MostrarProductosCierre(response, integer);
+                    }else{
+                        titulo = "AVISO";
+                        mensaje = mensajeApi;
+                        View view1 = modales.MostrarDialogoAlertaAceptar(ProductosJefeIsla.this, mensaje, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                finish();
+
+                            }
+                        });
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 //                    cargaProductosCierre(response);
             }
         }, new Response.ErrorListener() {

@@ -31,6 +31,7 @@ import com.corpogas.corpoapp.Entities.Virtuales.FajillaTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.FormaPagoTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.GastoTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.VentaCombustibleTotal;
+import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.LoginActivity;
 import com.corpogas.corpoapp.Menu_Principal;
@@ -49,7 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ResumenActivity extends AppCompatActivity {
 
     ConstraintLayout expandableCombustible, expandableFajilla, expandablePico, expandableVale, expandableFormaPago, expandableJarreo, expandableGastos;
-    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, arrowBtnGastos, btnAgregarFajillasResumenActivity, btnValidarEntrega;
+    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, arrowBtnGastos, btnAgregarFajillasResumenActivity, btnValidarEntrega, btnActualizarResumenActivity;
     CardView cardViewCombustible, cardViewFajilla, cardViewPico, cardViewVale, cardViewFormaPago, cardViewJarreo, cardViewGastos;
     RecyclerView rcvGasopass, rcvEfectivale, rcvAccor, rcvSiVale, rcvFormaPago, rcvGastos;
     ImageButton btnListaProductosResumenActivity;
@@ -229,6 +230,8 @@ public class ResumenActivity extends AppCompatActivity {
         btnListaProductosResumenActivity = findViewById(R.id.btnListaProductosResumenActivity);
         btnValidarEntrega = findViewById(R.id.btnValidarEntrega);
 
+        btnActualizarResumenActivity = findViewById(R.id.btnActualizarResumenActivity);
+
 //        imgTotalPicos = findViewById(R.id.imgTotalPicos);
 //        imgTotalFajillas = findViewById(R.id.imgTotalFajillas);
 //        imgTotalValesPapel = findViewById(R.id.imgTotalValesPapel);
@@ -347,7 +350,8 @@ public class ResumenActivity extends AppCompatActivity {
 //        });
 
         btnAgregarFajillasResumenActivity.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            Intent intent = new Intent(getApplicationContext(), EntregaFajillas.class);
+            intent.putExtra("lugarProviene", "corteFajillas");
             startActivity(intent);
         });
 
@@ -374,12 +378,16 @@ public class ResumenActivity extends AppCompatActivity {
             }
         });
 
+        btnActualizarResumenActivity.setOnClickListener(view -> {
+            obtenerResumenCorte();
+        });
+
         btnValidarEntrega.setOnClickListener(view -> {
             importeDiferenciaTotal = respuestaApiCierreTicket.getObjetoRespuesta().getImporteDiferenciaTotal();
             if (importeDiferenciaTotal == 0.0){
 
                 titulo = "CORRECTO";
-                mensaje = "Sin diferencias. Puedes continuar.";
+                mensaje = "No existen diferencias. Hasta Luego: " + db.getNombre();
                 View view1 = modales.MostrarDialogoCorrecto(ResumenActivity.this, titulo, mensaje, "ACEPTAR");
                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -396,7 +404,7 @@ public class ResumenActivity extends AppCompatActivity {
                 titulo = "AVISO";
                 mensaje = "Existe una diferencia en tu efectivo. Verifica con tu superior.";
                 View view1 = modales.MostrarDialogoAlertaAceptar(ResumenActivity.this, mensaje, titulo);
-                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         modales.alertDialog.dismiss();

@@ -732,6 +732,14 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return nombreCompleto;
     }
 
+    public String getNombre(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT Nombre FROM DatosEmpleado", null);
+        cursor.moveToFirst();
+        String nombre = cursor.getString(0);
+        return nombre;
+    }
+
     public Long getRol(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT RolId FROM DatosEmpleado", null);

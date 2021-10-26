@@ -27,6 +27,7 @@ import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.ProductosFaltantes;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Login.EntregaPicos;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
@@ -174,7 +175,33 @@ public class ProductosVendedor extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                MostrarProductosCierre(response, integer);
+                try {
+                    JSONObject resultado = new JSONObject(response);
+                    String correcto = resultado.getString("Correcto");
+                    String mensajeApi = resultado.getString("Mensaje");
+                    if (correcto.equals("true")){
+                        MostrarProductosCierre(response, integer);
+                    }else{
+                        titulo = "AVISO";
+                        mensaje = mensajeApi;
+                        View view1 = modales.MostrarDialogoAlertaAceptar(ProductosVendedor.this, mensaje, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                finish();
+
+                            }
+                        });
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
 //                    cargaProductosCierre(response);
             }
         }, new Response.ErrorListener() {
