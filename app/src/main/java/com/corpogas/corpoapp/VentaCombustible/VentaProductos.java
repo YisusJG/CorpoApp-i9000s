@@ -54,6 +54,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VentaProductos extends AppCompatActivity {
     SQLiteBD data;
     String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid;
+    long numeroInternoPosicionCarga;
 
     Button btnCombustibleVenta, btnPerifericosVentas, btnCobrarPeriferico, btnDecrementarProducto, btnEscanearProducto, btnLecturaQR;
     ListView lstProductos;
@@ -114,7 +115,7 @@ public class VentaProductos extends AppCompatActivity {
                 intent.putExtra("numeroOperativa", usuarioid);
                 intent.putExtra("cadenaproducto", "");
                 intent.putExtra("lugarproviene", "Venta");
-                intent.putExtra("NumeroIsla", "1");
+                intent.putExtra("NumeroIsla", data.getIslaId());
                 intent.putExtra("NumeroEmpleado", usuarioid);
                 intent.putExtra("posicionCarga", poscicionCarga);
                 startActivity(intent);
@@ -271,6 +272,7 @@ public class VentaProductos extends AppCompatActivity {
                                     intent.putExtra("nip", "");
                                     intent.putExtra("numeroTarjeta", "");
                                     intent.putExtra("descuento", 0);
+                                    intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
 
                                     startActivity(intent);
                                     finish();
@@ -317,6 +319,7 @@ public class VentaProductos extends AppCompatActivity {
         poscicionCarga = getIntent().getStringExtra("posicionCarga");
         idUsuario = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
+        numeroInternoPosicionCarga = getIntent().getLongExtra("pcnumerointerno",0);
 
     }
 
@@ -479,7 +482,7 @@ public class VentaProductos extends AppCompatActivity {
                                         intent.putExtra("nip", "");
                                         intent.putExtra("numeroTarjeta", "");
                                         intent.putExtra("descuento", 0);
-
+                                        intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
                                         startActivity(intent);
                                         finish();
 //                                    }

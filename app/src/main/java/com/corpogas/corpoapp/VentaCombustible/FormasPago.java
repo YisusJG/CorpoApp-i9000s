@@ -326,9 +326,9 @@ public class FormasPago extends AppCompatActivity {
 //                        ObtenerTicketPuntadaAcumular(posicioncarga, idusuario, numpago);
                         break;
                     case 2:
-                        if (acumularPuntada.equals("true")) {
-                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
-                        }else{
+//                        if (acumularPuntada.equals("true")) {
+//                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+//                        }else{
                             Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
                             intentVale.putExtra("Enviadodesde", "formaspago");
                             intentVale.putExtra("posicioncarga", posiciondecargaid);
@@ -337,7 +337,7 @@ public class FormasPago extends AppCompatActivity {
                             intentVale.putExtra("montoencanasta", MontoCanasta);
                             startActivity(intentVale);
                             finish();
-                        }
+//                        }
 
                         break;
                     case 13://VALES ELECTRONICOS
@@ -352,9 +352,9 @@ public class FormasPago extends AppCompatActivity {
                         String banderaHuella = getIntent().getStringExtra( "banderaHuella");
                         String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
                         if (numeroTarjeta.length() > 0){
-                            if (acumularPuntada.equals("true")) {
-                                predeterminarPuntadaAcumular(Integer.parseInt(formapago));
-                            }else{
+//                            if (acumularPuntada.equals("true")) {
+//                                predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+//                            }else{
                                 data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                 data.close();
                                 data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
@@ -367,7 +367,7 @@ public class FormasPago extends AppCompatActivity {
                                 intentVisa.putExtra("numeroTarjeta", "");
                                 startActivity(intentVisa);
                                 finish();
-                            }
+//                            }
                         }else{
                             String titulo = "PUNTADA";
                             String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
@@ -434,12 +434,12 @@ public class FormasPago extends AppCompatActivity {
                         //Ejecutar el endpoint para obtener el detalle de la transaccion
 
                         if (numeroTarjeta.length() > 0){
-                            if (acumularPuntada.equals("true")) {
-                                predeterminarPuntadaAcumular(Integer.parseInt(formapago));
-
-                            }else{
+//                            if (acumularPuntada.equals("true")) {
+//                                predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+//
+//                            }else{
                                 ObtieneMontoDolares();
-                            }
+//                            }
                         }else{
                             ObtieneMontoDolares();
                         }
@@ -461,12 +461,12 @@ public class FormasPago extends AppCompatActivity {
 //                        }
                         if (numpago == 1) { //2 EFECTIVO
                             if (numeroTarjeta.length() > 0){
-                                if (acumularPuntada.equals("true")) {
-                                    predeterminarPuntadaAcumular(Integer.parseInt(formapago));
-
-                                }else{
+//                                if (acumularPuntada.equals("true")) {
+//                                    predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+//
+//                                }else{
                                     MuestraFormaEfectivo();
-                                }
+//                                }
                             }else{
                                 titulo = "PUNTADA";
                                 String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";

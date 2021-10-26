@@ -96,12 +96,13 @@ public class SQLiteBD extends SQLiteOpenHelper {
     }
 
 
-    public void InsertarDatosPagoTarjetaDFP(String iddfp, String montototal, String formapagoiddfp,String montoparcial){
+    public void InsertarDatosPagoTarjetaDFP(String iddfp, String montototal, String formapagoiddfp,String response, String montoparcial){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosPagoTarjetasDiferentesFormasPago.IdDFP, iddfp);
         values.put(DatosPagoTarjetasDiferentesFormasPago.montoTotal, montototal);
         values.put(DatosPagoTarjetasDiferentesFormasPago.formaPagoIdDFP, formapagoiddfp);
+        values.put(DatosPagoTarjetasDiferentesFormasPago.response, response);
         values.put(DatosPagoTarjetasDiferentesFormasPago.montoparcial, montoparcial);
 
         long newRowId = base.insert(DatosPagoTarjetasDiferentesFormasPago.nombreTabla, null, values);
@@ -845,6 +846,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         public static final String IdDFP = "IDFP";
         public static final String montoTotal = "MontoTotal";
         public static final String formaPagoIdDFP = "FormaPagoIdDFP";
+        public static final String response = "Response";
         public static final String montoparcial = "MontoParcial";
 
     }
@@ -886,6 +888,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
             DatosPagoTarjetasDiferentesFormasPago.IdDFP + " INTEGER PRIMARY KEY," +
             DatosPagoTarjetasDiferentesFormasPago.montoTotal + " REAL,"+
             DatosPagoTarjetasDiferentesFormasPago.formaPagoIdDFP + " INTEGER,"+
+            DatosPagoTarjetasDiferentesFormasPago.response + " STRING,"+
             DatosPagoTarjetasDiferentesFormasPago.montoparcial + " REAL)";
 
     //<------------------------------------------------------------------CREACION DE TABLA PICOS---------------------------------------------------------------------->

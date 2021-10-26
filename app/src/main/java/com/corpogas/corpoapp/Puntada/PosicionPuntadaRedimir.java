@@ -487,6 +487,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             intent.putExtra("numeroEmpleado", empleadoNumero);
                             intent.putExtra("posicionCarga", posicionCarga);
                             intent.putExtra("estacionjarreo", Estacionjarreo);
+                            intent.putExtra("pcnumerointerno", cargaNumeroInterno);
                             startActivity(intent);
                             finish();
                         }else{

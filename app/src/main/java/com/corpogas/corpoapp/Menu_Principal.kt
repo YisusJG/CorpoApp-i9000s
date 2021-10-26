@@ -650,8 +650,8 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgVentas -> {
                 intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
                 intent.putExtra("lugarproviene", "Ventas")
-                intent.putExtra("IdUsuario", "10045353")
-                intent.putExtra("clave", "4444")
+//                intent.putExtra("IdUsuario", "10045353")
+//                intent.putExtra("clave", "4444")
                 startActivity(intent)
             }
 //            R.id.btnImgTickets -> {

@@ -65,7 +65,7 @@ public class EligePrecioLitros extends AppCompatActivity {
     JSONArray myArray = new JSONArray();
     ProgressDialog bar;
     Double descuento;
-
+    Long numerointernoPosicionCarga;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +80,7 @@ public class EligePrecioLitros extends AppCompatActivity {
         numerodispositivo = data.getIdTarjtero();
 
         posicionCarga = getIntent().getStringExtra("posicionCarga");
+        numerointernoPosicionCarga = getIntent().getLongExtra("pocioncarganumerointerno", 0);
         usuarioid = data.getNumeroEmpleado();
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
         claveProducto = getIntent().getStringExtra("claveProducto");
@@ -155,7 +156,7 @@ public class EligePrecioLitros extends AppCompatActivity {
             btnPredeterminado.setEnabled(false);
         }
 
-        tvTipoDespachoLP.setText("PC: " + posicionCarga  + "  TIPO DESPACHO ");//+ ", " + combustible
+        tvTipoDespachoLP.setText("PC: " + numerointernoPosicionCarga  + "  TIPO DESPACHO ");//+ ", " + combustible
 
         if (lugarProviene.equals("puntadaAcumularQr")){
             btnLibre.setEnabled(false);

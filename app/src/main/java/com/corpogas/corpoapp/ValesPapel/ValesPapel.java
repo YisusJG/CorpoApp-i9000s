@@ -33,6 +33,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
@@ -212,13 +213,44 @@ public class ValesPapel extends AppCompatActivity {
 
         //Validamos campos a agregar <> de vacio
         if (tvFolioMonto.length() ==0){
-            Toast.makeText(ValesPapel.this, "Digite un Folio", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ValesPapel.this, "Digite un Folio", Toast.LENGTH_SHORT).show();
+            String titulo = "AVISO";
+            Modales modales = new Modales(ValesPapel.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(ValesPapel.this,"Digite un folio",titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
+
         }else{
             if (tvDenominacionMonto.length() == 0){
-                Toast.makeText(ValesPapel.this, "Digite un Monto", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ValesPapel.this, "Digite un Monto", Toast.LENGTH_SHORT).show();
+                String titulo = "AVISO";
+                Modales modales = new Modales(ValesPapel.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(ValesPapel.this,"Digite un monto",titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+
             }else{
-                if (tvMontoACargarPendiente.equals(0)){
-                    Toast.makeText(ValesPapel.this, "Monto Completado", Toast.LENGTH_SHORT).show();
+                Double montofaltante = Double.parseDouble(tvMontoACargarPendiente.getText().toString());
+                if (montofaltante<=0){
+//                    Toast.makeText(ValesPapel.this, "Monto Completado", Toast.LENGTH_SHORT).show();
+                    String titulo = "AVISO";
+                    Modales modales = new Modales(ValesPapel.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(ValesPapel.this,"Monto Completado",titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+
                 }else{
                     montoPendiente = Double.parseDouble(tvMontoACargarPendiente.getText().toString());
 
