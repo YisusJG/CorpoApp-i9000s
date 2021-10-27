@@ -96,7 +96,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
     }
 
 
-    public void InsertarDatosPagoTarjetaDFP(String iddfp, String montototal, String formapagoiddfp,String response, String montoparcial){
+    public void InsertarDatosPagoTarjetaDFP(String iddfp, String montototal, String formapagoiddfp,String response, String montoparcial, String cobrado){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosPagoTarjetasDiferentesFormasPago.IdDFP, iddfp);
@@ -104,6 +104,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         values.put(DatosPagoTarjetasDiferentesFormasPago.formaPagoIdDFP, formapagoiddfp);
         values.put(DatosPagoTarjetasDiferentesFormasPago.response, response);
         values.put(DatosPagoTarjetasDiferentesFormasPago.montoparcial, montoparcial);
+        values.put(DatosPagoTarjetasDiferentesFormasPago.cobrado, cobrado);
 
         long newRowId = base.insert(DatosPagoTarjetasDiferentesFormasPago.nombreTabla, null, values);
     }
@@ -832,7 +833,24 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
 
-   public static class DatosPagoTarjetas implements BaseColumns{
+    public boolean updateDiferentesFormasPago(String responseobtenido, String  cobrado, String formapagoid){
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatosPagoTarjetasDiferentesFormasPago.response, responseobtenido);
+        contentValues.put(DatosPagoTarjetasDiferentesFormasPago.cobrado, cobrado);
+
+        int datos = base.update(DatosPagoTarjetasDiferentesFormasPago.nombreTabla, contentValues, DatosPagoTarjetasDiferentesFormasPago.IdDFP + " = ? ",
+                new String[]{String.valueOf(formapagoid)});
+        if (datos!=0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
+    public static class DatosPagoTarjetas implements BaseColumns{
        public static final String nombreTabla = "PagoTarjeta";
        public static final String Id = "ID";
        public static final String posicionCarga = "PosicionCarga";
@@ -856,6 +874,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         public static final String formaPagoIdDFP = "FormaPagoIdDFP";
         public static final String response = "Response";
         public static final String montoparcial = "MontoParcial";
+        public static final String cobrado = "Cobrado";
 
     }
 
@@ -897,7 +916,8 @@ public class SQLiteBD extends SQLiteOpenHelper {
             DatosPagoTarjetasDiferentesFormasPago.montoTotal + " REAL,"+
             DatosPagoTarjetasDiferentesFormasPago.formaPagoIdDFP + " INTEGER,"+
             DatosPagoTarjetasDiferentesFormasPago.response + " STRING,"+
-            DatosPagoTarjetasDiferentesFormasPago.montoparcial + " REAL)";
+            DatosPagoTarjetasDiferentesFormasPago.montoparcial + " REAL,"+
+            DatosPagoTarjetasDiferentesFormasPago.cobrado + "INTEGER)";
 
     //<------------------------------------------------------------------CREACION DE TABLA PICOS---------------------------------------------------------------------->
 
@@ -1060,6 +1080,34 @@ public class SQLiteBD extends SQLiteOpenHelper {
         Integer precioFajillaMoneda = cursor.getInt(0);
         return precioFajillaMoneda;
     }
+
+
+    public Double getMontoFPD(int tipopago){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT montoparcial FROM PagoTarjetaDiferentesFormasPago, response WHERE formaPagoIdDFP =  "+ tipopago, null);
+        cursor.moveToFirst();
+        Double montoparcial = cursor.getDouble(0);
+        String response = cursor.getString(1);
+        return montoparcial;
+
+    }
+    public String getresponseFPD(int tipopago){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT montoparcial FROM response WHERE formaPagoIdDFP =  "+ tipopago, null);
+        cursor.moveToFirst();
+        String response = cursor.getString(0);
+        return response;
+
+    }
+    public Integer getEstatusCobradoFPD(int tipopago){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT montoparcial FROM cobrado WHERE formaPagoIdDFP =  "+ tipopago, null);
+        cursor.moveToFirst();
+        Integer cobrado = cursor.getInt(0);
+        return cobrado;
+
+    }
+
 
     //  ----------------------------------------------------------------------------------------------------------------------------------------------------  //
 

@@ -338,6 +338,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>
                         intent.putExtra("nip", "");
                         intent.putExtra("numeroTarjeta", "");
                         intent.putExtra("descuento", 0);
+                        intent.putExtra("IdOperativa", numerooperativa);
 
                         myActivity.startActivity(intent);
                         myActivity.finish();

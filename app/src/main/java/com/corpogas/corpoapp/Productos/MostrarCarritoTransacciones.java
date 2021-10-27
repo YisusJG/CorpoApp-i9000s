@@ -63,7 +63,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MostrarCarritoTransacciones extends AppCompatActivity {
     ListView list, list2;
-    String EstacionId, sucursalId, ipEstacion, posicioncarga, usuarioid, numerooperativa, usuarioclave, cadenaproducto, lugarproviene, cadenaRespuesta, NombreCompleto, EmpleadoNumero;
+    String EstacionId, sucursalId, ipEstacion, posicioncarga, usuarioid,  usuarioclave, cadenaproducto, lugarproviene, cadenaRespuesta, NombreCompleto, EmpleadoNumero;
     List<String> ID;
     List<String> NombreProducto;
     List<String> PrecioProducto;
@@ -75,6 +75,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
     List<String> ImporteProducto;
     TextView txtEtiqueta;
     Double MontoenCanasta=0.00;
+    Long numerooperativa, posicioncargaid;
 
     String[] maintitle ={
             "Vaciar Carrito", "Finalizar Venta", "Imprimir",
@@ -108,10 +109,11 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         ipEstacion = db.getIpEstacion();
 
         posicioncarga = getIntent().getStringExtra("posicion");
+        posicioncargaid = getIntent().getLongExtra("pocioncargaid", 0);
         usuarioid = db.getUsuarioId();//getIntent().getStringExtra("usuario");
         cadenaproducto = getIntent().getStringExtra("cadenaproducto");
         lugarproviene = getIntent().getStringExtra("lugarproviene");
-        numerooperativa = getIntent().getStringExtra("numeroOperativa");
+        numerooperativa = getIntent().getLongExtra("numeroOperativa", 0);
         usuarioclave = db.getClave();//getIntent().getStringExtra("clave");
         NombreCompleto = db.getNombreCompleto();//getIntent().getStringExtra("nombrecompleto");
         EmpleadoNumero = db.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
@@ -135,7 +137,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        mainAdapter = new MainAdapter(MostrarCarritoTransacciones.this, mainModels, MostrarCarritoTransacciones.this, ipEstacion, usuarioid, usuarioclave, sucursalId, posicioncarga, numerooperativa, lugarproviene, MontoenCanasta, NombreCompleto, EmpleadoNumero);
+        mainAdapter = new MainAdapter(MostrarCarritoTransacciones.this, mainModels, MostrarCarritoTransacciones.this, ipEstacion, usuarioid, usuarioclave, sucursalId, posicioncarga, numerooperativa.toString(), lugarproviene, MontoenCanasta, NombreCompleto, EmpleadoNumero);
         recyclerView.setAdapter(mainAdapter);
 
         mainAdapter.setOnClickListener(new View.OnClickListener() {
@@ -555,7 +557,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                 PrecioProducto.add(Precio);
                 ImporteProducto.add(Importe);
             }
-            txtEtiqueta.setText("Productos en el carrito: $ "+df.format(MontoenCanasta)+"  PC: " + posicioncarga);
+            txtEtiqueta.setText("Productos en el carrito: $ "+df.format(MontoenCanasta)+"  PC: " + posicioncargaid); //posicioncarga
             final ListAdapterProductos adapterP = new ListAdapterProductos(this,  DescripcionProducto ,   NombreProducto);
             list=(ListView)findViewById(R.id.list);
 

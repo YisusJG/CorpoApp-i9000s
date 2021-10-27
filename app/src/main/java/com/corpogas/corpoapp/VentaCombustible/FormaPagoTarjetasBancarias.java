@@ -140,6 +140,8 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
                 TramaBancariaDetalle.put(        "BANK_NAME", " ALQUIMIADIGITAL.MX");
                 TramaBancariaDetalle.put("MERCHANT_ID", "7550587");
 
+                data.updateDiferentesFormasPago(TramaBancariaDetalle.toString(), "1" , formaPagoId );
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

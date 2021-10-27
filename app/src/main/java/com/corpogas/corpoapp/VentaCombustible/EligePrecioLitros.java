@@ -372,6 +372,7 @@ public class EligePrecioLitros extends AppCompatActivity {
                                             intent.putExtra("numeroTarjeta", numeroTarjeta);
                                             intent.putExtra("descuento", descuento);
                                             intent.putExtra("nipCliente", nipCliente);
+                                            intent.putExtra("IdOperativa", "0");
                                             startActivity(intent);
                                             finish();
                                         }

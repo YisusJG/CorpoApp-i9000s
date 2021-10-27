@@ -488,6 +488,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             intent.putExtra("posicionCarga", posicionCarga);
                             intent.putExtra("estacionjarreo", Estacionjarreo);
                             intent.putExtra("pcnumerointerno", cargaNumeroInterno);
+                            intent.putExtra("pocioncargaid", cargaNumeroInterno);
                             startActivity(intent);
                             finish();
                         }else{
@@ -531,6 +532,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                     intente.putExtra("lugarproviene", "Despacho");
                                     intente.putExtra("numeroOperativa", numeroOperativa);
                                     intente.putExtra("cadenarespuesta", ObjetoRespuesta);
+                                    intente.putExtra("pocioncargaid", cargaNumeroInterno);
                                     //Ejecuta la clase del Usuario producto
                                     startActivity(intente);
                                     //Finaliza activity

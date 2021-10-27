@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/border"
-            android:enabled="true"
+            android:enabled="false"
             android:hint="$0.00"
             android:inputType="numberDecimal"
             android:maxLength="14"
@@ -88,7 +88,9 @@
             android:id="@+id/btnimprimeventas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Imprimir" />
+            android:enabled="false"
+            android:text="IMPRIMIENDO"
+            android:visibility="visible" />
 
     </LinearLayout>
 

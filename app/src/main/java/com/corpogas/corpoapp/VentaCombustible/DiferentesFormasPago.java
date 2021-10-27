@@ -392,7 +392,11 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //                        }else{
                             numerotickets.add(numero_ticket);
                             maintitle.add(nombre_pago);
-                            subtitle.add("$0.00" );
+                            if (db.getCorrectoIncorrecto().equals("2")){
+                                subtitle.add("$"+ db.getMontoFPD(Integer.parseInt(numero_pago)) );
+                            }else{
+                                subtitle.add("$0.00" );
+                            }
                             IdFormaPago.add(numero_pago);
                             colocarformapago = true;
 //                        }
@@ -479,277 +483,301 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
                 formaPagoSeleccionada = IdFormaPago.get(position);
                 // TODO Auto-generated method stub
-//                int pos = position + 1;
-                try {
-                    String titulo = "Parcialidades";
-                    String mensaje = "Ingresa el monto" ;
-                    Modales modales = new Modales(DiferentesFormasPago.this);
-                    View viewLectura = modales.MostrarDialogoInsertaDato(DiferentesFormasPago.this, mensaje, titulo);
-                    EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                    edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Boolean banderaSigue = true;
-                            String cantidad = edtProductoCantidad.getText().toString();
-                            if (cantidad.isEmpty()){
-                                edtProductoCantidad.setError("Ingresa el monto");
-                            }else {
-                                String montoSeleccionado;
-                                String montosinpesos;
-                                montosinpesos  = subtitle.get(position);
-                                montoSeleccionado =montosinpesos.replace("$", "");
-//                                if (position == 0 && pagoConPuntada.equals("si"))  {
-//                                    if (Double.parseDouble(cantidad) > Double.parseDouble(saldoPuntada) ){
-//                                        banderaSigue = false;
-//                                        String titulo = "AVISO";
-//                                        String mensaje = "La cantidad no puede ser mayor que el Saldo de la Tarjeta Puntada";
-//                                        Modales modales = new Modales(DiferentesFormasPago.this);
-//                                        View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-//                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View view) {
-//                                                modales.alertDialog.dismiss();
-//                                            }
-//                                        });
-//                                    }else{
-//                                        if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
-//                                            try {
-//                                                banderaSigue = false;
-//                                                String titulo = "AVISO";
-//                                                String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
-//                                                Modales modales = new Modales(DiferentesFormasPago.this);
-//                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-//                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-//                                                    @Override
-//                                                    public void onClick(View view) {
-//                                                        modales.alertDialog.dismiss();
-//                                                    }
-//                                                });
-//
-//                                            }catch (Exception e){
-//                                                e.printStackTrace();
-//                                            }
-//                                        }
-//                                    }
-//                                }else{
-                                if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
-                                    if (montoSeleccionado.equals("0.00")){
-                                        try {
-                                            banderaSigue = false;
-                                            String titulo = "AVISO";
-                                            String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
-                                            Modales modales = new Modales(DiferentesFormasPago.this);
-                                            View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    modales.alertDialog.dismiss();
-                                                }
-                                            });
+                if (db.getEstatusCobradoFPD(Integer.parseInt(formaPagoSeleccionada) )== 0){
+                    try {
+                        String titulo = "Parcialidades";
+                        String mensaje = "Ingresa el monto" ;
+                        Modales modales = new Modales(DiferentesFormasPago.this);
+                        View viewLectura = modales.MostrarDialogoInsertaDato(DiferentesFormasPago.this, mensaje, titulo);
+                        EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                        edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Boolean banderaSigue = true;
+                                String cantidad = edtProductoCantidad.getText().toString();
+                                if (cantidad.isEmpty()){
+                                    edtProductoCantidad.setError("Ingresa el monto");
+                                }else {
+                                    String montoSeleccionado;
+                                    String montosinpesos;
+                                    montosinpesos  = subtitle.get(position);
+                                    montoSeleccionado =montosinpesos.replace("$", "");
+    //                                if (position == 0 && pagoConPuntada.equals("si"))  {
+    //                                    if (Double.parseDouble(cantidad) > Double.parseDouble(saldoPuntada) ){
+    //                                        banderaSigue = false;
+    //                                        String titulo = "AVISO";
+    //                                        String mensaje = "La cantidad no puede ser mayor que el Saldo de la Tarjeta Puntada";
+    //                                        Modales modales = new Modales(DiferentesFormasPago.this);
+    //                                        View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+    //                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+    //                                            @Override
+    //                                            public void onClick(View view) {
+    //                                                modales.alertDialog.dismiss();
+    //                                            }
+    //                                        });
+    //                                    }else{
+    //                                        if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
+    //                                            try {
+    //                                                banderaSigue = false;
+    //                                                String titulo = "AVISO";
+    //                                                String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
+    //                                                Modales modales = new Modales(DiferentesFormasPago.this);
+    //                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+    //                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+    //                                                    @Override
+    //                                                    public void onClick(View view) {
+    //                                                        modales.alertDialog.dismiss();
+    //                                                    }
+    //                                                });
+    //
+    //                                            }catch (Exception e){
+    //                                                e.printStackTrace();
+    //                                            }
+    //                                        }
+    //                                    }
+    //                                }else{
+                                    if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
+                                        if (montoSeleccionado.equals("0.00")){
+                                            try {
+                                                banderaSigue = false;
+                                                String titulo = "AVISO";
+                                                String mensaje = "La cantidad capturada no puede ser mayor que la cantidad Pendiente";
+                                                Modales modales = new Modales(DiferentesFormasPago.this);
+                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        modales.alertDialog.dismiss();
+                                                    }
+                                                });
 
-                                        }catch (Exception e){
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }else{
+                                            //                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
+                                            //                                            try {
+                                            //                                                banderaSigue = false;
+                                            //                                                String titulo = "AVISO";
+                                            //                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
+                                            //                                                Modales modales = new Modales(DiferentesFormasPago.this);
+                                            //                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                            //                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                            //                                                    @Override
+                                            //                                                    public void onClick(View view) {
+                                            //                                                        modales.alertDialog.dismiss();
+                                            //                                                    }
+                                            //                                                });
+                                            //                                                banderaSigue = false;
+                                            //                                            }catch (Exception e){
+                                            //                                                e.printStackTrace();
+                                            //                                            }
+                                            //                                        }
+                                        }
+                                    }else{
+                                        if (montoSeleccionado.equals("0.00")){
+                                            if (Double.parseDouble(txtMontoFaltante.getText().toString())==0.00){
+                                                try {
+                                                    banderaSigue = false;
+                                                    String titulo = "AVISO";
+                                                    String mensaje = "Ya se completó el monto Total, con las diferentes formas de pago";
+                                                    Modales modales = new Modales(DiferentesFormasPago.this);
+                                                    View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            modales.alertDialog.dismiss();
+                                                        }
+                                                    });
+                                                    banderaSigue = false;
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }else{
+                                            if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
+                                                try {
+                                                    banderaSigue = false;
+                                                    String titulo = "AVISO";
+                                                    String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
+                                                    Modales modales = new Modales(DiferentesFormasPago.this);
+                                                    View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            modales.alertDialog.dismiss();
+                                                        }
+                                                    });
+                                                    banderaSigue = false;
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+    //                                    }
+                                    }
+
+                                    if (banderaSigue.equals(true)){
+    //                                    tarjetaNumero = getIntent().getStringExtra("tarjetaNumero");
+
+                                        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+                                        simbolos.setDecimalSeparator('.');
+                                        DecimalFormat df = new DecimalFormat("###0.00##",simbolos);
+    //                                    String cantidadformato = cantidad;
+    //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
+    //                                    cantidad = cantidadformato;
+                                        cantidad= df.format(Double.parseDouble(cantidad));
+                                        cantidad = "$"+cantidad;
+                                        subtitle.set(position, cantidad);
+                                        Adaptador adapter = new Adaptador(DiferentesFormasPago.this, maintitle, subtitle, imgid);
+                                        list = (ListView) findViewById(R.id.lstPosicionCarga);
+                                        list.setAdapter(adapter);
+                                        Double cantidadObtenida;
+                                        cantidadObtenida = 0.00;
+                                        CadenaFinal="";
+    //                                    if (enviadoDesde.equals("valespapel")){
+    //                                        try {
+    //                                            FormasPagoArreglo = new JSONArray(arregloVales);
+    //                                        } catch (JSONException e) {
+    //                                            e.printStackTrace();
+    //                                        }
+    //                                    }else{
+                                            FormasPagoArreglo = new JSONArray();
+    //                                    }
+                                        JSONObject TramaBancariaDetalle = new JSONObject();
+                                        try {
+                                            TramaBancariaDetalle.put("SucursalId", 497);
+                                            TramaBancariaDetalle.put("EstacionId", 251);
+                                            TramaBancariaDetalle.put(        "RESPONSE_CODe", "00");
+                                            TramaBancariaDetalle.put(        "POS_ID", "POSANDROID");
+                                            TramaBancariaDetalle.put(        "Tag_9B", "E800");
+                                            TramaBancariaDetalle.put(       "Tag_9F26", "A76488169348EBAB");
+                                            TramaBancariaDetalle.put(        "CARD_TYPE", 1);
+                                            TramaBancariaDetalle.put(        "MNEMO_NAME", "Mc");
+                                            TramaBancariaDetalle.put(        "TERMINAL_ID", "POSANDROID");
+                                            TramaBancariaDetalle.put(        "APP_LABEL","Debit MasterCard");
+                                            TramaBancariaDetalle.put(        "TAG_50", "Debit MasterCard");
+                                            TramaBancariaDetalle.put(        "Tag_95", "0000008000");
+                                            TramaBancariaDetalle.put(        "CARD_HOLDER_NAME","ERICK/AGUILA MARTINEZ ");
+                                            TramaBancariaDetalle.put(        "HEADER_1", "SmartPaymentServices");
+                                            TramaBancariaDetalle.put(        "AMOUNT", "6666.89");
+                                            TramaBancariaDetalle.put(        "PREFERRED_NAME", "Debit MasterCard");
+                                            TramaBancariaDetalle.put(        "ACCOUNT_NUMBEr", "1234 5986 1250 4521");
+                                            TramaBancariaDetalle.put(        "AiD", "A0000000041010");
+                                            TramaBancariaDetalle.put(        "SIGNATURE_FLAG", 0);
+                                            TramaBancariaDetalle.put(        "ArQc","A76488169348EBAB");
+                                            TramaBancariaDetalle.put(        "Footer_1", "Pagaré negociable únicamente");
+                                            TramaBancariaDetalle.put(        "TXN_NAME", "VENTA EN LINEA");
+                                            TramaBancariaDetalle.put(        "TXN_TIME","162439");
+                                            TramaBancariaDetalle.put(        "FOOTER_3", "nada");
+                                            TramaBancariaDetalle.put(        "FOOTER_2", "con instituciones de crédito");
+                                            TramaBancariaDetalle.put(        "TAG_9F12", "Debit MasterCard");
+                                            TramaBancariaDetalle.put(        "TXN_APPROVAL_CODE", "420557");
+                                            TramaBancariaDetalle.put(        "Tag_9F34", "440302");
+                                            TramaBancariaDetalle.put(        "CARD_NAME", "Mastercard");
+                                            TramaBancariaDetalle.put(        "Header_2", "Av de los Insurgentes Sur 2453");
+                                            TramaBancariaDetalle.put(        "HEADER_3", "Tizapán San Ángel Tel:55509935");
+                                            TramaBancariaDetalle.put(        "HEADER_4", "Álvaro Obregón, 01090 CDMX");
+                                            TramaBancariaDetalle.put(        "TSN","162544");
+                                            TramaBancariaDetalle.put(        "EXPIRATION_DATE", "**");
+                                            TramaBancariaDetalle.put(        "ENTRY_MODE","05");
+                                            TramaBancariaDetalle.put(        "BRAND_NAME:", "l");
+                                            TramaBancariaDetalle.put(        "Tag_5F2A","0484");
+                                            TramaBancariaDetalle.put(        "TXN_DATE", "210909");
+                                            TramaBancariaDetalle.put(        "SG_REFERENCE", "000036578535");
+                                            TramaBancariaDetalle.put(        "TiP",0.8);
+                                            TramaBancariaDetalle.put(        "FOOTER_4", "nada2");
+                                            TramaBancariaDetalle.put(        "TOTAL_AMOUNT", "6666.97");
+                                            TramaBancariaDetalle.put(        "BANK_NAME", " ALQUIMIADIGITAL.MX");
+                                            TramaBancariaDetalle.put("MERCHANT_ID", "7550587");
+
+                                        } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                    }else{
-                                        //                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
-                                        //                                            try {
-                                        //                                                banderaSigue = false;
-                                        //                                                String titulo = "AVISO";
-                                        //                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
-                                        //                                                Modales modales = new Modales(DiferentesFormasPago.this);
-                                        //                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                        //                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                        //                                                    @Override
-                                        //                                                    public void onClick(View view) {
-                                        //                                                        modales.alertDialog.dismiss();
-                                        //                                                    }
-                                        //                                                });
-                                        //                                                banderaSigue = false;
-                                        //                                            }catch (Exception e){
-                                        //                                                e.printStackTrace();
-                                        //                                            }
-                                        //                                        }
-                                    }
-                                }else{
-                                    if (montoSeleccionado.equals("0.00")){
-                                        if (Double.parseDouble(txtMontoFaltante.getText().toString())==0.00){
-                                            try {
-                                                banderaSigue = false;
-                                                String titulo = "AVISO";
-                                                String mensaje = "Ya se completó el monto Total, con las diferentes formas de pago";
-                                                Modales modales = new Modales(DiferentesFormasPago.this);
-                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-                                                        modales.alertDialog.dismiss();
+
+                                        String  FormaPagoId;
+                                        String cadenaArreglo="";
+                                        for (int g= 0; g< list.getCount(); g++)
+                                        {
+                                            FormasPagoObjecto = new JSONObject();
+                                            String valorObtenido;
+                                            valorObtenido = subtitle.get(g);
+                                            valorObtenido = valorObtenido.replace("$", "");
+                                            cantidadObtenida = cantidadObtenida + Double.parseDouble(valorObtenido);
+                                            if (Double.parseDouble(valorObtenido)==0.00){
+                                            }else{
+                                                try {
+                                                    FormasPagoObjecto.put("Id", IdFormaPago.get(g));
+                                                    FormasPagoObjecto.put("Importe", Double.parseDouble(valorObtenido));
+                                                    if (IdFormaPago.get(g).equals("12")){ //Solo para Puntada Redimir
+                                                        FormasPagoObjecto.put("NumeroTarjeta", tarjetaNumero);
                                                     }
-                                                });
-                                                banderaSigue = false;
-                                            }catch (Exception e){
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }else{
-                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
-                                            try {
-                                                banderaSigue = false;
-                                                String titulo = "AVISO";
-                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
-                                                Modales modales = new Modales(DiferentesFormasPago.this);
-                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-                                                        modales.alertDialog.dismiss();
+    //                                                if (IdFormaPago.get(g).equals("3")  ){
+    //                                                    FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
+    //                                                }
+    //                                                if (IdFormaPago.get(g).equals("5") ){
+    //                                                    FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
+    //                                                }
+    //                                                if (IdFormaPago.get(g).equals("13") ){
+                                                   if (IdFormaPago.get(g).equals("3") || IdFormaPago.get(g).equals("5") || IdFormaPago.get(g).equals("13")){
+                                                        FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
                                                     }
-                                                });
-                                                banderaSigue = false;
-                                            }catch (Exception e){
-                                                e.printStackTrace();
+
+                                                    FormasPagoArreglo.put(FormasPagoObjecto);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         }
-                                    }
-//                                    }
-                                }
 
-                                if (banderaSigue.equals(true)){
-//                                    tarjetaNumero = getIntent().getStringExtra("tarjetaNumero");
+                                        Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString());
+                                        Double TotalFaltante = MontoTotal - cantidadObtenida;
+                                        txtMontoFaltante.setText(df.format(TotalFaltante).toString());
 
-                                    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-                                    simbolos.setDecimalSeparator('.');
-                                    DecimalFormat df = new DecimalFormat("###0.00##",simbolos);
-//                                    String cantidadformato = cantidad;
-//                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
-//                                    cantidad = cantidadformato;
-                                    cantidad= df.format(Double.parseDouble(cantidad));
-                                    cantidad = "$"+cantidad;
-                                    subtitle.set(position, cantidad);
-                                    Adaptador adapter = new Adaptador(DiferentesFormasPago.this, maintitle, subtitle, imgid);
-                                    list = (ListView) findViewById(R.id.lstPosicionCarga);
-                                    list.setAdapter(adapter);
-                                    Double cantidadObtenida;
-                                    cantidadObtenida = 0.00;
-                                    CadenaFinal="";
-//                                    if (enviadoDesde.equals("valespapel")){
-//                                        try {
-//                                            FormasPagoArreglo = new JSONArray(arregloVales);
-//                                        } catch (JSONException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }else{
-                                        FormasPagoArreglo = new JSONArray();
-//                                    }
-                                    JSONObject TramaBancariaDetalle = new JSONObject();
-                                    try {
-                                        TramaBancariaDetalle.put("SucursalId", 497);
-                                        TramaBancariaDetalle.put("EstacionId", 251);
-                                        TramaBancariaDetalle.put(        "RESPONSE_CODe", "00");
-                                        TramaBancariaDetalle.put(        "POS_ID", "POSANDROID");
-                                        TramaBancariaDetalle.put(        "Tag_9B", "E800");
-                                        TramaBancariaDetalle.put(       "Tag_9F26", "A76488169348EBAB");
-                                        TramaBancariaDetalle.put(        "CARD_TYPE", 1);
-                                        TramaBancariaDetalle.put(        "MNEMO_NAME", "Mc");
-                                        TramaBancariaDetalle.put(        "TERMINAL_ID", "POSANDROID");
-                                        TramaBancariaDetalle.put(        "APP_LABEL","Debit MasterCard");
-                                        TramaBancariaDetalle.put(        "TAG_50", "Debit MasterCard");
-                                        TramaBancariaDetalle.put(        "Tag_95", "0000008000");
-                                        TramaBancariaDetalle.put(        "CARD_HOLDER_NAME","ERICK/AGUILA MARTINEZ ");
-                                        TramaBancariaDetalle.put(        "HEADER_1", "SmartPaymentServices");
-                                        TramaBancariaDetalle.put(        "AMOUNT", "6666.89");
-                                        TramaBancariaDetalle.put(        "PREFERRED_NAME", "Debit MasterCard");
-                                        TramaBancariaDetalle.put(        "ACCOUNT_NUMBEr", "1234 5986 1250 4521");
-                                        TramaBancariaDetalle.put(        "AiD", "A0000000041010");
-                                        TramaBancariaDetalle.put(        "SIGNATURE_FLAG", 0);
-                                        TramaBancariaDetalle.put(        "ArQc","A76488169348EBAB");
-                                        TramaBancariaDetalle.put(        "Footer_1", "Pagaré negociable únicamente");
-                                        TramaBancariaDetalle.put(        "TXN_NAME", "VENTA EN LINEA");
-                                        TramaBancariaDetalle.put(        "TXN_TIME","162439");
-                                        TramaBancariaDetalle.put(        "FOOTER_3", "nada");
-                                        TramaBancariaDetalle.put(        "FOOTER_2", "con instituciones de crédito");
-                                        TramaBancariaDetalle.put(        "TAG_9F12", "Debit MasterCard");
-                                        TramaBancariaDetalle.put(        "TXN_APPROVAL_CODE", "420557");
-                                        TramaBancariaDetalle.put(        "Tag_9F34", "440302");
-                                        TramaBancariaDetalle.put(        "CARD_NAME", "Mastercard");
-                                        TramaBancariaDetalle.put(        "Header_2", "Av de los Insurgentes Sur 2453");
-                                        TramaBancariaDetalle.put(        "HEADER_3", "Tizapán San Ángel Tel:55509935");
-                                        TramaBancariaDetalle.put(        "HEADER_4", "Álvaro Obregón, 01090 CDMX");
-                                        TramaBancariaDetalle.put(        "TSN","162544");
-                                        TramaBancariaDetalle.put(        "EXPIRATION_DATE", "**");
-                                        TramaBancariaDetalle.put(        "ENTRY_MODE","05");
-                                        TramaBancariaDetalle.put(        "BRAND_NAME:", "l");
-                                        TramaBancariaDetalle.put(        "Tag_5F2A","0484");
-                                        TramaBancariaDetalle.put(        "TXN_DATE", "210909");
-                                        TramaBancariaDetalle.put(        "SG_REFERENCE", "000036578535");
-                                        TramaBancariaDetalle.put(        "TiP",0.8);
-                                        TramaBancariaDetalle.put(        "FOOTER_4", "nada2");
-                                        TramaBancariaDetalle.put(        "TOTAL_AMOUNT", "6666.97");
-                                        TramaBancariaDetalle.put(        "BANK_NAME", " ALQUIMIADIGITAL.MX");
-                                        TramaBancariaDetalle.put("MERCHANT_ID", "7550587");
+                                        //AQUI VA ENVIAR A PAGOBANCARIO
+                                        if (formaPagoSeleccionada.equals("3") || formaPagoSeleccionada.equals("5") || formaPagoSeleccionada.equals("13")){
+                                            db.getWritableDatabase().delete("PagoTarjeta", null, null);
+                                            db.close();
+                                            db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal));
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    String  FormaPagoId;
-                                    String cadenaArreglo="";
-                                    for (int g= 0; g< list.getCount(); g++)
-                                    {
-                                        FormasPagoObjecto = new JSONObject();
-                                        String valorObtenido;
-                                        valorObtenido = subtitle.get(g);
-                                        valorObtenido = valorObtenido.replace("$", "");
-                                        cantidadObtenida = cantidadObtenida + Double.parseDouble(valorObtenido);
-                                        if (Double.parseDouble(valorObtenido)==0.00){
-                                        }else{
-                                            try {
-                                                FormasPagoObjecto.put("Id", IdFormaPago.get(g));
-                                                FormasPagoObjecto.put("Importe", Double.parseDouble(valorObtenido));
-                                                if (IdFormaPago.get(g).equals("12")){ //Solo para Puntada Redimir
-                                                    FormasPagoObjecto.put("NumeroTarjeta", tarjetaNumero);
-                                                }
-                                                if (IdFormaPago.get(g) == "3" || IdFormaPago.get(g) == "5" || IdFormaPago.get(g) == "13" ){
-                                                    FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
-                                                }
-                                                FormasPagoArreglo.put(FormasPagoObjecto);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
+                                            db.InsertarDatosPagoTarjetaDFP(formaPagoSeleccionada, Double.toString(MontoTotal), formaPagoSeleccionada, "", cantidad, "0");
+                                            Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
+                                            intentVisa.putExtra("lugarProviene", "diferentesformaspago");
+                                            intentVisa.putExtra("posicioncarga", PosicionCarga);
+                                            intentVisa.putExtra("formapagoid", formaPagoSeleccionada);
+                                            intentVisa.putExtra("montoencanasta", cantidad);
+                                            intentVisa.putExtra("numeroTarjeta", "");
+                                            startActivity(intentVisa);
                                         }
                                     }
-
-                                    Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString());
-                                    Double TotalFaltante = MontoTotal - cantidadObtenida;
-                                    txtMontoFaltante.setText(df.format(TotalFaltante).toString());
-
-                                    //AQUI VA ENVIAR A PAGOBANCARIO
-                                    if (formaPagoSeleccionada.equals("3") || formaPagoSeleccionada.equals("5") || formaPagoSeleccionada.equals("13")){
-                                        db.getWritableDatabase().delete("PagoTarjeta", null, null);
-                                        db.close();
-                                        db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal));
-                                        Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
-                                        intentVisa.putExtra("lugarProviene", "diferentesformaspago");
-                                        intentVisa.putExtra("posicioncarga", PosicionCarga);
-                                        intentVisa.putExtra("formapagoid", formaPagoSeleccionada);
-                                        intentVisa.putExtra("montoencanasta", cantidad);
-                                        intentVisa.putExtra("numeroTarjeta", "");
-                                        startActivity(intentVisa);
-                                    }
+                                    modales.alertDialog.dismiss();
                                 }
+                            }
+                        });
+                        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 modales.alertDialog.dismiss();
                             }
-                        }
-                    });
-                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    String titulo = "AVISO";
+                    String mensaje = "Ya se ha realizado el pago con la forma de pago seleccionada";
+                    Modales modales = new Modales(DiferentesFormasPago.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             modales.alertDialog.dismiss();
                         }
                     });
-                } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
+
             }
         });
     }

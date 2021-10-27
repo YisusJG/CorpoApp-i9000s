@@ -71,10 +71,12 @@ class  DetailActivity : AppCompatActivity() {
             this.finish()
         }else{
             db!!.updatePagoTarjetaCorrecto(2)
+
             if (provieneeFPoDFP == "1") {
                 finish()
             }else{
                 if (provieneeFPoDFP == "2") {
+                    db!!.updateDiferentesFormasPago("", "0", db!!.getformapagoid())
                     finish()
                     startActivity(
                         Intent(

@@ -54,7 +54,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VentaProductos extends AppCompatActivity {
     SQLiteBD data;
     String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid;
-    long numeroInternoPosicionCarga;
+    long numeroInternoPosicionCarga, posicioncargaid;
 
     Button btnCombustibleVenta, btnPerifericosVentas, btnCobrarPeriferico, btnDecrementarProducto, btnEscanearProducto, btnLecturaQR;
     ListView lstProductos;
@@ -187,6 +187,7 @@ public class VentaProductos extends AppCompatActivity {
                                             }
                                         });
                                     }else{
+                                        Long operativa = Long.valueOf(1);
                                         //Envia a Mostrar CArrito TRansacciones
                                         Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);
                                         //se envia el id seleccionado a la clase Usuario Producto
@@ -194,8 +195,11 @@ public class VentaProductos extends AppCompatActivity {
                                         intente.putExtra("usuario", usuarioid);
                                         intente.putExtra("cadenaproducto", "");
                                         intente.putExtra("lugarproviene", "Despacho");
-                                        intente.putExtra("numeroOperativa", "1");
+                                        intente.putExtra("numeroOperativa", operativa);
                                         intente.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
+                                        intente.putExtra("pocioncargaid", posicioncargaid);
+
+
                                         //Ejecuta la clase del Usuario producto
                                         startActivity(intente);
                                         //Finaliza activity
@@ -317,6 +321,7 @@ public class VentaProductos extends AppCompatActivity {
         ipEstacion = data.getIpEstacion();
         usuarioid = data.getNumeroEmpleado();
         poscicionCarga = getIntent().getStringExtra("posicionCarga");
+        posicioncargaid = getIntent().getLongExtra("pocioncargaid", 0);
         idUsuario = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
         numeroInternoPosicionCarga = getIntent().getLongExtra("pcnumerointerno",0);

@@ -58,7 +58,7 @@ public class ValesPapel extends AppCompatActivity {
     int sumaTiposVale=0, TipoValesPapelId;
     String[] opcionesTipoVale;// = new String[sumaTiposVale];
     Double montoaCobrar;
-    String posicionCarga, usuarioid, estacionJarreo, claveProducto,  ValeSeleccionado, ipEstacion, ValePapelId = "2";
+    String posicionCarga, usuarioid, estacionJarreo, claveProducto,  ValeSeleccionado, ipEstacion, ValePapelId = "2", idoperativa;
     EditText  tvFolioMonto, tvDenominacionMonto;
     TextView tvMontoACargar, tvMontoACargarPendiente;
     List<String> IDMontos;
@@ -66,7 +66,6 @@ public class ValesPapel extends AppCompatActivity {
     List<String> MontoVale;
     List<String> FolioValePapel;
     List<String> TipoValesPapel;
-
 
     SQLiteBD data;
     String url, fechaTicket;
@@ -86,6 +85,7 @@ public class ValesPapel extends AppCompatActivity {
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
         claveProducto = getIntent().getStringExtra("claveProducto");
         montoaCobrar = getIntent().getDoubleExtra("montoencanasta", 0);
+        idoperativa = getIntent().getStringExtra("idoperativa");
 
         init();
         ObtieneTiposVale();
@@ -100,44 +100,47 @@ public class ValesPapel extends AppCompatActivity {
         btnAceptarValesPapel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String titulo = "PUNTADA";
-                String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
-                Modales modalesPuntada = new Modales(ValesPapel.this);
-                View viewLectura = modalesPuntada.MostrarDialogoAlerta(ValesPapel.this, mensajes,  "SI", "NO");
-                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String banderaHuella = getIntent().getStringExtra( "banderaHuella");
-                        String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
-                        //LeeTarjeta();
-                        Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
-                        //intent.putExtra("device_name", m_deviceName);
-                        intent.putExtra("Enviadodesde", "formaspago");
-                        intent.putExtra("numeroEmpleado", data.getNumeroEmpleado());
-                        intent.putExtra("idoperativa", 1);
-                        intent.putExtra("formapagoid", "2");
-                        intent.putExtra("NombrePago", "Vales");
-                        intent.putExtra("NombreCompleto", data.getNombreCompleto());
-                        intent.putExtra("montoenlacanasta", montoaCobrar);
-                        intent.putExtra("posicioncargaid", posicionCarga);
-                        intent.putExtra("tipoTarjeta", "Puntada");
-                        intent.putExtra("pagoconpuntada", "no");
+                if (idoperativa.equals("20")){
+                    EnviarValesPapel();
+                }else{
+                    String titulo = "PUNTADA";
+                    String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                    Modales modalesPuntada = new Modales(ValesPapel.this);
+                    View viewLectura = modalesPuntada.MostrarDialogoAlerta(ValesPapel.this, mensajes,  "SI", "NO");
+                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String banderaHuella = getIntent().getStringExtra( "banderaHuella");
+                            String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
+                            //LeeTarjeta();
+                            Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                            //intent.putExtra("device_name", m_deviceName);
+                            intent.putExtra("Enviadodesde", "formaspago");
+                            intent.putExtra("numeroEmpleado", data.getNumeroEmpleado());
+                            intent.putExtra("idoperativa", 1);
+                            intent.putExtra("formapagoid", "2");
+                            intent.putExtra("NombrePago", "Vales");
+                            intent.putExtra("NombreCompleto", data.getNombreCompleto());
+                            intent.putExtra("montoenlacanasta", montoaCobrar);
+                            intent.putExtra("posicioncargaid", posicionCarga);
+                            intent.putExtra("tipoTarjeta", "Puntada");
+                            intent.putExtra("pagoconpuntada", "no");
 
-                        startActivity(intent);
-                        modalesPuntada.alertDialog.dismiss();
-                    }
-                });
-                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                            startActivity(intent);
+                            modalesPuntada.alertDialog.dismiss();
+                        }
+                    });
+                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 //                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
-                        modalesPuntada.alertDialog.dismiss();
+                            modalesPuntada.alertDialog.dismiss();
 //                                    SeleccionaPesosDoalares();
-                        EnviarValesPapel();
-                    }
-                });
+                            EnviarValesPapel();
+                        }
+                    });
 
-
+                }
             }
         });
 
