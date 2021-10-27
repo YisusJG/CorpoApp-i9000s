@@ -31,6 +31,8 @@
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_alerta_aceptar.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_en_desarrollo.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_forma_pago_tarjetas_bancarias.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_formas_de_pago.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_formas_pago.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_imprime_puntada.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_insertar_dato_dialogo.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_insertar_facturas_dialogo.xml" value="0.27291666666666664" />
@@ -38,6 +40,7 @@
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_monederos_electronicos.xml" value="0.14270833333333333" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_muestreo_fajillas_entregadas_recibidas.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_opcion_fajillas.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_carga_tickets.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_puntada_redimir.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_proceso_venta.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_productos.xml" value="0.27291666666666664" />
@@ -49,6 +52,7 @@
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_scaneo.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_seccion_tarjeta.xml" value="0.14270833333333333" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_tarjeta_puntada_provisional.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_vales_papel.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_productos.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas_productos.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_combustibles.xml" value="0.14270833333333333" />

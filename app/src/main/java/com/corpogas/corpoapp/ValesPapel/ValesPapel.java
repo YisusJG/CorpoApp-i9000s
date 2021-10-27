@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -32,11 +33,14 @@ import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
+import com.corpogas.corpoapp.Puntada.PuntadaRedimirQr;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +58,7 @@ public class ValesPapel extends AppCompatActivity {
     Spinner spnValesPapel;
     Button btnAgregarVale, btnAceptarValesPapel, btnOtrasFormasPago;
     ListView lstValesPapel;
-    ImageView imgEscanearVale;
+    ImageButton imgEscanearVale, imgEscanearVale2;
     int sumaTiposVale=0, TipoValesPapelId;
     String[] opcionesTipoVale;// = new String[sumaTiposVale];
     Double montoaCobrar;
@@ -154,11 +158,50 @@ public class ValesPapel extends AppCompatActivity {
         imgEscanearVale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                IntentIntegrator integrator = new IntentIntegrator(ValesPapel.this);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                integrator.setPrompt("Lector - CDP");
+                integrator.setCameraId(0);
+                integrator.setBeepEnabled(false);
+                integrator.setBarcodeImageEnabled(true);
+                integrator.initiateScan();
             }
         });
 
+        imgEscanearVale2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentIntegrator integrator = new IntentIntegrator(ValesPapel.this);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                integrator.setPrompt("Lector - CDP");
+                integrator.setCameraId(0);
+                integrator.setBeepEnabled(false);
+                integrator.setBarcodeImageEnabled(true);
+                integrator.initiateScan();
+            }
+        });
 
+    }
+
+    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+            } else {
+                if (result.getContents().length() >= 17) {
+                    tvFolioMonto.setText(result.getContents());
+                } else {
+                    int resultInt = Integer.parseInt(result.getContents());
+                    String residuo = result.getContents().substring(result.getContents().length() - 2);
+                    int conversion = resultInt/100;
+                    String resultConversion = Integer.toString(conversion);
+                    tvDenominacionMonto.setText(resultConversion);
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resulCode, data);
+        }
     }
 
     private  void EnviaraDiferentesFormasPago(){
@@ -570,7 +613,8 @@ public class ValesPapel extends AppCompatActivity {
         btnAceptarValesPapel = (Button) findViewById(R.id.btnAceptarValesPapel);
         btnOtrasFormasPago = (Button) findViewById(R.id.btnOtrasFormasPago);
         lstValesPapel = (ListView) findViewById(R.id.lstValesPapel);
-        imgEscanearVale = (ImageView) findViewById(R.id.imgEscanearVale);
+        imgEscanearVale = (ImageButton) findViewById(R.id.imgEscanearVale);
+        imgEscanearVale2 = (ImageButton) findViewById(R.id.imgEscanearVale2);
         tvMontoACargar = (TextView) findViewById(R.id.tvMontoACargar);
         tvMontoACargarPendiente = (TextView) findViewById(R.id.tvMontoACargarPendiente);
         tvFolioMonto = (EditText) findViewById(R.id.tvFolioMonto);

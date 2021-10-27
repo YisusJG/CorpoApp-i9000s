@@ -435,6 +435,10 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         RegistraTarjeta();
                         break;
                     case "RedimirQR":
+
+
+
+
                     case "Redimir":
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;

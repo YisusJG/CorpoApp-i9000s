@@ -165,13 +165,10 @@ class Menu_Principal : AppCompatActivity() {
             finish()
         }
         viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
-
     }
 
     fun cerrarSesionTemporal(){
         obtenerArqueo()
-
-
 
 //        val mensajes = "¿CUENTAS CON PICOS PARA ENTREGAR?"
 //        val modales = Modales(this)
@@ -189,8 +186,6 @@ class Menu_Principal : AppCompatActivity() {
 //            modales.alertDialog.dismiss()
 //
 //        }
-
-
 
 //        val titulo = "Cerrar sesion"
 //        val mensaje = "INGRESA TUS PICOS PARA CONTINUAR"
@@ -709,7 +704,6 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgFacturacion -> {
-
                 intent = Intent(applicationContext, ClienteFacturas::class.java)
                 startActivity(intent)
             }

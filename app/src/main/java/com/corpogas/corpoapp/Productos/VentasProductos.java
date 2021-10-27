@@ -46,6 +46,8 @@
     import com.corpogas.corpoapp.R;
     import com.corpogas.corpoapp.ValesPapel.ValesPapel;
     import com.corpogas.corpoapp.VentaCombustible.confirmaVenta;
+    import com.google.zxing.integration.android.IntentIntegrator;
+    import com.google.zxing.integration.android.IntentResult;
 
     import org.json.JSONArray;
     import org.json.JSONException;
@@ -257,7 +259,6 @@
             categoria = findViewById(R.id.categoria);
             //procedimiento que despliega la lista de productos
             MostrarProductos();
-            UI();
 
             btnbuscar = findViewById(R.id.btnbuscar);
             btnbuscar.setOnClickListener(new View.OnClickListener() {
@@ -272,9 +273,13 @@
             btnScanner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
-
-                    startActivity(intent);
+                    IntentIntegrator integrator = new IntentIntegrator(VentasProductos.this);
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                    integrator.setPrompt("Lector - CDP");
+                    integrator.setCameraId(0);
+                    integrator.setBeepEnabled(true);
+                    integrator.setBarcodeImageEnabled(true);
+                    integrator.initiateScan();
                 }
             });
 
@@ -307,6 +312,22 @@
                 }
             });
 
+        }
+
+        protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+                } else {
+//                    Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
+                    Producto.setText(result.getContents());
+                    buscarCodigoBarra(result.getContents());
+                }
+            } else {
+                super.onActivityResult(requestCode, resulCode, data);
+            }
         }
 
         private void Autorizadespacho() {
@@ -376,7 +397,7 @@
                     } else {
                         scanResult = intent.getStringExtra("EXTRA_SCAN_DATA");
                         Toast.makeText(context, "Codigo: " + scanResult, Toast.LENGTH_SHORT).show();
-                        buscarCodigoBarra(scanResult);
+//                        buscarCodigoBarra(scanResult);
                     }
 //                final String  scanResultData=intent.getStringExtra("EXTRA_SCAN_DATA");
 //                    tvMsg.setText("Scan Bar Code ：" + scanResult);
