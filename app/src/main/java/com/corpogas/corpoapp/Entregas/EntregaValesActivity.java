@@ -33,6 +33,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +177,7 @@ public class EntregaValesActivity extends AppCompatActivity {
 
     private void initializeAdapterFormasDePago(List<CierreValePapel>lValesPapel) {
         RVAdapterValesPapel adapter = new RVAdapterValesPapel(lValesPapel);
-
+        lValesPapel.remove(0);
 
         adapter.setOnClickListener(v -> {
             if(!adapter.isClickable) {
@@ -256,7 +257,7 @@ public class EntregaValesActivity extends AppCompatActivity {
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
 
-
+//                        String gson = new Gson(recepcionVale).toJson();
                         EndPoints guardarVales = retrofit.create(EndPoints.class);
                         Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
                         call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {

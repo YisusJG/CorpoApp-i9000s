@@ -1,5 +1,9 @@
 package com.corpogas.corpoapp.Interfaces.Endpoints;
 
+import com.corpogas.corpoapp.Cofre.Entities.EnviarFajillaCofre;
+import com.corpogas.corpoapp.Cofre.Entities.RecepcionFajillasNoEnCajaFuerte;
+import com.corpogas.corpoapp.Cofre.Entities.StatusFajilla;
+import com.corpogas.corpoapp.Cofre.Entities.TotalFajillaCajaFuerte;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
@@ -19,7 +23,6 @@ import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajillaEntregada;
 import com.corpogas.corpoapp.Entities.Estaciones.ResumenFajilla;
-import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
 import com.corpogas.corpoapp.Entities.Sistemas.ConfiguracionAplicacion;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
 import com.corpogas.corpoapp.Entities.Sucursales.Update;
@@ -35,7 +38,6 @@ import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
 import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
 import com.corpogas.corpoapp.Entregas.Entities.RecepcionVale;
 import com.corpogas.corpoapp.Entregas.Entities.ResumenVale;
-import com.corpogas.corpoapp.Entregas.Entities.ValePapel;
 import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
@@ -135,6 +137,14 @@ public interface EndPoints {
     @GET("api/cierreTickets/turno/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<CierreTicket>> getCierreTicket(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
 
+    @GET("api/recepcionFajillas/ObtenerFajillasPendientesCajaFuerte/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}/qr/{qrCajaFuerte}")
+    Call<RespuestaApi<RecepcionFajillasNoEnCajaFuerte<TotalFajillaCajaFuerte>>> getFajillasCofre(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado, @Path ("qrCajaFuerte") String qrCajaFuerte);
+
+    @GET("api/recepcionFajillas/getFajillas/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    Call<RespuestaApi<RecepcionFajillaEntregada>> getFajillas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") long numeroEmpleado);
+
+
+
 //   METODOS POST
 
     @POST("api/ConfiguracionAplicaciones/ValidarConexion")
@@ -190,9 +200,10 @@ public interface EndPoints {
     @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}")
     Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
-    @GET("api/recepcionFajillas/getFajillas/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
-    Call<RespuestaApi<RecepcionFajillaEntregada>> getFajillas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") long numeroEmpleado);
 
+
+    @POST("api/fajillasCajaFuerte/entregaFajillasCajaFuerte/numeroEmpleado/{numeroEmpleadoEntrega}")
+    Call<RespuestaApi<List<StatusFajilla>>> postGuardaFajillasCofre(@Body List<EnviarFajillaCofre> enviarfajillasCofre, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
 
 //    METODOS DELETE

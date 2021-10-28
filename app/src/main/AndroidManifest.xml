@@ -23,11 +23,18 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true"
         android:hardwareAccelerated="true">
+        <activity
+            android:name=".Cofre.CofreActivity"
+            android:exported="true" >
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity
             android:name=".Fajillas.CancelarPagoTransaccion"
             android:exported="true" />
-
         <activity
             android:name=".VentaCombustible.FormaPagoTarjetasBancarias"
             android:exported="true" />

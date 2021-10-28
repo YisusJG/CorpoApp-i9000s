@@ -40,6 +40,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation files('libs\\platform_sdk_v4.1.0326.jar')
     testImplementation 'junit:junit:4.+'
 
 
@@ -57,8 +58,8 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation files('libs/platform_sdk_v4.1.0326.jar')
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation files('libs/platform_sdk_v4.1.0326.jar')
 
     //para el qr
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'

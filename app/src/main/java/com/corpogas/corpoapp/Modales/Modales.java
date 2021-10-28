@@ -196,6 +196,31 @@ public class Modales extends Dialog implements
 
     }
 
+    public View MostrarDialogoCofre(Context context, String mensaje, String titulo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.dialog_confirmar_cofre, (ConstraintLayout) findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(titulo);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(mensaje);
+        ((Button) view.findViewById(R.id.buttonYes)).setText(R.string.aceptar);
+        ((Button) view.findViewById(R.id.buttonNo)).setText(R.string.cancelar);
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_agregar_dato);
+
+        alertDialog = builder.create();
+
+        if(alertDialog.getWindow() != null)
+        {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        return view;
+
+    }
+
 
 
     public View MostrarDialogoError(Context context, String mensaje){

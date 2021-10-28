@@ -38,6 +38,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.provider.Settings.Secure;
 import android.widget.*
+import androidx.cardview.widget.CardView
+import com.corpogas.corpoapp.Cofre.CofreActivity
 import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
 //import com.corpogas.corpoapp.Corte.Fragments.PicosFragment
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
@@ -71,6 +73,7 @@ class Menu_Principal : AppCompatActivity() {
     lateinit var txtRolMainNav: TextView
     lateinit var txtIdDispositivoMainNav: TextView
     lateinit var txtCerrarSesionTemporalMainNav: TextView
+    lateinit var cardVScanner:CardView
 
     //-------Variables necesarias para ininicalizar el lector de huellas
     private val GENERAL_ACTIVITY_RESULT = 1
@@ -91,6 +94,12 @@ class Menu_Principal : AppCompatActivity() {
         val data = SQLiteBD(this)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
         drawerLayout = findViewById(R.id.drawer_layout)
+        cardVScanner = findViewById(R.id.crdvScanner)
+        var mostrarOpcionScanner:Int = data.rol.toInt()
+        if(mostrarOpcionScanner ==1 || mostrarOpcionScanner == 3){
+            cardVScanner.visibility = View.VISIBLE
+        }
+
         //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,"open navigation drawer", "close navigation drawer");
 //        drawerLayout.addDrawerListener(toggle);
@@ -721,6 +730,11 @@ class Menu_Principal : AppCompatActivity() {
 
             R.id.btnEntregas -> {
                 intent = Intent(applicationContext, OpcionesEntregaActivity::class.java)
+                startActivity(intent)
+            }
+
+            R.id.btnCofre -> {
+                intent = Intent(applicationContext, CofreActivity::class.java)
                 startActivity(intent)
             }
 
