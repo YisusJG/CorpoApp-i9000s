@@ -76,7 +76,7 @@ class  DetailActivity : AppCompatActivity() {
                 finish()
             }else{
                 if (provieneeFPoDFP == "2") {
-                    db!!.updateDiferentesFormasPago("", "0", db!!.getformapagoid())
+                    db!!.updateDiferentesFormasPago("ERrror de conexion", "0", db!!.getformapagoid())
                     finish()
                     startActivity(
                         Intent(

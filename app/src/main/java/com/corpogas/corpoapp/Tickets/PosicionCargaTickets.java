@@ -192,6 +192,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                         Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
                                         startActivity(intent1);
                                         finish();
+                                        bar.cancel();
                                     }
                                 });
                             }else {
@@ -207,6 +208,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    bar.cancel();
                     String algo = new String(error.networkResponse.data);
                     try {
                         //creamos un json Object del String algo
@@ -248,7 +250,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
         bar.show();
 
         String url;
-        url = "http://" + ipEstacion + "/CorpogasService/api/accesoUsuarios/sucursal/" + sucursalId + "/clave/1111";// + data.getClave();
+        url = "http://" + ipEstacion + "/CorpogasService/api/accesoUsuarios/sucursal/" + sucursalId + "/clave/"+ data.getClave();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override

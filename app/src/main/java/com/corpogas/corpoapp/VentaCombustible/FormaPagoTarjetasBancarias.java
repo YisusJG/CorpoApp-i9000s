@@ -69,8 +69,7 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
             if (provieneeFPoDFP.equals("1")){
                 imprimePagoTarjetaBancaria();
             }else{
-                data.getWritableDatabase().delete("PagoTarjeta", null, null);
-                data.close();
+                data.updateDiferentesFormasPago("asdasdasdasd", "1", formaPagoId);
                 finish();
             }
 //        }else{ //Primero Actualiza a puntada acumular y luego imprime
@@ -140,7 +139,10 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
                 TramaBancariaDetalle.put(        "BANK_NAME", " ALQUIMIADIGITAL.MX");
                 TramaBancariaDetalle.put("MERCHANT_ID", "7550587");
 
-                data.updateDiferentesFormasPago(TramaBancariaDetalle.toString(), "1" , formaPagoId );
+                if (provieneeFPoDFP.equals("1")){
+                }else{
+                    data.updateDiferentesFormasPago(TramaBancariaDetalle.toString(), "1" , formaPagoId );
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();

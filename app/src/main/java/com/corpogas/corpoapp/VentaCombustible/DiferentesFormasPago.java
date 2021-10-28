@@ -69,8 +69,6 @@ public class DiferentesFormasPago extends AppCompatActivity {
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
-        db.getIdTarjtero();
-        db.getCorrectoIncorrecto();
 
         Usuarioid = db.getUsuarioId();
         Clavedespachador = db.getClave();
@@ -244,6 +242,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                                     @Override
                                     public void onClick(View view) {
+                                        db.getWritableDatabase().delete("PagoTarjetaDiferentesFormasPago", null, null);
+                                        db.close();
                                         Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                         startActivity(intent);
                                         finish();
@@ -361,6 +361,10 @@ public class DiferentesFormasPago extends AppCompatActivity {
         //Lo asignamos a un nuevo ArrayList
         NumeroInternoFormaPago = new ArrayList<String>();
 
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("###0.00##",simbolos);
+
 
         try {
             //JSONObject jsonObject = new JSONObject(response);
@@ -393,7 +397,17 @@ public class DiferentesFormasPago extends AppCompatActivity {
                             numerotickets.add(numero_ticket);
                             maintitle.add(nombre_pago);
                             if (db.getCorrectoIncorrecto().equals("2")){
-                                subtitle.add("$"+ db.getMontoFPD(Integer.parseInt(numero_pago)) );
+                                if (db.getFormaPagoFPD(Integer.parseInt(numero_pago))>0){
+                                    if (db.getEstatusCobradoFPD(Integer.parseInt(numero_pago)).equals(1)){
+                                        subtitle.add("$"+ db.getMontoFPD(Integer.parseInt(numero_pago)) );
+                                        Double Faltante = Double.parseDouble(txtMontoFaltante.getText().toString());
+                                        txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
+                                    }else{
+                                        subtitle.add("$0.00" );
+                                   }
+                                }else{
+                                    subtitle.add("$0.00" );
+                                }
                             }else{
                                 subtitle.add("$0.00" );
                             }
@@ -483,7 +497,22 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
                 formaPagoSeleccionada = IdFormaPago.get(position);
                 // TODO Auto-generated method stub
-                if (db.getEstatusCobradoFPD(Integer.parseInt(formaPagoSeleccionada) )== 0){
+                Boolean banderaInicia=false;
+                Integer validaInicioError;
+                if (db.getCorrectoIncorrecto().equals("2")){
+                    banderaInicia = true;
+                }
+                if (banderaInicia.equals(true)){
+                    if (db.getFormaPagoFPD(Integer.parseInt(formaPagoSeleccionada))>0){
+                        validaInicioError= db.getEstatusCobradoFPD(Integer.parseInt(formaPagoSeleccionada));
+                    }else{
+                        validaInicioError= 0;
+                    }
+                }else{
+                    validaInicioError= 0;
+                }
+
+                if (validaInicioError == 0){
                     try {
                         String titulo = "Parcialidades";
                         String mensaje = "Ingresa el monto" ;
@@ -741,7 +770,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                             db.close();
                                             db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal));
 
-                                            db.InsertarDatosPagoTarjetaDFP(formaPagoSeleccionada, Double.toString(MontoTotal), formaPagoSeleccionada, "", cantidad, "0");
+                                            db.InsertarDatosPagoTarjetaDFP(formaPagoSeleccionada, Double.toString(MontoTotal), formaPagoSeleccionada, "", cantidad.replace("$",""), "0");
                                             Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
                                             intentVisa.putExtra("lugarProviene", "diferentesformaspago");
                                             intentVisa.putExtra("posicioncarga", PosicionCarga);

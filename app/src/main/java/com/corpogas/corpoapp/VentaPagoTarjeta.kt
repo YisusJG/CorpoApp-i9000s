@@ -22,6 +22,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.lang.Exception
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.HashMap
 
 class  VentaPagoTarjeta : AppCompatActivity() {
@@ -46,7 +48,21 @@ class  VentaPagoTarjeta : AppCompatActivity() {
         val formaPagoId = data!!.getformapagoid() //intent.getStringExtra("formapagoid")
         val lugarproviene = intent.getStringExtra("lugarProviene")
         val poscionCarga = data!!.getposcioncarga() //intent.getStringExtra("posicioncarga")
-        val total = data!!.getmonto() //intent.getStringExtra("montoencanasta")
+        var total:String = data!!.getmonto() //intent.getStringExtra("montoencanasta")
+
+
+        //                                    tarjetaNumero = getIntent().getStringExtra("tarjetaNumero");
+        val simbolos = DecimalFormatSymbols()
+        simbolos.decimalSeparator = '.'
+        val df = DecimalFormat("###0.00##", simbolos)
+        //                                    String cantidadformato = cantidad;
+        //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
+        //                                    cantidad = cantidadformato;
+        //                                    String cantidadformato = cantidad;
+        //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
+        //                                    cantidad = cantidadformato;
+        total = "$"+ df.format(total.toDouble())
+
 
         edtAmount = findViewById(R.id.amount)
         edtTip = findViewById(R.id.tip)
