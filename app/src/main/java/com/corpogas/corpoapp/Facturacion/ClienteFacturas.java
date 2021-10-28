@@ -18,6 +18,7 @@ import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.R;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -99,6 +100,8 @@ public class ClienteFacturas extends Activity {
         peticionRFC.rfc = RFC;
         peticionRFC.despachador = idUsuario;
         peticionRFC.terminal = db.getIdTarjtero();
+
+        String json = new Gson().toJson(peticionRFC);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
