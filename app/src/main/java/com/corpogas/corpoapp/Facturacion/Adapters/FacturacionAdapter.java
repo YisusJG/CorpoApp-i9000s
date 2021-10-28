@@ -35,6 +35,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Service.PrintBillService;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
@@ -104,6 +105,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
         Type respuestaSoicitudFactura;
         ProgressDialog bar;
 
+
         //variables scaneo
         private Button btnNumRastreo,btnStartScan;
         private BroadcastReceiver mScanRecevier = null;
@@ -135,6 +137,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
 
             linearLayout = itemView.findViewById(R.id.linear_layout);
             expandableLayout = itemView.findViewById(R.id.expandable_layout);
+
 
             linearLayout.setOnClickListener(new View.OnClickListener() {
 
@@ -333,7 +336,9 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                                     {
                                         String validaRespuestaFacturacion = respuestaCFDI.getAlertaHttp().getError().getMensajeSistema();
                                         clienteFacturas.bar.cancel();
-                                        Toast.makeText(mContext, validaRespuestaFacturacion, Toast.LENGTH_LONG).show();
+//                                        Toast.makeText(mContext, validaRespuestaFacturacion, Toast.LENGTH_LONG).show();
+
+                                        Snackbar.make(view,validaRespuestaFacturacion, Snackbar.LENGTH_LONG).show();
 //                                                txtNumRastreo.setError(validaRespuestaFacturacion);
                                     }
                                     else{

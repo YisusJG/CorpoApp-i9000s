@@ -190,8 +190,6 @@ public interface EndPoints {
     @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}")
     Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
-
-
     @GET("api/recepcionFajillas/getFajillas/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<RecepcionFajillaEntregada>> getFajillas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") long numeroEmpleado);
 

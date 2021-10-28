@@ -101,7 +101,7 @@ public class EntregaFajillas extends AppCompatActivity {
                             }else{
                                 //ENVIA AUTORIZACION
                                 Intent intent1 = new Intent(EntregaFajillas.this, AutorizaFajillas.class); //despachdorclave
-                                intent1.putExtra("LugarProviene", lugarProviene);
+                                intent1.putExtra("lugarProviene", lugarProviene);
                                 intent1.putExtra("TotalFajillas", totalFajillas);
                                 intent1.putExtra("TipoFajilla", valorTipoFajilla);
                                 startActivity(intent1);

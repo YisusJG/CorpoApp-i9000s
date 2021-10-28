@@ -101,7 +101,7 @@ public class ClienteFacturas extends Activity {
         peticionRFC.despachador = idUsuario;
         peticionRFC.terminal = db.getIdTarjtero();
 
-        String json = new Gson().toJson(peticionRFC);
+//        String json = new Gson().toJson(peticionRFC);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
