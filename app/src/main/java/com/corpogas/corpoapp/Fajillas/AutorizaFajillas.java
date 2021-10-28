@@ -33,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Corte.ResumenActivity;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
@@ -659,7 +660,8 @@ public class AutorizaFajillas extends AppCompatActivity {
 //                                    //agrega el Fragment en el contenedor, en este caso el FrameLayout con id `FrameLayout`.
 //                                    ft.add(R.id.contenedorFragmentF, new FajillasFragment());
 //                                    ft.commit();
-                                    finish();
+                                    Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
+                                    startActivity(intent);
 //                                    overridePendingTransition(0, 0);
 //                                    startActivity(getIntent());
 //                                    overridePendingTransition(0, 0);

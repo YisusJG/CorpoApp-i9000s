@@ -50,7 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ResumenActivity extends AppCompatActivity {
 
     ConstraintLayout expandableCombustible, expandableFajilla, expandablePico, expandableVale, expandableFormaPago, expandableJarreo, expandableGastos;
-    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, arrowBtnGastos, btnAgregarFajillasResumenActivity, btnValidarEntrega, btnActualizarResumenActivity;
+    Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, arrowBtnGastos, btnAgregarFajillasResumenActivity, btnValidarEntrega;
     CardView cardViewCombustible, cardViewFajilla, cardViewPico, cardViewVale, cardViewFormaPago, cardViewJarreo, cardViewGastos;
     RecyclerView rcvGasopass, rcvEfectivale, rcvAccor, rcvSiVale, rcvFormaPago, rcvGastos;
     ImageButton btnListaProductosResumenActivity;
@@ -230,7 +230,7 @@ public class ResumenActivity extends AppCompatActivity {
         btnListaProductosResumenActivity = findViewById(R.id.btnListaProductosResumenActivity);
         btnValidarEntrega = findViewById(R.id.btnValidarEntrega);
 
-        btnActualizarResumenActivity = findViewById(R.id.btnActualizarResumenActivity);
+
 
 //        imgTotalPicos = findViewById(R.id.imgTotalPicos);
 //        imgTotalFajillas = findViewById(R.id.imgTotalFajillas);
@@ -378,9 +378,6 @@ public class ResumenActivity extends AppCompatActivity {
             }
         });
 
-        btnActualizarResumenActivity.setOnClickListener(view -> {
-            obtenerResumenCorte();
-        });
 
         btnValidarEntrega.setOnClickListener(view -> {
             importeDiferenciaTotal = respuestaApiCierreTicket.getObjetoRespuesta().getImporteDiferenciaTotal();
