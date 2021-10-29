@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 //import android.device.PrinterManager;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +106,8 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
         Type respuestaSoicitudFactura;
         ProgressDialog bar;
 
+        Snackbar snackbar;
+
 
         //variables scaneo
         private Button btnNumRastreo,btnStartScan;
@@ -153,7 +156,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
             facturarBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String tituloHeader = "INGRESA NUMERO DE RASTREO";
+                    String tituloHeader = "INGRESA NÚMERO DE RASTREO";
 //                    String mensaje = "Ingresa cantidad: " ;
                     Modales modales = new Modales(clienteFacturas);
                     View viewFactura = modales.MostrarDialogoInsertaFactura(clienteFacturas, tituloHeader);
@@ -250,11 +253,11 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                             String numeroEstacion = db.getNumeroEstacion();
 
                             if(numeroRastreo.isEmpty()){
-                                txtNumRastreo.setError("Ingresa un numero de rastreo");
+                                txtNumRastreo.setError("Ingresa un número de rastreo");
                             }
                             else {
                                 if (numeroRastreo.length() < 5) {
-                                    txtNumRastreo.setError("Verifica tu numero de rastreo");
+                                    txtNumRastreo.setError("Verifica tu número de rastreo");
                                 } else {
                                     String comparaNumeroRastreo = numeroRastreo.substring(0, numeroEstacion.length());
 
@@ -335,10 +338,19 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                                     if(respuestaCFDI.isCorrecto() == false)
                                     {
                                         String validaRespuestaFacturacion = respuestaCFDI.getAlertaHttp().getError().getMensajeSistema();
-                                        clienteFacturas.bar.cancel();
-//                                        Toast.makeText(mContext, validaRespuestaFacturacion, Toast.LENGTH_LONG).show();
 
-                                        Snackbar.make(view,validaRespuestaFacturacion, Snackbar.LENGTH_LONG).show();
+                                        clienteFacturas.bar.cancel();
+//                                       Toast.makeText(mContext, validaRespuestaFacturacion, Toast.LENGTH_LONG).show();
+//                                        snackbar.make(view,validaRespuestaFacturacion, Snackbar.LENGTH_LONG).show();
+
+
+                                        snackbar = Snackbar.make(view, validaRespuestaFacturacion, Snackbar.LENGTH_LONG);
+                                        View snackBarView = snackbar.getView();
+                                        snackBarView.setBackgroundColor(Color.BLACK);
+                                        TextView textView = (TextView) snackBarView.findViewById(R.id.snackbar_text);
+                                        textView.setTextColor(Color.YELLOW);
+                                        snackbar.show();
+
 //                                                txtNumRastreo.setError(validaRespuestaFacturacion);
                                     }
                                     else{
@@ -349,6 +361,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
 
                                 @Override
                                 public void onFailure(Call<RespuestaApi<RespuestaSolicitudFactura>> call, Throwable t) {
+                                    clienteFacturas.bar.cancel();
                                     Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
