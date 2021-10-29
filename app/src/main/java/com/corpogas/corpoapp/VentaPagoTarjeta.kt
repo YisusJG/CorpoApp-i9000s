@@ -6,10 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.JsonObjectRequest
@@ -27,7 +24,7 @@ import java.text.DecimalFormatSymbols
 import java.util.HashMap
 
 class  VentaPagoTarjeta : AppCompatActivity() {
-    private var edtAmount: EditText? = null
+    private var edtAmount: TextView? = null
     private var edtTip: EditText? = null
     private var checkPrint: CheckBox? = null
 
@@ -69,7 +66,7 @@ class  VentaPagoTarjeta : AppCompatActivity() {
         checkPrint = findViewById(R.id.print)
         edtAmount!!.setText(total);
 
-        edtAmount!!.addTextChangedListener(MoneyTextWatcher(edtAmount!!))
+//        edtAmount!!.addTextChangedListener(MoneyTextWatcher(edtAmount!!))
         edtTip!!.addTextChangedListener(MoneyTextWatcher(edtTip!!))
 
 

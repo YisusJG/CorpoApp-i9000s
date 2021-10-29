@@ -8,43 +8,52 @@
 
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="80dp"
-        android:layout_height="45dp"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:text="No.Tarjeta"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvNoTarjetaQr"
         android:layout_width="170dp"
         android:layout_height="45dp"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/border"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/textView10"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/textView14"
-        android:layout_width="80dp"
-        android:layout_height="45dp"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:text="Descuento"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvDescuento"
         android:layout_width="170dp"
         android:layout_height="45dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/border"
         android:inputType="none"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.165"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView14"
         app:layout_constraintTop_toBottomOf="@+id/tvNoTarjetaQr"
         tools:ignore="TouchTargetSizeCheck" />
@@ -63,8 +72,8 @@
 
     <ImageButton
         android:id="@+id/btnScanPQR"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"

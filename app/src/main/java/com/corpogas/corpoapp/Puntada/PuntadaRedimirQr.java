@@ -28,7 +28,7 @@ public class PuntadaRedimirQr extends AppCompatActivity {
     TextView tvDescuento, tvNoTarjetaQr;
     String NIP, lugarProviene;
     String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
-
+    Long numeroInternoPosicionCarga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +40,8 @@ public class PuntadaRedimirQr extends AppCompatActivity {
         NIP = getIntent().getStringExtra("nip");
         lugarProviene = getIntent().getStringExtra("lugarProviene");
 
-
         posicionCarga = getIntent().getStringExtra("posicionCarga");
+        numeroInternoPosicionCarga = getIntent().getLongExtra("pocioncarganumerointerno", 0);
         usuarioid = db.getNumeroEmpleado();
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
         claveProducto = getIntent().getStringExtra("claveProducto");
@@ -101,7 +101,7 @@ public class PuntadaRedimirQr extends AppCompatActivity {
                                 intent.putExtra("numeroTarjeta", tvNoTarjetaQr.getText().toString());
                                 intent.putExtra("descuento", tvDescuento.getText().toString());
                                 intent.putExtra("lugarProviene", "puntadaAcumularQr");
-
+                                intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
                                 startActivity(intent);
                                 finish();
 

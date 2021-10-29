@@ -445,7 +445,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                     }
 
                                     String IdOperativa = String.valueOf(cargaNumeroInterno);
-                                    if (IdOperativa == "21"){ //TarjetaPuntada Redimir
+                                    if (IdOperativa.equals("21")){ //TarjetaPuntada Redimir
                                         imprimirticket(String.valueOf(posicionCargaId), "REDIMIR", MontoenCanasta.toString());
                                     }else{
                                         Intent intent = new Intent(getApplicationContext(), FormasPago.class);

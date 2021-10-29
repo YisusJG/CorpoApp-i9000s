@@ -445,7 +445,7 @@ public class VentaProductos extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             String titulo = "PUNTADA QR";
-                            String mensajes = "Desea Acumular la venta a su Tarjeta Puntada ?";
+                            String mensajes = "Desea Acumular la venta a su Tarjeta Puntada? ( QR )";
                             Modales modalesPuntada = new Modales(VentaProductos.this);
                             View viewLectura = modalesPuntada.MostrarDialogoAlerta(VentaProductos.this, mensajes,  "SI", "NO");
                             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -463,6 +463,7 @@ public class VentaProductos extends AppCompatActivity {
                                     intent.putExtra("precioProducto", precio);
                                     intent.putExtra("despacholibre", "no");
                                     intent.putExtra("lugarProviene", "Acumular");
+                                    intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
                                     startActivity(intent);
                                     modalesPuntada.alertDialog.dismiss();
                                 }

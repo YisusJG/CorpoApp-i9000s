@@ -134,7 +134,7 @@
             cadenaproducto = getIntent().getStringExtra("cadenaproducto");
             lugarproviene = getIntent().getStringExtra("lugarproviene");
             islaId = db.getIslaId();
-            NumeroEmpleado = getIntent().getLongExtra("NumeroEmpleado", 0);
+            NumeroEmpleado = Long.valueOf(db.getNumeroEmpleado());//getIntent().getLongExtra("NumeroEmpleado", 0);
 
             txtproductos=findViewById(R.id.txtproductos);
             btnScanner = findViewById(R.id.btnscanner);

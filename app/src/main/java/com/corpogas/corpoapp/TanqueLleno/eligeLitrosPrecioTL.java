@@ -161,10 +161,31 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
 
         cantidadlitrospesos = Cantidad.getText().toString();
         if (cantidadlitrospesos.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Ingresa la Cantidad", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "Ingresa la Cantidad", Toast.LENGTH_SHORT).show();
+            String titulo = "AVISO";
+            String mensaje = "Ingresa la Cantidad";
+            Modales modales = new Modales(eligeLitrosPrecioTL.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(eligeLitrosPrecioTL.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
         } else {
             if (cantidadlitrospesos.equals("0")){
-                Toast.makeText(getApplicationContext(), "Ingresa una Cantidad mayor a 0", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Ingresa una Cantidad mayor a 0", Toast.LENGTH_SHORT).show();
+                String titulo = "AVISO";
+                String mensaje = "Ingresa la Cantidad";
+                Modales modales = new Modales(eligeLitrosPrecioTL.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(eligeLitrosPrecioTL.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+
             }else{
 
                 String mensaje;
@@ -175,7 +196,7 @@ public class eligeLitrosPrecioTL extends AppCompatActivity {
                     mensaje = "Estás seguro de que deseas cargar : " + Cantidad.getText().toString() + " pesos";
                 }
                 Modales modales = new Modales(eligeLitrosPrecioTL.this);
-                View viewLectura = modales.MostrarDialogoAlerta(eligeLitrosPrecioTL.this, mensaje,  "Ok", "Cancelar");
+                View viewLectura = modales.MostrarDialogoAlerta(eligeLitrosPrecioTL.this, mensaje,  "Aceptar", "Cancelar");
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -31,6 +31,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -166,7 +167,17 @@ public class eligeCombustibleTL extends AppCompatActivity {
                     EnviarProductos();
                 }else{
                     Enviar.setEnabled(true);
-                    Toast.makeText(getApplicationContext(),"Selecciona un combustible", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(),"Selecciona un combustible", Toast.LENGTH_LONG).show();
+                    String titulo = "AVISO";
+                    String mensaje = "Selecciona un combustible";
+                    Modales modales = new Modales(eligeCombustibleTL.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(eligeCombustibleTL.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
                 }
             }
         });

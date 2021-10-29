@@ -583,6 +583,7 @@ public class EligePrecioLitros extends AppCompatActivity {
                     public void onClick(View view) {
                         Cantidad.setText("");
                         modales.alertDialog.dismiss();
+                        Cantidad.setEnabled(true);
                     }
                 });
             }

@@ -31,6 +31,7 @@ import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 
 import org.json.JSONArray;
@@ -59,6 +60,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
     Integer TipoTransacionImprimir;
     String arregloVales;
     Double MontoenCanasta, montoVales, descuento;
+    ProgressDialog bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +158,12 @@ public class DiferentesFormasPago extends AppCompatActivity {
                     }
                 }else{
                     botonEnviar.setClickable(false);
-
+                    bar = new ProgressDialog(DiferentesFormasPago.this);
+                    bar.setTitle("Guardando Formas de Pago");
+                    bar.setMessage("Ejecutando... ");
+                    bar.setIcon(R.drawable.tickets);
+                    bar.setCancelable(false);
+                    bar.show();
 //                    String titulo = "PUNTADA";
 //                    String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
 //                    Modales modalesEfectivo = new Modales(DiferentesFormasPago.this);
@@ -248,10 +255,12 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
                                         modales.alertDialog.dismiss();
+                                        bar.cancel();
                                     }
                                 });
                             }catch (Exception e){
                                 e.printStackTrace();
+                                bar.cancel();
                             }
                         } else {
                             String titulo = "AVISO";
@@ -264,6 +273,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                     modales.alertDialog.dismiss();
+                                    bar.cancel();
                                 }
                             });
                         }
