@@ -319,7 +319,7 @@ public class EntregaPicosActivity extends AppCompatActivity {
         if (cantiMorralla == 0 && sumaTotal == 0) {
 
             titulo = "AVISO";
-            mensaje = "No haz ingresado ninguna cantidad";
+            mensaje = "No se ha ingresado ninguna cantidad";
             View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicosActivity.this, mensaje, titulo);
             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override

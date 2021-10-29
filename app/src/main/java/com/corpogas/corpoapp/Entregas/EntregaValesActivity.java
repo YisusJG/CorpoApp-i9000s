@@ -33,6 +33,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -196,7 +197,7 @@ public class EntregaValesActivity extends AppCompatActivity {
 
                     String cantidadVale = edtCantidadVale.getText().toString();
                     if (cantidadVale.equals("")) {
-                        edtCantidadVale.setError("Ingresaste un valor");
+                        edtCantidadVale.setError("Campo requerido");
                     } else {
                         edtCantidadVale.setText(String.valueOf((long) cantidadValeRecuperado));
                         long totalVale = (long) denominacion * Long.parseLong(cantidadVale);
@@ -222,8 +223,9 @@ public class EntregaValesActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onclicks() {
         imgDetalleVales.setOnClickListener(v -> {
+            imgDetalleVales.setEnabled(false);
 
-            String titulo = "CONFIRMACION";
+            String titulo = "CONFIRMACIÓN";
             String mensaje = "Ingresa NIP de confirmación.";
             Modales modales = new Modales(EntregaValesActivity.this);
             View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
@@ -232,6 +234,7 @@ public class EntregaValesActivity extends AppCompatActivity {
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    imgDetalleVales.setEnabled(true);
                     String nipAutorizacion = edtNipAutorizacion.getText().toString();
                     if (nipAutorizacion.isEmpty()){
                         edtNipAutorizacion.setError("Ingresa NIP");
@@ -242,64 +245,78 @@ public class EntregaValesActivity extends AppCompatActivity {
                         lCierreValesPapel = new ArrayList<>();
                         lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() > 1).collect(Collectors.toList());
 
-                        for (CierreValePapel item: lCierreValesPapel)
+                        if(lCierreValesPapel.size() >0)
                         {
-                            int cantidad = (int) item.getCantidad();
-                            lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
-                        }
+                            for (CierreValePapel item: lCierreValesPapel)
+                            {
+                                int cantidad = (int) item.getCantidad();
+                                lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
+                            }
 
-                        recepcionVale.SucursalId = sucursalId;
-                        recepcionVale.Clave = nipAutorizacion;
-                        recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
+                            recepcionVale.SucursalId = sucursalId;
+                            recepcionVale.Clave = nipAutorizacion;
+                            recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
 
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
 
 //                        String gson = new Gson(recepcionVale).toJson();
-                        EndPoints guardarVales = retrofit.create(EndPoints.class);
-                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
-                        call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
-                            @Override
-                            public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
-                                if (!response.isSuccessful()) {
-                                    return;
+                            EndPoints guardarVales = retrofit.create(EndPoints.class);
+                            Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
+                            call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
+                                @Override
+                                public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
+                                    if (!response.isSuccessful()) {
+                                        return;
+                                    }
+                                    respuestaGuardaVales = response.body();
+                                    if(respuestaGuardaVales.Correcto)
+                                    {
+                                        modales.alertDialog.dismiss();
+                                        String mensajes = respuestaGuardaVales.getMensaje();
+                                        final Modales modales = new Modales(EntregaValesActivity.this);
+                                        View view1 = modales.MostrarDialogoCorrecto(EntregaValesActivity.this,mensajes);
+                                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                modales.alertDialog.dismiss();
+                                                dbCorte.getWritableDatabase().delete("TipoValesPapel",null,null);
+                                                dbCorte.getWritableDatabase().delete("CierreValePapel",null,null);
+                                                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
+                                    }else
+                                    {
+                                        edtNipAutorizacion.setError(respuestaGuardaVales.getMensaje());
+                                        return;
+                                    }
+
                                 }
-                                respuestaGuardaVales = response.body();
-                                if(respuestaGuardaVales.Correcto)
-                                {
+
+                                @Override
+                                public void onFailure(Call<RespuestaApi<List<ResumenVale>>> call, Throwable t) {
+
+                                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }else{
+                            modales.alertDialog.dismiss();
+                            String titulo = "AVISO";
+                            Modales modales = new Modales(EntregaValesActivity.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(EntregaValesActivity.this,"No has agregado ningun vale",titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
                                     modales.alertDialog.dismiss();
-                                    String mensajes = respuestaGuardaVales.getMensaje();
-                                    final Modales modales = new Modales(EntregaValesActivity.this);
-                                    View view1 = modales.MostrarDialogoCorrecto(EntregaValesActivity.this,mensajes);
-                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            modales.alertDialog.dismiss();
-                                            dbCorte.getWritableDatabase().delete("TipoValesPapel",null,null);
-                                            dbCorte.getWritableDatabase().delete("CierreValePapel",null,null);
-                                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                }else
-                                {
-                                    edtNipAutorizacion.setError(respuestaGuardaVales.getMensaje());
-                                    return;
                                 }
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<RespuestaApi<List<ResumenVale>>> call, Throwable t) {
-                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
-
+                            });
+                            ;
+                        }
                     }
 //                    modales.alertDialog.dismiss();
                 }
@@ -307,7 +324,7 @@ public class EntregaValesActivity extends AppCompatActivity {
             viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    imgDetalleVales.setEnabled(true);
 
                     modales.alertDialog.dismiss();
                 }
