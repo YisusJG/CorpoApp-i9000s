@@ -76,7 +76,7 @@ public class OpcionImprimir extends AppCompatActivity {
                         break;
                     case "Reimprimir"://Redimir
                         Intent intent = new Intent(getApplicationContext(), AutorizaFajillas.class);//PosicionCargaTickets
-                        intent.putExtra("LugarProviene", "Reimprimir"); //lugarproviene
+                        intent.putExtra("lugarProviene", "Reimprimir"); //lugarproviene
                         startActivity(intent);
                         finish();
                         break;

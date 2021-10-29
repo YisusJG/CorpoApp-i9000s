@@ -141,11 +141,15 @@ public class PuntadaRedimirQr extends AppCompatActivity {
             } else {
 //                Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
                 int posicionPunto = result.getContents().indexOf(",");
-                String hastaComa = result.getContents().substring(0, posicionPunto);
-                int finalChar = result.getContents().length();
-                String desdeComa = result.getContents().substring(posicionPunto + 1, finalChar);
-                tvNoTarjetaQr.setText(hastaComa);
-                tvDescuento.setText(desdeComa);
+                if (posicionPunto==0){
+                    Toast.makeText(getApplicationContext(), "El código QR no contiene descuento asociado", Toast.LENGTH_SHORT).show();
+                } else{
+                    String hastaComa = result.getContents().substring(0, posicionPunto);
+                    int finalChar = result.getContents().length();
+                    String desdeComa = result.getContents().substring(posicionPunto + 1, finalChar);
+                    tvNoTarjetaQr.setText(hastaComa);
+                    tvDescuento.setText(desdeComa);
+                }
             }
         } else {
             super.onActivityResult(requestCode, resulCode, data);

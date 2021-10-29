@@ -119,7 +119,7 @@
         android:layout_height="22dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="35dp"
-        android:text="No.Tarjeta/No.NIV"
+        android:text="No.Tarjeta/No.NID"
         android:textAlignment="textStart"
         android:textSize="15sp"
         android:textStyle="bold"

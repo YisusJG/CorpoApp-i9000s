@@ -445,7 +445,7 @@ public class VentaProductos extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             String titulo = "PUNTADA QR";
-                            String mensajes = "Desea Acumular la venta a su Tarjeta Puntada? ( QR )";
+                            String mensajes = "¿Descuento con Puntada ( QR )? ";
                             Modales modalesPuntada = new Modales(VentaProductos.this);
                             View viewLectura = modalesPuntada.MostrarDialogoAlerta(VentaProductos.this, mensajes,  "SI", "NO");
                             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {

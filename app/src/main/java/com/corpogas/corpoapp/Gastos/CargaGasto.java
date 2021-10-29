@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -29,6 +30,7 @@ import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Puntada.ProductosARedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Service.PrintBillService;
 import com.corpogas.corpoapp.VentaCombustible.EligePrecioLitros;
@@ -59,7 +61,7 @@ public class CargaGasto extends AppCompatActivity {
     DecimalFormat df = new DecimalFormat("#.00");
     ProgressDialog bar;
     RadioButton rbConFactura, rbSinFactura;
-
+    Button btnEnviar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +80,17 @@ public class CargaGasto extends AppCompatActivity {
         subTotal = findViewById(R.id.subTot);
         iva = findViewById(R.id.iva);
         total = findViewById(R.id.total);
+        btnEnviar = findViewById(R.id.btnEnviarGasto);
         Descripcion = findViewById(R.id.descripcion);
         rbConFactura = (RadioButton) findViewById(R.id.rbConFactura);
         rbSinFactura = (RadioButton) findViewById(R.id.rbSinFactura);
 
+        btnEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculos();
+            }
+        });
         cargaTipoGastos();
 
     }
@@ -172,7 +181,7 @@ public class CargaGasto extends AppCompatActivity {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_ENTER:
-                calculos();
+
                 return true;
             default:
                 return super.onKeyUp(keyCode, event);
@@ -291,6 +300,12 @@ public class CargaGasto extends AppCompatActivity {
                     }
                 });
             }else{
+                bar = new ProgressDialog(CargaGasto.this);
+                bar.setTitle("Enviando Gasto");
+                bar.setMessage("Ejecutando... ");
+                bar.setIcon(R.drawable.gastos);
+                bar.setCancelable(false);
+                bar.show();
 
 
                 if (rbConFactura.isChecked()){
@@ -346,6 +361,7 @@ public class CargaGasto extends AppCompatActivity {
                                         Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                         startActivity(intent);
                                         finish();
+                                        bar.cancel();
                                     }
                                 });
 
@@ -358,6 +374,10 @@ public class CargaGasto extends AppCompatActivity {
                                     @Override
                                     public void onClick(View view) {
                                         modales.alertDialog.dismiss();
+                                        Intent intent = new Intent(CargaGasto.this, Menu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
+                                        bar.cancel();
                                     }
                                 });
 
@@ -370,7 +390,7 @@ public class CargaGasto extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        bar.cancel();
                     }
                 }) {
                     public Map<String, String> getHeaders() throws AuthFailureError {

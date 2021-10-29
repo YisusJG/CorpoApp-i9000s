@@ -574,7 +574,11 @@ public class PosicionCargaTickets extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             datos.put("PosicionCargaId", carga);
-            datos.put("IdUsuario", data.getUsuarioId());
+            if (lugarproviene.equals("Reimprimir")){
+                datos.put("IdUsuario", getIntent().getStringExtra("numeroEmpleado"));
+            }else{
+                datos.put("IdUsuario", data.getNumeroEmpleado());
+            }
             datos.put("SucursalId", sucursalId);
             datos.put("IdFormasPago", FormasPagoArreglo);
             datos.put("ConfiguracionAplicacionId", data.getIdTarjtero());

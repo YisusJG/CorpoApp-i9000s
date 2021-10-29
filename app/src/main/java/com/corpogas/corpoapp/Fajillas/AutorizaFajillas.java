@@ -356,6 +356,8 @@ public class AutorizaFajillas extends AppCompatActivity {
                                         if (idRoll.equals("3") || idRoll.equals("1")){
                                             Intent intent = new Intent(getApplicationContext(), PosicionCargaTickets.class);
                                             intent.putExtra("lugarproviene", "Reimprimir"); //
+                                            intent.putExtra("numeroEmpleado", numeroempleado);
+
                                             startActivity(intent);
                                             finish();
                                         }else{
