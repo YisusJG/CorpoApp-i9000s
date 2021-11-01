@@ -641,12 +641,15 @@ public class AutorizaFajillas extends AppCompatActivity {
                                         if (valorTipoFajilla == 1){
 //                                            int sumaFajillasBilletes =  Integer.parseInt(String.valueOf(totalFajillas)) + cantidadFajillasBilletes;
 //                                            dbCorte.updateFajillas(sumaFajillasBilletes,0,1);
+                                            Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
+                                            startActivity(intent);
 
                                         }else{
                                             if (valorTipoFajilla == 2){
 //                                                int sumaFajillasMonedas = Integer.parseInt(String.valueOf(totalFajillas)) + cantidadFajillasMonedas;
 //                                                dbCorte.updateFajillas(0,sumaFajillasMonedas,2);
-
+                                                Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
+                                                startActivity(intent);
                                             }
                                         }
 
@@ -662,8 +665,7 @@ public class AutorizaFajillas extends AppCompatActivity {
 //                                    //agrega el Fragment en el contenedor, en este caso el FrameLayout con id `FrameLayout`.
 //                                    ft.add(R.id.contenedorFragmentF, new FajillasFragment());
 //                                    ft.commit();
-                                    Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
-                                    startActivity(intent);
+                                    finish();
 //                                    overridePendingTransition(0, 0);
 //                                    startActivity(getIntent());
 //                                    overridePendingTransition(0, 0);

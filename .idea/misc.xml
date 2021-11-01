@@ -3,71 +3,34 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_autoriza_fajillas.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_confirma_venta.xml" value="0.24479166666666666" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_detail.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_pago_dolares.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_pago_efectivo.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_precio_litros.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_imprime_puntada.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_main_muestreo_fajillas.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.2210144927536232" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_mostrar_carrito_transacciones.xml" value="0.24479166666666666" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_muestreo_fajillas_entregadas_recibidas.xml" value="0.2210144927536232" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_planchado_tanque_lleno.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_puntada_redimir_qr.xml" value="0.31476449275362317" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_scan_manager_demo.xml" value="0.24479166666666666" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_vales_papel.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_pago_tarjeta.xml" value="0.20520833333333333" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_productos.xml" value="0.31476449275362317" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/headers_recycler_view_fajillas.xml" value="0.2210144927536232" />
-        <entry key="..\:/Mikel/CorpoApp-i9000s/app/src/main/res/layout/row_item.xml" value="0.24479166666666666" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable-xhdpi/verified_user_24.xml" value="0.22135416666666666" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_picos.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_opciones_entrega.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_entregas.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Cancelacion/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/fragment_picos.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_autoriza_fajillas.xml" value="0.23645833333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_carga_gasto.xml" value="0.22" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_confirma_venta.xml" value="0.3066123188405797" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_alerta_aceptar.xml" value="0.22864583333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_error.xml" value="0.24010416666666667" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_pago_efectivo.xml" value="0.27445652173913043" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_tipo_efectivo.xml" value="0.30625" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_vales_papel.xml" value="0.20520833333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_diferentes_formas_pago.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_combustible_t_l.xml" value="0.28489583333333335" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_litros_precio.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_elige_precio_litros.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_fajillas.xml" value="0.25052083333333336" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_formas_pago.xml" value="0.19166666666666668" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_jarreos.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_monederos_electronicos.xml" value="0.23489583333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_opcion_fajillas.xml" value="0.25052083333333336" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_planchado_tanque_lleno.xml" value="0.2708333333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_carga_tickets.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_puntada_redimir.xml" value="0.23489583333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_posiciones_carga_venta.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_proceso_venta.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_productos_a_redimir.xml" value="0.22056159420289856" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_puntada_qr.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_puntada_redimir_qr.xml" value="0.23489583333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_splash.xml" value="0.20520833333333333" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_tanque_lleno_nip.xml" value="0.21822916666666667" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_tarjeta_nfc.xml" value="0.19375" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_vales_palel.xml" value="0.2296875" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_vales_papel.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_combustible_aceites.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_venta_productos.xml" value="0.19114583333333332" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas.xml" value="0.27943840579710144" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas_productos.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/activoity_dialogo_efectivio_cambio.xml" value="0.26197916666666665" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/headers_recycler_view.xml" value="0.30570652173913043" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/listaproductos.xml" value="0.25" />
-        <entry key="..\:/Users/MIKEL/StudioProjects/NuevaEstructuraZ100/CorpoApp-i9000s/app/src/main/res/layout/mylist.xml" value="0.16983695652173914" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable-v24/boton_aceptar_dato.xml" value="0.3828125" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable/ic_keyboard_arrow_down_black_24dp.xml" value="0.2984375" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable/ic_keyboard_arrow_up_black_24dp.xml" value="0.2984375" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable/ic_mail_black_24dp.xml" value="0.2984375" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_autoriza_fajillas.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_clave.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_cliente_facturas.xml" value="0.290625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_confirma_venta.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_fajillas.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_picos.xml" value="0.3015625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_insertar_dato_dialogo.xml" value="0.3015625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_insertar_facturas_dialogo.xml" value="0.290625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_islas_estacion.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_login.xml" value="0.21240942028985507" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.21240942028985507" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_proceso_corte.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_productos.xml" value="0.25" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_productos_vendedor.xml" value="0.2890625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_resumen.xml" value="0.28229166666666666" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_ventas_productos.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/factura_num_rastreo.xml" value="0.290625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/list_cierre_formas_pago.xml" value="0.28229166666666666" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/main_nav_drawer.xml" value="0.21240942028985507" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/row_resumen_formas_pago.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/row_resumen_gastos.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/row_resumen_vales_total.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/rowfacturacion.xml" value="0.290625" />
+        <entry key="..\:/Users/Manuel Salinas/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/toolbardrawer.xml" value="0.2890625" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2890625" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_configuracion_servidor.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.27291666666666664" />
@@ -81,13 +44,10 @@
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/xml/scan_settings.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/xml/scan_settings_pro.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_cofre.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_alerta_aceptar.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_pago_dolares.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_pago_efectivo.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_satisfactorio.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_satisfactorio_opciones.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_picos.xml" value="0.20572916666666666" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_vales.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_insertar_dato_dialogo.xml" value="0.20572916666666666" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_lee_tarjeta.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.30649588289112534" />

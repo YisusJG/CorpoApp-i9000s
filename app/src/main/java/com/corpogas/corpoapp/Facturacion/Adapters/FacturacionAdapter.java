@@ -286,11 +286,20 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                         @Override
                         public void onClick(View v) {
 
-                            Intent startIntent = new Intent("ACTION_BAR_TRIGSCAN");
-                            startIntent.putExtra("timeout", 60);// Units per second,and Maximum 9
-//                            txtNumRastreo.setText("Start Scan...");
+//                            Intent startIntent = new Intent("ACTION_BAR_TRIGSCAN");
+//                            startIntent.putExtra("timeout", 60);// Units per second,and Maximum 9
+////                            txtNumRastreo.setText("Start Scan...");
+//
+//                            clienteFacturas.sendBroadcast(startIntent);
 
-                            clienteFacturas.sendBroadcast(startIntent);
+//                            snackbar = Snackbar.make(itemView, "Controlador Desconectado.", Snackbar.LENGTH_LONG);
+//                            View snackBarView = snackbar.getView();
+//                            snackBarView.setBackgroundColor(Color.BLACK);
+//                            TextView textView = (TextView) snackBarView.findViewById(R.id.snackbar_text);
+//                            textView.setTextColor(Color.YELLOW);
+//                            snackbar.show();
+
+                            Toast.makeText(mContext, "Controlador Desconectado.", Toast.LENGTH_LONG).show();
 
                         }
                     });
