@@ -25,9 +25,11 @@
         android:layout_height="100dp"
         android:layout_row="0"
         android:layout_column="9"
+        android:layout_marginTop="8dp"
         android:src="@drawable/qrcaja"
         android:text="Scanear Yisus"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtScanResult" />
 

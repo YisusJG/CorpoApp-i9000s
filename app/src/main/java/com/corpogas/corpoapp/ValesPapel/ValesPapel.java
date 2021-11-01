@@ -189,15 +189,16 @@ public class ValesPapel extends AppCompatActivity {
             if (result.getContents() == null) {
                 Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
             } else {
-                if (result.getContents().length() >= 17) {
+//                if (result.getContents().length() >= 17) {
                     tvFolioMonto.setText(result.getContents());
-                } else {
-                    int resultInt = Integer.parseInt(result.getContents());
-                    String residuo = result.getContents().substring(result.getContents().length() - 2);
-                    int conversion = resultInt/100;
-                    String resultConversion = Integer.toString(conversion);
-                    tvDenominacionMonto.setText(resultConversion);
-                }
+//                } else {
+//                    int resultInt = Integer.parseInt(result.getContents());
+//                    String residuo = result.getContents().substring(result.getContents().length() - 2);
+////                    int conversion = resultInt/100;
+////                    String resultConversion = Integer.toString(conversion);
+//                    tvDenominacionMonto.setText(resultConversion);
+//                    tvDenominacionMonto.setText(result.getContents());
+//                }
             }
         } else {
             super.onActivityResult(requestCode, resulCode, data);
