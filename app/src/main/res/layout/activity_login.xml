@@ -42,7 +42,7 @@ tools:context=".Login.LoginActivity">
                 android:layout_marginTop="30dp"
                 android:drawableEnd="@drawable/password_right"
                 android:hint="NIP"
-                android:inputType="number"
+                android:inputType="numberPassword"
                 android:maxLength="4"
                 android:textAlignment="center" />
 

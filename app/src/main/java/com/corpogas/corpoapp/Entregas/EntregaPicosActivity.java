@@ -335,7 +335,8 @@ public class EntregaPicosActivity extends AppCompatActivity {
 
             View viewLectura = modales.MostrarDialogoInsertaDato(EntregaPicosActivity.this, mensaje, titulo);
             EditText editText = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

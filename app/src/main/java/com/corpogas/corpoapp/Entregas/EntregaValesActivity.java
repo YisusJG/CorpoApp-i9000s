@@ -230,7 +230,7 @@ public class EntregaValesActivity extends AppCompatActivity {
             Modales modales = new Modales(EntregaValesActivity.this);
             View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
             EditText edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
