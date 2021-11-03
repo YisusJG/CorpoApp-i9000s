@@ -542,35 +542,13 @@ public class AutorizaFajillas extends AppCompatActivity {
     private  void enviaActividadSiguiente(String idusuario, String pass, String idRoll){
         switch (lugarProviene){
             case "CorteProductos":
-//                String titulo = "CONFIRMADO POR";
-//                String mensajes = "INVENTARIO DE PRODUCTOS CONFIRMADO POR: \n" + nombrecompleto;
-//                Modales modales = new Modales(claveCorteEntregaFajillas.this);
-//                View view1 = modales.MostrarDialogoCorrecto(claveCorteEntregaFajillas.this, mensajes);
-//                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        modales.alertDialog.dismiss();
-                //cargaUsuarioValido(idusuario);
                 GuardaAutorizacionCorteProducto(idusuario);
-//                        finish();
-//                    }
-//                });
                 break;
             case "EntregaFajillas":
                 EnviaFajilla();
                 break;
-            case "corteFajillas":  //|| lugarProviene.equals(" corteFajillas")
-//                String titulo1 = "CONFIRMADO POR";
-//                String mensajes1 = "" + nombrecompleto;
-//                Modales modales1 = new Modales(claveCorteEntregaFajillas.this);
-//                View view2 = modales1.MostrarDialogoCorrecto(claveCorteEntregaFajillas.this, mensajes1);
-//                view2.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        modales1.alertDialog.dismiss();
+            case "corteFajillas":
                 EnviaFajilla();
-//                    }
-//                });
                 break;
             default:
         }
@@ -585,7 +563,6 @@ public class AutorizaFajillas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-//            claveUsuario = getIntent().getStringExtra("ClaveUsuarioActual");
             totalFajillas = getIntent().getLongExtra("TotalFajillas", 0);
             valorTipoFajilla = getIntent().getLongExtra("TipoFajilla", 0);
 
@@ -621,14 +598,6 @@ public class AutorizaFajillas extends AppCompatActivity {
                                 FechaF = respuestaTipoFajilla.getString("FechaUltimaFajilla");
                             }
 
-//                        agregarcombustible.setVisibility(View.INVISIBLE);
-//                        imprimirTicket.setVisibility(View.VISIBLE);
-//                            String respuesta =  response.getString("ObjetoRespuesta");
-//                            JSONArray objetoRespuesta = new JSONArray(respuesta);
-//                            for (int i = 0; i <objetoRespuesta.length() ; i++){
-//                                JSONObject empleadoAutorizado = objetoRespuesta.getJSONObject(i);
-//                                nombreEmpeladoAutorizo = empleadoAutorizado.getString("NomkbreEmpleado");
-//                            }
                             String titulo = "ENTREGA DE FAJILLAS";
                             String mensaje = "Fajilla Recibida por: \n" + nombrecompleto + " \n" + FechaF;
                             Modales modales = new Modales(AutorizaFajillas.this);
@@ -639,15 +608,11 @@ public class AutorizaFajillas extends AppCompatActivity {
                                     modales.alertDialog.dismiss();
                                     if (lugarProviene.equals("corteFajillas")){
                                         if (valorTipoFajilla == 1){
-//                                            int sumaFajillasBilletes =  Integer.parseInt(String.valueOf(totalFajillas)) + cantidadFajillasBilletes;
-//                                            dbCorte.updateFajillas(sumaFajillasBilletes,0,1);
                                             Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
                                             startActivity(intent);
 
                                         }else{
                                             if (valorTipoFajilla == 2){
-//                                                int sumaFajillasMonedas = Integer.parseInt(String.valueOf(totalFajillas)) + cantidadFajillasMonedas;
-//                                                dbCorte.updateFajillas(0,sumaFajillasMonedas,2);
                                                 Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
                                                 startActivity(intent);
                                             }
@@ -657,18 +622,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                         Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                         startActivity(intent);
                                     }
-//                                    transaction = getSupportFragmentManager().beginTransaction();
-//                                    transaction.replace(R.id.contenedorFragmentF, fragmentFajillas).commit();
-//                                    onBackPressed();
-//                                    FragmentManager fm = getSupportFragmentManager();
-//                                    FragmentTransaction ft = fm.beginTransaction();
-//                                    //agrega el Fragment en el contenedor, en este caso el FrameLayout con id `FrameLayout`.
-//                                    ft.add(R.id.contenedorFragmentF, new FajillasFragment());
-//                                    ft.commit();
                                     finish();
-//                                    overridePendingTransition(0, 0);
-//                                    startActivity(getIntent());
-//                                    overridePendingTransition(0, 0);
                                 }
                             });
                         }else{
@@ -747,16 +701,6 @@ public class AutorizaFajillas extends AppCompatActivity {
                     }else{
                         UsuarioAceptado(respuesta);
                     }
-//                    String titulo = "AVISO";
-//                    Modales modales = new Modales(despachdorclave.this);
-//                    View view1 = modales.MostrarDialogoAlertaAceptar(despachdorclave.this, mensaje, titulo);
-//                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            modales.alertDialog.dismiss();
-//                            finish();
-//                        }
-//                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

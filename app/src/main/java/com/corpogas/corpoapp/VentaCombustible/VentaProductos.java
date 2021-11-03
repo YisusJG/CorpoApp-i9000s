@@ -138,7 +138,8 @@ public class VentaProductos extends AppCompatActivity {
         btnEscanearProducto.setEnabled(true);
 
 //        cargaProductos("1");
-        cargaCombustible();
+//        cargaCombustible();
+        cargaProductos("1");
 
     }
 
@@ -559,6 +560,10 @@ public class VentaProductos extends AppCompatActivity {
         ProductoId = new ArrayList();
         CategoriaId = new ArrayList<>();
 
+        List<Integer> imgid;
+        imgid = new ArrayList<>();
+
+
         //ArrayList<singleRow> singlerow = new ArrayList<>();
         try {
             JSONObject p1 = new JSONObject(response);
@@ -570,7 +575,7 @@ public class VentaProductos extends AppCompatActivity {
             JSONArray bodegaprod = new JSONArray(producto);
 
             for (int i = 0; i <bodegaprod.length() ; i++){
-                String IdProductos = null;
+                String IdProductos = "";
                 JSONObject pA = bodegaprod.getJSONObject(i);
                 String productoclave = pA.getString("Producto");
                 JSONObject prod = new JSONObject(productoclave);
@@ -589,7 +594,7 @@ public class VentaProductos extends AppCompatActivity {
                     for (int j = 0; j < PC.length(); j++) {
                         JSONObject Control = PC.getJSONObject(j);
                         preciol = Control.getString("Price");
-                        IdProductos = Control.getString("Id"); //ProductoId
+                        IdProductos = Control.getString("ProductId"); //ProductoId
                     }
                     NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol); // + "    |    " + IdProductos );
                     ID.add(DescLarga);
@@ -598,25 +603,61 @@ public class VentaProductos extends AppCompatActivity {
                     CodigoBarras.add(codigobarras);
                     ProductoId.add(IdProductos);
                     CategoriaId.add(categoriaid);
-                }else{
 
+                    if (IdProductos.length() == 0) {
+                        IdProductos = "10";
+                    }
+                    switch (Integer.parseInt(IdProductos)) {
+                        case 1:
+                            imgid.add(R.drawable.magna);
+                            break;
+                        case 2:
+                            imgid.add(R.drawable.premium);
+                            break;
+                        case 3:
+                            imgid.add(R.drawable.diesel);
+                            break;
+                        case 4:
+                            imgid.add(R.drawable.magna);
+                            break;
+                        case 5:
+                            imgid.add(R.drawable.premium);
+                            break;
+                        case 6:
+                            imgid.add(R.drawable.diesel);
+                            break;
+                        case 7:
+                            imgid.add(R.drawable.magna);
+                            break;
+                        case 8:
+                            imgid.add(R.drawable.premium);
+                            break;
+                        case 9:
+                            imgid.add(R.drawable.diesel);
+                            break;
+
+                        default:
+                            imgid.add(R.drawable.magna);
+                    }
                 }
             }
             bar.cancel();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final ListAdapterAceitesCombustibles adapterP = new ListAdapterAceitesCombustibles(this,  ID, NombreProducto);
-        lstProductos=(ListView)findViewById(R.id.lstProductos);
+//        final ListAdapterAceitesCombustibles adapterP = new ListAdapterAceitesCombustibles(this,  ID, NombreProducto);
+//        lstProductos=(ListView)findViewById(R.id.lstProductos);
+        ListAdapterConbustiblesTLl adapterP = new ListAdapterConbustiblesTLl(VentaProductos.this, ID, NombreProducto, imgid);
+        lstProductos.setAdapter(adapterP);
+
         lstProductos.setTextFilterEnabled(true);
         lstProductos.setAdapter(adapterP);
 //        Agregado  click en la lista
         lstProductos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 String titulo = "PUNTADA QR";
-                String mensajes = "Desea Acumular la venta a su Tarjeta Puntada ?";
+                String mensajes = "¿Descuento con Puntada ( QR )? ";
                 Modales modalesPuntada = new Modales(VentaProductos.this);
                 View viewLectura = modalesPuntada.MostrarDialogoAlerta(VentaProductos.this, mensajes,  "SI", "NO");
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -634,6 +675,7 @@ public class VentaProductos extends AppCompatActivity {
                         intent.putExtra("precioProducto", precio);
                         intent.putExtra("despacholibre", "no");
                         intent.putExtra("lugarProviene", "Acumular");
+                        intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
                         startActivity(intent);
                         modalesPuntada.alertDialog.dismiss();
                     }
@@ -642,26 +684,27 @@ public class VentaProductos extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         modalesPuntada.alertDialog.dismiss();
-                        if(TipoProducto.equals("1")){
-                            String precio = PrecioProducto.get(i);
-                            String claveProducto = ClaveProducto.get(i);
-                            Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
-                            intent.putExtra("combustible", ID.get(i));
-                            intent.putExtra("posicionCarga", poscicionCarga);
-                            intent.putExtra("estacionjarreo", estacionJarreo);
-                            intent.putExtra("claveProducto", claveProducto);
-                            intent.putExtra("precioProducto", precio);
-                            intent.putExtra("despacholibre", "no");
-                            intent.putExtra("nip", "");
-                            intent.putExtra("numeroTarjeta", "");
-                            intent.putExtra("descuento", 0);
-                            startActivity(intent);
-                            finish();
-                        }
+                        String nip="-";
+                        String tarjetanumero = "-";
+                        String precio = PrecioProducto.get(i);
+                        String claveProducto = ClaveProducto.get(i);
+                        Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
+                        intent.putExtra("combustible", ID.get(i));
+                        intent.putExtra("posicionCarga", poscicionCarga);
+                        intent.putExtra("estacionjarreo", estacionJarreo);
+                        intent.putExtra("claveProducto", claveProducto);
+                        intent.putExtra("precioProducto", precio);
+                        intent.putExtra("despacholibre", "no");
+                        intent.putExtra("lugarProviene", "ventas");
+                        intent.putExtra("nip", "");
+                        intent.putExtra("numeroTarjeta", "");
+                        intent.putExtra("descuento", 0);
+                        intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
+                        startActivity(intent);
+                        finish();
                     }
                 });
             }
         });
     }
-
 }

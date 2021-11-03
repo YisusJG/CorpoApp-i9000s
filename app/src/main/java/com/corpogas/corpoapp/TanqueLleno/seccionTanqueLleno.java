@@ -66,6 +66,7 @@ public class seccionTanqueLleno extends AppCompatActivity {
         lTanqueLleno = new ArrayList<>();
         lTanqueLleno.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
+        lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Atorización Telefónica",R.drawable.tanquelleno));
 
 
@@ -83,10 +84,6 @@ public class seccionTanqueLleno extends AppCompatActivity {
                 if (titulo.equals("Banda Magnética")) {
                     Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);   //LeeTarjeta
                     intent.putExtra("Enviadodesde", "TanqueLlenoBandaMagnetica");
-//                    intent.putExtra("LugarProviene", "TanqueLlenoBandaMagnetica");
-//                    intent.putExtra("device_name", m_deviceName);
-//                    intent.putExtra("banderaHuella", banderaHuella);
-
                     startActivity(intent);
                     finish();
 
@@ -95,10 +92,13 @@ public class seccionTanqueLleno extends AppCompatActivity {
                     startActivity(intent1);
                     finish();
                 } else if (titulo.equals("Autorización")) {
-//                    Long posicionA = Long.valueOf(2215);
                     Intent intent1 = new Intent(getApplicationContext(), PosicionCargaTLl.class); //PlanchadoTanqueLleno
                     intent1.putExtra("lugarproviene", "Planchado");
-//                    intent1.putExtra("banderaHuella", banderaHuella);
+                    startActivity(intent1);
+                    finish();
+                }else if (titulo.equals("Arillos")) {
+                    Intent intent1 = new Intent(getApplicationContext(), PosicionCargaTLl.class); //Arillos
+                    intent1.putExtra("lugarproviene", "Arillos");
                     startActivity(intent1);
                     finish();
                 }

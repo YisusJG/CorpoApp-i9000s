@@ -379,7 +379,7 @@ public class Modales extends Dialog implements
                 R.layout.activity_dialogo_pago_dolares, (ConstraintLayout) findViewById(R.id.layoutDialogContainer)
         );
         builder.setView(view);
-        ((TextView) view.findViewById(R.id.textTitleEfectivoDolares)).setText(titulo);
+        ((TextView) view.findViewById(R.id.textTitleEfectivoDolares)).setText(titulo + " TASA DE CAMBIO: " + tipocambiocantidad);
         ((TextView) view.findViewById(R.id.textMontoDolares)).setText(monto);
         EditText cantidadRecibida = view.findViewById(R.id.textMontoRecibiDolares);
 
