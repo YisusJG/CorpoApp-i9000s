@@ -172,7 +172,7 @@
                     if (myArray.length()==0  )       //.length() >0)
                     {
                         String titulo = "AVISO";
-                        String mensaje = "Seleccione al menos uno de los Productos";
+                        String mensaje = "Seleccione un Producto";
                         Modales modales = new Modales(VentasProductos.this);
                         View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -196,7 +196,7 @@
                     if (myArray.length()==0  )       //.length() >0)
                     {
                         String titulo = "AVISO";
-                        String mensaje = "Seleccione al menos uno de los Productos";
+                        String mensaje = "Seleccione un Producto";
                         Modales modales = new Modales(VentasProductos.this);
                         View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -299,7 +299,7 @@
                     txtproductos.setText("");
                     textoresultado="";
                     String titulo = "AVISO";
-                    String mensaje = "Se vacio la canasta de productos";
+                    String mensaje = "Se vació la canasta de Productos";
                     Modales modales = new Modales(VentasProductos.this);
                     View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -493,6 +493,7 @@
                 String paso= ClaveProducto.get(indicecodigo);
                 String existencia = ExistenciaProductos.get(indicecodigo);
                 String idproduc = ProductosId.get(indicecodigo);
+                String categoriaid = ACategoria.get(indicecodigo);
 
                 Producto.setText(paso);
                 txtDescripcion.setText(Descripcion);
@@ -500,6 +501,7 @@
                 existencias.setText(existencia);
                 productoIdentificador.setText(idproduc);
                 tipoproductoid.setText(idproduc);
+                categoria.setText(categoriaid);
             }else{
                 Toast.makeText(getApplicationContext(), "Producto no encontrado en la lista", Toast.LENGTH_LONG).show();
                 Producto.setText("");
@@ -601,7 +603,7 @@
         private void Aumentar() {
             if (txtDescripcion.length() == 0){
                 String titulo = "AVISO";
-                String mensaje = "Seleccione uno de los Productos";
+                String mensaje = "Seleccione un Producto";
                 Modales modales = new Modales(VentasProductos.this);
                 View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
                 view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -697,7 +699,7 @@
             if (txtDescripcion.length() == 0)
             {
                 String titulo = "AVISO";
-                String mensaje = "Seleccione uno de los Productos";
+                String mensaje = "Seleccione un Producto";
                 Modales modales = new Modales(VentasProductos.this);
                 View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
                 view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {

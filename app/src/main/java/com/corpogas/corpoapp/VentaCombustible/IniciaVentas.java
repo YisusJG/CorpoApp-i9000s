@@ -1,0 +1,754 @@
+package com.corpogas.corpoapp.VentaCombustible;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputType;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Adapters.RVAdapter;
+import com.corpogas.corpoapp.Conexion;
+import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
+import com.corpogas.corpoapp.Entities.Estaciones.Isla;
+import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
+import com.corpogas.corpoapp.Menu_Principal;
+import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
+import com.corpogas.corpoapp.Productos.VentasProductos;
+import com.corpogas.corpoapp.Puntada.PuntadaQr;
+import com.corpogas.corpoapp.Puntada.PuntadaRedimirQr;
+import com.corpogas.corpoapp.Puntada.SeccionTarjeta;
+import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.TanqueLleno.ListAdapterConbustiblesTLl;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class IniciaVentas extends AppCompatActivity {
+    SQLiteBD data;
+    String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid, numerodispositivo, correcto, mensaje;
+    long numeroInternoPosicionCarga, posicioncargaid;
+    JSONArray myArray = new JSONArray();
+    TextView tvTituloIniciaVenta, tvPredeterminadoCantidad;
+    Spinner spCombustible;
+    RecyclerView rvPredeterminado;
+    Double descuento;
+    String claveProducto, descripcioncombustible, precio;
+
+
+    List<RecyclerViewHeaders> lrecyclerViewHeaders;
+
+    Button btnAgregarProducto, btnDespachoLibreVenta, btnCobrarPosicionCarga;
+
+    List<String> NombreProducto;
+    List<String> PrecioProducto;
+    List<String> ClaveProducto;
+    List<String> CodigoBarras;
+    List<String> ExistenciaProductos;
+    List<String> ProductoId, CategoriaId, ID;
+    ProgressDialog bar;
+
+
+//    Isla respuestaApiPosicionCargaProductosSucursal;
+    long TipoProducto = 1, idProducto, IdCombustible;
+    double precioproducto;
+
+    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+    DecimalFormat df;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inicia_ventas);
+
+        init();
+
+        btnDespachoLibreVenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvPredeterminadoCantidad.setText("");
+                spCombustible.setEnabled(false);
+                cargaOpcionesPredeterminadoSolo();
+                initializeAdapter();
+                solicitarDespacho();
+            }
+        });
+        btnAgregarProducto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
+                intent.putExtra("numeroOperativa", usuarioid);
+                intent.putExtra("cadenaproducto", "");
+                intent.putExtra("lugarproviene", "Venta");
+                intent.putExtra("NumeroIsla", data.getIslaId());
+                intent.putExtra("NumeroEmpleado", usuarioid);
+                intent.putExtra("posicionCarga", poscicionCarga);
+                startActivity(intent);
+
+            }
+        });
+
+        btnCobrarPosicionCarga.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ValidaTransaccionActiva();
+            }
+        });
+
+        cargaProductos("1");
+    }
+
+    private void ValidaTransaccionActiva() {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
+
+            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/posicionCargaId/" + poscicionCarga;
+
+            // Utilizamos el metodo Post para validar la contraseña
+            StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Boolean banderaConDatos;
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                String Correcto = jsonObject.getString("Correcto");
+                                //String Mensaje = jsonObject.getString("Mensaje");
+                                String CadenaObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+                                if (CadenaObjetoRespuesta.equals("null")){
+                                    banderaConDatos = false;
+                                }else{
+                                    if (CadenaObjetoRespuesta.equals("[]")){
+                                        banderaConDatos = false;
+                                    }else{
+                                        banderaConDatos=true;
+                                    }
+                                }
+                                if (Correcto.equals("true")){
+                                    if (banderaConDatos.equals(false)){
+                                        String titulo = "AVISO";
+                                        String mensajes = "No hay productos a cobrar";
+                                        Modales modales = new Modales(IniciaVentas.this);
+                                        View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensajes,titulo);
+                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                bar.cancel();
+                                                modales.alertDialog.dismiss();
+                                            }
+                                        });
+                                    }else{
+                                        Long operativa = Long.valueOf(1);
+                                        //Envia a Mostrar CArrito TRansacciones
+                                        Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);
+                                        //se envia el id seleccionado a la clase Usuario Producto
+                                        intente.putExtra("posicion", poscicionCarga);
+                                        intente.putExtra("usuario", usuarioid);
+                                        intente.putExtra("cadenaproducto", "");
+                                        intente.putExtra("lugarproviene", "Despacho");
+                                        intente.putExtra("numeroOperativa", operativa);
+                                        intente.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
+                                        intente.putExtra("pocioncargaid", posicioncargaid);
+
+
+                                        //Ejecuta la clase del Usuario producto
+                                        startActivity(intente);
+                                        //Finaliza activity
+                                        finish();
+
+                                    }
+                                }else {
+                                    String titulo = "AVISO";
+                                    String mensajes = "No hay productos a cobrar";
+                                    Modales modales = new Modales(IniciaVentas.this);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensajes,titulo);
+                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            bar.cancel();
+                                            modales.alertDialog.dismiss();
+                                        }
+                                    });
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        //funcion para capturar errores
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                }
+            });
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(eventoReq);
+
+        }
+    }
+
+
+
+    private void solicitarDespacho() {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        }else {
+
+            String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject respuesta = new JSONObject(response);
+                        String correctoautoriza = respuesta.getString("Correcto");
+                        String mensajeautoriza = respuesta.getString("Mensaje");
+                        String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                        if (correctoautoriza.equals("true")) {
+                            String titulo = "AVISO";
+                            String mensaje = "Listo para Iniciar Despacho";
+                            final Modales modales = new Modales(IniciaVentas.this);
+                            View view1 = modales.MostrarDialogoCorrecto(IniciaVentas.this,mensaje);
+                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    tvPredeterminadoCantidad.setText("Despacho Libre");
+//                                    Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
+//                                    intent.putExtra("numeroEmpleado", idUsuario);
+//                                    intent.putExtra("posicionCarga", poscicionCarga);
+//                                    intent.putExtra("estacionjarreo", estacionJarreo);
+//                                    intent.putExtra("despacholibre", "si");
+//                                    intent.putExtra("lugarProviene", "ventas");
+//                                    intent.putExtra("nip", "");
+//                                    intent.putExtra("numeroTarjeta", "");
+//                                    intent.putExtra("descuento", 0);
+//                                    intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
+//
+//                                    startActivity(intent);
+//                                    finish();
+                                }
+                            });
+                        } else {
+                            String titulo = "AVISO";
+                            String mensaje = "La posición de carga se encuentra Ocupada";
+                            Modales modales = new Modales(IniciaVentas.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensaje,titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                            //Toast.makeText(getApplicationContext(), "Posiciín Ocupada",mensajeautoriza, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
+        }
+    }
+
+
+    private void init() {
+        data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+        EstacionId = data.getIdEstacion();
+        sucursalId = data.getIdSucursal();
+        ipEstacion = data.getIpEstacion();
+        usuarioid = data.getNumeroEmpleado();
+        poscicionCarga = getIntent().getStringExtra("posicionCarga");
+        posicioncargaid = getIntent().getLongExtra("pocioncargaid", 0);
+        idUsuario = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
+        estacionJarreo = getIntent().getStringExtra("estacionjarreo");
+        numeroInternoPosicionCarga = getIntent().getLongExtra("pcnumerointerno",0);
+        numerodispositivo = data.getIdTarjtero();
+        lugarproviene = getIntent().getStringExtra("lugarProviene");
+        descuento = getIntent().getDoubleExtra("Descuento",0 );
+        tvTituloIniciaVenta = (TextView) findViewById(R.id.tvTituloIniciaVenta);
+        spCombustible = (Spinner) findViewById(R.id.spCombustible);
+        rvPredeterminado = (RecyclerView) findViewById(R.id.rvPredeterminado);
+        btnAgregarProducto = (Button) findViewById(R.id.btnAgregarProducto);
+        btnDespachoLibreVenta = (Button) findViewById(R.id.btnDespachoLibreVenta);
+        btnCobrarPosicionCarga = (Button) findViewById(R.id.btnCobrarPosicionCarga);
+        tvPredeterminadoCantidad = (TextView) findViewById(R.id.tvPredeterminadoCantidad);
+        tvTituloIniciaVenta.setText("PC " + posicioncargaid + ", TIPO DESPACHO");
+
+        simbolos.setDecimalSeparator('.');
+        df = new DecimalFormat("###0.00##",simbolos);
+
+        if (lugarproviene.equals("puntadaAcumularQr")){
+            btnDespachoLibreVenta.setEnabled(false);
+        }
+
+
+    }
+
+
+    private void cargaProductos(String TipoProducto) {
+        bar = new ProgressDialog(IniciaVentas.this);
+        bar.setTitle("Cargando Productos");
+        bar.setMessage("Ejecutando... ");
+        bar.setIcon(R.drawable.gas);
+        bar.setCancelable(false);
+        bar.show();
+
+
+        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mostrarProductos(response, TipoProducto);
+//                    Toast.makeText(VentaCombustibleAceites.this, "Entro", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(stringRequest);
+    }
+
+    private void mostrarProductos(String response, String TipoProducto) {
+
+        String preciol = null;
+        String DescLarga;
+        String idArticulo;
+
+        //Declaracion de variables
+
+        ID = new ArrayList<String>();
+
+        NombreProducto = new ArrayList<String>();
+        PrecioProducto = new ArrayList<>();
+        ClaveProducto = new ArrayList();
+        CodigoBarras = new ArrayList();
+        ExistenciaProductos = new ArrayList();
+        ProductoId = new ArrayList();
+        CategoriaId = new ArrayList<>();
+
+        List<Integer> imgid;
+        imgid = new ArrayList<>();
+
+
+        NombreProducto.add("0") ; // + "    |    " + IdProductos );
+        ID.add("Seleccione un combustible");
+        PrecioProducto.add("");
+        ClaveProducto.add("");
+        CodigoBarras.add("");
+        ProductoId.add("");
+        CategoriaId.add("");
+
+
+
+        //ArrayList<singleRow> singlerow = new ArrayList<>();
+        try {
+            JSONObject p1 = new JSONObject(response);
+
+            //String ni = p1.getString("NumeroInterno");
+            String bodega = p1.getString("Bodega");
+            JSONObject ps = new JSONObject(bodega);
+            String producto = p1.getString("BodegaProductos");
+            JSONArray bodegaprod = new JSONArray(producto);
+
+            for (int i = 0; i <bodegaprod.length() ; i++){
+                String IdProductos = "";
+                JSONObject pA = bodegaprod.getJSONObject(i);
+                String productoclave = pA.getString("Producto");
+                JSONObject prod = new JSONObject(productoclave);
+                String categoriaid = prod.getString("ProductCategoryId");
+                if (categoriaid.equals(TipoProducto)){
+                    //NO CARGA LOS COMBUSTIBLES
+                    String ExProductos=pA.getString("Existencias");
+                    ExistenciaProductos.add(ExProductos);
+                    String TProductoId="2";//prod.getString("TipoSatProductoId");
+                    DescLarga=prod.getString("LongDescription");
+                    idArticulo=prod.getString("Id");
+                    String codigobarras=prod.getString("Barcode");
+                    String PControl=prod.getString("ProductControls");
+
+                    JSONArray PC = new JSONArray(PControl);
+                    for (int j = 0; j < PC.length(); j++) {
+                        JSONObject Control = PC.getJSONObject(j);
+                        preciol = Control.getString("Price");
+                        IdProductos = Control.getString("ProductId"); //ProductoId
+                    }
+                    NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol); // + "    |    " + IdProductos );
+                    ID.add(DescLarga);
+                    PrecioProducto.add(preciol);
+                    ClaveProducto.add(idArticulo);
+                    CodigoBarras.add(codigobarras);
+                    ProductoId.add(IdProductos);
+                    CategoriaId.add(categoriaid);
+
+                    if (IdProductos.length() == 0) {
+                        IdProductos = "10";
+                    }
+                    switch (Integer.parseInt(IdProductos)) {
+                        case 1:
+                            imgid.add(R.drawable.magna);
+                            break;
+                        case 2:
+                            imgid.add(R.drawable.premium);
+                            break;
+                        case 3:
+                            imgid.add(R.drawable.diesel);
+                            break;
+                        case 4:
+                            imgid.add(R.drawable.magna);
+                            break;
+                        case 5:
+                            imgid.add(R.drawable.premium);
+                            break;
+                        case 6:
+                            imgid.add(R.drawable.diesel);
+                            break;
+                        case 7:
+                            imgid.add(R.drawable.magna);
+                            break;
+                        case 8:
+                            imgid.add(R.drawable.premium);
+                            break;
+                        case 9:
+                            imgid.add(R.drawable.diesel);
+                            break;
+
+                        default:
+                            imgid.add(R.drawable.magna);
+                    }
+                }
+            }
+            bar.cancel();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(IniciaVentas.this, R.layout.support_simple_spinner_dropdown_item, ID);
+        spCombustible.setAdapter(adapter);
+
+        spCombustible.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tvPredeterminadoCantidad.setText("");
+                if (position > 0){
+//                    String titulo = "PUNTADA QR";
+//                    String mensajes = "¿Descuento con Puntada ( QR )? ";
+//                    Modales modalesPuntada = new Modales(IniciaVentas.this);
+//                    View viewLectura = modalesPuntada.MostrarDialogoAlerta(IniciaVentas.this, mensajes,  "SI", "NO");
+//                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            String precio = PrecioProducto.get(position);
+//                            String claveProducto = ClaveProducto.get(position);
+//                            //LeeTarjeta();
+//                            Intent intent = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
+//                            //Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
+//                            intent.putExtra("combustible", ID.get(position));
+//                            intent.putExtra("posicionCarga", poscicionCarga);
+//                            intent.putExtra("estacionjarreo", estacionJarreo);
+//                            intent.putExtra("claveProducto", claveProducto);
+//                            intent.putExtra("precioProducto", precio);
+//                            intent.putExtra("despacholibre", "no");
+//                            intent.putExtra("lugarProviene", "Acumular");
+//                            intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
+//                            startActivity(intent);
+//                            modalesPuntada.alertDialog.dismiss();
+//                        }
+//                    });
+//                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            modalesPuntada.alertDialog.dismiss();
+                            claveProducto = ClaveProducto.get(position);
+                            descripcioncombustible = ID.get(position);
+                            precio = PrecioProducto.get(position);
+                            cargaOpcionesPredeterminado();
+                            initializeAdapter();
+//                        }
+//                    });
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
+    private void cargaOpcionesPredeterminado(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvPredeterminado.setLayoutManager(linearLayoutManager);
+        rvPredeterminado.setHasFixedSize(true);
+        lrecyclerViewHeaders = new ArrayList<>();
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Litros","Cantidad en Litros",R.drawable.gas));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pesos","Cantidad en Pesos",R.drawable.moneda));
+
+    }
+
+    private void cargaOpcionesPredeterminadoSolo(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvPredeterminado.setLayoutManager(linearLayoutManager);
+        rvPredeterminado.setHasFixedSize(true);
+        lrecyclerViewHeaders = new ArrayList<>();
+
+    }
+
+
+    private void initializeAdapter() {
+        RVAdapter adapter = new RVAdapter(lrecyclerViewHeaders);
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnDespachoLibreVenta.setEnabled(false);
+                switch (lrecyclerViewHeaders.get(rvPredeterminado.getChildAdapterPosition(v)).getTitulo()) {
+                    case "Litros":
+                        EnviaLitrosPesos("LITROS");
+                        break;
+                    case "Pesos":
+                        EnviaLitrosPesos("PESOS");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        rvPredeterminado.setAdapter(adapter);
+    }
+
+    private void EnviaLitrosPesos(String identificador){
+        String titulo = "PREDETERMINADO";
+        String mensaje = "Ingresa la cantidad de " + identificador ;
+        Modales modales = new Modales(IniciaVentas.this);
+        View viewLectura = modales.MostrarDialogoInsertaDato(IniciaVentas.this, mensaje, titulo);
+        EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+        edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modales.alertDialog.dismiss();
+                String cantidad = edtProductoCantidad.getText().toString();
+                if (cantidad.isEmpty()){
+                    edtProductoCantidad.setError("Ingresa la cantidad de "+ identificador);
+                }else {
+                    String CantidadaEnviar = cantidad;
+                    EnviarProductosPredeterminado(Double.parseDouble(CantidadaEnviar), identificador);
+
+                }
+            }
+        });
+        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modales.alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void EnviarProductosPredeterminado(Double cantidadpredeterminar,String identificador) {
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
+
+            JSONObject datos = new JSONObject();
+            try {
+                datos.put("TipoProducto","1");
+                datos.put("ProductoId", claveProducto);
+                datos.put("NumeroInterno", claveProducto);
+                datos.put("Descripcion", descripcioncombustible);
+                datos.put("Cantidad", cantidadpredeterminar);
+                datos.put("Precio", precio);
+                //datos.put("Precio", litros);
+                if (identificador.equals("Litros")){
+                    datos.put("Importe", false);
+                }else{
+                    datos.put("Importe", true);
+                }
+                if (lugarproviene.equals("puntadaAcumularQr")){
+                    datos.put("importedescuento", descuento);
+                }
+
+                myArray.put(datos);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + poscicionCarga;
+            RequestQueue queue = Volley.newRequestQueue(this);
+            JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
+                    new com.android.volley.Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            //Get Final response
+                            if (correcto.equals("true")) {
+                                String titulo = "AVISO";
+                                String mensajes = "Listo para Iniciar Despacho";
+                                if (identificador.equals("PESOS")){
+                                    tvPredeterminadoCantidad.setText("Predeterminado: $" + df.format(cantidadpredeterminar));
+                                }else{
+                                    tvPredeterminadoCantidad.setText("Predeterminado: " + df.format(cantidadpredeterminar) + " " + identificador );
+                                }
+                                spCombustible.setEnabled(false);
+                                cargaOpcionesPredeterminadoSolo();
+                                initializeAdapter();
+                                final Modales modales = new Modales(IniciaVentas.this);
+
+                                View view1 = modales.MostrarDialogoCorrecto(IniciaVentas.this, mensajes);
+                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+                                    }
+                                });
+                            } else {
+                                try {
+                                    String titulo = "AVISO";
+                                    final Modales modales = new Modales(IniciaVentas.this);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensaje, titulo);
+                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    //VolleyLog.e("Error: ", volleyError.getMessage());
+                    String algo = new String(volleyError.networkResponse.data);
+                    try {
+                        //creamos un json Object del String algo
+                        JSONObject errorCaptado = new JSONObject(algo);
+                        //Obtenemos el elemento ExceptionMesage del errro enviado
+                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                        try {
+                            String titulo = "AVISO";
+                            String mensajes = "" + errorMensaje;
+                            Modales modales = new Modales(IniciaVentas.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensajes, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intente);
+                                    finish();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<String, String>();
+                    // Add headers
+                    return headers;
+                }
+                //Important part to convert response to JSON Array Again
+                @Override
+                protected com.android.volley.Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
+                    String responseString;
+                    JSONArray array = new JSONArray();
+                    if (response != null) {
+
+                        try {
+                            responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                            //transaccionId =
+
+                            JSONObject respuesta = new JSONObject(responseString);
+                            correcto = respuesta.getString("Correcto");
+                            mensaje = respuesta.getString("Mensaje");
+                            //String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return com.android.volley.Response.success(myArray, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+            request_json.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+            queue.add(request_json);
+        }
+    }
+
+
+
+
+
+
+}

@@ -196,6 +196,33 @@ public class Modales extends Dialog implements
 
     }
 
+    public View MostrarDialogoInsertaDatoNIP(Context context, String mensaje, String titulo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.activity_insertar_datonip_dialogo, (ConstraintLayout) findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(titulo);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(mensaje);
+//        ((EditText) view.findViewById(R.id.textInsertarDato)).getText();
+        ((Button) view.findViewById(R.id.buttonYes)).setText(R.string.aceptar);
+        ((Button) view.findViewById(R.id.buttonNo)).setText(R.string.cancelar);
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_agregar_dato);
+
+        alertDialog = builder.create();
+
+        if(alertDialog.getWindow() != null)
+        {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        return view;
+
+    }
+
+
     public View MostrarDialogoCofre(Context context, String mensaje, String titulo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(context).inflate(
@@ -379,7 +406,7 @@ public class Modales extends Dialog implements
                 R.layout.activity_dialogo_pago_dolares, (ConstraintLayout) findViewById(R.id.layoutDialogContainer)
         );
         builder.setView(view);
-        ((TextView) view.findViewById(R.id.textTitleEfectivoDolares)).setText(titulo + " TASA DE CAMBIO: " + tipocambiocantidad);
+        ((TextView) view.findViewById(R.id.textTitleEfectivoDolares)).setText(String.format(titulo + " TASA DE CAMBIO: " + String.format("$%.2f",tipocambiocantidad)));
         ((TextView) view.findViewById(R.id.textMontoDolares)).setText(monto);
         EditText cantidadRecibida = view.findViewById(R.id.textMontoRecibiDolares);
 

@@ -56,7 +56,7 @@ public class OpcionImprimir extends AppCompatActivity {
     private void initializeData() {
         lrecyclerViewHeaders = new ArrayList<>();
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Imprimir","Imprime última Transacción",R.drawable.reimprimir));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Reimprimir","Gerente Imprime última Transacción",R.drawable.reimprimir));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Reimprimir","Reimprime última Transacción",R.drawable.reimprimir));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Ticket Pendiente","Imprime ticket enviado a HH",R.drawable.pendientes));
 
         NumeroTarjeta = getIntent().getStringExtra("track");

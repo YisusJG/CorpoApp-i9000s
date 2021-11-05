@@ -18,6 +18,7 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaCombustible.EligePrecioLitros;
+import com.corpogas.corpoapp.VentaCombustible.IniciaVentas;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -54,6 +55,7 @@ public class PuntadaRedimirQr extends AppCompatActivity {
         btnAceptarrQrPuntada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnAceptarrQrPuntada.setEnabled(false);
                 if (lugarProviene.equals("Redimir")){
                     if (!tvDescuento.getText().toString().equals("") || !tvNoTarjetaQr.getText().toString().equals("")) {
                         Intent intent = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);  //ENVIABA A SeccionTarjeta cambio a PosicionPuntadaRedimir
@@ -72,48 +74,68 @@ public class PuntadaRedimirQr extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
+                                btnAceptarrQrPuntada.setEnabled(true);
                             }
+
                         });
                     }
                 }else{
-                    String titulo = "PUNTADA";
-                    String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
-                    Modales modales = new Modales(PuntadaRedimirQr.this);
-                    View viewLectura = modales.MostrarDialogoInsertaDato(PuntadaRedimirQr.this, mensaje, titulo);
-                    EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                    edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String cantidad = edtProductoCantidad.getText().toString();
-                            if (cantidad.isEmpty()){
-                                edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
-                            }else {
-                                String NIPCliente = cantidad;
-                                Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
-                                intent.putExtra("combustible", claveProducto);
-                                intent.putExtra("posicionCarga", posicionCarga);
-                                intent.putExtra("estacionjarreo", estacionJarreo);
-                                intent.putExtra("claveProducto", claveProducto);
-                                intent.putExtra("precioProducto", precio);
-                                intent.putExtra("despacholibre", "no");
-                                intent.putExtra("nip", NIPCliente);
-                                intent.putExtra("numeroTarjeta", tvNoTarjetaQr.getText().toString());
-                                intent.putExtra("descuento", tvDescuento.getText().toString());
-                                intent.putExtra("lugarProviene", "puntadaAcumularQr");
-                                intent.putExtra("pocioncarganumerointerno", numeroInternoPosicionCarga);
-                                startActivity(intent);
-                                finish();
-
+                    if (tvNoTarjetaQr.getText().length() == 0) {
+                        String mensaje = "No se ha escaneado ninguna tarjeta" ;
+                        Modales modales = new Modales(PuntadaRedimirQr.this);
+                        View viewLectura = modales.MostrarDialogoAlertaAceptar(PuntadaRedimirQr.this, mensaje, "Puntada QR");
+                        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                btnAceptarrQrPuntada.setEnabled(true);
                             }
+                        });
+                    }else{
+                        if (tvDescuento.getText().length() > 0) {
+                            String titulo = "PUNTADA";
+                            String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
+                            Modales modales = new Modales(PuntadaRedimirQr.this);
+                            View viewLectura = modales.MostrarDialogoInsertaDato(PuntadaRedimirQr.this, mensaje, titulo);
+                            EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String cantidad = edtProductoCantidad.getText().toString();
+                                    if (cantidad.isEmpty()){
+                                        edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
+                                        btnAceptarrQrPuntada.setEnabled(true);
+                                    }else {
+                                        String NIPCliente = cantidad;
+//                                Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
+                                        Intent intent = new Intent(getApplicationContext(), IniciaVentas.class);
+                                        intent.putExtra("combustible", "claveProducto");
+                                        intent.putExtra("posicionCarga", posicionCarga);
+                                        intent.putExtra("estacionjarreo", estacionJarreo);
+                                        intent.putExtra("claveProducto", "claveProducto");
+                                        intent.putExtra("precioProducto", "precio");
+                                        intent.putExtra("despacholibre", "no");
+                                        intent.putExtra("nip", NIPCliente);
+                                        intent.putExtra("numeroTarjeta", tvNoTarjetaQr.getText().toString());
+                                        intent.putExtra("descuento", tvDescuento.getText().toString());
+                                        intent.putExtra("lugarProviene", "puntadaAcumularQr");
+                                        intent.putExtra("pocioncargaid", numeroInternoPosicionCarga);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+                            });
+                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    btnAceptarrQrPuntada.setEnabled(true);
+                                }
+                            });
                         }
-                    });
-                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            modales.alertDialog.dismiss();
-                        }
-                    });
+                    }
+
                 }
             }
         });
@@ -139,9 +161,8 @@ public class PuntadaRedimirQr extends AppCompatActivity {
             if (result.getContents() == null) {
                 Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
             } else {
-//                Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
                 int posicionPunto = result.getContents().indexOf(",");
-                if (posicionPunto==0){
+                if (!result.getContents().contains(",")){
                     Toast.makeText(getApplicationContext(), "El código QR no contiene descuento asociado", Toast.LENGTH_SHORT).show();
                 } else{
                     String hastaComa = result.getContents().substring(0, posicionPunto);
@@ -155,5 +176,4 @@ public class PuntadaRedimirQr extends AppCompatActivity {
             super.onActivityResult(requestCode, resulCode, data);
         }
     }
-
 }

@@ -1,6 +1,7 @@
 package com.corpogas.corpoapp.VentaCombustible;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -67,6 +68,7 @@ public class confirmaVenta extends AppCompatActivity {
     int idSeleccionado;
     JSONObject myJOProductosFaltantes;
     SQLiteBD db;
+    ProgressDialog bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +121,29 @@ public class confirmaVenta extends AppCompatActivity {
                 if (lugarproviene.equals("Corte")){
                     EnviarProductosCorte();
                 }else{
+                bar = new ProgressDialog(confirmaVenta.this);
+                bar.setTitle("Realizando venta");
+                bar.setMessage("Ejecutando... ");
+                bar.setIcon(R.drawable.productos);
+                bar.setCancelable(false);
+                bar.show();
+
+                if (myArray.length() == 0){
+                    String titulo = "AVISO";
+                    String mensaje = "No se agregó ningún producto";
+                    final Modales modales = new Modales(confirmaVenta.this);
+                    View view1 = modales.MostrarDialogoCorrecto(confirmaVenta.this,mensaje);
+                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                            bar.cancel();
+                            finish();
+                        }
+                    });
+                }else{
                     EnviarProductos();
+                }
                 }
             }
         });
@@ -157,6 +181,7 @@ public class confirmaVenta extends AppCompatActivity {
                 modales.alertDialog.dismiss();
 //                Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
 //                startActivity(intente);
+                bar.cancel();
                 finish();
             }
         });
@@ -271,8 +296,9 @@ public class confirmaVenta extends AppCompatActivity {
                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
-                                            startActivity(intente);
+//                                            Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                            startActivity(intente);
+                                            bar.cancel();
                                         }
                                     }).show();
                         } catch (Exception e) {
@@ -396,9 +422,9 @@ public class confirmaVenta extends AppCompatActivity {
                     viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (ID.size() == 1) {
-                                Toast.makeText(confirmaVenta.this, "No se puede eliminar ya que es el último elemento de la lista", Toast.LENGTH_SHORT).show();
-                            }else{
+//                            if (ID.size() == 1) {
+//                                Toast.makeText(confirmaVenta.this, "No se puede eliminar ya que es el último elemento de la lista", Toast.LENGTH_SHORT).show();
+//                            }else{
                                 ID.remove(identificador);
                                 Cantidad.remove(identificador);
                                 adapterP.notifyDataSetChanged();
@@ -415,7 +441,7 @@ public class confirmaVenta extends AppCompatActivity {
                                 final ListAdapterProductos adapterP = new ListAdapterProductos(confirmaVenta.this, ID, Cantidad);
 
                                 EliminarIdentificador(identificador);
-                            }
+//                            }
                             modales.alertDialog.dismiss();
                         }
                     });

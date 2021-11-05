@@ -217,13 +217,13 @@ public class MonederosElectronicos extends AppCompatActivity {
                     if ( idMonedero == 1 &&  formaPagoId ==12 ){ //PUNTADA
                         if (tipoTarjeta.equals("TanqueLleno")){
                             String titulo = "AVISO";
-                            String mensaje = "Tarjeta inválida, NO ES TARJETA PUNTADA";
+                            String mensaje = "Tarjeta inválida, NO ES TARJETA TANQUELLENO";
                             Modales modales = new Modales(MonederosElectronicos.this);
                             View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this,mensaje,titulo);
                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    onDestroy();
+//                                    onDestroy();
                                     modales.alertDialog.dismiss();
                                     Intent intent = new Intent(MonederosElectronicos.this, Menu_Principal.class);
                                     startActivity(intent);

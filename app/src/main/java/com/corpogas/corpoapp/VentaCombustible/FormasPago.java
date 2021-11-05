@@ -82,7 +82,6 @@ public class FormasPago extends AppCompatActivity {
         MontoCanasta = getIntent().getDoubleExtra("montoenCanasta", 0);
         posiciondecargaid = getIntent().getStringExtra("posicionCarga");
         sucursalnumeroempleado = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
-//        claveProducto = getIntent().getStringExtra("claveProducto");
 
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
         descuento = getIntent().getDoubleExtra("descuento",0);
@@ -328,7 +327,7 @@ public class FormasPago extends AppCompatActivity {
                             ImprimeVenta();
                             //IMPRIMIR
                         }else{
-                            String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                            String mensajes = "¿Desea Acumular la venta a su Tarjeta Puntada?";
                             Modales modalesEfectivo = new Modales(FormasPago.this);
                             View viewLecturas = modalesEfectivo.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
                             viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -417,7 +416,7 @@ public class FormasPago extends AppCompatActivity {
                                 finish();
                             }else{
                                 String titulo = "PUNTADA";
-                                String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                                String mensajes = "¿Desea Acumular la venta a su Tarjeta Puntada?";
                                 Modales modalesPuntada = new Modales(FormasPago.this);
                                 View viewLectura = modalesPuntada.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
                                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -490,7 +489,7 @@ public class FormasPago extends AppCompatActivity {
                                 ObtieneMontoDolares(1);
                             }else{
                                 titulo = "PUNTADA";
-                                String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                                String mensajes = "¿Desea Acumular la venta a su Tarjeta Puntada?";
                                 Modales modalesEfectivo = new Modales(FormasPago.this);
                                 View viewLecturas = modalesEfectivo.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
                                 viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -540,7 +539,7 @@ public class FormasPago extends AppCompatActivity {
                                     MuestraFormaEfectivo();
                                 }else{
                                     titulo = "PUNTADA";
-                                    String mensajes = "Desea Acumular la venta a su Tarjeta Puntada?";
+                                    String mensajes = "¿Desea Acumular la venta a su Tarjeta Puntada?";
                                     Modales modalesEfectivo = new Modales(FormasPago.this);
                                     View viewLecturas = modalesEfectivo.MostrarDialogoAlerta(FormasPago.this, mensajes,  "SI", "NO");
                                     viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -578,7 +577,7 @@ public class FormasPago extends AppCompatActivity {
                                 if (numpago == 3 || numpago == 5 || numpago == 13 ) { //numpago == 4 || numpago == 5 || numpago == 6 AMEX, VISA, GASCARD
 
                                     titulo = "PUNTADA";
-                                    String mensaje = "Desea Acumular la venta a su Tarjeta Puntada?";
+                                    String mensaje = "¿Desea Acumular la venta a su Tarjeta Puntada?";
                                     Modales modalesA = new Modales(FormasPago.this);
                                     View viewLecturan = modalesA.MostrarDialogoAlerta(FormasPago.this, mensaje,  "SI", "NO");
                                     viewLecturan.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -907,7 +906,7 @@ public class FormasPago extends AppCompatActivity {
         String titulo = "PAGO EFECTIVO";
         String mensaje = "FORMA DE PAGO EN EFECTIVO";
         Modales modales = new Modales(FormasPago.this);
-        View viewLectura = modales.MostrarDialogoAlerta(FormasPago.this, mensaje,  "DOLRES", "PESOS");
+        View viewLectura = modales.MostrarDialogoAlerta(FormasPago.this, mensaje,  "DOLARES", "PESOS");
         viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -939,7 +938,7 @@ public class FormasPago extends AppCompatActivity {
             public void onClick(View view) {
                 modalesEfectivo.alertDialog.dismiss();
                 String titulo = "IMPRIMIR";
-                String mensajes = "Desea finalizar la venta?";
+                String mensajes = "¿Desea finalizar la venta?";
                 Modales modalesImprime = new Modales(FormasPago.this);
                 View viewLectura = modalesImprime.MostrarDialogoAlerta(FormasPago.this, mensajes,  "FINALIZAR", "IMPRIMIR");
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -1015,7 +1014,7 @@ public class FormasPago extends AppCompatActivity {
             public void onClick(View view) {
                 modalesEfectivo.alertDialog.dismiss();
                 String titulo = "IMPRIMIR";
-                String mensajes = "Desea finalizar la venta?";
+                String mensajes = "¿Desea finalizar la venta?";
                 Modales modalesImprime = new Modales(FormasPago.this);
                 View viewLectura = modalesImprime.MostrarDialogoAlerta(FormasPago.this, mensajes,  "FINALIZAR", "IMPRIMIR");
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -1139,7 +1138,7 @@ public class FormasPago extends AppCompatActivity {
                     } else {
                         String titulo = "AVISO";
                         Modales modales = new Modales(FormasPago.this);
-                        View view1 = modales.MostrarDialogoCorrecto(FormasPago.this, "Ticket Impreso en Impresora Central");
+                        View view1 = modales.MostrarDialogoCorrecto(FormasPago.this, "Ticket enviado a impresora central");
                         view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                             @Override
                             public void onClick(View view) {

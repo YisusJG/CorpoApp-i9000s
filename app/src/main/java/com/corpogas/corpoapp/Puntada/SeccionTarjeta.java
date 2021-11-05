@@ -105,7 +105,7 @@ public class SeccionTarjeta extends AppCompatActivity {
             Modales modales = new Modales(SeccionTarjeta.this);
             View viewLectura = modales.MostrarDialogoInsertaDato(SeccionTarjeta.this, mensaje, titulo);
             EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

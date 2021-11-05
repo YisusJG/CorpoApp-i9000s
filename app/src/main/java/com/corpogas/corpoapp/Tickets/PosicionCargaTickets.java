@@ -619,7 +619,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                     } else {
                         String titulo = "AVISO";
                         Modales modales = new Modales(PosicionCargaTickets.this);
-                        View view1 = modales.MostrarDialogoCorrecto(PosicionCargaTickets.this, "Ticket Impreso en Impresora Central");
+                        View view1 = modales.MostrarDialogoCorrecto(PosicionCargaTickets.this, "Ticket enviado a impresora central");
                         view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                             @Override
                             public void onClick(View view) {

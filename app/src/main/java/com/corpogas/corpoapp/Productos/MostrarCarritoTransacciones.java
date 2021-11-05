@@ -181,7 +181,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
 //            finish();
 //        } else {
             String titulo = "Vaciar Carrito";
-            String mensajes = "Estas seguro de VACIAR EL CARRITO?";
+            String mensajes = "¿Estas seguro de VACIAR EL CARRITO?";
             Modales modales = new Modales(MostrarCarritoTransacciones.this);
             View viewLectura = modales.MostrarDialogoAlerta(MostrarCarritoTransacciones.this, mensajes, "SI", "NO");
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -287,7 +287,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
 //            finish();
 //        } else {
             String titulo = "FINALIZAR VENTA";
-            String mensajes = "Estas seguro de FINALIZAR LA VENTA?";
+            String mensajes = "¿Estas seguro de FINALIZAR LA VENTA?";
             Modales modales = new Modales(MostrarCarritoTransacciones.this);
             View viewLectura = modales.MostrarDialogoAlerta(MostrarCarritoTransacciones.this, mensajes, "SI", "NO");
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -376,7 +376,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
 
     private void Imprimir(){
         String titulo = "IMPRIMIR";
-        String mensajes = "Estas seguro de IMPRIMIR venta?";
+        String mensajes = "¿Estas seguro de IMPRIMIR venta?";
         Modales modales = new Modales(MostrarCarritoTransacciones.this);
         View viewLectura = modales.MostrarDialogoAlerta(MostrarCarritoTransacciones.this, mensajes,  "SI", "NO");
         viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {

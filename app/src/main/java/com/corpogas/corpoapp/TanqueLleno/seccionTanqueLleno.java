@@ -66,8 +66,8 @@ public class seccionTanqueLleno extends AppCompatActivity {
         lTanqueLleno = new ArrayList<>();
         lTanqueLleno.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
-        lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
-        lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Atorización Telefónica",R.drawable.tanquelleno));
+//        lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
+        lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Autorización Telefónica",R.drawable.tanquelleno));
 
 
     }
@@ -84,6 +84,7 @@ public class seccionTanqueLleno extends AppCompatActivity {
                 if (titulo.equals("Banda Magnética")) {
                     Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);   //LeeTarjeta
                     intent.putExtra("Enviadodesde", "TanqueLlenoBandaMagnetica");
+                    intent.putExtra("tipoTarjeta", "TanqueLleno");
                     startActivity(intent);
                     finish();
 

@@ -35,6 +35,7 @@ import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PosicionCargaTLl;
 import com.corpogas.corpoapp.VentaCombustible.Adaptador;
+import com.corpogas.corpoapp.VentaCombustible.IniciaVentas;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 import com.corpogas.corpoapp.VentaCombustible.VentaCombustibleAceites;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
@@ -437,8 +438,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     case "RedimirQR":
 
 
-
-
                     case "Redimir":
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;
@@ -487,14 +486,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 //                    JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
 
                         if (correcto.equals("false")){
-                            Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
-                            intent.putExtra("numeroEmpleado", empleadoNumero);
-                            intent.putExtra("posicionCarga", posicionCarga);
-                            intent.putExtra("estacionjarreo", Estacionjarreo);
-                            intent.putExtra("pcnumerointerno", cargaNumeroInterno);
-                            intent.putExtra("pocioncargaid", cargaNumeroInterno);
-                            startActivity(intent);
-                            finish();
+                            confirmaDescuentoPuntadaQr(posicionCarga);
                         }else{
                             Boolean banderaConDatos;
                             if (ObjetoRespuesta.equals("null")) {
@@ -508,12 +500,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             }
 
                             if (banderaConDatos.equals(false)){
-                                Intent intent = new Intent(getApplicationContext(), VentaProductos.class); //VentaCombustibleAceites
-                                intent.putExtra("numeroEmpleado", empleadoNumero);
-                                intent.putExtra("posicionCarga", posicionCarga);
-                                intent.putExtra("estacionjarreo", Estacionjarreo);
-                                startActivity(intent);
-                                finish();
+                                confirmaDescuentoPuntadaQr(posicionCarga);
+
                             } else {
 
                                 Double MontoenCanasta = 0.00;
@@ -588,10 +576,53 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     }
 
     private void enviarSiguientePantallaVentas(){
-
-
     }
 
+
+    private void confirmaDescuentoPuntadaQr(String posicionCarga){
+        String titulo = "PUNTADA QR";
+        String mensajes = "¿Descuento con Puntada ( QR )? ";
+        Modales modalesPuntada = new Modales(PosicionPuntadaRedimir.this);
+        View viewLectura = modalesPuntada.MostrarDialogoAlerta(PosicionPuntadaRedimir.this, mensajes,  "SI", "NO");
+        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                String precio = PrecioProducto.get(position);
+//                String claveProducto = ClaveProducto.get(position);
+//                //LeeTarjeta();
+                Intent intent = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
+                //Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
+                intent.putExtra("combustible", "");
+                intent.putExtra("posicionCarga", posicionCarga);
+                intent.putExtra("estacionjarreo", "estacionJarreo");
+                intent.putExtra("claveProducto", "");
+                intent.putExtra("precioProducto", "");
+                intent.putExtra("despacholibre", "no");
+                intent.putExtra("lugarProviene", "Acumular");
+                intent.putExtra("pocioncarganumerointerno", cargaNumeroInterno);
+                startActivity(intent);
+                finish();
+                modalesPuntada.alertDialog.dismiss();
+            }
+        });
+        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modalesPuntada.alertDialog.dismiss();
+                Intent intent = new Intent(getApplicationContext(), IniciaVentas.class); //VentaProductos
+                intent.putExtra("numeroEmpleado", empleadoNumero);
+                intent.putExtra("posicionCarga", posicionCarga);
+                intent.putExtra("estacionjarreo", "Estacionjarreo");
+                intent.putExtra("pcnumerointerno", cargaNumeroInterno);
+                intent.putExtra("pocioncargaid", cargaNumeroInterno);
+                intent.putExtra("descuento", 0);
+                intent.putExtra("lugarProviene", "ventas");
+                startActivity(intent);
+                finish();
+            }
+        });
+
+    }
 
     public void obtieneSaldoTarjeta(String PosicionDeCarga) {
         String Posi = PosicionDeCarga;

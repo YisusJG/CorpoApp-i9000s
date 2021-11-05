@@ -728,10 +728,10 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            R.id.btnEntregas -> {
-                intent = Intent(applicationContext, OpcionesEntregaActivity::class.java)
-                startActivity(intent)
-            }
+//            R.id.btnEntregas -> {
+//                intent = Intent(applicationContext, OpcionesEntregaActivity::class.java)
+//                startActivity(intent)
+//            }
 
             R.id.btnCofre -> {
                 intent = Intent(applicationContext, CofreActivity::class.java)

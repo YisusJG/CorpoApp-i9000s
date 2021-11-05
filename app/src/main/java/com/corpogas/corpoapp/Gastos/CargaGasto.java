@@ -232,17 +232,22 @@ public class CargaGasto extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(), "Digite el Subtotal", Toast.LENGTH_LONG).show();
                 } else {
                     if(iva.length()==0){
-                        String titulo = "AVISO";
-                        String mensaje = "digite el IVA";
-                        Modales modales = new Modales(CargaGasto.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(CargaGasto.this, mensaje, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                iva.requestFocus();
-                                modales.alertDialog.dismiss();
-                            }
-                        });
+                        if(rbSinFactura.isChecked()){
+                            iva.setText("0");
+                            EnviarGastos();
+                        }else{
+                            String titulo = "AVISO";
+                            String mensaje = "digite el IVA";
+                            Modales modales = new Modales(CargaGasto.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(CargaGasto.this, mensaje, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    iva.requestFocus();
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                        }
                     }else {
                         if(rbConFactura.isChecked() && Double.parseDouble(iva.getText().toString()) <= 0){
                             String titulo = "AVISO";

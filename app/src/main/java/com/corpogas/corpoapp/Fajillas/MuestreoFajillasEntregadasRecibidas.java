@@ -26,6 +26,8 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajillaEntregada;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
+import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
 
 import org.json.JSONArray;
@@ -171,13 +173,21 @@ public class MuestreoFajillasEntregadasRecibidas extends AppCompatActivity {
                             tvFajillasEntregadas.setText("Total Fajillas Entregadas: $" + df.format(fajillasMontoTotal).toString());
                         }
                     }else{
-                        Toast.makeText(MuestreoFajillasEntregadasRecibidas.this, "No hay Fajillas para mostrar", Toast.LENGTH_SHORT).show();
-                        Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                        //Se envian los parametros de posicion y usuario
-                        intent1.putExtra("device_name", m_deviceName);
-                        //inicia el activity
-                        startActivity(intent1);
-                        finish();
+//                        Toast.makeText(MuestreoFajillasEntregadasRecibidas.this, "No hay Fajillas para mostrar", Toast.LENGTH_SHORT).show();
+                        String titulo = "AVISO";
+                        Modales modales = new Modales(MuestreoFajillasEntregadasRecibidas.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(MuestreoFajillasEntregadasRecibidas.this,"No tiene fajillas entregadas",titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+                                //inicia el activity
+                                startActivity(intent1);
+                                finish();
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+
                     }
                 }
                 @Override

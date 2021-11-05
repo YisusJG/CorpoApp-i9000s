@@ -37,6 +37,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -626,8 +627,8 @@ public class ValesPapel extends AppCompatActivity {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int identificador, long l) {
 //                                    Toast.makeText(ValesPapel.this, "asda", Toast.LENGTH_SHORT).show();
-                                    String titulo = "Estas seguro?";
-                                    String mensajes = "Deseas eliminar el elemento seleccionado?";
+                                    String titulo = "¿Estas seguro?";
+                                    String mensajes = "¿Deseas eliminar el elemento seleccionado?";
                                     Modales modalesA = new Modales(ValesPapel.this);
                                     View viewLectura = modalesA.MostrarDialogoAlerta(ValesPapel.this, mensajes,  "SI", "NO");
                                     viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {

@@ -98,6 +98,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
         btnAceptarProductoTl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnAceptarProductoTl.setEnabled(false);
                 if(txtleyendaTl.getText() == "PRODUCTO SELECCIONADO"){
                     banderaDatos =true;
                     String mensajeValidacion = "";
@@ -123,7 +124,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                     }
                     if (tvNumeroFolioTl.length() ==0){
                         banderaDatos = false;
-                        mensajeValidacion="Digite el Folio";
+                        mensajeValidacion="Digite el No. de Autorización";
                     }
 
                     if (banderaDatos){
@@ -137,6 +138,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                             @Override
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
+                                btnAceptarProductoTl.setEnabled(true);
                             }
                         });
                     }
@@ -205,18 +207,20 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void onClick(View view) {
                                         modales.alertDialog.dismiss();
+                                        btnAceptarProductoTl.setEnabled(true);
                                     }
                                 });
                             }
                         } else {
                             String titulo = "AVISO";
-                            String mensaje = "Tarjeta invalida";
+                            String mensaje = "Tarjeta inválida";
                             Modales modales = new Modales(PlanchadoTanqueLleno.this);
                             View view1 = modales.MostrarDialogoAlertaAceptar(PlanchadoTanqueLleno.this, mensaje, titulo);
                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     modales.alertDialog.dismiss();
+                                    btnAceptarProductoTl.setEnabled(true);
                                 }
                             });
                         }

@@ -24,6 +24,8 @@ import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
+import com.corpogas.corpoapp.Entregas.EntregaPicosActivity;
+import com.corpogas.corpoapp.Entregas.EntregaValesActivity;
 import com.corpogas.corpoapp.R;
 
 import java.util.ArrayList;
@@ -78,17 +80,28 @@ public class OpcionFajillas extends AppCompatActivity {
                     intent1.putExtra("lugarProviene", "CancelarFajillas");
                     startActivity(intent1);
                     finish();
+                }else if (titulo.equals("Entrega Picos")) {
+                    Intent intent1 = new Intent(getApplicationContext(), EntregaPicosActivity.class);
+                    startActivity(intent1);
+                    finish();
+                }  else if (titulo.equals("Entrega Vales")) {
+                    Intent intent1 = new Intent(getApplicationContext(), EntregaValesActivity.class);
+                    startActivity(intent1);
+                    finish();
                 }
             }
         });
         rcvOpcionFajillas.setAdapter(adapter);
     }
 
+
     private void initializeData() {
         lOpcionFajillas = new ArrayList<>();
         lOpcionFajillas.add(new RecyclerViewHeaders("Entrega Fajillas","Entrega de Fajillas",R.drawable.fajillas_billetes));
+        lOpcionFajillas.add(new RecyclerViewHeaders("Entrega Picos","Entrega de Picos",R.drawable.picos));
+        lOpcionFajillas.add(new RecyclerViewHeaders("Entrega Vales","Entrega de Vales de Papel",R.drawable.vales_papel));
         lOpcionFajillas.add(new RecyclerViewHeaders("Consulta Fajillas","Fajillas Entregadas/Recibidas",R.drawable.fajillas_picos));
-        lOpcionFajillas.add(new RecyclerViewHeaders("Cancelar Pago","Cancelación de Pagos Realizados",R.drawable.billete));
+        lOpcionFajillas.add(new RecyclerViewHeaders("Cancelar Pago","Cancelar Pago/Cobro Realizado",R.drawable.billete));
 
     }
 
