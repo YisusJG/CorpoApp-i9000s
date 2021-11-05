@@ -51,6 +51,7 @@ import com.corpogas.corpoapp.Gastos.ClaveGastos
 import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
+import com.corpogas.corpoapp.Metas.MetasActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
@@ -735,6 +736,11 @@ class Menu_Principal : AppCompatActivity() {
 
             R.id.btnCofre -> {
                 intent = Intent(applicationContext, CofreActivity::class.java)
+                startActivity(intent)
+            }
+
+            R.id.btnMetas -> {
+                intent = Intent(applicationContext, MetasActivity::class.java)
                 startActivity(intent)
             }
 
