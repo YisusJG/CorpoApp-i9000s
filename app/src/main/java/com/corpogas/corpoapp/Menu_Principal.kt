@@ -180,31 +180,6 @@ class Menu_Principal : AppCompatActivity() {
     fun cerrarSesionTemporal(){
         obtenerArqueo()
 
-//        val mensajes = "¿CUENTAS CON PICOS PARA ENTREGAR?"
-//        val modales = Modales(this)
-//        val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
-//        viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
-//            intent = Intent(applicationContext, EntregaPicos::class.java)
-//            startActivity(intent)
-//        }
-//        viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener {
-//            val data = SQLiteBD(applicationContext)
-//            data.execSQL(SQL_DELETE_TBL_EMPLEADO)
-//            intent = Intent(applicationContext, LoginActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//            modales.alertDialog.dismiss()
-//
-//        }
-
-//        val titulo = "Cerrar sesion"
-//        val mensaje = "INGRESA TUS PICOS PARA CONTINUAR"
-//        val modales = Modales(this)
-//        val viewPicos = modales.MostrarDialogoInsertaDato(this, mensaje, titulo)
-//        viewPicos.findViewById<View>(R.id.buttonYes).setOnClickListener{
-//
-//        }
-//        viewPicos.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
     }
 
     fun obtenerArqueo(){

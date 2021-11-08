@@ -272,7 +272,7 @@ public class EntregaPicos extends AppCompatActivity {
             Modales modales = new Modales(EntregaPicos.this);
             View viewLectura = modales.MostrarDialogoInsertaDato(EntregaPicos.this, mensaje1, titulo1);
             edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -481,7 +481,7 @@ public class EntregaPicos extends AppCompatActivity {
                 Modales modales = new Modales(EntregaPicos.this);
                 View viewLectura = modales.MostrarDialogoInsertaDato(EntregaPicos.this, mensaje1, titulo1);
                 edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -646,146 +646,9 @@ public class EntregaPicos extends AppCompatActivity {
                 });
             }
 
-
-
-
-//
-//            Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//
-////            String json = new Gson().toJson(recepcionFajilla);
-//
-//            EndPoints postGuardaPicosMorralla = retrofit.create(EndPoints.class);
-//            Call<RespuestaApi<List<ResumenFajilla>>> call = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado());
-//            call.timeout().timeout(60, TimeUnit.SECONDS);
-//            call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
-//
-//                @Override
-//                public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, Response<RespuestaApi<List<ResumenFajilla>>> response) {
-//                    if (!response.isSuccessful()) {
-//                        return;
-//                    }
-//                    respuestaApiPicosMorralla = response.body();
-//                    boolean correcto = respuestaApiPicosMorralla.Correcto;
-//                    if (correcto == true) {
-//
-//                        if (sumaTotal == 0) {
-//                            mensaje = "Sus Picos han sido registrados. Total: $" + (cantidadMorralla) + " pesos";
-//                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
-//                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    db.getWritableDatabase().delete("Picos",null,null);
-//                                    db.getWritableDatabase().delete("Fajillas",null,null);
-//                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
-//                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                                    startActivity(intent);
-////                                    btnAceptar.setEnabled(true);
-//                                    modales.alertDialog.dismiss();
-//                                    db.close();
-//                                    finish();
-//                                }
-//                            });
-//
-//                        } else {
-//
-//                            double total = Double.parseDouble(cantidadMorralla) + Double.parseDouble(String.valueOf(sumaTotal));
-//                            mensaje = "Sus Picos han sido registrados. Total: $" + (total) + " pesos";
-//                            View view1 = modales.MostrarDialogoCorrecto(EntregaPicos.this, mensaje);
-//                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    db.getWritableDatabase().delete("Picos",null,null);
-//                                    db.getWritableDatabase().delete("Fajillas",null,null);
-//                                    db.getWritableDatabase().delete("PrecioFajillas",null,null);
-//                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                                    startActivity(intent);
-//
-////                                    btnAceptar.setEnabled(true);
-//                                    modales.alertDialog.dismiss();
-//                                    db.close();
-//                                    finish();
-//                                }
-//                            });
-//                        }
-//                    } else {
-//
-//                        titulo = "AVISO";
-//                        mensaje = respuestaApiPicosMorralla.Mensaje;
-//                        View view1 = modales.MostrarDialogoAlertaAceptar(EntregaPicos.this, mensaje, titulo);
-//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                btnAceptar.setEnabled(true);
-//                                modales.alertDialog.dismiss();
-//
-//                            }
-//                        });
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
-//                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-//
-//                }
-//
-//            });
         }
 
     }
-
-//    public void confirmaAutorizacion(){
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-//        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuario(sucursalId, nipAutorizacion);
-//        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-//
-//            @RequiresApi(api = Build.VERSION_CODES.N)
-//            @Override
-//            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-//                if (!response.isSuccessful()) {
-//                    return;
-//                }
-//                respuestaApiAccesoUsuario = response.body();
-//                usuarioCorrecto();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-//
-//    }
-
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    public void usuarioCorrecto(){
-//        boolean correcto = respuestaApiAccesoUsuario.Correcto;
-//        if (correcto == true) {
-//            if (respuestaApiAccesoUsuario.getObjetoRespuesta().getClave().equals(nipAutorizacion) && ((respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 3))||(respuestaApiAccesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 1)) {
-//
-//
-//            } else {
-//                edtNipAutorizacion.setError("Usuario no autorizado");
-//            }
-//
-//        } else {
-//            edtNipAutorizacion.setError(respuestaApiAccesoUsuario.Mensaje);
-//
-//        }
-//
-//    }
 
     //Metodo para regresar a la actividad principal
     @Override

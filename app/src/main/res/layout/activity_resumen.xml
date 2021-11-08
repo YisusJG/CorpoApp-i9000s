@@ -1347,6 +1347,7 @@
                 android:text="validar entrega"
                 android:textColor="@color/white"
                 android:visibility="visible"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

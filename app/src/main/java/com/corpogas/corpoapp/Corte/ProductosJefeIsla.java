@@ -124,7 +124,8 @@ public class ProductosJefeIsla extends AppCompatActivity {
                 mensaje = "Ingresa NIP de confirmación.";
                 View viewLectura = modales.MostrarDialogoInsertaDato(ProductosJefeIsla.this, mensaje, titulo);
                 edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER);
+                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
