@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="20dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:id="@+id/linear_layout"
         android:orientation="vertical"
-        android:paddingBottom="10dp"
-        >
+        android:paddingBottom="10dp">
 
 
         <TextView
             android:id="@+id/txvTipoProducto"
-            style="@style/TextAppearance.AppCompat.Body2"
+            style="@style/Theme.TextViewMetasTitulos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="ACEITES"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,19 +30,20 @@
 
         <TextView
             android:id="@+id/textView19"
-            android:layout_width="90dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="DESPACHOS : "
+            android:text="DESPACHOS:"
             android:textColor="@color/darkGrayColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txvTipoProducto" />
 
         <TextView
             android:id="@+id/txvDespachos"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="50dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="3000"
@@ -53,7 +53,8 @@
 
         <TextView
             android:id="@+id/textView21"
-            android:layout_width="100dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="META: "
@@ -64,11 +65,11 @@
 
         <TextView
             android:id="@+id/txvMetas"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="50dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:text="405"
             app:layout_constraintBottom_toBottomOf="@+id/textView21"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,21 +78,25 @@
 
         <TextView
             android:id="@+id/textView23"
-            android:layout_width="90dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="VENDIDOS: "
+            android:layout_marginBottom="8dp"
+            android:text="VENDIDOS:"
             android:textColor="@color/darkGrayColor"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
         <TextView
             android:id="@+id/textView24"
-            android:layout_width="100dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="DIFERENCIAS: "
+            android:text="DIFERENCIA: "
             android:textColor="@color/darkGrayColor"
             app:layout_constraintBottom_toBottomOf="@+id/txvVendidos"
             app:layout_constraintStart_toEndOf="@+id/txvVendidos"
@@ -99,11 +104,11 @@
 
         <TextView
             android:id="@+id/txvDiferencias"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="50dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:text="14"
             app:layout_constraintBottom_toBottomOf="@+id/textView24"
             app:layout_constraintEnd_toEndOf="parent"
@@ -112,8 +117,8 @@
 
         <TextView
             android:id="@+id/txvVendidos"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="50dp"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="26"

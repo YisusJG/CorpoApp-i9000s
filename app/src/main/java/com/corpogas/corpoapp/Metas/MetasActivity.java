@@ -38,7 +38,8 @@ public class MetasActivity extends AppCompatActivity {
         List<Metas> lMetas= new ArrayList<Metas>();
         lMetas.add(new Metas(1,"ACEITES",785,50,32,18));
         lMetas.add(new Metas(1,"ADITIVOS",4520,95,45,50));
-        lMetas.add(new Metas(1,"OTROS",40,92,22,70));
+        lMetas.add(new Metas(1,"OTROS",40,92,93,0));
+        lMetas.add(new Metas(1,"COMBUSTIBLES",420,902,222,680));
 
         initialAdapter(lMetas);
     }

@@ -1,6 +1,7 @@
 package com.corpogas.corpoapp.Metas.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.corpogas.corpoapp.Entities.Cortes.CierreValePapel;
@@ -32,11 +34,6 @@ public class AdapterMetas extends RecyclerView.Adapter<AdapterMetas.RecyclerView
 
         TextView txvTipoProducto,txvDespachos,txvMetas,txvVendidos,txvDiferencias;
 
-
-
-
-
-
         RecyclerViewHeadersHolder(View itemView) {
             super(itemView);
             txvTipoProducto = (TextView)itemView.findViewById(R.id.txvTipoProducto);
@@ -47,8 +44,6 @@ public class AdapterMetas extends RecyclerView.Adapter<AdapterMetas.RecyclerView
 
         }
     }
-
-
 
     public AdapterMetas(List<Metas> recyclerViewHeaders){
         this.lrecyclerViewHeaders = recyclerViewHeaders;
@@ -75,7 +70,16 @@ public class AdapterMetas extends RecyclerView.Adapter<AdapterMetas.RecyclerView
         recyclerViewHeadersHolder.txvDespachos.setText(String.valueOf(lrecyclerViewHeaders.get(position).getDespachos()));
         recyclerViewHeadersHolder.txvMetas.setText(String.valueOf(lrecyclerViewHeaders.get(position).getMeta()));
         recyclerViewHeadersHolder.txvVendidos.setText(String.valueOf(lrecyclerViewHeaders.get(position).getVendidos()));
-        recyclerViewHeadersHolder.txvDiferencias.setText(String.valueOf(lrecyclerViewHeaders.get(position).getDiferencias()));
+
+        recyclerViewHeadersHolder.txvDiferencias.setText(String.valueOf(lrecyclerViewHeaders.get(position).getVendidos()-lrecyclerViewHeaders.get(position).getMeta()));
+
+        if(lrecyclerViewHeaders.get(position).getMeta() > lrecyclerViewHeaders.get(position).getVendidos())
+        {
+            recyclerViewHeadersHolder.txvDiferencias.setTextColor(Color.parseColor("#EE4B2B"));
+        }else {
+            recyclerViewHeadersHolder.txvDiferencias.setTextColor(Color.parseColor("#4BB543"));
+        }
+
 
 
     }
