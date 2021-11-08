@@ -41,6 +41,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_PICOS);
         db.execSQL(TBL_PAGOTARJETA);
         db.execSQL(TBL_PAGOTARJETA_DIFERENTESFORMASPAGO);
+        db.execSQL(TBL_MAXIMO_EFECTIVO_SUCURSAL);
 
     }
 
@@ -1121,6 +1122,39 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     //<-------------------------------------------------------PARAMETROS DE LA TABLA RECEPCION FAJILLAS Y PICOS------------------------------------------------>
 
+    //<-------------------------------------------------------PARAMETROS DE LA TABLA MAXIMO DINERO EN EFECTIVO------------------------------------------------>
+
+    public static class MaximoEfectivoSucursal implements BaseColumns{
+        public static final String nombreTabla = "MaximoEfectivoSucursal";
+        public static final String maximoEfectivo = "MaximoEfectivo";
+    }
+
+    //<------------------------------------------------------------------CREACION DE TABLA EMPLEADO---------------------------------------------------------------------->
+
+    private static final String TBL_MAXIMO_EFECTIVO_SUCURSAL = "CREATE TABLE " + MaximoEfectivoSucursal.nombreTabla+ "("+
+            MaximoEfectivoSucursal._ID + " INTEGER PRIMARY KEY," +
+            MaximoEfectivoSucursal.maximoEfectivo + " REAL)";
+
+    //    <----------------------------------------------------------------------INSERT DE TABLA EMPLEADO------------------------------------------------------------------->
+
+    public void InsertarMaximoEfectivo(double maximoEfectivo){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MaximoEfectivoSucursal.maximoEfectivo, maximoEfectivo);
+
+        long newRowId = base.insert(MaximoEfectivoSucursal.nombreTabla, null, values);
+
+    }
+
+    //<----------------------------------------------------------------------SELECTS DE TABLA MAXIMO EFECTIVO SUCURSAL -------------------------------------------------------->
+
+    public Double getMaximoEfectivo(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT MaximoEfectivo FROM MaximoEfectivoSucursal", null);
+        cursor.moveToFirst();
+        Double valorMaximoEfectivo = cursor.getDouble(0);
+        return valorMaximoEfectivo;
+    }
 
 
 }

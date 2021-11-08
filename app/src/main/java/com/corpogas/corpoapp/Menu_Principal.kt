@@ -89,6 +89,7 @@ class Menu_Principal : AppCompatActivity() {
     var ImageDisplay: Boolean? = null
     var applicationUpdate: RespuestaApi<Update>? = null
     var respuestaApiArqueo: RespuestaApi<List<Arqueo>>? = null
+    var respuestaApiEfectivoNoEntregado: RespuestaApi<Double>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
@@ -179,6 +180,33 @@ class Menu_Principal : AppCompatActivity() {
 
     fun cerrarSesionTemporal(){
         obtenerArqueo()
+
+    }
+
+    fun obtenerEfectivoNoEntregado(){
+        val data = SQLiteBD(applicationContext)
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val obtenerEfectivoNoEntregado = retrofit.create(EndPoints::class.java)
+        val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado)
+        call.timeout().timeout(60, TimeUnit.SECONDS)
+        call.enqueue(object : Callback<RespuestaApi<Double>> {
+            override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
+                if (!response.isSuccessful) {
+//                    mJsonTxtView.setText("Codigo: "+ response.code());
+                    return
+                }
+                respuestaApiEfectivoNoEntregado = response.body()
+            }
+
+            override fun onFailure(call: Call<RespuestaApi<Double>>, t: Throwable) {
+                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+            }
+
+        })
 
     }
 
@@ -626,13 +654,53 @@ class Menu_Principal : AppCompatActivity() {
 
     fun onClickMenuPrincipal(v: View) {
         var intent: Intent
+
         when (v.id) {
             R.id.btnImgVentas -> {
-                intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
-                intent.putExtra("lugarproviene", "Ventas")
-//                intent.putExtra("IdUsuario", "10045353")
-//                intent.putExtra("clave", "4444")
-                startActivity(intent)
+                
+                val data = SQLiteBD(applicationContext)
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val obtenerEfectivoNoEntregado = retrofit.create(EndPoints::class.java)
+                val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado)
+                call.timeout().timeout(60, TimeUnit.SECONDS)
+                call.enqueue(object : Callback<RespuestaApi<Double>> {
+                    override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
+                        if (!response.isSuccessful) {
+//                    mJsonTxtView.setText("Codigo: "+ response.code());
+                            return
+                        }
+                        respuestaApiEfectivoNoEntregado = response.body()
+                        var efectivoNoEntregado = respuestaApiEfectivoNoEntregado?.objetoRespuesta!!
+                        if(efectivoNoEntregado > 0.0){
+                            intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
+                            intent.putExtra("lugarproviene", "Ventas")
+                            startActivity(intent)
+
+                        }else{
+
+                            val mensaje = "Tienes $" + efectivoNoEntregado +" en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
+                            val modales = Modales(this@Menu_Principal)
+                            val viewResultado = modales.MostrarDialogoAlerta(this@Menu_Principal, mensaje, "ACEPTAR", "CANCELAR")
+                            viewResultado.findViewById<View>(R.id.buttonYes).setOnClickListener{
+                                modales.alertDialog.dismiss()
+                            }
+                            viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener{
+                                modales.alertDialog.dismiss()
+                            }
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<RespuestaApi<Double>>, t: Throwable) {
+                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+
             }
 //            R.id.btnImgTickets -> {
 //                intent = Intent(applicationContext, PosicionCargaTickets::class.java)

@@ -143,6 +143,14 @@ public interface EndPoints {
     @GET("api/recepcionFajillas/getFajillas/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<RecepcionFajillaEntregada>> getFajillas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") long numeroEmpleado);
 
+    //METOTO PARA OBTENER EL MAXIMO DE EFECTIVO QUE PUEDE TENER UN DESPACHADOR POR ESTACION
+    @GET("api/Consolas/sucursalId/{sucursalId}/maximoEfectivo")
+    Call<RespuestaApi<Double>> getMaximoEfectivo(@Path("sucursalId") long sucursalId);
+
+    //METODO PARA OBTENER EL EFECTIVO NO ENTREGADO
+    @GET("api/recepcionFajillas/efectivoNoEntregado/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    Call<RespuestaApi<Double>> getEfectivoNoEntregado(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
 
 
 //   METODOS POST

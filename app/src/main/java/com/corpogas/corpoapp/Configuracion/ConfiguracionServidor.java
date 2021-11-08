@@ -45,6 +45,8 @@ public class ConfiguracionServidor extends AppCompatActivity{
     Conexion conexionApi;
     ConfiguracionAplicacion configuracionAplicacionApi;
     RespuestaApi<Update> applicationUpdate;
+    RespuestaApi<Double> respuestaApiMaximoEfectivo;
+    SQLiteBD data;
 
 
     @Override
@@ -53,7 +55,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
          setContentView(R.layout.activity_configuracion_servidor);
         this.setTitle("Configuracion Inicial Servidor");
         getMacAddress();
-        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        data = new SQLiteBD(getApplicationContext());
         boolean verdad = data.checkDataBase("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db");
         if(verdad == true){
             String tipo = data.getTipoEstacion();
@@ -160,6 +162,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                     return;
                 }
                 estacion = response.body();
+                obtenerMaximoEfectivo();
                 guardarDatosDBEmpresa();
             }
 
@@ -327,6 +330,38 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    private void obtenerMaximoEfectivo(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://"+ip2+"/CorpogasService/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenMaximoEfectivo = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<Double>> call = obtenMaximoEfectivo.getMaximoEfectivo(Long.parseLong(String.valueOf(estacion.getSucursalId())));
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<Double>>() {
+
+            @Override
+            public void onResponse(Call<RespuestaApi<Double>> call, Response<RespuestaApi<Double>> response) {
+                if(!response.isSuccessful()) {
+                    return;
+                }
+                respuestaApiMaximoEfectivo = response.body();
+                double maximoEfectivo = respuestaApiMaximoEfectivo.getObjetoRespuesta();
+                data.InsertarMaximoEfectivo(maximoEfectivo);
+//                double pruebamaximo = data.getMaximoEfectivo();
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<Double>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
     }
 
