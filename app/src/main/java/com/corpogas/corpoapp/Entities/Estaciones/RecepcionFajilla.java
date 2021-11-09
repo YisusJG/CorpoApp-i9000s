@@ -17,6 +17,7 @@ public class RecepcionFajilla implements Serializable {
     public long TurnoId;
     public Shift Turno;
 //    public DateTime FechaTrabajo;
+    public String Folio;
     public long EmpleadoEntregaId;
     public Empleado EmpleadoEntrega;
     public long EmpleadoAutorizaId;
@@ -25,6 +26,7 @@ public class RecepcionFajilla implements Serializable {
     public int Cantidad;
     public double Denominacion;
     public double Importe;
+    public boolean Entregada;
     public double PicosMonedas;
     public int Total;
 
@@ -117,6 +119,10 @@ public class RecepcionFajilla implements Serializable {
         Turno = turno;
     }
 
+    public String getFolio() { return Folio; }
+
+    public void setFolio(String folio) { Folio = folio; }
+
     public long getEmpleadoEntregaId() {
         return EmpleadoEntregaId;
     }
@@ -180,6 +186,10 @@ public class RecepcionFajilla implements Serializable {
     public void setImporte(double importe) {
         Importe = importe;
     }
+
+    public boolean isEntregada() { return Entregada; }
+
+    public void setEntregada(boolean entregada) { Entregada = entregada; }
 
     public double getPicosMonedas() {
         return PicosMonedas;

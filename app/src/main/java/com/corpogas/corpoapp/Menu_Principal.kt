@@ -657,7 +657,7 @@ class Menu_Principal : AppCompatActivity() {
 
         when (v.id) {
             R.id.btnImgVentas -> {
-                
+
                 val data = SQLiteBD(applicationContext)
                 val retrofit = Retrofit.Builder()
                     .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
@@ -675,23 +675,47 @@ class Menu_Principal : AppCompatActivity() {
                         }
                         respuestaApiEfectivoNoEntregado = response.body()
                         var efectivoNoEntregado = respuestaApiEfectivoNoEntregado?.objetoRespuesta!!
-                        if(efectivoNoEntregado > 0.0){
+                        if(efectivoNoEntregado <= 0.0){
                             intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
                             intent.putExtra("lugarproviene", "Ventas")
                             startActivity(intent)
 
                         }else{
+                            if(efectivoNoEntregado >= data.maximoEfectivo) {
 
-                            val mensaje = "Tienes $" + efectivoNoEntregado +" en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
-                            val modales = Modales(this@Menu_Principal)
-                            val viewResultado = modales.MostrarDialogoAlerta(this@Menu_Principal, mensaje, "ACEPTAR", "CANCELAR")
-                            viewResultado.findViewById<View>(R.id.buttonYes).setOnClickListener{
-                                modales.alertDialog.dismiss()
+                                val mensaje =
+                                    "Tienes $" + efectivoNoEntregado + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
+                                val modales = Modales(this@Menu_Principal)
+                                val viewResultado = modales.MostrarDialogoAlerta(
+                                    this@Menu_Principal,
+                                    mensaje,
+                                    "ACEPTAR",
+                                    "CANCELAR"
+                                )
+                                viewResultado.findViewById<View>(R.id.buttonYes)
+                                    .setOnClickListener {
+                                        modales.alertDialog.dismiss()
+                                    }
+                                viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener {
+                                    modales.alertDialog.dismiss()
+                                }
+                            }else{
+                                val mensaje = respuestaApiEfectivoNoEntregado?.Mensaje
+                                val modales = Modales(this@Menu_Principal)
+                                val viewResultado = modales.MostrarDialogoAlerta(
+                                    this@Menu_Principal,
+                                    mensaje,
+                                    "ACEPTAR",
+                                    "CANCELAR"
+                                )
+                                viewResultado.findViewById<View>(R.id.buttonYes)
+                                    .setOnClickListener {
+                                        modales.alertDialog.dismiss()
+                                    }
+                                viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener {
+                                    modales.alertDialog.dismiss()
+                                }
                             }
-                            viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener{
-                                modales.alertDialog.dismiss()
-                            }
-
                         }
                     }
 
