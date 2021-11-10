@@ -62,9 +62,8 @@ public class RVAdapterCofreFajillas extends RecyclerView.Adapter<RVAdapterCofreF
     @Override
     public void onBindViewHolder(@NonNull RVAdapterCofreFajillas.RecyclerViewHeadersHolder recyclerViewHeadersHolder, int position) {
         recyclerViewHeadersHolder.txtCantidadCofre.setText(String.valueOf(lrecyclerViewHeaders.get(position).Cantidad));
-        recyclerViewHeadersHolder.txtPrecioCofre.setText(String.valueOf(lrecyclerViewHeaders.get(position).Precio));
-        recyclerViewHeadersHolder.txtImporteCofre.setText(String.valueOf(lrecyclerViewHeaders.get(position).ImporteTotal));
-
+        recyclerViewHeadersHolder.txtPrecioCofre.setText(String.valueOf(lrecyclerViewHeaders.get(position).Folio));
+        recyclerViewHeadersHolder.txtImporteCofre.setText(String.format("$%.2f", Double.parseDouble(String.valueOf(lrecyclerViewHeaders.get(position).ImporteTotal))));
 
     }
 

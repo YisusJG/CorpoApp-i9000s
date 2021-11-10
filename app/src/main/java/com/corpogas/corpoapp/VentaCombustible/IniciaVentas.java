@@ -619,7 +619,7 @@ public class IniciaVentas extends AppCompatActivity {
                 datos.put("Cantidad", cantidadpredeterminar);
                 datos.put("Precio", precio);
                 //datos.put("Precio", litros);
-                if (identificador.equals("Litros")){
+                if (identificador.equals("LITROS")){
                     datos.put("Importe", false);
                 }else{
                     datos.put("Importe", true);

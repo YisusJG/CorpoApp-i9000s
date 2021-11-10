@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.PosicionCarga;
 import com.corpogas.corpoapp.Entities.TanqueLleno.RespuestaIniAuto;
 import com.corpogas.corpoapp.Entities.Tarjetas.RespuestaTanqueLleno;
+import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
@@ -277,13 +280,68 @@ public class PosicionCargaTLl extends AppCompatActivity {
                     startActivity(intent1);
                     finish();
                 }else{
-                    enviardatos();
+                    if (lugarproviene.equals("Arillos")){
+                        enviaPeticionArillo();
+                    }else{
+                        enviardatos();
+                    }
                 }
 
             }
         });
 
         rcvPosicionCarga.setAdapter(adapter);
+    }
+
+    private void enviaPeticionArillo(){
+        String url = "http://" + ipEstacion + "/CorpogasService/Api/tanqueLleno/Arillo/posicionCargaId/" + posicionCargaId + "/numeroEmpleado/"+numeroempleado;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject respuesta = new JSONObject(response);
+                    String correcto = respuesta.getString("Correcto");
+                    String mensaje = respuesta.getString("Mensaje");
+
+                    if (correcto.equals("true") ) {
+                        String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                        String titulo = "TanqueLleno";
+                        Modales modales = new Modales(PosicionCargaTLl.this);
+                        View view1 = modales.MostrarDialogoCorrecto(PosicionCargaTLl.this, mensaje);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                    }else{
+                        String titulo = "TanqueLleno";
+                        Modales modales = new Modales(PosicionCargaTLl.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this, mensaje, titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        requestQueue.add(stringRequest);
+
+
     }
 
 

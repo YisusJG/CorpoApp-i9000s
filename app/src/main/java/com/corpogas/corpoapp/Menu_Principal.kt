@@ -53,6 +53,7 @@ import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.Metas.MetasActivity
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
+import com.corpogas.corpoapp.Productos.Inventario
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
 import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
@@ -770,9 +771,8 @@ class Menu_Principal : AppCompatActivity() {
 //                intent = Intent(applicationContext, EnDesarrollo::class.java)
 //                startActivity(intent)
 //            }
-            R.id.btnImgGastos -> {
-                intent = Intent(applicationContext, AutorizacionGastos::class.java)
-                intent.putExtra("LugarProviene", "Gastos")
+            R.id.btnInventario -> {
+                intent = Intent(applicationContext, Inventario::class.java)
                 startActivity(intent)
             }
             R.id.btnImgTickets -> {

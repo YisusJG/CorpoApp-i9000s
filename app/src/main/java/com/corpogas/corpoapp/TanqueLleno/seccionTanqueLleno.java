@@ -1,6 +1,12 @@
 package com.corpogas.corpoapp.TanqueLleno;
 
+import static androidx.recyclerview.widget.ItemTouchHelper.DOWN;
+import static androidx.recyclerview.widget.ItemTouchHelper.UP;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +32,7 @@ import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 import com.corpogas.corpoapp.VentaCombustible.Ventas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class seccionTanqueLleno extends AppCompatActivity {
@@ -66,7 +73,7 @@ public class seccionTanqueLleno extends AppCompatActivity {
         lTanqueLleno = new ArrayList<>();
         lTanqueLleno.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
-//        lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
+        lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Autorización Telefónica",R.drawable.tanquelleno));
 
 
@@ -108,6 +115,26 @@ public class seccionTanqueLleno extends AppCompatActivity {
         });
 
         rcvTanqueLleno.setAdapter(adapter);
+        RecyclerView.ItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        rcvTanqueLleno.addItemDecoration(divider);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(UP | DOWN,0) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
+                int position_dragged = dragged.getAdapterPosition();
+                int position_tarjet = target.getAdapterPosition();
+
+                Collections.swap(lTanqueLleno, position_dragged, position_tarjet);
+                adapter.notifyItemMoved(position_dragged, position_tarjet);
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(rcvTanqueLleno);
     }
 
     private void onClicks() {

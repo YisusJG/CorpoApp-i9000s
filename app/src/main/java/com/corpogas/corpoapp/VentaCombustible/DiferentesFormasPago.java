@@ -131,14 +131,14 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //            tvSaldoPuntada.setVisibility(View.VISIBLE);
 //            tvSaldo.setVisibility(View.VISIBLE);
 //        }
-        txtMontoTotal.setText(MontoenCanasta.toString());
-        txtMontoFaltante.setText(MontoenCanasta.toString());
+        txtMontoTotal.setText(String.format("$%.2f",MontoenCanasta).toString());
+        txtMontoFaltante.setText(String.format("$%.2f",MontoenCanasta).toString());
         botonEnviar = findViewById(R.id.imprimir);
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Double montoPendiente;
-                montoPendiente = Double.parseDouble(txtMontoFaltante.getText().toString());
+                montoPendiente = Double.parseDouble(txtMontoFaltante.getText().toString().replace("$",""));
                 if (montoPendiente>0){
                     botonEnviar.setClickable(true);
                     try {
@@ -315,31 +315,31 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
     //funcion para obtener formas de pago
     public void obtenerformasdepago() {
-//        if (!Conexion.compruebaConexion(this)) {
-//            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-//            startActivity(intent1);
-//            finish();
-//        } else {
-        String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
-        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        formadepago(response);
-                    }
-                    //funcion para capturar errores
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        // Añade la peticion a la cola
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(eventoReq);
-//        }
+        if (!Conexion.compruebaConexion(this)) {
+            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
+            Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+            startActivity(intent1);
+            finish();
+        } else {
+            String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
+            StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            formadepago(response);
+                        }
+                        //funcion para capturar errores
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(eventoReq);
+        }
     }
 
     private void formadepago(String response) {
@@ -411,7 +411,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                     if (db.getEstatusCobradoFPD(Integer.parseInt(numero_pago)).equals(1)){
                                         subtitle.add("$"+ db.getMontoFPD(Integer.parseInt(numero_pago)) );
                                         Double Faltante = Double.parseDouble(txtMontoFaltante.getText().toString());
-                                        txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
+//                                        txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
+                                        txtMontoFaltante.setText(String.format("$%.2f",Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
                                     }else{
                                         subtitle.add("$0.00" );
                                    }
@@ -529,6 +530,10 @@ public class DiferentesFormasPago extends AppCompatActivity {
                         Modales modales = new Modales(DiferentesFormasPago.this);
                         View viewLectura = modales.MostrarDialogoInsertaDato(DiferentesFormasPago.this, mensaje, titulo);
                         EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                        if (txtMontoTotal.getText().toString().replace("$","").equals(txtMontoFaltante.getText().toString().replace("$",""))){
+                        }else{
+                            edtProductoCantidad.setText(txtMontoFaltante.getText().toString().replace("$",""));
+                        }
                         edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                         viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -576,7 +581,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
     //                                        }
     //                                    }
     //                                }else{
-                                    if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString())){
+                                    if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString().replace("$", ""))){
                                         if (montoSeleccionado.equals("0.00")){
                                             try {
                                                 banderaSigue = false;
@@ -616,7 +621,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         }
                                     }else{
                                         if (montoSeleccionado.equals("0.00")){
-                                            if (Double.parseDouble(txtMontoFaltante.getText().toString())==0.00){
+                                            if (Double.parseDouble(txtMontoFaltante.getText().toString().replace("$",""))==0.00){
                                                 try {
                                                     banderaSigue = false;
                                                     String titulo = "AVISO";
@@ -770,9 +775,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                             }
                                         }
 
-                                        Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString());
+                                        Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString().replace("$",""));
                                         Double TotalFaltante = MontoTotal - cantidadObtenida;
-                                        txtMontoFaltante.setText(df.format(TotalFaltante).toString());
+                                        txtMontoFaltante.setText(String.format("$%.2f",TotalFaltante).toString());
 
                                         //AQUI VA ENVIAR A PAGOBANCARIO
                                         if (formaPagoSeleccionada.equals("3") || formaPagoSeleccionada.equals("5") || formaPagoSeleccionada.equals("13")){

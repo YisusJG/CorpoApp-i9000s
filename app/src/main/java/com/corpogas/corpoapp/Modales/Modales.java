@@ -340,7 +340,7 @@ public class Modales extends Dialog implements
         );
         builder.setView(view);
         ((TextView) view.findViewById(R.id.textTitleEfectivo)).setText(titulo);
-        ((TextView) view.findViewById(R.id.textMonto)).setText(monto);
+        ((TextView) view.findViewById(R.id.textMonto)).setText(String.format("$%.2f", Double.parseDouble(monto)));
         EditText cantidadRecibida = view.findViewById(R.id.textMontoVales);
 
         cantidadRecibida.addTextChangedListener(new TextWatcher() {
@@ -359,19 +359,6 @@ public class Modales extends Dialog implements
                     Double vuelto = Double.parseDouble(cantidadObtenida) - Double.parseDouble(monto);
                     ((TextView) view.findViewById(R.id.textCambio)).setText(String.format("$%.2f", vuelto));
 
-//                    ((Button) view.findViewById(R.id.btnAceptarVales)).setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            if (vuelto > 0) {
-//                                alertDialog.dismiss();
-//                                Toast.makeText(context, "Cantidad incompleta o inválida", Toast.LENGTH_LONG).show();
-//
-//                                //                                FormasPago formasPago = new FormasPago();
-////                                formasPago.FinalizaVenta();
-//                            }
-//
-//                        }
-//                    });
                 }
             }
 

@@ -53,6 +53,7 @@ class CofreActivity : AppCompatActivity() {
     lateinit var txtCantidadCo: TextView
     lateinit var txtPrecioCo: TextView
     lateinit var txtImporteCo : TextView
+    var data: SQLiteBD? = null
 
     private val DURACION_SPLASH = 1000
     var contadorEventos = 0
@@ -90,6 +91,9 @@ class CofreActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        data = SQLiteBD(applicationContext)
+        this.setTitle(data!!.getNombreEstacion() + " ( EST.:" + data!!.getNumeroEstacion() + ")")
+
         txtScanner = findViewById(R.id.txtScanResult)
         mScan = findViewById<View>(R.id.btnScanCofre) as ImageView
         txtResponsable = findViewById(R.id.txtResponsable)

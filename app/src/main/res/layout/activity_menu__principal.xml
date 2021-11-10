@@ -242,53 +242,53 @@
                 </androidx.cardview.widget.CardView>
 
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="15dp"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="8dp">
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_rowWeight="1"-->
+<!--                    android:layout_columnWeight="1"-->
+<!--                    android:layout_margin="15dp"-->
+<!--                    app:cardCornerRadius="15dp"-->
+<!--                    app:cardElevation="8dp">-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="5dp">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:padding="5dp">-->
 
-                        <ImageView
-                            android:id="@+id/btnImgGastos"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:onClick="onClickMenuPrincipal"
-                            android:src="@drawable/gastos" />
-                        <!--                        <com.airbnb.lottie.LottieAnimationView-->
-                        <!--                            android:id="@+id/btnImgGastos"-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:onClick="onClickMenuPrincipal"-->
-                        <!--                            app:lottie_autoPlay="false"-->
-                        <!--                            app:lottie_fileName="gastos.json"-->
-                        <!--                            app:lottie_imageAssetsFolder="assets"-->
-                        <!--                            app:lottie_loop="true" />-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/btnImgGastos"-->
+<!--                            android:layout_width="80dp"-->
+<!--                            android:layout_height="80dp"-->
+<!--                            android:onClick="onClickMenuPrincipal"-->
+<!--                            android:src="@drawable/gastos" />-->
+<!--                        &lt;!&ndash;                        <com.airbnb.lottie.LottieAnimationView&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            android:id="@+id/btnImgGastos"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            android:layout_width="match_parent"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            android:onClick="onClickMenuPrincipal"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            app:lottie_autoPlay="false"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            app:lottie_fileName="gastos.json"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            app:lottie_imageAssetsFolder="assets"&ndash;&gt;-->
+<!--                        &lt;!&ndash;                            app:lottie_loop="true" />&ndash;&gt;-->
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="Gastos"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="12dp"-->
+<!--                            android:text="Gastos"-->
+<!--                            android:textColor="@color/black"-->
+<!--                            android:textSize="18sp"-->
+<!--                            android:textStyle="bold"-->
 
-                            />
+<!--                            />-->
 
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
-                </androidx.cardview.widget.CardView>
+<!--                </androidx.cardview.widget.CardView>-->
 
 
                 <androidx.cardview.widget.CardView
@@ -510,6 +510,44 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:text="Metas"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/crdvInventario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="15dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:id="@+id/btnInventario"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:onClick="onClickMenuPrincipal"
+                            android:src="@drawable/inventario" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="Inventario"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />

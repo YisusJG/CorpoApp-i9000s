@@ -96,7 +96,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
 
     private void todasposiciones(){
             bar = new ProgressDialog(PosicionCargaTickets.this);
-            bar.setTitle("Buscando Posiciones de Carga");
+            bar.setTitle("Cargando Posiciones de Carga");
             bar.setMessage("Ejecutando... ");
             bar.setIcon(R.drawable.gas);
             bar.setCancelable(false);

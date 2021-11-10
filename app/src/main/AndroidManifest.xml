@@ -24,6 +24,9 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Productos.Inventario"
+            android:exported="true" />
+        <activity
             android:name=".Metas.MetasActivity"
             android:exported="false" />
         <activity

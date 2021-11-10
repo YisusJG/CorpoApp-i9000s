@@ -43,6 +43,9 @@ import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
 import com.corpogas.corpoapp.Facturacion.Entities.SolicitudFactura;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -52,6 +55,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 public interface EndPoints {
 
@@ -205,6 +209,10 @@ public interface EndPoints {
     @POST("api/recepcionFajillas/guardaFajillas/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
     Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillas(@Body List<RecepcionFajilla> recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
 
+    @POST("api/recepcionFajillas/guardaFajillasCorte/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
+    Call<RespuestaApi<List<ResumenFajilla>>> postGuardaFajillasCorte(@Body List<RecepcionFajilla> recepcionFajilla, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
+
+
     @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}")
     Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
@@ -212,6 +220,10 @@ public interface EndPoints {
 
     @POST("api/fajillasCajaFuerte/entregaFajillasCajaFuerte/numeroEmpleado/{numeroEmpleadoEntrega}")
     Call<RespuestaApi<List<StatusFajilla>>> postGuardaFajillasCofre(@Body List<EnviarFajillaCofre> enviarfajillasCofre, @Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
+
+//    @POST("api/fajillasCajaFuerte/entregaFajillasCajaFuerte/numeroEmpleado/{numeroEmpleadoSale}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
+//    Call<RespuestaApi<List<StatusFajilla>>> postListaFajillas(@Body JSONArray arrayList, @Path("numeroEmpleadoSale") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
+//
 
 
 //    METODOS DELETE

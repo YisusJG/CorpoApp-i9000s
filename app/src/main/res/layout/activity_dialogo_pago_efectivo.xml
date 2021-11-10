@@ -39,10 +39,9 @@
 
         <TextView
             android:id="@+id/tvCambioEfectivo"
-            android:layout_width="110dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="35dp"
             android:text="Cambio"
             android:textSize="24sp"
@@ -56,7 +55,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="20dp"
             android:gravity="end"
-            android:hint="$0.0"
+            android:hint="0.0"
             android:inputType="numberDecimal"
             android:lines="1"
             android:textAlignment="textEnd"
@@ -69,12 +68,11 @@
 
         <TextView
             android:id="@+id/textMontoDescripcion"
-            android:layout_width="110dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="40dp"
-            android:text="Recibo"
+            android:text="Recibo         $"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMonto" />
@@ -124,10 +122,9 @@
 
         <TextView
             android:id="@+id/tvMonto"
-            android:layout_width="110dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:text="Por Pagar"
             android:textSize="24sp"

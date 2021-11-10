@@ -29,6 +29,7 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Puntada.PuntadaRedimirQr;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;

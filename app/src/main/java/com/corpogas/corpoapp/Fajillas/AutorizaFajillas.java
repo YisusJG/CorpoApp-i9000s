@@ -1,5 +1,6 @@
 package com.corpogas.corpoapp.Fajillas;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +28,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -35,21 +37,34 @@ import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Corte.ResumenActivity;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
+import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
+import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajillaEntregada;
+import com.corpogas.corpoapp.Entities.Estaciones.ResumenFajilla;
+import com.corpogas.corpoapp.Entities.TipoFajilla;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AutorizaFajillas extends AppCompatActivity {
     //datos para huella
@@ -87,9 +102,22 @@ public class AutorizaFajillas extends AppCompatActivity {
     JSONObject datosFajillas;
     boolean pasa;
 
-//    CorteDB dbCorte;
-    List<CierreFajilla> lFajillas;
+//    List<RecepcionFajilla> recepcionFajilla = new ArrayList<>();
+
+    List<RecepcionFajilla> lRecepcionFajillas = new ArrayList<>();
+    RespuestaApi<List<ResumenFajilla>> respuestaApiResumenFajilla;
+    String nombreEmpleadoRecibio, fechaUIltimaFajilla;
+
+
     int cantidadFajillasBilletes, cantidadFajillasMonedas;
+
+    ArrayList<String> Folio;
+    ArrayList<String> tipoFajillas;
+
+    JSONObject datosFajillasFinal;
+    JSONArray jsonArrayDatosFajillas;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -564,61 +592,54 @@ public class AutorizaFajillas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            totalFajillas = getIntent().getLongExtra("TotalFajillas", 0);
+//            totalFajillas = getIntent().getLongExtra("TotalFajillas", 0);
             valorTipoFajilla = getIntent().getLongExtra("TipoFajilla", 0);
+            Folio = getIntent().getStringArrayListExtra("Folio");
+            tipoFajillas = getIntent().getStringArrayListExtra("TipoFajillas");
 
-            String URL;
+
+            datosFajillas = new JSONObject();
+            jsonArrayDatosFajillas = new JSONArray();
+
+
+            for (int i = 0; i < Folio.size(); i++) {
+                    lRecepcionFajillas.add(new RecepcionFajilla(Long.parseLong(sucursalId), Long.parseLong(tipoFajillas.get(i)), Folio.get(i), 1));
+            }
+            // Esta linea nos da el resultado de lo que estoy enviando para checar en el postman como confirmacion
+            //String json = new Gson().toJson(lRecepcionFajillas);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            EndPoints recibirFajillas = retrofit.create(EndPoints.class);
             if (lugarProviene.equals("corteFajillas")){
-                URL = "http://"+ipEstacion+"/CorpogasService/api/recepcionFajillas/guardaFajillaCorte/numeroEmpleadoEntrega/"+numeroEmpleadoSale+"/numeroEmpleadoAutoriza/"+idusuario;
-            }else{
-                URL = "http://"+ipEstacion+"/CorpogasService/api/recepcionFajillas/guardaFajilla/numeroEmpleadoEntrega/"+numeroEmpleadoSale+"/numeroEmpleadoAutoriza/"+idusuario;
-            }
+                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillasCorte(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario);
+                call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+                    @Override
+                    public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiResumenFajilla = response.body();
 
-            RequestQueue queue = Volley.newRequestQueue(this);
-            try {
-                datosFajillas = new JSONObject();
-                datosFajillas.put("SucursalId", sucursalId);
-                datosFajillas.put("TipoFajilla", valorTipoFajilla);
-                datosFajillas.put("Cantidad", totalFajillas);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, datosFajillas, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    pasa = true;
-                    String nombreEmpeladoAutorizo="";
-                    try {
-                        String validacion = response.getString("Correcto");
-                        if (validacion == "true") {
-                            String objetoRespuesta = response.getString("ObjetoRespuesta");
-                            JSONArray tiposFajilla = new JSONArray(objetoRespuesta);
-                            for (int i = 0; i <tiposFajilla.length() ; i++){
-                                JSONObject respuestaTipoFajilla = tiposFajilla.getJSONObject(i);
-                                FechaF = respuestaTipoFajilla.getString("FechaUltimaFajilla");
-                            }
+                        String validacion = String.valueOf(respuestaApiResumenFajilla.Correcto);
+                        if (validacion.equals("true")) {
+                            nombreEmpleadoRecibio = respuestaApiResumenFajilla.getObjetoRespuesta().get(0).NombreEmpleado;
+                            fechaUIltimaFajilla = respuestaApiResumenFajilla.getObjetoRespuesta().get(0).FechaUltimaFajilla;
 
                             String titulo = "ENTREGA DE FAJILLAS";
-                            String mensaje = "Fajilla Recibida por: \n" + nombrecompleto + " \n" + FechaF;
+                            String mensaje = "Fajilla Recibida por: \n" + nombreEmpleadoRecibio + " \n" + fechaUIltimaFajilla;
                             Modales modales = new Modales(AutorizaFajillas.this);
-                            View view1 = modales.MostrarDialogoCorrecto(AutorizaFajillas.this,mensaje);
+                            View view1 = modales.MostrarDialogoCorrecto(AutorizaFajillas.this, mensaje);
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     modales.alertDialog.dismiss();
                                     if (lugarProviene.equals("corteFajillas")){
-                                        if (valorTipoFajilla == 1){
-                                            Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
-                                            startActivity(intent);
-
-                                        }else{
-                                            if (valorTipoFajilla == 2){
-                                                Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        }
-
+                                        Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
+                                        startActivity(intent);
                                     }else{
                                         Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                         startActivity(intent);
@@ -627,7 +648,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                 }
                             });
                         }else{
-                            String estado = response.getString("Mensaje");
+                            String estado = respuestaApiResumenFajilla.Mensaje;
                             String titulo = "AVISO ";
                             String mensaje = "" + estado;
                             Modales modales = new Modales(AutorizaFajillas.this);
@@ -642,43 +663,73 @@ public class AutorizaFajillas extends AppCompatActivity {
                                 }
                             });
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    String error1 = error.networkResponse.data.toString();
-                    Toast.makeText(AutorizaFajillas.this, error1, Toast.LENGTH_SHORT).show();
-                    pasa = false;
-                }
-            }) {
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<String, String>();
-                    return headers;
-                }
 
-                protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
-                    if (response != null) {
+                    @Override
+                    public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
-                        try {
-                            String responseString;
-                            JSONObject datos = new JSONObject();
-                            responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                });
 
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+            }else{
+                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillas(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario);
+                call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
+                    @Override
+                    public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        respuestaApiResumenFajilla = response.body();
+
+                        String validacion = String.valueOf(respuestaApiResumenFajilla.Correcto);
+                        if (validacion.equals("true")) {
+                            nombreEmpleadoRecibio = respuestaApiResumenFajilla.getObjetoRespuesta().get(0).NombreEmpleado;
+                            fechaUIltimaFajilla = respuestaApiResumenFajilla.getObjetoRespuesta().get(0).FechaUltimaFajilla;
+
+                            String titulo = "ENTREGA DE FAJILLAS";
+                            String mensaje = "Fajilla Recibida por: \n" + nombreEmpleadoRecibio + " \n" + fechaUIltimaFajilla;
+                            Modales modales = new Modales(AutorizaFajillas.this);
+                            View view1 = modales.MostrarDialogoCorrecto(AutorizaFajillas.this, mensaje);
+                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    if (lugarProviene.equals("corteFajillas")){
+                                        Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
+                                        startActivity(intent);
+                                    }else{
+                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                        startActivity(intent);
+                                    }
+                                    finish();
+                                }
+                            });
+                        }else{
+                            String estado = respuestaApiResumenFajilla.Mensaje;
+                            String titulo = "AVISO ";
+                            String mensaje = "" + estado;
+                            Modales modales = new Modales(AutorizaFajillas.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this,mensaje,titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
                         }
                     }
-                    return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
-                }
-            };
-            request_json.setRetryPolicy(new DefaultRetryPolicy(
-                    120000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            queue.add(request_json);
+
+                    @Override
+                    public void onFailure(Call<RespuestaApi<List<ResumenFajilla>>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+            }
         }
     }
 
