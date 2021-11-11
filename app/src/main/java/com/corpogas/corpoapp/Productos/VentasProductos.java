@@ -397,7 +397,7 @@
                     } else {
                         scanResult = intent.getStringExtra("EXTRA_SCAN_DATA");
                         Toast.makeText(context, "Codigo: " + scanResult, Toast.LENGTH_SHORT).show();
-//                        buscarCodigoBarra(scanResult);
+                        buscarCodigoBarra(scanResult);
                     }
 //                final String  scanResultData=intent.getStringExtra("EXTRA_SCAN_DATA");
 //                    tvMsg.setText("Scan Bar Code ：" + scanResult);

@@ -55,7 +55,7 @@
     <Button
         android:id="@+id/btnAgregarProducto"
         android:layout_width="203dp"
-        android:layout_height="39dp"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
@@ -66,15 +66,15 @@
         android:text=" agregar producto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnEnviarProducto"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.347"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtproductos"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintVertical_bias="0.236" />
 
     <Button
         android:id="@+id/btnEnviarProducto"
         android:layout_width="102dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp"
@@ -87,7 +87,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtproductos"
-        app:layout_constraintVertical_bias="0.336" />
+        app:layout_constraintVertical_bias="0.234" />
 
     <TextView
         android:id="@+id/txtproductos"
@@ -132,23 +132,26 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="20dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintHorizontal_bias="0.592"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtCantidadProducto"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.033" />
 
     <EditText
         android:id="@+id/edtCantidadProducto"
-        android:layout_width="105dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/cajadetextopuntada"
         android:ems="10"
         android:enabled="false"
@@ -157,25 +160,26 @@
         android:text="1"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnIncrementar"
-        app:layout_constraintHorizontal_bias="0.86"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etiquetacantidad"
         app:layout_constraintTop_toBottomOf="@+id/btnCombustibles"
-        app:layout_constraintVertical_bias="0.011" />
+        app:layout_constraintVertical_bias="0.036" />
 
     <Button
         android:id="@+id/btnDecrementar"
         android:layout_width="52dp"
-        android:layout_height="42dp"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@android:color/holo_blue_dark"
         android:text="-"
         android:textSize="24sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnIncrementar"
         app:layout_constraintTop_toBottomOf="@+id/btnAceites"
         app:layout_constraintVertical_bias="0.013"
         tools:ignore="MissingConstraints" />
@@ -224,11 +228,12 @@
 
     <EditText
         android:id="@+id/edtPesos"
-        android:layout_width="105dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="152dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/cajadetextopuntada"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -236,18 +241,19 @@
         android:textSize="16sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etiquetacantidad"
         app:layout_constraintTop_toBottomOf="@+id/btnCombustibles"
-        app:layout_constraintVertical_bias="0.015"
+        app:layout_constraintVertical_bias="0.036"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btnIncrementar"
         android:layout_width="52dp"
-        android:layout_height="42dp"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:backgroundTint="@android:color/holo_blue_dark"
         android:text="+"
         android:textColor="#FFFFFF"
@@ -262,31 +268,27 @@
 
     <Button
         android:id="@+id/btnCombustibles"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
+        android:layout_width="155dp"
+        android:layout_height="45dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="10dp"
         android:backgroundTint="@android:color/holo_blue_dark"
         android:text="COMBUSTIBLES"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnAceites"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtSaldos"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintVertical_bias="0.021" />
 
     <Button
         android:id="@+id/btnAceites"
-        android:layout_width="131dp"
-        android:layout_height="35dp"
+        android:layout_width="155dp"
+        android:layout_height="45dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:backgroundTint="@android:color/holo_blue_dark"
         android:text="ACEITES"
         android:textColor="#FFFFFF"
@@ -300,7 +302,7 @@
     <TextView
         android:id="@+id/txtSaldos"
         android:layout_width="100dp"
-        android:layout_height="24dp"
+        android:layout_height="25dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
@@ -317,7 +319,7 @@
     <TextView
         android:id="@+id/txtSaldosUtilizado"
         android:layout_width="100dp"
-        android:layout_height="24dp"
+        android:layout_height="25dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="44dp"
@@ -336,7 +338,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="24dp"
-        android:text="SALDO POR UTILIZAR  $"
+        android:text="SALDO POR UTILIZAR  "
         android:textAlignment="textEnd"
         android:textColor="#2196F3"
         android:textSize="14sp"
@@ -355,7 +357,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:text="SALDO DISPOBLE  $"
+        android:text="SALDO DISPOBLE  "
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="14sp"

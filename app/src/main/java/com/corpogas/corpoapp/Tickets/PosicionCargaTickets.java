@@ -476,7 +476,8 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                             case "5"://                Operativa Tanque Lleno Tarjeta
                                                 imprimirticket(String.valueOf(posicionCargaId), "TLLENO", MontoenCanasta.toString());
                                                 break;
-                                            case "6"://                Operativa Cliente Estacion E
+                                            case "6"://                Operativa TANQUELLENO ARILLOS
+                                                imprimirticket(String.valueOf(posicionCargaId), "TLLENOARILLOS", MontoenCanasta.toString());
                                                 break;
                                             case "7"://                Operativa Yena Y
                                                 break;
@@ -548,7 +549,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
         JSONObject FormasPagoObjecto = new JSONObject();
         JSONArray FormasPagoArreglo = new JSONArray();
         String valor;
-        if (TipoTarjeta == "TLLENO") {
+        if (TipoTarjeta == "TLLENO"  | TipoTarjeta == "TLLENOARILLOS") {
             valor = "11";
         }else{
             if (TipoTarjeta == "MERCADOPAGO") {

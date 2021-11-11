@@ -66,7 +66,7 @@ public class IniciaVentas extends AppCompatActivity {
     Spinner spCombustible;
     RecyclerView rvPredeterminado;
     Double descuento;
-    String claveProducto, descripcioncombustible, precio;
+    String claveProducto, descripcioncombustible, precio, numeroTarjeta, nipCliente;
 
 
     List<RecyclerViewHeaders> lrecyclerViewHeaders;
@@ -139,11 +139,9 @@ public class IniciaVentas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/posicionCargaId/" + poscicionCarga;
-
+            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
             // Utilizamos el metodo Post para validar la contraseña
-            StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+            StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -151,60 +149,76 @@ public class IniciaVentas extends AppCompatActivity {
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 String Correcto = jsonObject.getString("Correcto");
-                                //String Mensaje = jsonObject.getString("Mensaje");
+                                String Mensaje = jsonObject.getString("Mensaje");
                                 String CadenaObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
-                                if (CadenaObjetoRespuesta.equals("null")){
-                                    banderaConDatos = false;
-                                }else{
-                                    if (CadenaObjetoRespuesta.equals("[]")){
+                                if (Correcto.equals("true")) {
+
+                                    if (CadenaObjetoRespuesta.equals("null")) {
                                         banderaConDatos = false;
-                                    }else{
-                                        banderaConDatos=true;
+                                    } else {
+                                        if (CadenaObjetoRespuesta.equals("[]")) {
+                                            banderaConDatos = false;
+                                        } else {
+                                            banderaConDatos = true;
+                                        }
                                     }
-                                }
-                                if (Correcto.equals("true")){
-                                    if (banderaConDatos.equals(false)){
+                                    if (banderaConDatos.equals(true)){
+                                        Double MontoenCanasta = 0.00;
+                                        try {
+                                            JSONArray ArregloCadenaRespuesta = new JSONArray(CadenaObjetoRespuesta);
+                                            for (int i = 0; i < ArregloCadenaRespuesta.length(); i++) {
+                                                JSONObject ObjetoCadenaRespuesta = ArregloCadenaRespuesta.getJSONObject(i);
+                                                String ImporteTotal = ObjetoCadenaRespuesta.getString("ImporteTotal");
+
+                                                Double aTotal;
+                                                String fTotal;
+                                                aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
+                                                MontoenCanasta = MontoenCanasta + aTotal;
+                                            }
+//                                            if (MontoenCanasta.equals(0.00)) {
+//                                                Reintenta();
+//                                        Toast.makeText(EligePrecioLitros.this, "Monto en CERO", Toast.LENGTH_SHORT).show();
+//                                            }else{
+                                                Intent intent = new Intent(getApplicationContext(), FormasPago.class);
+                                                intent.putExtra("numeroEmpleado", usuarioid);
+                                                intent.putExtra("posicionCarga", posicionCarga);
+                                                intent.putExtra("estacionjarreo", estacionJarreo);
+                                                intent.putExtra("claveProducto", claveProducto);
+                                                intent.putExtra("montoenCanasta", MontoenCanasta);
+                                                intent.putExtra("numeroTarjeta", numeroTarjeta);
+                                                intent.putExtra("descuento", descuento);
+                                                intent.putExtra("nipCliente", nipCliente);
+                                                intent.putExtra("IdOperativa", "0");
+                                                startActivity(intent);
+                                                finish();
+//                                            }
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }else{
                                         String titulo = "AVISO";
-                                        String mensajes = "No hay productos a cobrar";
+                                        String mensajes = "Error";
                                         Modales modales = new Modales(IniciaVentas.this);
-                                        View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensajes,titulo);
-                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        View view1 = modales.MostrarDialogoError(IniciaVentas.this,"Aun no concluye el despacho");
+                                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                bar.cancel();
                                                 modales.alertDialog.dismiss();
+//                                            bar.cancel();
                                             }
                                         });
-                                    }else{
-                                        Long operativa = Long.valueOf(1);
-                                        //Envia a Mostrar CArrito TRansacciones
-                                        Intent intente = new Intent(getApplicationContext(), MostrarCarritoTransacciones.class);
-                                        //se envia el id seleccionado a la clase Usuario Producto
-                                        intente.putExtra("posicion", poscicionCarga);
-                                        intente.putExtra("usuario", usuarioid);
-                                        intente.putExtra("cadenaproducto", "");
-                                        intente.putExtra("lugarproviene", "Despacho");
-                                        intente.putExtra("numeroOperativa", operativa);
-                                        intente.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
-                                        intente.putExtra("pocioncargaid", posicioncargaid);
-
-
-                                        //Ejecuta la clase del Usuario producto
-                                        startActivity(intente);
-                                        //Finaliza activity
-                                        finish();
-
                                     }
-                                }else {
+                                }else{
                                     String titulo = "AVISO";
-                                    String mensajes = "No hay productos a cobrar";
+                                    String mensajes = "Error";
                                     Modales modales = new Modales(IniciaVentas.this);
-                                    View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensajes,titulo);
-                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    View view1 = modales.MostrarDialogoError(IniciaVentas.this,Mensaje);
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            bar.cancel();
                                             modales.alertDialog.dismiss();
+//                                        bar.cancel();
                                         }
                                     });
                                 }
@@ -316,6 +330,8 @@ public class IniciaVentas extends AppCompatActivity {
         numerodispositivo = data.getIdTarjtero();
         lugarproviene = getIntent().getStringExtra("lugarProviene");
         descuento = getIntent().getDoubleExtra("Descuento",0 );
+        numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
+        nipCliente = getIntent().getStringExtra("nip");
         tvTituloIniciaVenta = (TextView) findViewById(R.id.tvTituloIniciaVenta);
         spCombustible = (Spinner) findViewById(R.id.spCombustible);
         rvPredeterminado = (RecyclerView) findViewById(R.id.rvPredeterminado);

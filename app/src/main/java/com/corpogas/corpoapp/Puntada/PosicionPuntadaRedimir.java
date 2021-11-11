@@ -617,6 +617,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 intent.putExtra("pocioncargaid", cargaNumeroInterno);
                 intent.putExtra("descuento", 0);
                 intent.putExtra("lugarProviene", "ventas");
+                intent.putExtra("numeroTarjeta", "");
+                intent.putExtra("nip", "");
                 startActivity(intent);
                 finish();
             }
@@ -629,7 +631,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         bar = new ProgressDialog(PosicionPuntadaRedimir.this);
         bar.setTitle("Conectando con Puntada");
         bar.setMessage("Ejecutando... ");
-        bar.setIcon(R.drawable.gas);
+        bar.setIcon(R.drawable.redimirpuntada);
         bar.setCancelable(false);
         bar.show();
         String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+usuario;
@@ -665,7 +667,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
                                                 String titulo = "AVISO";
-                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + saldo;
+                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + String.format("$%.2f",Double.parseDouble(saldo));
                                                 final Modales modales = new Modales(PosicionPuntadaRedimir.this);
                                                 View view1 = modales.MostrarDialogoCorrecto(PosicionPuntadaRedimir.this,mensajes);
                                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {

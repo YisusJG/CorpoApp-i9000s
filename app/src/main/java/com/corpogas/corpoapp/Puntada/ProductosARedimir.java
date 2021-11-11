@@ -105,7 +105,7 @@ public class ProductosARedimir extends AppCompatActivity {
         banderaCombustible = "false";
 
         posicionCarga = getIntent().getStringExtra("pos");
-        String saldos = getIntent().getStringExtra("saldo");
+        String saldos = String.format("$%.2f",Double.parseDouble(getIntent().getStringExtra("saldo")));
         idUsuario = getIntent().getLongExtra("empleadoid", 0);
         nombreatendio = getIntent().getStringExtra("nombreatendio");
 
@@ -188,7 +188,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     txtproductos = findViewById(R.id.txtproductos);
                     Integer TipoProducto=2;
                     Double SaldoPorUtilizar;
-                    SaldoPorUtilizar= Double.parseDouble(txtSaldoUtilizado.getText().toString());
+                    SaldoPorUtilizar= Double.parseDouble(txtSaldoUtilizado.getText().toString().replace("$",""));
 
                     //if (litros.getText().toString().isEmpty()) {
                     //if (pesos.getText().toString().isEmpty()) {
@@ -238,7 +238,7 @@ public class ProductosARedimir extends AppCompatActivity {
 
                                     String txtproducto = "Producto: " + numeroInternofinal;  //Integer.parseInt(numeroInternofinal);
                                     String txtcantidad = "Cantidad: " + totalproductosaCargar.getText().toString();
-                                    String txtprecio = "Precio: " + preciofinal;
+                                    String txtprecio = "Precio: " + String.format("$%.2f", preciofinal);
 
 
 
@@ -246,7 +246,7 @@ public class ProductosARedimir extends AppCompatActivity {
                                     txtproductos.setText(textoresultado);//myArrayVer.toString());
 
                                     Double resultado = SaldoPorUtilizar - Double.parseDouble(preciofinal);
-                                    txtSaldoUtilizado.setText(resultado.toString());
+                                    txtSaldoUtilizado.setText(String.format(resultado.toString()));
                                     txtDescripcionProducto.setText("");
                                     totalproductosaCargar.setText("1");
                                     banderaProducto = "true";
@@ -354,12 +354,12 @@ public class ProductosARedimir extends AppCompatActivity {
 
                                             String txtproducto = "Producto: " + descripcion; //Integer.parseInt(numeroInternofinal);
                                             String txtcantidad = "Cantidad: $" + pesos.getText().toString();
-                                            String txtprecio = "Precio: " + preciofinal;
+                                            String txtprecio = "Precio: " + String.format("$%.2f", Double.parseDouble(preciofinal));
                                             textoresultado = textoresultado + " " + txtproducto + " " + txtcantidad + " " + txtprecio + "           ";
                                             txtproductos.setText(textoresultado);//myArrayVer.toString());
 
                                             Double resultado = SaldoPorUtilizar - pesospedidos;
-                                            txtSaldoUtilizado.setText(resultado.toString());
+                                            txtSaldoUtilizado.setText(String.format("$%.2f", Double.parseDouble(resultado.toString())));
                                             pesos.setText("");
                                             litros.setText("");
                                             txtDescripcionProducto.setText("");
@@ -629,10 +629,10 @@ public class ProductosARedimir extends AppCompatActivity {
                     JSONArray PC = new JSONArray(PControl);
                     for (int j = 0; j < PC.length(); j++) {
                         JSONObject Control = PC.getJSONObject(j);
-                        preciol = Control.getString("Price");
+                        preciol = String.format("$%.2f", Double.parseDouble(Control.getString("Price")));
                         IdProductos = Control.getString("Id"); //ProductoId
                     }
-                    NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol); // + "    |    " + IdProductos );
+                    NombreProducto.add("ID: " + idArticulo + "    |     "+preciol); // + "    |    " + IdProductos );
                     ID.add(DescLarga);
                     PrecioProducto.add(preciol);
                     ClaveProducto.add(idArticulo);
@@ -657,8 +657,8 @@ public class ProductosARedimir extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Double SaldoVigente, Saldo, SaldoUtilizado, precioProductoSeleccionado;
                 String SaldoVigenteCadena, SaldoCadena, SaldoUtilizadoCadena;
-                SaldoVigenteCadena = txtSaldo.getText().toString();
-                SaldoUtilizadoCadena = txtSaldoUtilizado.getText().toString();
+                SaldoVigenteCadena = txtSaldo.getText().toString().replace("$","");
+                SaldoUtilizadoCadena = txtSaldoUtilizado.getText().toString().replace("$","");
                 SaldoVigente = Double.parseDouble(SaldoVigenteCadena);
                 SaldoUtilizado = Double.parseDouble(SaldoUtilizadoCadena);
                 preciofinal = PrecioProducto.get(i).toString();

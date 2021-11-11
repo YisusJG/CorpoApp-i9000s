@@ -143,7 +143,7 @@ public class Inventario extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         modales.alertDialog.dismiss();
-                        finish();
+                        bar.cancel();
                     }
                 });
             }
