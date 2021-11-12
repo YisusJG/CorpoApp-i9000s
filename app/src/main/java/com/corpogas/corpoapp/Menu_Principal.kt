@@ -63,7 +63,9 @@ import com.corpogas.corpoapp.VentaPagoTarjeta
 import com.corpogas.corpoapp.Tickets.OpcionImprimir
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta
+import com.corpogas.gogasmanagement.Entities.Helpers.CurrencyFormatter
 import java.io.File
+import java.text.DecimalFormat
 import java.util.concurrent.TimeUnit
 
 class Menu_Principal : AppCompatActivity() {
@@ -100,6 +102,7 @@ class Menu_Principal : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
         val data = SQLiteBD(this)
+
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
         drawerLayout = findViewById(R.id.drawer_layout)
         cardVScanner = findViewById(R.id.crdvScanner)
@@ -679,7 +682,7 @@ class Menu_Principal : AppCompatActivity() {
 
         when (v.id) {
             R.id.btnImgVentas -> {
-
+                val numFormat = CurrencyFormatter()
                 val data = SQLiteBD(applicationContext)
                 val retrofit = Retrofit.Builder()
                     .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
@@ -709,8 +712,9 @@ class Menu_Principal : AppCompatActivity() {
                             if(efectivoNoEntregado >= data.maximoEfectivo) {
                                 drawerLayout?.setBackgroundColor(Color.RED)
                                 val mensaje =
-                                    "Tienes $" + efectivoNoEntregado + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
+                                    "Tienes " + numFormat.mFormat.format(efectivoNoEntregado) + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
                                 val modales = Modales(this@Menu_Principal)
+                                val efectivoNoEntregadoFormato = DecimalFormat(efectivoNoEntregado.toString())
                                 val viewResultado = modales.MostrarDialogoError(this@Menu_Principal, mensaje)
                                 viewResultado.findViewById<View>(R.id.buttonAction).setOnClickListener {
                                         intent = Intent(applicationContext, OpcionFajillas::class.java)
@@ -721,13 +725,11 @@ class Menu_Principal : AppCompatActivity() {
                             }else{
                                 val mensaje = respuestaApiEfectivoNoEntregado?.Mensaje
                                 val modales = Modales(this@Menu_Principal)
-                                val viewResultado = modales.MostrarDialogoAlerta(this@Menu_Principal, mensaje, "ACEPTAR", "CANCELAR")
+                                val viewResultado = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensaje, "AVISO")
                                 viewResultado.findViewById<View>(R.id.buttonYes).setOnClickListener {
                                         modales.alertDialog.dismiss()
                                     }
-                                viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener {
-                                    modales.alertDialog.dismiss()
-                                }
+
                             }
                         }
                     }
