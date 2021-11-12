@@ -17,6 +17,7 @@ import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
+import com.corpogas.corpoapp.Entities.Estaciones.EndPointYena;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
@@ -35,6 +36,7 @@ import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreTicket;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreVariables;
+import com.corpogas.corpoapp.Entities.Yena.YenaResponse;
 import com.corpogas.corpoapp.Entregas.Entities.PaperVoucherType;
 import com.corpogas.corpoapp.Entregas.Entities.RecepcionVale;
 import com.corpogas.corpoapp.Entregas.Entities.ResumenVale;
@@ -224,6 +226,8 @@ public interface EndPoints {
 //    @POST("api/fajillasCajaFuerte/entregaFajillasCajaFuerte/numeroEmpleado/{numeroEmpleadoSale}/numeroEmpleadoAutoriza/{numeroEmpleadoAutoriza}")
 //    Call<RespuestaApi<List<StatusFajilla>>> postListaFajillas(@Body JSONArray arrayList, @Path("numeroEmpleadoSale") String numeroEmpleadoEntrega, @Path("numeroEmpleadoAutoriza") String numeroEmpleadoAutoriza);
 //
+    @POST("Api/yenas/consultaSaldo")
+    Call<RespuestaApi<YenaResponse>> postConsultaYena(@Body EndPointYena endPointYena);
 
 
 //    METODOS DELETE
