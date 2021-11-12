@@ -36,6 +36,15 @@
             android:name=".VentaCombustible.IniciaVentas"
             android:exported="true" />
         <activity
+            android:name=".Yena.ApartadosYena"
+            android:exported="true" />
+        <activity
+            android:name=".Yena.LecturayEscaneo"
+            android:exported="true" />
+        <activity
+            android:name=".Yena.Redencion.RedencionYena"
+            android:exported="true" />
+        <activity
             android:name=".Cofre.CofreActivity"
             android:exported="true">
 
@@ -64,9 +73,9 @@
         <activity
             android:name=".Fajillas.OpcionFajillas"
             android:exported="true" />
-        <activity
-            android:name=".Scaneo"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".Scaneo"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".VentaCombustible.ImprimePuntada"
             android:exported="true" />

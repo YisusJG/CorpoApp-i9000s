@@ -63,6 +63,7 @@ import com.corpogas.corpoapp.VentaPagoTarjeta
 import com.corpogas.corpoapp.Tickets.OpcionImprimir
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta
+import com.corpogas.corpoapp.Yena.ApartadosYena
 import com.corpogas.gogasmanagement.Entities.Helpers.CurrencyFormatter
 import java.io.File
 import java.text.DecimalFormat
@@ -822,6 +823,11 @@ class Menu_Principal : AppCompatActivity() {
 
             R.id.btnMetas -> {
                 intent = Intent(applicationContext, MetasActivity::class.java)
+                startActivity(intent)
+            }
+
+            R.id.btn_yena -> {
+                intent = Intent(applicationContext, ApartadosYena::class.java) //ProcesoVenta
                 startActivity(intent)
             }
 

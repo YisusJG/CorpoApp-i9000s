@@ -39,6 +39,7 @@ import com.corpogas.corpoapp.VentaCombustible.IniciaVentas;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 import com.corpogas.corpoapp.VentaCombustible.VentaCombustibleAceites;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
+import com.corpogas.corpoapp.Yena.LecturayEscaneo;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -432,6 +433,26 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     case "ConsultaSaldoPuntada":
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;
+
+                    case "Consulta Yena":
+
+                    case "Acumulacion Yena":
+                        Intent intent = new Intent(PosicionPuntadaRedimir.this, LecturayEscaneo.class);
+                        intent.putExtra("lugarProviene", lugarproviene);
+                        intent.putExtra("posicionCarga", posicionCargaId);
+                        intent.putExtra("numeroEmpleado", empleadoNumero);
+                        startActivity(intent);
+                        break;
+
+                    case "Redencion Yena":
+                        Intent intent2 = new Intent(PosicionPuntadaRedimir.this, LecturayEscaneo.class);
+                        intent2.putExtra("lugarProviene", lugarproviene);
+                        intent2.putExtra("pocioncargaid", posicionCargaId);
+                        intent2.putExtra("numeroEmpleado", empleadoNumero);
+                        startActivity(intent2);
+                        break;
+
+
                     case "Registrar":
                         RegistraTarjeta();
                         break;
