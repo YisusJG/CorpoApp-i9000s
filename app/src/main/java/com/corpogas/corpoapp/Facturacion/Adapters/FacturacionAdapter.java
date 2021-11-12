@@ -1,14 +1,19 @@
 package com.corpogas.corpoapp.Facturacion.Adapters;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 //import android.device.PrinterManager;
+import android.device.scanner.configuration.Triggering;
 import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,6 +40,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.ScanManagerProvides;
 import com.corpogas.corpoapp.Service.PrintBillService;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -58,6 +64,8 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
     SQLiteBD db;
     String idUsuario, ipEstacion;
     Long id;
+    private final ScanManagerProvides scanManagerProvides = new ScanManagerProvides();
+
 
     public FacturacionAdapter(List<RespuestaRFC> respuestaRFCList, Context context, ClienteFacturas clienteFacturas, SQLiteBD db,String idUsuario) {
         this.facturacionList = respuestaRFCList;
@@ -154,6 +162,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
             });
 
             facturarBtn.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public void onClick(View view) {
                     String tituloHeader = "INGRESA NÚMERO DE RASTREO";
@@ -168,6 +177,8 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                     // es decir en este array se colocan los datos que después se pasan al adaptador
                     // para ser mostrados
 
+
+
                     lstNumeroRastreo = new ArrayList<String>();
 
                     // provee de datos a un control de selección a partir de un array de objetos de cualquier tipo.
@@ -181,69 +192,27 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                             adapter.notifyDataSetChanged();
                         }
                     });
+                    scanManagerProvides.initScan(clienteFacturas.getApplicationContext());
 
-//                    txtNumRastreo.addTextChangedListener(new TextWatcher() {
-//                        int len=0;
-//
-//                        @Override
-//                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                            String str = txtNumRastreo.getText().toString();
-//                            len = str.length();
-//                        }
-//
-//                        @Override
-//                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                        }
-//
-//                        @Override
-//                        public void afterTextChanged(Editable s) {
-//
-//                            String str = txtNumRastreo.getText().toString();
-//                            if(str.length()==4 && len <str.length() || str.length()==9 && len <str.length() || str.length()==14 && len <str.length()){//len check for backspace
-//                                txtNumRastreo.append("-");
-//                            }
-//
-//                        }
-//                    });
-
-                    mScanRecevier = new BroadcastReceiver() {
-                        public void onReceive(Context context, Intent intent) {
-                            Log.e("Scan", "scan receive.......");
-                            String numeroEstacion = db.getNumeroEstacion();
-                            String scanResult = "";
-                            int length = intent.getIntExtra("EXTRA_SCAN_LENGTH", 0);
-                            int encodeType = intent.getIntExtra("EXTRA_SCAN_ENCODE_MODE", 1);
-
-                            if (encodeType == ENCODE_MODE_NONE) {
-                                byte[] data = intent.getByteArrayExtra("EXTRA_SCAN_DATA");
-                                try {
-                                    scanResult = new String(data, 0, length, "iso-8859-1");//Encode charSet
-                                } catch (UnsupportedEncodingException e) {
-                                    e.printStackTrace();
+                    btnStartScan.setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (v.getId() == R.id.btnScan) {
+                                if (event.getAction() == MotionEvent.ACTION_UP) {
+                                    scanManagerProvides.LogD("onTouch button Up");
+                                    btnStartScan.setText(R.string.scan_trigger_start);
+                                    if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                        scanManagerProvides.stopDecode();
+                                    }
                                 }
-
-                            } else {
-                                scanResult = intent.getStringExtra("EXTRA_SCAN_DATA");
-                                String comparaNumeroRastreo = scanResult.substring(0,numeroEstacion.length());
-
-                                if(numeroEstacion.equals(comparaNumeroRastreo))
-                                {
-                                    lstNumeroRastreo.add(scanResult);
-                                    adapter.notifyDataSetChanged();
-
-                                }else
-                                {
-                                    txtNumRastreo.setError("El número de rastreo no pertenece a la sucursal");
-                                    //queda pendiente el toas aqui para validar que pertnezca a la estacion donde se saco el tricket
-
+                                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                    scanManagerProvides.LogD("onTouch button Down");
+                                    btnStartScan.setText(R.string.scan_trigger_end);
+                                    scanManagerProvides.startDecode();
                                 }
                             }
+                            return false;
                         }
-                    };
-
-                    IntentFilter filter = new IntentFilter("ACTION_BAR_SCAN");
-                    clienteFacturas.registerReceiver(mScanRecevier, filter);
+                    });
 
 
                     btnNumRastreo.setOnClickListener(new View.OnClickListener() {
@@ -271,9 +240,9 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                                             txtNumRastreo.setText(null);
                                         }
 
-
                                     } else {
-                                        txtNumRastreo.setError("El número de rastreo no pertenece a la sucursal");
+                                        txtNumRastreo.setError("");
+                                        Toast.makeText(mContext, "El número de rastreo no pertence a la sucursal.", Toast.LENGTH_LONG).show();
                                         //queda pendiente el toas aqui para validar que pertnezca a la estacion donde se saco el tricket
 
                                     }
@@ -282,27 +251,6 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                         }
                     });
 
-                    btnStartScan.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-//                            Intent startIntent = new Intent("ACTION_BAR_TRIGSCAN");
-//                            startIntent.putExtra("timeout", 60);// Units per second,and Maximum 9
-////                            txtNumRastreo.setText("Start Scan...");
-//
-//                            clienteFacturas.sendBroadcast(startIntent);
-
-//                            snackbar = Snackbar.make(itemView, "Controlador Desconectado.", Snackbar.LENGTH_LONG);
-//                            View snackBarView = snackbar.getView();
-//                            snackBarView.setBackgroundColor(Color.BLACK);
-//                            TextView textView = (TextView) snackBarView.findViewById(R.id.snackbar_text);
-//                            textView.setTextColor(Color.YELLOW);
-//                            snackbar.show();
-
-                            Toast.makeText(mContext, "Controlador Desconectado.", Toast.LENGTH_LONG).show();
-
-                        }
-                    });
 
                     viewFactura.findViewById(R.id.btncancelarFactura).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -521,5 +469,6 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
         }
 
     }
+
 
 }

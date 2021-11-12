@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -45,6 +46,7 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
 import com.corpogas.corpoapp.Entregas.OpcionesEntregaActivity
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas
+import com.corpogas.corpoapp.Fajillas.EntregaFajillas
 import com.corpogas.corpoapp.Fajillas.OpcionFajillas
 import com.corpogas.corpoapp.Gastos.AutorizacionGastos
 import com.corpogas.corpoapp.Gastos.ClaveGastos
@@ -76,6 +78,7 @@ class Menu_Principal : AppCompatActivity() {
     lateinit var txtIdDispositivoMainNav: TextView
     lateinit var txtCerrarSesionTemporalMainNav: TextView
     lateinit var cardVScanner:CardView
+    lateinit var cardFondoVentas:CardView
 
     //-------Variables necesarias para ininicalizar el lector de huellas
     private val GENERAL_ACTIVITY_RESULT = 1
@@ -91,6 +94,8 @@ class Menu_Principal : AppCompatActivity() {
     var applicationUpdate: RespuestaApi<Update>? = null
     var respuestaApiArqueo: RespuestaApi<List<Arqueo>>? = null
     var respuestaApiEfectivoNoEntregado: RespuestaApi<Double>? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
@@ -98,10 +103,12 @@ class Menu_Principal : AppCompatActivity() {
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
         drawerLayout = findViewById(R.id.drawer_layout)
         cardVScanner = findViewById(R.id.crdvScanner)
+        cardFondoVentas = findViewById(R.id.PruebaFondoVentas)
         var mostrarOpcionScanner:Int = data.rol.toInt()
         if(mostrarOpcionScanner ==1 || mostrarOpcionScanner == 3){
             cardVScanner.visibility = View.VISIBLE
         }
+        obtenerEfectivoNoEntregado()
 
         //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,"open navigation drawer", "close navigation drawer");
@@ -201,6 +208,20 @@ class Menu_Principal : AppCompatActivity() {
                     return
                 }
                 respuestaApiEfectivoNoEntregado = response.body()
+                if(respuestaApiEfectivoNoEntregado?.objetoRespuesta!! >= data.maximoEfectivo){
+                    drawerLayout?.setBackgroundColor(Color.RED)
+                    val mensaje = "Tienes $" + respuestaApiEfectivoNoEntregado?.objetoRespuesta!! + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
+                    val modales = Modales(this@Menu_Principal)
+                    val viewLectura = modales.MostrarDialogoError(this@Menu_Principal, mensaje)
+                    viewLectura.findViewById<View>(R.id.buttonAction).setOnClickListener {
+                        intent = Intent(applicationContext, OpcionFajillas::class.java)
+//                        intent.putExtra("lugarProviene", "Ventas")
+                        startActivity(intent)
+                    }
+
+                }else{
+                    drawerLayout?.setBackgroundResource(R.drawable.fondomenu)
+                }
             }
 
             override fun onFailure(call: Call<RespuestaApi<Double>>, t: Throwable) {
@@ -234,7 +255,7 @@ class Menu_Principal : AppCompatActivity() {
                         entregaEfectivo = item.efectivoPorEntregar
                     }
                     if (entregaEfectivo != 0.0){
-                        val mensajes = "Tienes $" + entregaEfectivo + " en efectivo para entregar"
+                        val mensajes = "Tienes $" + entregaEfectivo + " en efectivo para entregar."
                         val modales = Modales(this@Menu_Principal)
                         val viewLectura = modales.MostrarDialogoAlerta(this@Menu_Principal, mensajes, "ENTREGAR", "CANCELAR")
                         viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
@@ -677,40 +698,31 @@ class Menu_Principal : AppCompatActivity() {
                         respuestaApiEfectivoNoEntregado = response.body()
                         var efectivoNoEntregado = respuestaApiEfectivoNoEntregado?.objetoRespuesta!!
                         if(efectivoNoEntregado <= 0.0){
+
+//                            cardFondoVentas?.setCardBackgroundColor(Color.RED)
+
                             intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
                             intent.putExtra("lugarproviene", "Ventas")
                             startActivity(intent)
 
                         }else{
                             if(efectivoNoEntregado >= data.maximoEfectivo) {
-
+                                drawerLayout?.setBackgroundColor(Color.RED)
                                 val mensaje =
                                     "Tienes $" + efectivoNoEntregado + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
                                 val modales = Modales(this@Menu_Principal)
-                                val viewResultado = modales.MostrarDialogoAlerta(
-                                    this@Menu_Principal,
-                                    mensaje,
-                                    "ACEPTAR",
-                                    "CANCELAR"
-                                )
-                                viewResultado.findViewById<View>(R.id.buttonYes)
-                                    .setOnClickListener {
-                                        modales.alertDialog.dismiss()
+                                val viewResultado = modales.MostrarDialogoError(this@Menu_Principal, mensaje)
+                                viewResultado.findViewById<View>(R.id.buttonAction).setOnClickListener {
+                                        intent = Intent(applicationContext, OpcionFajillas::class.java)
+//                                        intent.putExtra("lugarproviene", "Ventas")
+                                        startActivity(intent)
                                     }
-                                viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener {
-                                    modales.alertDialog.dismiss()
-                                }
+
                             }else{
                                 val mensaje = respuestaApiEfectivoNoEntregado?.Mensaje
                                 val modales = Modales(this@Menu_Principal)
-                                val viewResultado = modales.MostrarDialogoAlerta(
-                                    this@Menu_Principal,
-                                    mensaje,
-                                    "ACEPTAR",
-                                    "CANCELAR"
-                                )
-                                viewResultado.findViewById<View>(R.id.buttonYes)
-                                    .setOnClickListener {
+                                val viewResultado = modales.MostrarDialogoAlerta(this@Menu_Principal, mensaje, "ACEPTAR", "CANCELAR")
+                                viewResultado.findViewById<View>(R.id.buttonYes).setOnClickListener {
                                         modales.alertDialog.dismiss()
                                     }
                                 viewResultado.findViewById<View>(R.id.buttonNo).setOnClickListener {
@@ -771,10 +783,10 @@ class Menu_Principal : AppCompatActivity() {
 //                intent = Intent(applicationContext, EnDesarrollo::class.java)
 //                startActivity(intent)
 //            }
-            R.id.btnInventario -> {
-                intent = Intent(applicationContext, Inventario::class.java)
-                startActivity(intent)
-            }
+//            R.id.btnInventario -> {
+//                intent = Intent(applicationContext, Inventario::class.java)
+//                startActivity(intent)
+//            }
             R.id.btnImgTickets -> {
                 intent = Intent(applicationContext, OpcionImprimir::class.java) //VentaPagoTarjeta
                 intent.putExtra("montoencanasta", "$20.00")

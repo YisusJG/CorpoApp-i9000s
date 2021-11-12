@@ -59,10 +59,10 @@ import java.util.Map;
  * ScanManagerDemo
  *
  * @author shenpidong
- * @effect Introduce the use of android.device.ScanManager
+ * @effect Introduce the use of android.device.ScanManagerProvides
  * @date 2020-03-06
- * @description , Steps to use ScanManager:
- * 1.Obtain an instance of BarCodeReader with ScanManager scan = new ScanManager().
+ * @description , Steps to use ScanManagerProvides:
+ * 1.Obtain an instance of BarCodeReader with ScanManagerProvides scan = new ScanManagerProvides().
  * 2.Call openScanner to power on the barcode reader.
  * 3.After that, the default output mode is TextBox Mode that send barcode data to the focused text box. User can check the output mode using getOutputMode and set the output mode using switchOutputMode.
  * 4.Then, the default trigger mode is manually trigger signal. User can check the trigger mode using getTriggerMode and set the trigger mode using setTriggerMode.
@@ -496,7 +496,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.getTriggerMode
+     * ScanManagerProvides.getTriggerMode
      *
      * @return
      */
@@ -506,7 +506,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.setTriggerMode
+     * ScanManagerProvides.setTriggerMode
      *
      * @param mode value : Triggering.HOST, Triggering.CONTINUOUS, or Triggering.PULSE.
      */
@@ -531,7 +531,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.getOutputMode
+     * ScanManagerProvides.getOutputMode
      *
      * @return
      */
@@ -541,7 +541,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.switchOutputMode
+     * ScanManagerProvides.switchOutputMode
      *
      * @param mode
      */
@@ -567,7 +567,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.getTriggerLockState
+     * ScanManagerProvides.getTriggerLockState
      *
      * @return
      */
@@ -577,7 +577,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.lockTrigger and ScanManager.unlockTrigger
+     * ScanManagerProvides.lockTrigger and ScanManagerProvides.unlockTrigger
      *
      * @param state value ture or false
      */
@@ -595,7 +595,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.startDecode
+     * ScanManagerProvides.startDecode
      */
     private void startDecode() {
         if (!mScanEnable) {
@@ -613,7 +613,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.stopDecode
+     * ScanManagerProvides.stopDecode
      */
     private void stopDecode() {
         if (!mScanEnable) {
@@ -626,7 +626,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.closeScanner
+     * ScanManagerProvides.closeScanner
      *
      * @return
      */
@@ -640,10 +640,10 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * Obtain an instance of BarCodeReader with ScanManager
-     * ScanManager.getScannerState
-     * ScanManager.openScanner
-     * ScanManager.enableAllSymbologies
+     * Obtain an instance of BarCodeReader with ScanManagerProvides
+     * ScanManagerProvides.getScannerState
+     * ScanManagerProvides.openScanner
+     * ScanManagerProvides.enableAllSymbologies
      *
      * @return
      */
@@ -672,7 +672,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.enableSymbology
+     * ScanManagerProvides.enableSymbology
      *
      * @param symbology
      * @param enable
@@ -697,7 +697,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.getParameterInts
+     * ScanManagerProvides.getParameterInts
      *
      * @param ids
      * @return
@@ -707,7 +707,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.setParameterInts
+     * ScanManagerProvides.setParameterInts
      *
      * @param ids
      * @param values
@@ -717,7 +717,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.getParameterString
+     * ScanManagerProvides.getParameterString
      *
      * @param ids
      * @return
@@ -727,7 +727,7 @@ public class ScanManagerDemo extends AppCompatActivity {
     }
 
     /**
-     * ScanManager.setParameterString
+     * ScanManagerProvides.setParameterString
      *
      * @param ids
      * @param values
@@ -902,7 +902,7 @@ public class ScanManagerDemo extends AppCompatActivity {
         }
 
         /**
-         * ScanManager.resetScannerParameters
+         * ScanManagerProvides.resetScannerParameters
          *
          * @param params
          * @return
