@@ -39,6 +39,7 @@ import com.corpogas.corpoapp.TanqueLleno.TanqueLlenoNip;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.ImprimePuntada;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
+import com.corpogas.gogasmanagement.Entities.Helpers.CurrencyFormatter;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -67,6 +68,8 @@ public class MonederosElectronicos extends AppCompatActivity {
     String Enviadodesde, lugarProviene, NIP;
     long idSucursal;
     SQLiteBD data;
+    CurrencyFormatter numFormat;
+
     RespuestaApi<Bin> respuestaApiBin;
     JSONArray datos = new JSONArray();
     String idformaPago, posiciondeCarga, numeroempleadosucursal, PagoPuntada, tipoTarjeta;
@@ -131,7 +134,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         NIP = getIntent().getStringExtra( "nip");
         PagoPuntada = getIntent().getStringExtra("pagoconpuntada");
         tipoTarjeta = getIntent().getStringExtra("tipoTarjeta");
-        numeroempleadosucursal = getIntent().getStringExtra("numeroEmpleado");
+        numeroempleadosucursal = data.getNumeroEmpleado(); //getIntent().getStringExtra("numeroEmpleado");
         posiciondeCarga = getIntent().getStringExtra("posicioncargaid");
         idformaPago = getIntent().getStringExtra("formapagoid");
         montoenlacanasta = getIntent().getDoubleExtra("montoenlacanasta", 0);
@@ -176,7 +179,7 @@ public class MonederosElectronicos extends AppCompatActivity {
     private void beep(String tk1, String tk2, String tk3) {
         if (tg != null)
             tg.startTone(ToneGenerator.TONE_CDMA_NETWORK_CALLWAITING);
-        if (Enviadodesde.equals("formaspago")  | Enviadodesde.equals("CarritoTransacciones")){
+        if (Enviadodesde.equals("formaspago")  | Enviadodesde.equals("CarritoTransacciones")   | Enviadodesde.equals("diferentesformaspago")){
             CompararTarjetasPuntada(tk1, tk2, tk3);
 //            CompararTarjetas(tk1, tk2, tk3);
         } else {
@@ -760,7 +763,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }else{
-                                if (idformaPago.equals("3") || idformaPago.equals(5) || idformaPago.equals(13)){
+                                if (idformaPago.equals("3") || idformaPago.equals("5") || idformaPago.equals("13")){
                                     DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
                                     simbolos.setDecimalSeparator('.');
                                     DecimalFormat df = new DecimalFormat("####.00##",simbolos);
@@ -785,33 +788,22 @@ public class MonederosElectronicos extends AppCompatActivity {
                                     intente.putExtra("idformapago", numpago);
                                     intente.putExtra("nombrepago", nombrepago);
                                     intente.putExtra("montoencanasta", MontoenCarrito);
+                                    intente.putExtra("lugarProviene", "FormasPago");
                                     startActivity(intente);
                                     finish();
                                 }
                             }
                         } else {
-                            String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");
-
-                            //Enviamos a la pantalla de captura de diferentes formas de pago   MontoenCanasta
-                            String banderaHuella = getIntent().getStringExtra( "banderaHuella");
-                            String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
-                            //LeeTarjeta();
-                            Intent intent = new Intent(getApplicationContext(), DiferentesFormasPago.class);
-                            intent.putExtra("banderaHuella", banderaHuella);
-                            intent.putExtra("Enviadodesde", "Monedero");
-                            intent.putExtra("idusuario", idusuario);
-                            intent.putExtra("posicioncarga", posiciondeCarga);
-                            intent.putExtra("claveusuario", numeroempleadosucursal);
-                            intent.putExtra("idoperativa", idoperativa);
-                            intent.putExtra("formapagoid", numpago);
-                            intent.putExtra("NombreCompleto", nombreCompleto);
-                            intent.putExtra("montoencanasta", MontoenCarrito);
-                            intent.putExtra("numeroempleadosucursal", numeroempleadosucursal);
-                            intent.putExtra("saldoPuntada", "0");
-                            intent.putExtra("pagoconpuntada", PagoPuntada);
-                            startActivity(intent);
+                            Double MontoenCarrito = 0.0;
+                            Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
+                            intente.putExtra("posicioncarga", posiciondeCarga);
+                            intente.putExtra("idoperativa", idoperativa);
+                            intente.putExtra("idformapago", numpago);
+                            intente.putExtra("nombrepago", nombrepago);
+                            intente.putExtra("montoencanasta", MontoenCarrito);
+                            intente.putExtra("lugarProviene", "DiferentesFormasPago");
+                            startActivity(intente);
                             finish();
-
                         }
                     } else {
                         try {
@@ -837,7 +829,7 @@ public class MonederosElectronicos extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
 
                 }
             }) {
@@ -862,7 +854,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 }
             };
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-            request_json.setRetryPolicy(new DefaultRetryPolicy(500000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request_json.setRetryPolicy(new DefaultRetryPolicy(900000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             queue.add(request_json);
 
         }

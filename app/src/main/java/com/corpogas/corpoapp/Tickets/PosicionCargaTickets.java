@@ -39,6 +39,7 @@ import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
+import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 
 import org.json.JSONArray;
@@ -448,7 +449,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                     if (IdOperativa.equals("21")){ //TarjetaPuntada Redimir
                                         imprimirticket(String.valueOf(posicionCargaId), "REDIMIR", MontoenCanasta.toString());
                                     }else{
-                                        Intent intent = new Intent(getApplicationContext(), FormasPago.class);
+                                        Intent intent = new Intent(getApplicationContext(), FormasPagoReordenado.class); // FormasPago
                                         intent.putExtra("estacionjarreo", "Estacionjarreo");
                                         intent.putExtra("clavedespachador", "ClaveDespachador");
                                         intent.putExtra("numeroempleadosucursal", "numeroempleado");
@@ -515,7 +516,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                     String mensajes = "Error";
                                     Modales modales = new Modales(PosicionCargaTickets.this);
                                     View view1 = modales.MostrarDialogoError(PosicionCargaTickets.this,Mensaje);
-                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             modales.alertDialog.dismiss();

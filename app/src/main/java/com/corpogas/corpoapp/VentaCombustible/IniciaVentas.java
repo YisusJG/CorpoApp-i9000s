@@ -175,13 +175,13 @@ public class IniciaVentas extends AppCompatActivity {
                                                 aTotal = Double.parseDouble(ImporteTotal);//Double.parseDouble(Monto) * Double.parseDouble(Precio);
                                                 MontoenCanasta = MontoenCanasta + aTotal;
                                             }
-//                                            if (MontoenCanasta.equals(0.00)) {
+                                            if (MontoenCanasta.equals(0.00)) {
 //                                                Reintenta();
-//                                        Toast.makeText(EligePrecioLitros.this, "Monto en CERO", Toast.LENGTH_SHORT).show();
-//                                            }else{
-                                                Intent intent = new Intent(getApplicationContext(), FormasPago.class);
+                                                Toast.makeText(IniciaVentas.this, "Monto en CERO", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                Intent intent = new Intent(getApplicationContext(), FormasPagoReordenado.class);
                                                 intent.putExtra("numeroEmpleado", usuarioid);
-                                                intent.putExtra("posicionCarga", posicionCarga);
+                                                intent.putExtra("posicionCarga", poscicionCarga);
                                                 intent.putExtra("estacionjarreo", estacionJarreo);
                                                 intent.putExtra("claveProducto", claveProducto);
                                                 intent.putExtra("montoenCanasta", MontoenCanasta);
@@ -191,7 +191,7 @@ public class IniciaVentas extends AppCompatActivity {
                                                 intent.putExtra("IdOperativa", "0");
                                                 startActivity(intent);
                                                 finish();
-//                                            }
+                                            }
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
