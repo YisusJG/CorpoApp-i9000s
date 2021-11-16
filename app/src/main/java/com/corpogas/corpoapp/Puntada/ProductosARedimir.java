@@ -242,7 +242,7 @@ public class ProductosARedimir extends AppCompatActivity {
 
                                     String txtproducto = "Producto: " + numeroInternofinal;  //Integer.parseInt(numeroInternofinal);
                                     String txtcantidad = "Cantidad: " + totalproductosaCargar.getText().toString();
-                                    String txtprecio = "Precio: " + String.format("$%.2f", preciofinal);
+                                    String txtprecio = "Precio: " + df.format(preciofinal);
 
 
 
@@ -250,7 +250,7 @@ public class ProductosARedimir extends AppCompatActivity {
                                     txtproductos.setText(textoresultado);//myArrayVer.toString());
 
                                     Double resultado = SaldoPorUtilizar - Double.parseDouble(preciofinal);
-                                    txtSaldoUtilizado.setText(String.format(resultado.toString()));
+                                    txtSaldoUtilizado.setText(df.format(resultado.toString()));
                                     txtDescripcionProducto.setText("");
                                     totalproductosaCargar.setText("1");
                                     banderaProducto = "true";
@@ -358,12 +358,12 @@ public class ProductosARedimir extends AppCompatActivity {
 
                                             String txtproducto = "Producto: " + descripcion; //Integer.parseInt(numeroInternofinal);
                                             String txtcantidad = "Cantidad: $" + pesos.getText().toString();
-                                            String txtprecio = "Precio: " + String.format("$%.2f", Double.parseDouble(preciofinal));
+                                            String txtprecio = "Precio: " + df.format(Double.parseDouble(preciofinal));
                                             textoresultado = textoresultado + " " + txtproducto + " " + txtcantidad + " " + txtprecio + "           ";
                                             txtproductos.setText(textoresultado);//myArrayVer.toString());
 
                                             Double resultado = SaldoPorUtilizar - pesospedidos;
-                                            txtSaldoUtilizado.setText(String.format("$%.2f", Double.parseDouble(resultado.toString())));
+                                            txtSaldoUtilizado.setText(df.format(Double.parseDouble(resultado.toString())));
                                             pesos.setText("");
                                             litros.setText("");
                                             txtDescripcionProducto.setText("");
@@ -636,7 +636,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     JSONArray PC = new JSONArray(PControl);
                     for (int j = 0; j < PC.length(); j++) {
                         JSONObject Control = PC.getJSONObject(j);
-                        preciol = String.format("$%.2f", Double.parseDouble(Control.getString("Price")));
+                        preciol = df.format(Double.parseDouble(Control.getString("Price")));
                         IdProductos = Control.getString("Id"); //ProductoId
                     }
                     NombreProducto.add("ID: " + idArticulo + "    |     "+preciol); // + "    |    " + IdProductos );
