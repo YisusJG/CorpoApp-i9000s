@@ -54,6 +54,8 @@
     import org.json.JSONObject;
 
     import java.io.UnsupportedEncodingException;
+    import java.text.DecimalFormat;
+    import java.text.DecimalFormatSymbols;
     import java.util.ArrayList;
     import java.util.HashMap;
     import java.util.List;
@@ -110,6 +112,10 @@
         Integer Propina = 5;
         ProgressDialog bar;
         SQLiteBD db;
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        DecimalFormat df;
+
+
 
         @SuppressLint("WrongViewCast")
         @Override
@@ -118,6 +124,9 @@
             setContentView(R.layout.activity_ventas_productos);
             //instruccion para que aparezca la flecha de regreso
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            simbolos.setDecimalSeparator('.');
+            df = new DecimalFormat("#,###.00##",simbolos);
+            df.setMaximumFractionDigits(2);
 
             textoresultado="";
             db = new SQLiteBD(getApplicationContext());

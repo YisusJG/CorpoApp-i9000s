@@ -69,6 +69,9 @@ public class MonederosElectronicos extends AppCompatActivity {
     long idSucursal;
     SQLiteBD data;
     CurrencyFormatter numFormat;
+    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+    DecimalFormat df;
+
 
     RespuestaApi<Bin> respuestaApiBin;
     JSONArray datos = new JSONArray();
@@ -146,6 +149,11 @@ public class MonederosElectronicos extends AppCompatActivity {
         numeroTarjetero = data.getIdTarjtero();
         tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         mReadService = new MagReadService(this, mHandler);
+
+        simbolos.setDecimalSeparator('.');
+        df = new DecimalFormat("###,###.00",simbolos);
+        df.setMaximumFractionDigits(2);
+
     }
 
 
@@ -505,7 +513,6 @@ public class MonederosElectronicos extends AppCompatActivity {
                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    onDestroy();
                                     modales.alertDialog.dismiss();
                                     Intent intent = new Intent(MonederosElectronicos.this, Menu_Principal.class);
                                     startActivity(intent);
@@ -592,8 +599,12 @@ public class MonederosElectronicos extends AppCompatActivity {
                                             break;
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
+                                                simbolos.setDecimalSeparator('.');
+                                                df = new DecimalFormat("#,###.00##",simbolos);
+                                                df.setMaximumFractionDigits(2);
+
                                                 String titulo = "AVISO";
-                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + saldo;
+                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + df.format(saldo);
                                                 final Modales modales = new Modales(MonederosElectronicos.this);
                                                 View view1 = modales.MostrarDialogoCorrecto(MonederosElectronicos.this,mensajes);
                                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {

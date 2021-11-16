@@ -342,7 +342,7 @@ public class IniciaVentas extends AppCompatActivity {
         tvTituloIniciaVenta.setText("PC " + posicioncargaid + ", TIPO DESPACHO");
 
         simbolos.setDecimalSeparator('.');
-        df = new DecimalFormat("###0.00##",simbolos);
+        df = new DecimalFormat("#,###.00##",simbolos);
 
         if (lugarproviene.equals("puntadaAcumularQr")){
             btnDespachoLibreVenta.setEnabled(false);

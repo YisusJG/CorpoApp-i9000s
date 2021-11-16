@@ -134,6 +134,7 @@ public class SeccionTarjeta extends AppCompatActivity {
                             intentMonedero.putExtra("lugarproviene", PuntadaProceso);
                             intentMonedero.putExtra("nip", NIPCliente);
                             startActivity(intentMonedero);
+                            finish();
                         }
                     }
                 }

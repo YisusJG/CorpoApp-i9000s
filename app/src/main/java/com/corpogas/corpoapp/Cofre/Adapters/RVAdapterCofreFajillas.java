@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.corpogas.corpoapp.Cofre.Entities.TotalFajillaCajaFuerte;
 import com.corpogas.corpoapp.R;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 public class RVAdapterCofreFajillas extends RecyclerView.Adapter<RVAdapterCofreFajillas.RecyclerViewHeadersHolder> implements View.OnClickListener {
@@ -19,11 +21,13 @@ public class RVAdapterCofreFajillas extends RecyclerView.Adapter<RVAdapterCofreF
     List<TotalFajillaCajaFuerte> lrecyclerViewHeaders;
     View.OnClickListener listener;
     public boolean isClickable;
+    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+    DecimalFormat df;
+
 //    ImageView imgAgregarVale, imgEliminarVale;
 
     public class RecyclerViewHeadersHolder extends RecyclerView.ViewHolder {       
         TextView txtCantidadCofre,txtPrecioCofre,txtImporteCofre;
-
 
 
 

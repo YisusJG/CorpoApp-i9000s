@@ -26,19 +26,20 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProductosARedimir extends AppCompatActivity {
-    DecimalFormat formatoCifras;
-
     Button btnAgregar,btnEnviar, incrementar, decrementar, btnMostrarCombustibles, btnMostrarProductos;
     TextView cantidadProducto, txtSaldo, txtSaldoUtilizado, txtDescripcionProducto, txtproductos, txtcantidad, txtpesos;
     EditText Producto, existenias;
@@ -86,7 +87,8 @@ public class ProductosARedimir extends AppCompatActivity {
 
     ProgressDialog bar;
 
-
+    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+    DecimalFormat df;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,11 +104,14 @@ public class ProductosARedimir extends AppCompatActivity {
         textoresultado="";
         banderaProducto = "false";
         banderaCombustible = "false";
-
-        formatoCifras = new DecimalFormat("#,###.##");
+        simbolos.setDecimalSeparator('.');
+        df = new DecimalFormat("$#,###.00##",simbolos);
+        df.setMaximumFractionDigits(2);
 
         posicionCarga = getIntent().getStringExtra("pos");
-        String saldos = String.format("$%.2f",Double.parseDouble(getIntent().getStringExtra("saldo")));
+//        String saldos = String.format("$%.2f",Double.parseDouble(getIntent().getStringExtra("saldo")));
+        String saldos = df.format(Double.parseDouble(getIntent().getStringExtra("saldo")));
+
         idUsuario = getIntent().getLongExtra("empleadoid", 0);
         nombreatendio = getIntent().getStringExtra("nombreatendio");
 
@@ -188,7 +193,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     txtproductos = findViewById(R.id.txtproductos);
                     Integer TipoProducto=2;
                     Double SaldoPorUtilizar;
-                    SaldoPorUtilizar= Double.parseDouble(txtSaldoUtilizado.getText().toString().replace("$",""));
+                    SaldoPorUtilizar= Double.parseDouble(txtSaldoUtilizado.getText().toString().replace("$","").replace(",",""));
 
                     //if (litros.getText().toString().isEmpty()) {
                     //if (pesos.getText().toString().isEmpty()) {
@@ -631,8 +636,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     JSONArray PC = new JSONArray(PControl);
                     for (int j = 0; j < PC.length(); j++) {
                         JSONObject Control = PC.getJSONObject(j);
-//                        preciol = String.format("$%.2f", Double.parseDouble(Control.getString("Price")));
-                        preciol = Control.getString("Price");
+                        preciol = String.format("$%.2f", Double.parseDouble(Control.getString("Price")));
                         IdProductos = Control.getString("Id"); //ProductoId
                     }
                     NombreProducto.add("ID: " + idArticulo + "    |     "+preciol); // + "    |    " + IdProductos );
@@ -660,11 +664,11 @@ public class ProductosARedimir extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Double SaldoVigente, Saldo, SaldoUtilizado, precioProductoSeleccionado;
                 String SaldoVigenteCadena, SaldoCadena, SaldoUtilizadoCadena;
-                SaldoVigenteCadena = txtSaldo.getText().toString().replace("$","");
-                SaldoUtilizadoCadena = txtSaldoUtilizado.getText().toString().replace("$","");
+                SaldoVigenteCadena = txtSaldo.getText().toString().replace("$","").replace(",","");
+//                SaldoUtilizadoCadena = txtSaldoUtilizado.getText().toString().replace("$","");
                 SaldoVigente = Double.parseDouble(SaldoVigenteCadena);
-                SaldoUtilizado = Double.parseDouble(SaldoUtilizadoCadena);
-                preciofinal = PrecioProducto.get(i).toString();
+//                SaldoUtilizado = Double.parseDouble(SaldoUtilizadoCadena);
+                preciofinal = PrecioProducto.get(i).toString().replace("$","").replace(",","");
                 precioProductoSeleccionado = Double.parseDouble(preciofinal);
 
                 if (precioProductoSeleccionado <= SaldoVigente){
@@ -773,13 +777,14 @@ public class ProductosARedimir extends AppCompatActivity {
                 Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
 
             }
-        }){
-            public Map<String,String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
+        }) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
                 return headers;
             }
-            protected Response<JSONObject> parseNetwokResponse(NetworkResponse response){
-                if (response != null){
+
+            protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                if (response != null) {
                     try {
                         String responseString;
                         JSONObject datos = new JSONObject();
@@ -794,7 +799,6 @@ public class ProductosARedimir extends AppCompatActivity {
         };
         queue.add(request_json);
     }
-
 
     private void enviarProductosServerDesdeYena() {    //JSONArray array2, String NIP
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
@@ -905,7 +909,6 @@ public class ProductosARedimir extends AppCompatActivity {
         };
         queue.add(request_json);
     }
-
 
     //Metodo para regresar a la actividad principal
     @Override

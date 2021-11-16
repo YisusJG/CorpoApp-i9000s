@@ -46,6 +46,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +84,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     Double descuentoPorLitro;
     ProgressDialog bar;
 
+    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+    DecimalFormat df;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +122,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         usuario = db.getNumeroEmpleado();//getIntent().getStringExtra("ClaveDespachador");   getClave()
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nip");
+        simbolos.setDecimalSeparator('.');
+        df = new DecimalFormat("###,###.00",simbolos);
+        df.setMaximumFractionDigits(2);
 
 
     }
@@ -688,7 +696,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
                                                 String titulo = "AVISO";
-                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + String.format("$%.2f",Double.parseDouble(saldo));
+                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + df.format(saldo).toString();
                                                 final Modales modales = new Modales(PosicionPuntadaRedimir.this);
                                                 View view1 = modales.MostrarDialogoCorrecto(PosicionPuntadaRedimir.this,mensajes);
                                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
