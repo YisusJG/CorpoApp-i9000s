@@ -779,7 +779,7 @@
                         myArrayVer.put(mjasonver);
                         String txtproducto= "Producto: "+Integer.parseInt(numInterno);
                         String txtcantidad= "Cantidad: "+TotalProducto;
-                        String txtprecio= "Precio: "+precioUnitario;
+                        String txtprecio= "Precio: $"+ df.format(precioUnitario);
 
 
                         textoresultado = textoresultado + " " + txtproducto + " " + txtcantidad + " " +txtprecio + "     ";

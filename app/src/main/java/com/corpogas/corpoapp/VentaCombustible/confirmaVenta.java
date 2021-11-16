@@ -400,7 +400,7 @@ public class confirmaVenta extends AppCompatActivity {
 
             DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
             simbolos.setDecimalSeparator('.');
-            DecimalFormat df = new DecimalFormat("####.00##",simbolos);
+            DecimalFormat df = new DecimalFormat("#,###.00##",simbolos);
 
             df.setMaximumFractionDigits(2);
             txttotal.setText("TOTAL : $" + df.format(MontoTotal));

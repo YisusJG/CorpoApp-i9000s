@@ -602,33 +602,13 @@ public class FormasPagoReordenado extends AppCompatActivity {
             }
         });
         rcvFormasPagoReordenado.setAdapter(adapter);
-        RecyclerView.ItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        rcvFormasPagoReordenado.addItemDecoration(divider);
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(UP | DOWN, 0) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                int position_dragged = viewHolder.getAdapterPosition();
-                int position_tarjet = target.getAdapterPosition();
-
-                Collections.swap(lrcvFormaPago, position_dragged, position_tarjet);
-                adapter.notifyItemMoved(position_dragged, position_tarjet);
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-            }
-        });
-        itemTouchHelper.attachToRecyclerView(rcvFormasPagoReordenado);
 //        RecyclerView.ItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
 //        rcvFormasPagoReordenado.addItemDecoration(divider);
 //
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(UP | DOWN,0) {
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(UP | DOWN, 0) {
 //            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
-//                int position_dragged = dragged.getAdapterPosition();
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                int position_dragged = viewHolder.getAdapterPosition();
 //                int position_tarjet = target.getAdapterPosition();
 //
 //                Collections.swap(lrcvFormaPago, position_dragged, position_tarjet);
@@ -642,6 +622,8 @@ public class FormasPagoReordenado extends AppCompatActivity {
 //            }
 //        });
 //        itemTouchHelper.attachToRecyclerView(rcvFormasPagoReordenado);
+
+
 
     }
 

@@ -695,8 +695,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                             break;
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
+                                                simbolos.setDecimalSeparator('.');
+                                                df = new DecimalFormat("$#,###.00##",simbolos);
+                                                df.setMaximumFractionDigits(2);
                                                 String titulo = "AVISO";
-                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + df.format(saldo).toString();
+                                                String mensajes = "Tarjeta No. " + track + " con Saldo: " + df.format(Double.parseDouble(saldo));
                                                 final Modales modales = new Modales(PosicionPuntadaRedimir.this);
                                                 View view1 = modales.MostrarDialogoCorrecto(PosicionPuntadaRedimir.this,mensajes);
                                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
@@ -737,6 +740,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                 }
                             }else{
                                 try{
+                                    bar.cancel();
                                     String titulo = "AVISO";
                                     String mensajes;
                                     if (mensaje.equals("null")){
@@ -758,6 +762,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                     });
                                 }catch (Exception e){
                                     e.printStackTrace();
+                                    bar.cancel();
                                 }
                             }
                         } catch (JSONException e) {
@@ -767,6 +772,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                bar.cancel();
 //                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                 String titulo = "AVISO";
                 String mensajes;

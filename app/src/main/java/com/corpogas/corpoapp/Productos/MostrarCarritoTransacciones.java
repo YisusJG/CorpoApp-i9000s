@@ -519,7 +519,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         String TipoProducto, ProductoId, NumeroInterno, Descripcion, Monto, Precio, Importe, ImporteTotal;
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
         simbolos.setDecimalSeparator('.');
-        DecimalFormat df = new DecimalFormat("####.00##",simbolos);
+        DecimalFormat df = new DecimalFormat("#,###.00##",simbolos);
         df.setMaximumFractionDigits(2);
 
         cadenaRespuesta = getIntent().getStringExtra("cadenarespuesta");

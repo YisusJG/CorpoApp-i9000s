@@ -600,7 +600,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
                                                 simbolos.setDecimalSeparator('.');
-                                                df = new DecimalFormat("#,###.00##",simbolos);
+                                                df = new DecimalFormat("$#,###.00##",simbolos);
                                                 df.setMaximumFractionDigits(2);
 
                                                 String titulo = "AVISO";

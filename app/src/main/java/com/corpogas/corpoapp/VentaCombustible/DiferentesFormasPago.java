@@ -117,7 +117,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
         obtenerformasdepago();
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
         simbolos.setDecimalSeparator('.');
-        DecimalFormat df = new DecimalFormat("####.00##",simbolos);
+        DecimalFormat df = new DecimalFormat("$#,###.00##",simbolos);
         df.setMaximumFractionDigits(2);
 //        MontoenCanasta = MontoenCanasta;
 //        tvSaldo.setText(df.format(Double.parseDouble(saldoPuntada)));
@@ -131,14 +131,14 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //            tvSaldoPuntada.setVisibility(View.VISIBLE);
 //            tvSaldo.setVisibility(View.VISIBLE);
 //        }
-        txtMontoTotal.setText(String.format("$%.2f",MontoenCanasta).toString());
-        txtMontoFaltante.setText(String.format("$%.2f",MontoenCanasta).toString());
+        txtMontoTotal.setText(df.format(MontoenCanasta).toString());
+        txtMontoFaltante.setText(df.format(MontoenCanasta).toString());
         botonEnviar = findViewById(R.id.imprimir);
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Double montoPendiente;
-                montoPendiente = Double.parseDouble(txtMontoFaltante.getText().toString().replace("$",""));
+                montoPendiente = Double.parseDouble(txtMontoFaltante.getText().toString().replace("$","").replace(",",""));
                 if (montoPendiente>0){
                     botonEnviar.setClickable(true);
                     try {
@@ -405,7 +405,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         subtitle.add("$"+ db.getMontoFPD(Integer.parseInt(numero_pago)) );
                                         Double Faltante = Double.parseDouble(txtMontoFaltante.getText().toString());
 //                                        txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
-                                        txtMontoFaltante.setText(String.format("$%.2f",Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
+                                        txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
                                     }else{
                                         subtitle.add("$0.00" );
                                    }
@@ -523,9 +523,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
                         Modales modales = new Modales(DiferentesFormasPago.this);
                         View viewLectura = modales.MostrarDialogoInsertaDato(DiferentesFormasPago.this, mensaje, titulo);
                         EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                        if (txtMontoTotal.getText().toString().replace("$","").equals(txtMontoFaltante.getText().toString().replace("$",""))){
+                        if (txtMontoTotal.getText().toString().replace("$","").replace(",","").equals(txtMontoFaltante.getText().toString().replace("$","").replace(",",""))){
                         }else{
-                            edtProductoCantidad.setText(txtMontoFaltante.getText().toString().replace("$",""));
+                            edtProductoCantidad.setText(txtMontoFaltante.getText().toString().replace("$","").replace(",",""));
                         }
                         edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                         viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -539,7 +539,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                     String montoSeleccionado;
                                     String montosinpesos;
                                     montosinpesos  = subtitle.get(position);
-                                    montoSeleccionado =montosinpesos.replace("$", "");
+                                    montoSeleccionado =montosinpesos.replace("$", "").replace(",","");
     //                                if (position == 0 && pagoConPuntada.equals("si"))  {
     //                                    if (Double.parseDouble(cantidad) > Double.parseDouble(saldoPuntada) ){
     //                                        banderaSigue = false;
@@ -574,7 +574,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
     //                                        }
     //                                    }
     //                                }else{
-                                    if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString().replace("$", ""))){
+                                    if (Double.parseDouble(cantidad) > Double.parseDouble(txtMontoFaltante.getText().toString().replace("$", "").replace(",",""))){
                                         if (montoSeleccionado.equals("0.00")){
                                             try {
                                                 banderaSigue = false;
@@ -614,7 +614,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         }
                                     }else{
                                         if (montoSeleccionado.equals("0.00")){
-                                            if (Double.parseDouble(txtMontoFaltante.getText().toString().replace("$",""))==0.00){
+                                            if (Double.parseDouble(txtMontoFaltante.getText().toString().replace("$","").replace(",",""))==0.00){
                                                 try {
                                                     banderaSigue = false;
                                                     String titulo = "AVISO";
@@ -660,12 +660,13 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
                                         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
                                         simbolos.setDecimalSeparator('.');
-                                        DecimalFormat df = new DecimalFormat("###0.00##",simbolos);
+                                        DecimalFormat df = new DecimalFormat("#,##0.00##",simbolos);
+
     //                                    String cantidadformato = cantidad;
     //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
     //                                    cantidad = cantidadformato;
                                         cantidad= df.format(Double.parseDouble(cantidad));
-                                        cantidad = "$"+cantidad;
+                                        cantidad = "$"+ cantidad;
                                         subtitle.set(position, cantidad);
                                         Adaptador adapter = new Adaptador(DiferentesFormasPago.this, maintitle, subtitle, imgid);
                                         list = (ListView) findViewById(R.id.lstPosicionCarga);
@@ -740,7 +741,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                             FormasPagoObjecto = new JSONObject();
                                             String valorObtenido;
                                             valorObtenido = subtitle.get(g);
-                                            valorObtenido = valorObtenido.replace("$", "");
+                                            valorObtenido = valorObtenido.replace("$", "").replace(",","");
                                             cantidadObtenida = cantidadObtenida + Double.parseDouble(valorObtenido);
                                             if (Double.parseDouble(valorObtenido)==0.00){
                                             }else{
@@ -768,15 +769,15 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                             }
                                         }
 
-                                        Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString().replace("$",""));
+                                        Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString().replace("$","").replace(",",""));
                                         Double TotalFaltante = MontoTotal - cantidadObtenida;
-                                        txtMontoFaltante.setText(String.format("$%.2f",TotalFaltante).toString());
+                                        txtMontoFaltante.setText(df.format(TotalFaltante).toString());
 
                                         //AQUI VA ENVIAR A PAGOBANCARIO
                                         if (formaPagoSeleccionada.equals("3") || formaPagoSeleccionada.equals("5") || formaPagoSeleccionada.equals("13")){
                                             db.getWritableDatabase().delete("PagoTarjeta", null, null);
                                             db.close();
-                                            db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal));
+                                            db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$","").replace(",",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal));
 
                                             db.InsertarDatosPagoTarjetaDFP(formaPagoSeleccionada, Double.toString(MontoTotal), formaPagoSeleccionada, "", cantidad.replace("$",""), "0");
                                             Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada

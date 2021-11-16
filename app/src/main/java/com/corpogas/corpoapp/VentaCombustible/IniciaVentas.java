@@ -372,6 +372,7 @@ public class IniciaVentas extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                bar.cancel();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
@@ -492,6 +493,7 @@ public class IniciaVentas extends AppCompatActivity {
             bar.cancel();
         } catch (JSONException e) {
             e.printStackTrace();
+            bar.cancel();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(IniciaVentas.this, R.layout.support_simple_spinner_dropdown_item, ID);

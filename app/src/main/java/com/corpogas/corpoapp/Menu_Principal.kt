@@ -786,13 +786,13 @@ class Menu_Principal : AppCompatActivity() {
 //                intent = Intent(applicationContext, EnDesarrollo::class.java)
 //                startActivity(intent)
 //            }
-//            R.id.btnInventario -> {
-//                intent = Intent(applicationContext, Inventario::class.java)
-//                startActivity(intent)
-//            }
+            R.id.btnInventario -> {
+                intent = Intent(applicationContext, Inventario::class.java)
+                startActivity(intent)
+            }
             R.id.btnImgTickets -> {
                 intent = Intent(applicationContext, OpcionImprimir::class.java) //VentaPagoTarjeta
-                intent.putExtra("montoencanasta", "$20.00")
+//                intent.putExtra("montoencanasta", "$20.00")
                 startActivity(intent)
             }
             R.id.btnImgFacturacion -> {
