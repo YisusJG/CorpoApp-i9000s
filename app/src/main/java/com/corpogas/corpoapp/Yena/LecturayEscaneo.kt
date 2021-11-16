@@ -39,6 +39,7 @@ class LecturayEscaneo : AppCompatActivity() {
 
     lateinit var lugarProviene: String
     var posicionCarga by Delegates.notNull<Long>()
+    lateinit var posicionDeCarga: String
 
     lateinit var db: SQLiteBD
     var numEmpleado by Delegates.notNull<Long>()
@@ -56,6 +57,7 @@ class LecturayEscaneo : AppCompatActivity() {
 
         lugarProviene = intent.getStringExtra("lugarProviene").toString()
         posicionCarga = intent.getLongExtra("pocioncargaid", 0)
+        posicionDeCarga = intent.getLongExtra("pocioncargaid", 0).toString()
         db = SQLiteBD(this)
         sucursalId = db.idSucursal.toLong()
         numEmpleado = intent.getLongExtra("numeroEmpleado", 0)
@@ -69,13 +71,13 @@ class LecturayEscaneo : AppCompatActivity() {
         btnEscanear.setOnTouchListener { view, motionEvent ->
             if (view.id == R.id.button_escanear) {
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
-                    btnEscanear.text = "Scaneando"
+                    btnEscanear.text = "Escanear"
                     if (scanManagerProvides.triggerMode == Triggering.HOST) {
                         scanManagerProvides.stopDecode()
                     }
                 }
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    btnEscanear.text = "Stop"
+                    btnEscanear.text = "Escaneando"
                     scanManagerProvides.startDecode()
                 }
             }
@@ -158,15 +160,54 @@ class LecturayEscaneo : AppCompatActivity() {
                 }
             }
             "Redencion Yena" -> {
-                val intent = Intent(this, ProductosARedimir::class.java)
-                intent.putExtra("lugarproviene", lugarProviene)
-                intent.putExtra("posicionCarga", posicionCarga)
-                intent.putExtra("track1", tk1)
-                intent.putExtra("track2", tk2)
-                intent.putExtra("track3", tk3)
-                startActivity(intent)
+                sendToRedencion(tk1, tk2, tk3)
             }
         }
+    }
+
+    private fun sendToRedencion(claveTarjeta: String, numeroTarjeta: String, tk3: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val yenaSaldo = retrofit.create(EndPoints::class.java)
+        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta))
+        call.enqueue(object: Callback<RespuestaApi<YenaResponse>> {
+            override fun onResponse(call: Call<RespuestaApi<YenaResponse>>, response: Response<RespuestaApi<YenaResponse>>) {
+                if (!response.isSuccessful) {
+                    return
+                } else {
+                    val yenaResponse = response.body()
+                    val objeto = yenaResponse!!.objetoRespuesta
+                    val saldo = objeto.SaldoActualDinero.toString()
+                    if (yenaResponse.isCorrecto) {
+                        val intent = Intent(this@LecturayEscaneo, ProductosARedimir::class.java)
+                        intent.putExtra("lugarproviene", lugarProviene)
+                        intent.putExtra("posicionCarga", posicionCarga)
+                        intent.putExtra("pos", posicionDeCarga)
+                        intent.putExtra("saldo", saldo)
+                        intent.putExtra("track1", claveTarjeta)
+                        intent.putExtra("track2", numeroTarjeta)
+                        intent.putExtra("track3", tk3)
+                        startActivity(intent)
+                    } else {
+                        val titulo = "AVISO"
+                        val mensaje = yenaResponse.mensaje
+
+                        val modales = Modales(this@LecturayEscaneo)
+                        val viewLectura = modales.MostrarDialogoAlertaAceptar(this@LecturayEscaneo, mensaje, titulo)
+                        viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
+                            modales.alertDialog.dismiss()
+                            startActivity(Intent(this@LecturayEscaneo, ApartadosYena::class.java))
+                        }
+                    }
+                }
+            }
+            override fun onFailure(call: Call<RespuestaApi<YenaResponse>>, t: Throwable) {
+                Toast.makeText(this@LecturayEscaneo, t.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+
     }
 
     private fun getSaldo(numeroTarjeta: String) {

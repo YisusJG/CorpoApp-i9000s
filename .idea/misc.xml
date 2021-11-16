@@ -4,7 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_consulta_saldo.xml" value="0.25" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_dialogo_error.xml" value="0.14270833333333333" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_lecturay_escaneo.xml" value="0.21557971014492755" />
         <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_menu__principal.xml" value="0.21920289855072464" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_posicion_puntada_redimir.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_productos_a_redimir.xml" value="0.21557971014492755" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_redencion_yena.xml" value="0.213768115942029" />
+        <entry key="..\:/Users/PROGRAMACION/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/redencion_yena_prueba.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/yisus/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_picos.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/yisus/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_entrega_vales.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/yisus/AndroidStudioProjects/CorpoApp-i9000s/app/src/main/res/layout/activity_metas.xml" value="0.4734251968503937" />

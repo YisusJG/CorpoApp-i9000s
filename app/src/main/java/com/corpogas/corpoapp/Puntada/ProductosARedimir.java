@@ -9,11 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -28,18 +26,19 @@ import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProductosARedimir extends AppCompatActivity {
+    DecimalFormat formatoCifras;
+
     Button btnAgregar,btnEnviar, incrementar, decrementar, btnMostrarCombustibles, btnMostrarProductos;
     TextView cantidadProducto, txtSaldo, txtSaldoUtilizado, txtDescripcionProducto, txtproductos, txtcantidad, txtpesos;
     EditText Producto, existenias;
@@ -67,7 +66,7 @@ public class ProductosARedimir extends AppCompatActivity {
     String tipoproductofinal, productoIdfinal, numeroInternofinal, Descripcionfinal, cantidadfinal, preciofinal, enviadoDesde ;
     EditText productoIdSeleccionado, totalproductosaCargar;
     String TipoCombustible= "1";
-    String banderaProducto, banderaCombustible, fechaTicket="", posicionCarga,  nombreatendio;
+    String banderaProducto, banderaCombustible, fechaTicket="",  nombreatendio, posicionCarga;
     Long idUsuario;
     Double descuento;
 
@@ -104,6 +103,8 @@ public class ProductosARedimir extends AppCompatActivity {
         banderaProducto = "false";
         banderaCombustible = "false";
 
+        formatoCifras = new DecimalFormat("#,###.##");
+
         posicionCarga = getIntent().getStringExtra("pos");
         String saldos = String.format("$%.2f",Double.parseDouble(getIntent().getStringExtra("saldo")));
         idUsuario = getIntent().getLongExtra("empleadoid", 0);
@@ -135,10 +136,10 @@ public class ProductosARedimir extends AppCompatActivity {
         incrementar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (lugarProviene == "Producto") {
+                if (lugarProviene.equals("Producto")) {
                     Aumentar();
                 }else{
-                    if (lugarProviene == ""){
+                    if (lugarProviene.equals("")){
                         Toast.makeText(ProductosARedimir.this, "Seleccione un Tipo de producto COMBUSTIBLES/ACEITES", Toast.LENGTH_SHORT).show();
 
                     }else {
@@ -148,14 +149,14 @@ public class ProductosARedimir extends AppCompatActivity {
             }
         });
 
-        decrementar= findViewById(R.id.btnDecrementar);
+        decrementar = findViewById(R.id.btnDecrementar);
         decrementar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (lugarProviene == "Producto") {
+                if (lugarProviene.equals("Producto")) {
                     Decrementar();
                 }else{
-                    if (lugarProviene == ""){
+                    if (lugarProviene.equals("")){
                         Toast.makeText(ProductosARedimir.this, "Seleccione un Tipo de producto COMBUSTIBLES/ACEITES", Toast.LENGTH_SHORT).show();
 
                     }else {
@@ -172,8 +173,7 @@ public class ProductosARedimir extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-                if (txtDescripcionProducto.length()== 0) {
+                if (txtDescripcionProducto.length() == 0) {
                     String titulo = "AVISO";
                     String mensaje = "Seleccione uno de los Productos";
                     Modales modales = new Modales(ProductosARedimir.this);
@@ -192,10 +192,9 @@ public class ProductosARedimir extends AppCompatActivity {
 
                     //if (litros.getText().toString().isEmpty()) {
                     //if (pesos.getText().toString().isEmpty()) {
-                    if (lugarProviene == "Producto"){
+                    if (lugarProviene.equals("Producto")){
                         // Se carga Producto
                         Integer cantidad = Integer.parseInt(totalproductosaCargar.getText(). toString());
-
                         try {
                             boolean bandera=true;
                             if (array1.length()>0  ) {
@@ -215,7 +214,7 @@ public class ProductosARedimir extends AppCompatActivity {
                                     }
                                 }
                             }
-                            if (bandera==true) {
+                            if (bandera) {
 
                                 if (SaldoPorUtilizar>= (Double.parseDouble(preciofinal)*cantidad)) {
                                     JSONObject jsonParam = new JSONObject();
@@ -285,7 +284,7 @@ public class ProductosARedimir extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        if (lugarProviene == "Combustible") {
+                        if (lugarProviene.equals("Combustible")) {
                             if ((pesos.getText().toString().isEmpty()) || (pesos.getText().toString()) == "0.00") {
                                 String titulo = "Combustible no agregado ";
                                 String mensaje = "Teclee la cantidad en pesos a cargar";
@@ -396,7 +395,7 @@ public class ProductosARedimir extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                             }
-                        }else{
+                        } else {
                             if (lugarProviene == ""){
                                 Toast.makeText(ProductosARedimir.this, "Seleccione un Tipo de producto COMBUSTIBLES/ACEITES", Toast.LENGTH_SHORT).show();
                             }
@@ -476,8 +475,11 @@ public class ProductosARedimir extends AppCompatActivity {
                 } else {
                     String nip = getIntent().getStringExtra("nip");
                     try {
-                        enviarProductosServer(); //array1, nip
-                        //cargaProductos();
+                        if (enviadoDesde.equals("Redencion Yena")) {
+                            enviarProductosServerDesdeYena();
+                        } else {
+                            enviarProductosServer();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -567,7 +569,7 @@ public class ProductosARedimir extends AppCompatActivity {
         bar.show();
 
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+posicionCarga;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+posicionCarga.toString();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -618,18 +620,19 @@ public class ProductosARedimir extends AppCompatActivity {
                 String categoriaid = prod.getString("ProductCategoryId");
                 if (categoriaid.equals(TipoProducto)){
                     //NO CARGA LOS COMBUSTIBLES
-                    String ExProductos=pA.getString("Existencias");
+                    String ExProductos = pA.getString("Existencias");
                     ExistenciaProductos.add(ExProductos);
-                    String TProductoId="2";//prod.getString("TipoSatProductoId");
-                    DescLarga=prod.getString("LongDescription");
-                    idArticulo=prod.getString("Id");
-                    String codigobarras=prod.getString("Barcode");
-                    String PControl=prod.getString("ProductControls");
+                    String TProductoId = "2";//prod.getString("TipoSatProductoId");
+                    DescLarga = prod.getString("LongDescription");
+                    idArticulo = prod.getString("Id");
+                    String codigobarras = prod.getString("Barcode");
+                    String PControl = prod.getString("ProductControls");
 
                     JSONArray PC = new JSONArray(PControl);
                     for (int j = 0; j < PC.length(); j++) {
                         JSONObject Control = PC.getJSONObject(j);
-                        preciol = String.format("$%.2f", Double.parseDouble(Control.getString("Price")));
+//                        preciol = String.format("$%.2f", Double.parseDouble(Control.getString("Price")));
+                        preciol = Control.getString("Price");
                         IdProductos = Control.getString("Id"); //ProductoId
                     }
                     NombreProducto.add("ID: " + idArticulo + "    |     "+preciol); // + "    |    " + IdProductos );
@@ -639,7 +642,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     CodigoBarras.add(codigobarras);
                     ProductoId.add(IdProductos);
                     CategoriaId.add(categoriaid);
-                }else{
+                } else {
 
                 }
             }
@@ -675,7 +678,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     productoIdSeleccionado.setText(productoIdfinal);
                     txtDescripcionProducto.setText(Descripcionfinal);
                     existenias.setText(existencia);
-                }else{
+                } else {
                     Toast.makeText(ProductosARedimir.this, "Sin Saldo suficiente ", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -759,20 +762,6 @@ public class ProductosARedimir extends AppCompatActivity {
                                 finish();
                             }
                         });
-
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(ProductosARedimir.this);
-//                        builder.setTitle("Tarjeta Puntada");
-//                        builder.setMessage(mensaje);
-//                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                Intent intent = new Intent(ProductosARedimir.this, Menu_Principal.class);
-//                                startActivity(intent);
-//                                finish();
-//                            }
-//                        });
-//                        AlertDialog dialog= builder.create();
-//                        dialog.show();
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -807,6 +796,115 @@ public class ProductosARedimir extends AppCompatActivity {
     }
 
 
+    private void enviarProductosServerDesdeYena() {    //JSONArray array2, String NIP
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String NumeroEstacion = EstacionId;
+        String PosicionDeCarga = getIntent().getStringExtra("posicionCarga");
+        String NumeroDeTarjeta = getIntent().getStringExtra("track");
+        String clave = getIntent().getStringExtra("clave");
+        String nip = getIntent().getStringExtra("nip");
+        String empleadoid = getIntent().getStringExtra("empleadoid");
+        String numeroempleado = db.getNumeroEmpleado();
+        String claveTarjeta = getIntent().getStringExtra("track1");
+        String numeroTarjeta = getIntent().getStringExtra("track2");
+
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/NumeroEmpleado/" + numeroempleado;
+        String url = "http://" + ipEstacion + "/CorpogasService/Api/yenas";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            datos.put("SucursalId", sucursalId);
+            datos.put("NumeroEmpleado", numeroempleado); // data.getIdTarjtero());
+            datos.put("NumeroTarjeta", numeroTarjeta);
+            datos.put("ClaveTarjeta", claveTarjeta);
+            datos.put("PosicionCargaId", PosicionDeCarga);
+            datos.put("Productos", array1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, datos, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                String estado = null;
+                String mensaje = null;
+                try {
+                    estado = response.getString("Estado");
+                    mensaje = response.getString("Mensaje");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (estado.equals("true")) {
+                    try {
+                        String titulo = "YENA REDENCION";
+                        String mensajes = mensaje;
+                        Modales modales = new Modales(ProductosARedimir.this);
+                        View view1 = modales.MostrarDialogoCorrecto(ProductosARedimir.this, mensaje);
+                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                //MODIFICCADO MIKEL 28/05/2021 para q imprima de una vez SOLO PRODUCTOS
+                                if (banderaProducto.equals("true") && banderaCombustible.equals("false")) {
+                                    // ImprimeTicketPuntadaSoloProductos();
+                                } else {
+                                    Intent intent = new Intent(ProductosARedimir.this, Menu_Principal.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        String titulo = "YENA REDENCION";
+                        String mensajes = mensaje;
+                        Modales modales = new Modales(ProductosARedimir.this);
+                        View view1 = modales.MostrarDialogoError(ProductosARedimir.this, mensaje);
+                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                Intent intent = new Intent(ProductosARedimir.this, Menu_Principal.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
+
+            }
+        }) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                return headers;
+            }
+
+            protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                if (response != null) {
+                    try {
+                        String responseString;
+                        JSONObject datos = new JSONObject();
+                        responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+        queue.add(request_json);
+    }
 
 
     //Metodo para regresar a la actividad principal
