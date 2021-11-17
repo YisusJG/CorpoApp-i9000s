@@ -315,10 +315,8 @@ public class EntregaValesActivity extends AppCompatActivity {
                                     modales.alertDialog.dismiss();
                                 }
                             });
-                            ;
                         }
                     }
-//                    modales.alertDialog.dismiss();
                 }
             });
             viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {

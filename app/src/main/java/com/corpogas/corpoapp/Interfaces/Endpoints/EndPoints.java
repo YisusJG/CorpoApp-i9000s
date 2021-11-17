@@ -44,6 +44,7 @@ import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaSolicitudFactura;
 import com.corpogas.corpoapp.Facturacion.Entities.SolicitudFactura;
+import com.corpogas.corpoapp.Metas.Entities.Metas;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -156,6 +157,9 @@ public interface EndPoints {
     //METODO PARA OBTENER EL EFECTIVO NO ENTREGADO
     @GET("api/recepcionFajillas/efectivoNoEntregado/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<Double>> getEfectivoNoEntregado(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
+    @GET("api/objetivoVentas/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    Call<RespuestaApi<List<Metas>>> getMetas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
 
 
 

@@ -3,67 +3,58 @@ package com.corpogas.corpoapp.Metas.Entities;
 import java.io.Serializable;
 
 public class Metas implements Serializable {
-    int id;
-    String tipoProducto;
-    int despachos;
-    int meta;
-    int vendidos;
-    int diferencias;
 
-    public Metas(int id, String tipoProducto, int despachos, int meta, int vendidos, int diferencias) {
-        this.id = id;
-        this.tipoProducto = tipoProducto;
-        this.despachos = despachos;
-        this.meta = meta;
-        this.vendidos = vendidos;
-        this.diferencias = diferencias;
-    }
+   public String TipoProducto;
+   public int Despachos; //Int
+   public int Meta; // int
+   public int Vendidos; // int
+   public int Diferencia; // int
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Metas(String tipoProducto, int despachos, int meta, int vendidos, int diferencias) {
+        TipoProducto = tipoProducto;
+        Despachos = despachos;
+        Meta = meta;
+        Vendidos = vendidos;
+        Diferencia = diferencias;
     }
 
     public String getTipoProducto() {
-        return tipoProducto;
+        return TipoProducto;
     }
 
     public void setTipoProducto(String tipoProducto) {
-        this.tipoProducto = tipoProducto;
+        TipoProducto = tipoProducto;
     }
 
     public int getDespachos() {
-        return despachos;
+        return Despachos;
     }
 
     public void setDespachos(int despachos) {
-        this.despachos = despachos;
+        Despachos = despachos;
     }
 
     public int getMeta() {
-        return meta;
+        return Meta;
     }
 
     public void setMeta(int meta) {
-        this.meta = meta;
+        Meta = meta;
     }
 
     public int getVendidos() {
-        return vendidos;
+        return Vendidos;
     }
 
     public void setVendidos(int vendidos) {
-        this.vendidos = vendidos;
+        Vendidos = vendidos;
     }
 
     public int getDiferencias() {
-        return diferencias;
+        return Diferencia;
     }
 
     public void setDiferencias(int diferencias) {
-        this.diferencias = diferencias;
+        Diferencia = diferencias;
     }
 }
