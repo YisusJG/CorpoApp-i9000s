@@ -65,9 +65,16 @@ public class RVAdapterCofreFajillas extends RecyclerView.Adapter<RVAdapterCofreF
 
     @Override
     public void onBindViewHolder(@NonNull RVAdapterCofreFajillas.RecyclerViewHeadersHolder recyclerViewHeadersHolder, int position) {
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("$#,###.00##",simbolos);
+
+        df.setMaximumFractionDigits(2);
+
+
         recyclerViewHeadersHolder.txtCantidadCofre.setText(String.valueOf(lrecyclerViewHeaders.get(position).Cantidad));
         recyclerViewHeadersHolder.txtPrecioCofre.setText(String.valueOf(lrecyclerViewHeaders.get(position).Folio));
-        recyclerViewHeadersHolder.txtImporteCofre.setText(String.format("$%.2f", Double.parseDouble(String.valueOf(lrecyclerViewHeaders.get(position).ImporteTotal))));
+        recyclerViewHeadersHolder.txtImporteCofre.setText(df.format(Double.parseDouble(String.valueOf(lrecyclerViewHeaders.get(position).ImporteTotal))));
 
     }
 
