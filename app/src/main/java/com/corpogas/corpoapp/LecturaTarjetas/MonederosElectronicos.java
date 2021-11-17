@@ -97,8 +97,8 @@ public class MonederosElectronicos extends AppCompatActivity {
 //                    String track2 = strInfo[2];
 
                     //mNo.setText("");
-                    if(!tracks.equals(""))
-                        beep(tk1,tk2,tk3);
+                    if (!tracks.equals(""))
+                        beep(tk1, tk2, tk3);
 //                    mNo.append(tracks);
                     //mNo.append("\n\n");
                     break;
@@ -132,16 +132,16 @@ public class MonederosElectronicos extends AppCompatActivity {
 
 //        mNo = (EditText) findViewById(R.id.editText1);
 //        mAlertTv = (TextView) findViewById(R.id.textView1);
-        Enviadodesde = getIntent().getStringExtra( "Enviadodesde");
-        lugarProviene = getIntent().getStringExtra( "lugarproviene");
-        NIP = getIntent().getStringExtra( "nip");
+        Enviadodesde = getIntent().getStringExtra("Enviadodesde");
+        lugarProviene = getIntent().getStringExtra("lugarproviene");
+        NIP = getIntent().getStringExtra("nip");
         PagoPuntada = getIntent().getStringExtra("pagoconpuntada");
         tipoTarjeta = getIntent().getStringExtra("tipoTarjeta");
         numeroempleadosucursal = data.getNumeroEmpleado(); //getIntent().getStringExtra("numeroEmpleado");
         posiciondeCarga = getIntent().getStringExtra("posicioncargaid");
         idformaPago = getIntent().getStringExtra("formapagoid");
         montoenlacanasta = getIntent().getDoubleExtra("montoenlacanasta", 0);
-        data= new SQLiteBD(getApplicationContext());
+        data = new SQLiteBD(getApplicationContext());
         idSucursal = Long.parseLong(data.getIdSucursal());
 
         EstacionId = data.getIdEstacion();
@@ -151,7 +151,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         mReadService = new MagReadService(this, mHandler);
 
         simbolos.setDecimalSeparator('.');
-        df = new DecimalFormat("###,###.00",simbolos);
+        df = new DecimalFormat("###,###.00", simbolos);
         df.setMaximumFractionDigits(2);
 
     }
@@ -176,7 +176,8 @@ public class MonederosElectronicos extends AppCompatActivity {
         super.onResume();
         mReadService.start();
     }
-//    private void updateAlert(String mesg, int type) {
+
+    //    private void updateAlert(String mesg, int type) {
 //        if(type == 2)
 //            mAlertTv.setBackgroundColor(Color.RED);
 //        else
@@ -187,7 +188,7 @@ public class MonederosElectronicos extends AppCompatActivity {
     private void beep(String tk1, String tk2, String tk3) {
         if (tg != null)
             tg.startTone(ToneGenerator.TONE_CDMA_NETWORK_CALLWAITING);
-        if (Enviadodesde.equals("formaspago")  | Enviadodesde.equals("CarritoTransacciones")   | Enviadodesde.equals("diferentesformaspago")){
+        if (Enviadodesde.equals("formaspago") | Enviadodesde.equals("CarritoTransacciones") | Enviadodesde.equals("diferentesformaspago")) {
             CompararTarjetasPuntada(tk1, tk2, tk3);
 //            CompararTarjetas(tk1, tk2, tk3);
         } else {
@@ -220,17 +221,16 @@ public class MonederosElectronicos extends AppCompatActivity {
                 }
                 respuestaApiBin = response.body();
                 boolean correcto = respuestaApiBin.Correcto;
-                if(correcto == true)
-                {
+                if (correcto) {
                     String mesanje = respuestaApiBin.Mensaje;
                     long formaPagoId = respuestaApiBin.getObjetoRespuesta().getTipoMonedero().PaymentMethodId;    //tiopoMonedero.getString("PaymentMethodId"); //TipoMonederoId
                     long idMonedero = respuestaApiBin.getObjetoRespuesta().getTipoMonedero().Id;//tiopoMonedero.getString("Id");
-                    if ( idMonedero == 1 &&  formaPagoId ==12 ){ //PUNTADA
-                        if (tipoTarjeta.equals("TanqueLleno")){
+                    if (idMonedero == 1 && formaPagoId == 12) { //PUNTADA
+                        if (tipoTarjeta.equals("TanqueLleno")) {
                             String titulo = "AVISO";
                             String mensaje = "Tarjeta inválida, NO ES TARJETA TANQUELLENO";
                             Modales modales = new Modales(MonederosElectronicos.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this,mensaje,titulo);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this, mensaje, titulo);
                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -241,9 +241,9 @@ public class MonederosElectronicos extends AppCompatActivity {
                                     finish();
                                 }
                             });
-                        }else{
+                        } else {
                             Intent intent = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class); //ENVIABA A SeccionTarjeta cambio a PosicionPuntadaRedimir
-                            intent.putExtra("track",mesanje);
+                            intent.putExtra("track", mesanje);
                             intent.putExtra("nip", NIP);
                             intent.putExtra("lugarproviene", lugarProviene);
                             intent.putExtra("descuento", "0");
@@ -264,11 +264,11 @@ public class MonederosElectronicos extends AppCompatActivity {
 ////                        intent.putExtra("banderaHuella", banderaHuella);
 //                        startActivity(intent);
 //                        finish();
-                    }else {
+                    } else {
                         if (idMonedero == 2 && formaPagoId == 11) { //TANQUE LLENO CENTRO
 //                            Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
-                            intent.putExtra("track",mesanje);
+                            intent.putExtra("track", mesanje);
                             intent.putExtra("lugarProviene", Enviadodesde);
                             startActivity(intent);
                             finish();
@@ -278,18 +278,17 @@ public class MonederosElectronicos extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
                             intent.putExtra("lugarProviene", Enviadodesde);
-                            intent.putExtra("track",mesanje);
+                            intent.putExtra("track", mesanje);
                             startActivity(intent);
                             finish();
                         }
 
                     }
-                }
-                else{
+                } else {
                     String titulo = "AVISO";
                     String mensaje = "Tarjeta inválida";
                     Modales modales = new Modales(MonederosElectronicos.this);
-                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this,mensaje,titulo);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this, mensaje, titulo);
                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -300,15 +299,12 @@ public class MonederosElectronicos extends AppCompatActivity {
                             finish();
                         }
                     });
-
                 }
-
             }
 
             @Override
             public void onFailure(Call<RespuestaApi<Bin>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -325,7 +321,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         }
     }
 
-    public void obtieneSaldoTarjeta(String  numerotarjeta) {
+    public void obtieneSaldoTarjeta(String numerotarjeta) {
         bar = new ProgressDialog(MonederosElectronicos.this);
         bar.setTitle("Conectando con Puntada");
         bar.setMessage("Ejecutando... ");
@@ -345,8 +341,8 @@ public class MonederosElectronicos extends AppCompatActivity {
         String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");
         String nip = getIntent().getStringExtra("Nip");
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/clave/"+clave;
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/clave/" + clave;
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -356,9 +352,9 @@ public class MonederosElectronicos extends AppCompatActivity {
                             String estado = resultado.getString("Estado");
                             String mensaje = resultado.getString("Mensaje");
                             final String saldo = resultado.getString("Saldo");
-                            if (estado == "true"){ //    mensaje.equals("null")
+                            if (estado == "true") { //    mensaje.equals("null")
                                 if (Double.parseDouble(saldo) > 0) {
-                                    String track =     getIntent().getStringExtra("track");
+                                    String track = getIntent().getStringExtra("track");
                                     try {
 
                                         //LeeTarjeta();
@@ -378,23 +374,23 @@ public class MonederosElectronicos extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
 
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                }else{
+                                } else {
                                     String titulo = "SALDO INSUFICIENTE";
                                 }
-                            }else{
-                                try{
+                            } else {
+                                try {
                                     String titulo = "AVISO";
                                     String mensajes;
-                                    if (mensaje.equals("null")){
+                                    if (mensaje.equals("null")) {
                                         mensajes = "Sin conexón con la consola";
-                                    }else {
+                                    } else {
                                         mensajes = mensaje;
                                     }
                                     Modales modales = new Modales(MonederosElectronicos.this);
-                                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this,mensajes,titulo);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this, mensajes, titulo);
                                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -405,7 +401,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                                             finish();
                                         }
                                     });
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -416,9 +412,9 @@ public class MonederosElectronicos extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 //Obtenemos los parmetros a enviar
@@ -427,7 +423,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("EmpleadoId", idusuario);
                 params.put("SucursalId", data.getIdSucursal());
-                params.put("RequestID","33");
+                params.put("RequestID", "33");
                 params.put("PosicionCarga", posicioncarga);
                 params.put("Tarjeta", numerotarjeta);
                 params.put("NuTarjetero", numeroTarjetero);
@@ -450,7 +446,6 @@ public class MonederosElectronicos extends AppCompatActivity {
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-
             startActivity(intent1);
             finish();
         } else {
@@ -481,12 +476,11 @@ public class MonederosElectronicos extends AppCompatActivity {
                             JSONObject numerointerno = new JSONObject(moned);
                             String formaPagoId = numerointerno.getString("PaymentMethodId");
                             String modenerotipo = numerointerno.getString("Id");
-
                             if (modenerotipo.equals("1") && formaPagoId.equals("12")) { //PUNTADA    modenerotipo.equals("3")
 //                            if (modenerotipo.equals("1")) {
-                                if (PagoPuntada.equals("si")){
+                                if (PagoPuntada.equals("si")) {
                                     EnviaProcesoPuntadaRedimir(mesanje);
-                                }else{
+                                } else {
                                     EnviaProcesoPuntadaAcumular(mesanje);
                                 }
                             } else {
@@ -562,11 +556,10 @@ public class MonederosElectronicos extends AppCompatActivity {
         }
     }
 
-
     private void EnviaProcesoPuntadaAcumularNew(String NumeroDeTarjeta) {
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+numeroempleadosucursal;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
 
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -576,10 +569,10 @@ public class MonederosElectronicos extends AppCompatActivity {
                             String estado = resultado.getString("Estado");
                             String mensaje = resultado.getString("Mensaje");
                             final String saldo = resultado.getString("Saldo");
-                            if (estado == "true"){ //    mensaje.equals("null")
+                            if (estado == "true") { //    mensaje.equals("null")
                                 if (Double.parseDouble(saldo) > 0) {
-                                    String track =     getIntent().getStringExtra("track"); //"4000052500200001";
-                                    Long Idusuario = getIntent().getLongExtra("IdUsuario",0);
+                                    String track = getIntent().getStringExtra("track"); //"4000052500200001";
+                                    Long Idusuario = getIntent().getLongExtra("IdUsuario", 0);
                                     String Claveusuario = getIntent().getStringExtra("ClaveDespachador");
                                     String NipTarjeta = getIntent().getStringExtra("nip");
 
@@ -600,13 +593,13 @@ public class MonederosElectronicos extends AppCompatActivity {
                                         case "ConsultaSaldoPuntada"://Redimir
                                             try {
                                                 simbolos.setDecimalSeparator('.');
-                                                df = new DecimalFormat("$#,###.00##",simbolos);
+                                                df = new DecimalFormat("$#,###.00##", simbolos);
                                                 df.setMaximumFractionDigits(2);
 
                                                 String titulo = "AVISO";
                                                 String mensajes = "Tarjeta No. " + track + " con Saldo: " + df.format(saldo);
                                                 final Modales modales = new Modales(MonederosElectronicos.this);
-                                                View view1 = modales.MostrarDialogoCorrecto(MonederosElectronicos.this,mensajes);
+                                                View view1 = modales.MostrarDialogoCorrecto(MonederosElectronicos.this, mensajes);
                                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View view) {
@@ -616,7 +609,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                                                         finish();
                                                     }
                                                 });
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                             break;
@@ -626,11 +619,11 @@ public class MonederosElectronicos extends AppCompatActivity {
                                         default:
                                             break;
                                     }
-                                }else{
+                                } else {
                                     String titulo = "SALDO INSUFICIENTE";
-                                    String mensajes = "El Saldo en la tarjeta es de: $"+ saldo;
+                                    String mensajes = "El Saldo en la tarjeta es de: $" + saldo;
                                     Modales modales = new Modales(MonederosElectronicos.this);
-                                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this,mensajes,titulo);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this, mensajes, titulo);
                                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -643,17 +636,17 @@ public class MonederosElectronicos extends AppCompatActivity {
                                     });
 
                                 }
-                            }else{
-                                try{
+                            } else {
+                                try {
                                     String titulo = "AVISO";
                                     String mensajes;
-                                    if (mensaje.equals("null")){
+                                    if (mensaje.equals("null")) {
                                         mensajes = "Sin conexón con la consola";
-                                    }else {
+                                    } else {
                                         mensajes = mensaje;
                                     }
                                     Modales modales = new Modales(MonederosElectronicos.this);
-                                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this,mensajes,titulo);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this, mensajes, titulo);
                                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -664,7 +657,7 @@ public class MonederosElectronicos extends AppCompatActivity {
 //                                            finish();
                                         }
                                     });
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -675,9 +668,9 @@ public class MonederosElectronicos extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 //Obtenemos los parmetros a enviar
@@ -688,7 +681,7 @@ public class MonederosElectronicos extends AppCompatActivity {
 
                 params.put("NuTarjetero", numeroTarjetero);
                 params.put("SucursalId", data.getIdSucursal());
-                params.put("RequestID","35");
+                params.put("RequestID", "35");
                 params.put("PosicionCarga", String.valueOf(posiciondeCarga));
                 params.put("Tarjeta", NumeroDeTarjeta);
                 params.put("Productos", sproducto);
@@ -702,9 +695,6 @@ public class MonederosElectronicos extends AppCompatActivity {
         requestQueue.add(eventoReq);
 
     }
-
-
-
 
     private void EnviaProcesoPuntadaAcumular(String NumeroDeTarjeta) {
         if (!Conexion.compruebaConexion(this)) {
@@ -752,10 +742,10 @@ public class MonederosElectronicos extends AppCompatActivity {
                     }
                     if (estado.equals("true")) {
                         if (Enviadodesde.equals("formaspago")) {
-                            if (tipoTarjeta.equals("Puntadaformapago")){
+                            if (tipoTarjeta.equals("Puntadaformapago")) {
                                 Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
                                 //Enviamos a la pantalla de captura de diferentes formas de pago   MontoenCanasta
-                                String banderaHuella = getIntent().getStringExtra( "banderaHuella");
+                                String banderaHuella = getIntent().getStringExtra("banderaHuella");
                                 String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
                                 //LeeTarjeta();
                                 Intent intent = new Intent(getApplicationContext(), DiferentesFormasPago.class);
@@ -773,25 +763,25 @@ public class MonederosElectronicos extends AppCompatActivity {
                                 intent.putExtra("pagoconpuntada", PagoPuntada);
                                 startActivity(intent);
                                 finish();
-                            }else{
-                                if (idformaPago.equals("3") || idformaPago.equals("5") || idformaPago.equals("13")){
+                            } else {
+                                if (idformaPago.equals("3") || idformaPago.equals("5") || idformaPago.equals("13")) {
                                     DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
                                     simbolos.setDecimalSeparator('.');
-                                    DecimalFormat df = new DecimalFormat("####.00##",simbolos);
+                                    DecimalFormat df = new DecimalFormat("####.00##", simbolos);
 
                                     df.setMaximumFractionDigits(2);
                                     data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                     data.close();
-                                    data.InsertarDatosPagoTarjeta("1",posiciondeCarga, idformaPago, Double.toString(montoenlacanasta), "0", "1", "0", "", "", "", Double.toString(montoenlacanasta));
+                                    data.InsertarDatosPagoTarjeta("1", posiciondeCarga, idformaPago, Double.toString(montoenlacanasta), "0", "1", "0", "", "", "", Double.toString(montoenlacanasta));
                                     Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
                                     intentVisa.putExtra("lugarProviene", "formaspago");
                                     intentVisa.putExtra("posicioncarga", posiciondeCarga);
                                     intentVisa.putExtra("formapagoid", numpago);
-                                    intentVisa.putExtra("montoencanasta", "$"+ df.format(montoenlacanasta));
+                                    intentVisa.putExtra("montoencanasta", "$" + df.format(montoenlacanasta));
                                     intentVisa.putExtra("numeroTarjeta", "");
                                     startActivity(intentVisa);
                                     finish();
-                                }else{
+                                } else {
                                     Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
                                     Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
                                     intente.putExtra("posicioncarga", posiciondeCarga);

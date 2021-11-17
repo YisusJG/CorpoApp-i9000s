@@ -103,8 +103,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 PosicionCarga(2);
             }
         });
-
-
     }
 
 
@@ -277,10 +275,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     }
 
 
-
-
-
-
     private void PosicionCargaRetro(){
         bar = new ProgressDialog(PosicionPuntadaRedimir.this);
         bar.setTitle("Cargando Posiciones de Carga");
@@ -298,7 +292,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
         Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario); //getAccesoUsuario
         call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-
 
             @Override
             public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
@@ -926,15 +919,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             requestQueue.add(eventoReq);
         }
     }
-
-
-
-
-
-
-
-
-
 
     @Override
     public void onBackPressed() {

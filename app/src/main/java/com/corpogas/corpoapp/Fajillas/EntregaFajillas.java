@@ -2,8 +2,12 @@ package com.corpogas.corpoapp.Fajillas;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.device.scanner.configuration.Triggering;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +32,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.ScanManagerProvides;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -39,6 +44,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class EntregaFajillas extends AppCompatActivity {
+    ScanManagerProvides scanManagerProvides;
+    String result = "";
+
     long numeroIslas, valorTipoFajilla=1 ;
     Spinner spnFajillas;
     EditText cantidad;
@@ -57,6 +65,7 @@ public class EntregaFajillas extends AppCompatActivity {
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +74,46 @@ public class EntregaFajillas extends AppCompatActivity {
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         sucursalId = Long.parseLong(data.getIdSucursal());
         ipEstacion = data.getIpEstacion();
+        scanManagerProvides = new ScanManagerProvides();
 
         init();
         setVariables();
+
+        imgEscanearFajilla.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (view.getId() == R.id.imgEscanearFajilla) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                        if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                            scanManagerProvides.stopDecode();
+                        }
+                    }
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                        scanManagerProvides.startDecode();
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+//    @Override
+//    public boolean dispatchKeyEvent(KeyEvent event) {
+//        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
+//            char pressedKey = (char) event.getUnicodeChar();
+//            result += pressedKey;
+//        }
+//        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
+//            cantidad.setText(result);
+//            result = "";
+//        }
+//        return false;
+//    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        scanManagerProvides.initScan(EntregaFajillas.this);
     }
 
     private void init(){
@@ -100,19 +146,19 @@ public class EntregaFajillas extends AppCompatActivity {
         agregarFolio = findViewById(R.id.agregarFolio);
         imgEscanearFajilla = (ImageButton) findViewById(R.id.imgEscanearFajilla);
 
-        imgEscanearFajilla.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentIntegrator integrator = new IntentIntegrator(EntregaFajillas.this);
-                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                integrator.setPrompt("Lector - CDP");
-                integrator.setCameraId(0);
-                integrator.setBeepEnabled(false);
-                integrator.setBarcodeImageEnabled(true);
-                integrator.initiateScan();
-
-            }
-        });
+//        imgEscanearFajilla.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                IntentIntegrator integrator = new IntentIntegrator(EntregaFajillas.this);
+//                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+//                integrator.setPrompt("Lector - CDP");
+//                integrator.setCameraId(0);
+//                integrator.setBeepEnabled(false);
+//                integrator.setBarcodeImageEnabled(true);
+//                integrator.initiateScan();
+//
+//            }
+//        });
 
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,20 +217,21 @@ public class EntregaFajillas extends AppCompatActivity {
 
         ObtieneFajillas();
 
+
     }
 
-    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
-            } else {
-                cantidad.setText(result.getContents());
-            }
-        } else {
-            super.onActivityResult(requestCode, resulCode, data);
-        }
-    }
+//    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+//        if (result != null) {
+//            if (result.getContents() == null) {
+//                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+//            } else {
+//                cantidad.setText(result.getContents());
+//            }
+//        } else {
+//            super.onActivityResult(requestCode, resulCode, data);
+//        }
+//    }
 
 
     private void ObtieneFajillas(){

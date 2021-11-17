@@ -1,9 +1,12 @@
 package com.corpogas.corpoapp.Puntada;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -117,6 +120,17 @@ public class ProductosARedimir extends AppCompatActivity {
 
         descuento = getIntent().getDoubleExtra("descuentouno", 0.0);
         enviadoDesde = getIntent().getStringExtra("lugarproviene");
+
+        if (enviadoDesde.equals("Redencion Yena")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                findViewById(R.id.btnCombustibles).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+                findViewById(R.id.btnAceites).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+                findViewById(R.id.btnAgregarProducto).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+                findViewById(R.id.btnEnviarProducto).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+                findViewById(R.id.btnIncrementar).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+                findViewById(R.id.btnDecrementar).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+            }
+        }
 
  //      enviamos el saldo disponible para poder visualizar
 
@@ -917,8 +931,4 @@ public class ProductosARedimir extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
-
-
 }

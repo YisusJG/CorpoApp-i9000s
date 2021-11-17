@@ -31,16 +31,17 @@
         android:id="@+id/boton_acumular"
         android:layout_width="260dp"
         android:layout_height="60dp"
-        android:background="@color/colorPrimary"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
-        android:text="Acumular"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:elevation="16dp"
         android:layout_below="@+id/boton_consultar_saldo"
-        android:layout_marginTop="40dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@color/colorPrimary"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:text="Acumular"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/boton_redimir"

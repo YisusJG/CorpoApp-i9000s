@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:textStyle="bold" />
 
-    <TextView
+    <EditText
         android:id="@+id/tvNoTarjetaQr"
         android:layout_width="170dp"
         android:layout_height="45dp"
@@ -43,7 +43,7 @@
         tools:ignore="MissingConstraints"
         tools:textStyle="bold" />
 
-    <TextView
+    <EditText
         android:id="@+id/tvDescuento"
         android:layout_width="170dp"
         android:layout_height="45dp"

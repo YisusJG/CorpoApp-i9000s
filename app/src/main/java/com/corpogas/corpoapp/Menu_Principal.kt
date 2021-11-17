@@ -805,7 +805,6 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
 
-
             R.id.btnFajillas -> {
                 intent = Intent(applicationContext, OpcionFajillas::class.java)
                 startActivity(intent)
@@ -887,20 +886,13 @@ class Menu_Principal : AppCompatActivity() {
     private fun requestStoragePermission() {
 
         if (shouldShowRequestPermissionRationaleCompat(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            drawerLayout!!.showSnackbar(
-                    R.string.storage_access_required,
-                    Snackbar.LENGTH_INDEFINITE, R.string.ok
-            ) {
-                requestPermissionsCompat(
-                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        PERMISSION_REQUEST_STORAGE
-                )
+            drawerLayout!!.showSnackbar(R.string.storage_access_required, Snackbar.LENGTH_INDEFINITE, R.string.ok) {
+                requestPermissionsCompat(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_STORAGE)
             }
-
         } else {
             requestPermissionsCompat(
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    PERMISSION_REQUEST_STORAGE
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_STORAGE
             )
         }
     }

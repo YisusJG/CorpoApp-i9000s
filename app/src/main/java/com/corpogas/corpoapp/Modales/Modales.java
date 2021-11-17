@@ -24,9 +24,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 
+import java.text.DecimalFormat;
+
 
 public class Modales extends Dialog implements
         View.OnClickListener {
+    private DecimalFormat formatoCifras = new DecimalFormat("#,###.##");
 
     public AlertDialog alertDialog;
 
@@ -91,6 +94,31 @@ public class Modales extends Dialog implements
 
     }
 
+    public View MostrarDialogoCorrectoYena(Context context,String titulo,String mensaje, String mensaje2, String nombreAceptar){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.activity_dialogo_satisfactorio_yena,(ConstraintLayout)findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(titulo);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(mensaje);
+        ((TextView) view.findViewById(R.id.textMessage2)).setText(mensaje2);
+        ((Button) view.findViewById(R.id.buttonAction)).setText(nombreAceptar);
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_success);
+
+        alertDialog = builder.create();
+
+        if(alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        return view;
+
+
+    }
+
 
     //SE crao un modal con sobrecarga temporal esto hau que cambiarlo en todos despues para que sea dinamio los mensajes, nombres de boton y leyenda
 
@@ -131,6 +159,31 @@ public class Modales extends Dialog implements
         ((TextView) view.findViewById(R.id.textMessage)).setText(mensaje);
         ((Button) view.findViewById(R.id.buttonYes)).setText(nombrebtnAceptar);
         ((Button) view.findViewById(R.id.buttonNo)).setText(nombreBtnCancelar);
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_warning);
+
+        alertDialog = builder.create();
+        if(alertDialog.getWindow() != null)
+        {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        return view;
+
+    }
+
+    public View MostrarDialogoAlertaParaRedencion(Context context,String mensaje){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.activity_dialogo_alerta_redimir,(ConstraintLayout)findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(R.string.titulo_aviso);
+        ((TextView) view.findViewById(R.id.textMessage)).setText(mensaje);
+        ((Button) view.findViewById(R.id.buttonYes)).setText("Yena");
+        ((Button) view.findViewById(R.id.buttonNo)).setText("Puntada");
+        ((Button) view.findViewById(R.id.buttonPuntada)).setText("No");
         ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_warning);
 
         alertDialog = builder.create();
@@ -340,14 +393,15 @@ public class Modales extends Dialog implements
         );
         builder.setView(view);
         ((TextView) view.findViewById(R.id.textTitleEfectivo)).setText(titulo);
-        ((TextView) view.findViewById(R.id.textMonto)).setText(String.format("$%.2f", Double.parseDouble(monto)));
+//        ((TextView) view.findViewById(R.id.textMonto)).setText(String.format("$ %.2f", Double.parseDouble(monto)));
+        ((TextView) view.findViewById(R.id.textMonto)).setText("$ " + formatoCifras.format(monto));
         EditText cantidadRecibida = view.findViewById(R.id.textMontoVales);
 
         cantidadRecibida.addTextChangedListener(new TextWatcher() {
             @SuppressLint("SetTextI18n")
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                ((TextView) view.findViewById(R.id.textCambio)).setText("$0.00");
+                ((TextView) view.findViewById(R.id.textCambio)).setText("$ 0.00");
                 ((Button) view.findViewById(R.id.btnAceptarVales)).setText("ACEPTAR");
             }
 
@@ -357,8 +411,7 @@ public class Modales extends Dialog implements
                 String cantidadObtenida = cantidadRecibida.getText().toString();
                 if (!cantidadObtenida.equals("")) {
                     Double vuelto = Double.parseDouble(cantidadObtenida) - Double.parseDouble(monto);
-                    ((TextView) view.findViewById(R.id.textCambio)).setText(String.format("$%.2f", vuelto));
-
+                    ((TextView) view.findViewById(R.id.textCambio)).setText("$ " + formatoCifras.format(vuelto));
                 }
             }
 

@@ -33,6 +33,7 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
+import com.corpogas.corpoapp.Yena.LecturayEscaneo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -165,10 +166,28 @@ public class DiferentesFormasPago extends AppCompatActivity {
                     bar.setCancelable(false);
                     bar.show();
                     String titulo = "PUNTADA";
-                    String mensajes = "¿Desea Acumular la venta a su Tarjeta Puntada?";
+                    String mensajes = "¿Desea Acumular la venta a su Tarjeta?";
                     Modales modalesEfectivo = new Modales(DiferentesFormasPago.this);
-                    View viewLecturas = modalesEfectivo.MostrarDialogoAlerta(DiferentesFormasPago.this, mensajes,  "SI", "NO");
+                    View viewLecturas = modalesEfectivo.MostrarDialogoAlertaParaRedencion(DiferentesFormasPago.this, mensajes);
                     viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String banderaHuella = getIntent().getStringExtra( "banderaHuella");
+                            String nombreCompletoVenta = getIntent().getStringExtra("nombrecompleto");
+                            //LeeTarjeta();
+                            Intent intent = new Intent(getApplicationContext(), LecturayEscaneo.class);
+                            intent.putExtra("Enviadodesde", "diferentesformaspago");
+                            intent.putExtra("formapagoid", FormasPagoArreglo.toString());
+                            intent.putExtra("montoenlacanasta", 0);
+                            intent.putExtra("posicioncargaid", PosicionCarga);
+                            intent.putExtra("tipoTarjeta", "Puntada");
+                            intent.putExtra("pagoconpuntada", "no");
+                            startActivity(intent);
+                            modalesEfectivo.alertDialog.dismiss();
+                        }
+
+                    });
+                    viewLecturas.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             String banderaHuella = getIntent().getStringExtra( "banderaHuella");
@@ -184,16 +203,15 @@ public class DiferentesFormasPago extends AppCompatActivity {
                             startActivity(intent);
                             modalesEfectivo.alertDialog.dismiss();
                         }
-
                     });
-
-                    viewLecturas.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    viewLecturas.findViewById(R.id.buttonPuntada).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                                    RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
+//                            RespuestaImprimeFinaliza(posicioncarga, idusuario, formapagoid, numticket, nombrepago);
                             modalesEfectivo.alertDialog.dismiss();
 //                                    SeleccionaPesosDoalares();
-                            EnviaArregloDiferentesFormasPagos();                        }
+                            EnviaArregloDiferentesFormasPagos();
+                        }
                     });
                 }
             }

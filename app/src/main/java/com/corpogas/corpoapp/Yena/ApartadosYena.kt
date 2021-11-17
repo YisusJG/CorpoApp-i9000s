@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
+import com.corpogas.corpoapp.Menu_Principal
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.R
 
@@ -38,5 +39,11 @@ class ApartadosYena : AppCompatActivity() {
             intent.putExtra("lugarproviene", "Redencion Yena")
             startActivity(intent)
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, Menu_Principal::class.java)
+        startActivity(intent)
+        finish()
     }
 }

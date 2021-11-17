@@ -8,11 +8,14 @@
     import android.content.DialogInterface;
     import android.content.Intent;
     import android.content.IntentFilter;
+    import android.device.scanner.configuration.Triggering;
     import android.os.Bundle;
     import android.text.Editable;
     import android.text.InputType;
     import android.text.TextWatcher;
     import android.util.Log;
+    import android.view.KeyEvent;
+    import android.view.MotionEvent;
     import android.view.View;
     import android.view.WindowManager;
     import android.widget.AdapterView;
@@ -44,6 +47,7 @@
     import com.corpogas.corpoapp.Menu_Principal;
     import com.corpogas.corpoapp.Modales.Modales;
     import com.corpogas.corpoapp.R;
+    import com.corpogas.corpoapp.ScanManagerProvides;
     import com.corpogas.corpoapp.ValesPapel.ValesPapel;
     import com.corpogas.corpoapp.VentaCombustible.confirmaVenta;
     import com.google.zxing.integration.android.IntentIntegrator;
@@ -64,6 +68,9 @@
 //    import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
     public class VentasProductos extends AppCompatActivity implements View.OnClickListener {
+        ScanManagerProvides scanManagerProvides;
+        String result = "";
+
         //Declaracion de Variables
         private RecyclerView mRecyclerView;
         private RecyclerView.Adapter mAdapter;
@@ -117,11 +124,12 @@
 
 
 
-        @SuppressLint("WrongViewCast")
+        @SuppressLint({"WrongViewCast", "ClickableViewAccessibility"})
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_ventas_productos);
+            scanManagerProvides = new ScanManagerProvides();
             //instruccion para que aparezca la flecha de regreso
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             simbolos.setDecimalSeparator('.');
@@ -279,18 +287,18 @@
                 }
             });
 
-            btnScanner.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    IntentIntegrator integrator = new IntentIntegrator(VentasProductos.this);
-                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                    integrator.setPrompt("Lector - CDP");
-                    integrator.setCameraId(0);
-                    integrator.setBeepEnabled(true);
-                    integrator.setBarcodeImageEnabled(true);
-                    integrator.initiateScan();
-                }
-            });
+//            btnScanner.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    IntentIntegrator integrator = new IntentIntegrator(VentasProductos.this);
+//                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+//                    integrator.setPrompt("Lector - CDP");
+//                    integrator.setCameraId(0);
+//                    integrator.setBeepEnabled(true);
+//                    integrator.setBarcodeImageEnabled(true);
+//                    integrator.initiateScan();
+//                }
+//            });
 
             btnborrartodo = findViewById(R.id.btnborrartodo);
             btnborrartodo.setOnClickListener(new View.OnClickListener() {
@@ -321,23 +329,73 @@
                 }
             });
 
-        }
-
-        protected void onActivityResult (int requestCode, int resulCode, Intent data) {
-            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
-
-            if (result != null) {
-                if (result.getContents() == null) {
-                    Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
-                } else {
-//                    Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
-                    Producto.setText(result.getContents());
-                    buscarCodigoBarra(result.getContents());
+            btnScanner.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (view.getId() == R.id.btnscanner) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                scanManagerProvides.stopDecode();
+                            }
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            scanManagerProvides.startDecode();
+                        }
+                    }
+                    return false;
                 }
-            } else {
-                super.onActivityResult(requestCode, resulCode, data);
-            }
+            });
+
+//            Producto.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable editable) {
+//                    if (!Producto.getText().toString().equals("")) {
+//                        btnScanner.setEnabled(false);
+//                    } else {
+//                        btnScanner.setEnabled(true);
+//                    }
+//                }
+//            });
         }
+
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent event) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
+                char pressedKey = (char) event.getUnicodeChar();
+                result += pressedKey;
+            }
+            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
+                buscarCodigoBarra(result);
+                result = "";
+            }
+            return false;
+        }
+
+        //        protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+//            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+//
+//            if (result != null) {
+//                if (result.getContents() == null) {
+//                    Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+//                } else {
+////                    Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
+//                    Producto.setText(result.getContents());
+//                    buscarCodigoBarra(result.getContents());
+//                }
+//            } else {
+//                super.onActivityResult(requestCode, resulCode, data);
+//            }
+//        }
 
         private void Autorizadespacho() {
 
@@ -384,39 +442,39 @@
 //            }
         }
 
-        private void UI() {
-            b_auto = findViewById(R.id.btnscanner);
-            b_auto.setOnClickListener(this);
-            mScanRecevier = new BroadcastReceiver() {
-                public void onReceive(Context context, Intent intent) {
-                    Log.e("Scan", "scan receive.......");
-
-                    String scanResult = "";
-                    int length = intent.getIntExtra("EXTRA_SCAN_LENGTH", 0);
-                    int encodeType = intent.getIntExtra("EXTRA_SCAN_ENCODE_MODE", 1);
-
-                    if (encodeType == ENCODE_MODE_NONE) {
-                        byte[] data = intent.getByteArrayExtra("EXTRA_SCAN_DATA");
-                        try {
-                            scanResult = new String(data, 0, length, "iso-8859-1");//Encode charSet
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-
-                    } else {
-                        scanResult = intent.getStringExtra("EXTRA_SCAN_DATA");
-                        Toast.makeText(context, "Codigo: " + scanResult, Toast.LENGTH_SHORT).show();
-                        buscarCodigoBarra(scanResult);
-                    }
-//                final String  scanResultData=intent.getStringExtra("EXTRA_SCAN_DATA");
-//                    tvMsg.setText("Scan Bar Code ：" + scanResult);
-                }
-            };
-
-            IntentFilter filter = new IntentFilter("ACTION_BAR_SCAN");
-            VentasProductos.this.registerReceiver(mScanRecevier, filter);
-
-        }
+//        private void UI() {
+//            b_auto = findViewById(R.id.btnscanner);
+//            b_auto.setOnClickListener(this);
+//            mScanRecevier = new BroadcastReceiver() {
+//                public void onReceive(Context context, Intent intent) {
+//                    Log.e("Scan", "scan receive.......");
+//
+//                    String scanResult = "";
+//                    int length = intent.getIntExtra("EXTRA_SCAN_LENGTH", 0);
+//                    int encodeType = intent.getIntExtra("EXTRA_SCAN_ENCODE_MODE", 1);
+//
+//                    if (encodeType == ENCODE_MODE_NONE) {
+//                        byte[] data = intent.getByteArrayExtra("EXTRA_SCAN_DATA");
+//                        try {
+//                            scanResult = new String(data, 0, length, "iso-8859-1");//Encode charSet
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    } else {
+//                        scanResult = intent.getStringExtra("EXTRA_SCAN_DATA");
+//                        Toast.makeText(context, "Codigo: " + scanResult, Toast.LENGTH_SHORT).show();
+//                        buscarCodigoBarra(scanResult);
+//                    }
+////                final String  scanResultData=intent.getStringExtra("EXTRA_SCAN_DATA");
+////                    tvMsg.setText("Scan Bar Code ：" + scanResult);
+//                }
+//            };
+//
+//            IntentFilter filter = new IntentFilter("ACTION_BAR_SCAN");
+//            VentasProductos.this.registerReceiver(mScanRecevier, filter);
+//
+//        }
 
         @Override
         protected void onDestroy() {
@@ -440,6 +498,7 @@
             Intent intentEnableScan = new Intent("ACTION_BAR_SCANCFG");
             intentEnableScan.putExtra("EXTRA_SCAN_POWER", 1);
             VentasProductos.this.sendBroadcast(intentEnableScan);
+            scanManagerProvides.initScan(VentasProductos.this);
         }
 
         @Override
