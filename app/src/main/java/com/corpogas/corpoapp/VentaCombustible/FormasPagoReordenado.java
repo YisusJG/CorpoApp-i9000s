@@ -90,6 +90,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
     String idusuario;
     String ClaveDespachador;
     String formaPagoIdentificador;
+    public boolean isClickable = true;
 
 
     @Override
@@ -177,6 +178,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         NumeroInternoFormaPago = new ArrayList<String>();
 
         AcumulaPuntosArreglo = new ArrayList<String>();
+
 
 
         try {
@@ -326,24 +328,26 @@ public class FormasPagoReordenado extends AppCompatActivity {
         }
     }
 
-    private void initializeAdapter() {
+    private void initializeAdapter(){
         RVAdapter adapter = new RVAdapter(lrcvFormaPago);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String titulo;
-//                String acumularPuntada= "false";
-////                int pos = position + 1;
-//                formapago = NumeroInternoFormaPago.get(v);
-//                if (Integer.parseInt(formapago)>0){
-//                    acumularPuntada = AcumulaPuntosArreglo.get(v);
-//                }
-//                String formapagoid = IdFormaPago.get(v);//String.valueOf(pos);
-//                nombrepago = maintitle.get(v);
-//                String numticket = numerotickets.get(v);
-//                int numpago = Integer.parseInt(NumeroInternoFormaPago.get(v)); //IdFormaPago
-//                numpago1 = IdFormaPago.get(v);
-//                idoperativa = getIntent().getStringExtra("IdOperativa");
+                if (isClickable == true){
+                    isClickable=false;
+                    String titulo;
+    //                String acumularPuntada= "false";
+    ////                int pos = position + 1;
+    //                formapago = NumeroInternoFormaPago.get(v);
+    //                if (Integer.parseInt(formapago)>0){
+    //                    acumularPuntada = AcumulaPuntosArreglo.get(v);
+    //                }
+    //                String formapagoid = IdFormaPago.get(v);//String.valueOf(pos);
+    //                nombrepago = maintitle.get(v);
+    //                String numticket = numerotickets.get(v);
+    //                int numpago = Integer.parseInt(NumeroInternoFormaPago.get(v)); //IdFormaPago
+    //                numpago1 = IdFormaPago.get(v);
+    //                idoperativa = getIntent().getStringExtra("IdOperativa");
 
 
                 formaPagoIdentificador = lrcvFormaPago.get(rcvFormasPagoReordenado.getChildAdapterPosition(v)).getSubtitulo();
@@ -406,22 +410,22 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                     }
                                 });
 
+                                }
                             }
-                        }
-                        break;
-                    case "2":
-//                        if (acumularPuntada.equals("true")) {
-//                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
-//                        }else{
-                        Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
-                        intentVale.putExtra("Enviadodesde", "formaspago");
-                        intentVale.putExtra("posicioncarga", posiciondecargaid);
-                        intentVale.putExtra("idoperativa", idoperativa);
-                        intentVale.putExtra("formapagoid", formaPagoIdentificador);
-                        intentVale.putExtra("montoencanasta", MontoCanasta);
-                        startActivity(intentVale);
-                        finish();
-//                        }
+                            break;
+                        case "2":
+    //                        if (acumularPuntada.equals("true")) {
+    //                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+    //                        }else{
+                            Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
+                            intentVale.putExtra("Enviadodesde", "formaspago");
+                            intentVale.putExtra("posicioncarga", posiciondecargaid);
+                            intentVale.putExtra("idoperativa", idoperativa);
+                            intentVale.putExtra("formapagoid", formaPagoIdentificador);
+                            intentVale.putExtra("montoencanasta", MontoCanasta);
+                            startActivity(intentVale);
+                            finish();
+    //                        }
 
                         break;
                     case "3": //AMEX
@@ -673,9 +677,12 @@ public class FormasPagoReordenado extends AppCompatActivity {
 //            }
 //        });
 //        itemTouchHelper.attachToRecyclerView(rcvFormasPagoReordenado);
+
+
+
     }
 
-    private void MuestraFormaEfectivo() {
+    private void MuestraFormaEfectivo(){
         String tituloEfectivo = "Venta";
         Modales modalesEfectivo = new Modales(FormasPagoReordenado.this);
         View viewVenta = modalesEfectivo.MostrarDialogoEfectivo(FormasPagoReordenado.this, String.valueOf(MontoCanasta), tituloEfectivo);
@@ -686,7 +693,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                 String titulo = "IMPRIMIR";
                 String mensajes = "¿Desea finalizar la venta?";
                 Modales modalesImprime = new Modales(FormasPagoReordenado.this);
-                View viewLectura = modalesImprime.MostrarDialogoAlerta(FormasPagoReordenado.this, mensajes, "FINALIZAR", "IMPRIMIR");
+                View viewLectura = modalesImprime.MostrarDialogoAlerta(FormasPagoReordenado.this, mensajes,  "FINALIZAR", "IMPRIMIR");
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -715,7 +722,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         });
     }
 
-    private void MuestraFormaEfectivoPuntada() {
+    private void MuestraFormaEfectivoPuntada(){
         String tituloEfectivo = "Venta";
         Modales modalesEfectivo = new Modales(FormasPagoReordenado.this);
         View viewVenta = modalesEfectivo.MostrarDialogoEfectivo(FormasPagoReordenado.this, String.valueOf(MontoCanasta), tituloEfectivo);
@@ -799,7 +806,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
             finish();
         } else {
             //Utilizamos el metodo POST para  finalizar la Venta
-            String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado;
+            String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado ;
             StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override
@@ -1048,6 +1055,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         ImprimeVenta();
                     }
                 });
+
             }
         });
         viewVenta.findViewById(R.id.btnCancelarDolares).setOnClickListener(new View.OnClickListener() {
@@ -1126,4 +1134,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
             }
         });
     }
+
+
 }
