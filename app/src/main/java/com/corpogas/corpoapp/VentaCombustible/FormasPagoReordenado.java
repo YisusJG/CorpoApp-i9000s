@@ -410,22 +410,22 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                     }
                                 });
 
-                                }
                             }
-                            break;
-                        case "2":
-    //                        if (acumularPuntada.equals("true")) {
-    //                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
-    //                        }else{
-                            Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
-                            intentVale.putExtra("Enviadodesde", "formaspago");
-                            intentVale.putExtra("posicioncarga", posiciondecargaid);
-                            intentVale.putExtra("idoperativa", idoperativa);
-                            intentVale.putExtra("formapagoid", formaPagoIdentificador);
-                            intentVale.putExtra("montoencanasta", MontoCanasta);
-                            startActivity(intentVale);
-                            finish();
-    //                        }
+                        }
+                        break;
+                    case "2":
+                        //                        if (acumularPuntada.equals("true")) {
+                        //                            predeterminarPuntadaAcumular(Integer.parseInt(formapago));
+                        //                        }else{
+                        Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
+                        intentVale.putExtra("Enviadodesde", "formaspago");
+                        intentVale.putExtra("posicioncarga", posiciondecargaid);
+                        intentVale.putExtra("idoperativa", idoperativa);
+                        intentVale.putExtra("formapagoid", formaPagoIdentificador);
+                        intentVale.putExtra("montoencanasta", MontoCanasta);
+                        startActivity(intentVale);
+                        finish();
+                        //                        }
 
                         break;
                     case "3": //AMEX
@@ -653,6 +653,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         }
                         break;
 
+                }
                 }
             }
         });
@@ -1134,6 +1135,5 @@ public class FormasPagoReordenado extends AppCompatActivity {
             }
         });
     }
-
 
 }
