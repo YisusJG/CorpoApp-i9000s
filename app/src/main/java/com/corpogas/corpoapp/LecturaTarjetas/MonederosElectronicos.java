@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -61,6 +62,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MonederosElectronicos extends AppCompatActivity {
+    String model;
 
     ProgressDialog bar;
     private MagReadService mReadService;
@@ -127,6 +129,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_monederos_electronicos);
+        model = Build.MODEL;
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
 
@@ -147,8 +150,12 @@ public class MonederosElectronicos extends AppCompatActivity {
         EstacionId = data.getIdEstacion();
         ipEstacion = data.getIpEstacion();
         numeroTarjetero = data.getIdTarjtero();
-        tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
-        mReadService = new MagReadService(this, mHandler);
+
+        model = Build.MODEL;
+        {
+            mReadService = new MagReadService(this, mHandler);
+            tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+        }
 
         simbolos.setDecimalSeparator('.');
         df = new DecimalFormat("###,###.00", simbolos);
@@ -167,14 +174,18 @@ public class MonederosElectronicos extends AppCompatActivity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        mReadService.stop();
+        if (model.equals("i9000S")) {
+            mReadService.stop();
+        }
     }
 
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        mReadService.start();
+        if (model.equals("i9000S")) {
+            mReadService.start();
+        }
     }
 
     //    private void updateAlert(String mesg, int type) {
@@ -860,5 +871,4 @@ public class MonederosElectronicos extends AppCompatActivity {
 
         }
     }
-
 }

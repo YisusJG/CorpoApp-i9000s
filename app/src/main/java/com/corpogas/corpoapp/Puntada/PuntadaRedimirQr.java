@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.device.scanner.configuration.Triggering;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -28,13 +29,15 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 public class PuntadaRedimirQr extends AppCompatActivity {
+    String model;
+
     ScanManagerProvides scanManagerProvides;
-    String result = "";
+    String result;
 
     SQLiteBD db;
     ImageButton btnScanPQR;
     Button btnAceptarrQrPuntada;
-    EditText tvDescuento, tvNoTarjetaQr;
+    TextView tvDescuento, tvNoTarjetaQr;
     String NIP, lugarProviene;
     String TipoSeleccionado, usuario, posicionCarga, usuarioid, estacionJarreo, claveProducto, precio;
     Long numeroInternoPosicionCarga;
@@ -44,9 +47,9 @@ public class PuntadaRedimirQr extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puntada_redimir_qr);
+        model = Build.MODEL;
         db = new SQLiteBD(this);
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
-        scanManagerProvides = new ScanManagerProvides();
 
         NIP = getIntent().getStringExtra("nip");
         lugarProviene = getIntent().getStringExtra("lugarProviene");
@@ -59,8 +62,8 @@ public class PuntadaRedimirQr extends AppCompatActivity {
         precio = getIntent().getStringExtra("precioProducto");
 
         btnScanPQR = (ImageButton) findViewById(R.id.btnScanPQR);
-        tvDescuento = (EditText) findViewById(R.id.tvDescuento);
-        tvNoTarjetaQr = (EditText) findViewById(R.id.tvNoTarjetaQr);
+        tvDescuento = (TextView) findViewById(R.id.tvDescuento);
+        tvNoTarjetaQr = (TextView) findViewById(R.id.tvNoTarjetaQr);
         btnAceptarrQrPuntada = (Button) findViewById(R.id.btnAceptarrQrPuntada);
         btnAceptarrQrPuntada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,75 +153,86 @@ public class PuntadaRedimirQr extends AppCompatActivity {
             }
         });
 
-//        btnScanPQR.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                IntentIntegrator integrator = new IntentIntegrator(PuntadaRedimirQr.this);
-//                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-//                integrator.setPrompt("Lector - CDP");
-//                integrator.setCameraId(0);
-//                integrator.setBeepEnabled(true);
-//                integrator.setBarcodeImageEnabled(true);
-//                integrator.initiateScan();
-//            }
-//        });
-
-        btnScanPQR.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (view.getId() == R.id.btnScanPQR) {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                        if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
-                            scanManagerProvides.stopDecode();
+        if (model.equals("i9000S")) {
+            scanManagerProvides = new ScanManagerProvides();
+            result = "";
+            btnScanPQR.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (view.getId() == R.id.btnScanPQR) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                scanManagerProvides.stopDecode();
+                            }
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            scanManagerProvides.startDecode();
                         }
                     }
-                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                        scanManagerProvides.startDecode();
-                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            btnScanPQR.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    IntentIntegrator integrator = new IntentIntegrator(PuntadaRedimirQr.this);
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                    integrator.setPrompt("Lector - CDP");
+                    integrator.setCameraId(0);
+                    integrator.setBeepEnabled(true);
+                    integrator.setBarcodeImageEnabled(true);
+                    integrator.initiateScan();
+                }
+            });
+        }
     }
 
-//    @Override
-//    public boolean dispatchKeyEvent(KeyEvent event) {
-//        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
-//            char pressedKey = (char) event.getUnicodeChar();
-//            result += pressedKey;
-//        }
-//        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
-//            tvNoTarjetaQr.setText(result);
-//            result = "";
-//        }
-//        return false;
-//    }
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
+            char pressedKey = (char) event.getUnicodeChar();
+            result += pressedKey;
+        }
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
+            int posicionPunto = result.indexOf(",");
+            String hastaComa = result.substring(0, posicionPunto);
+            int finalChar = result.length();
+            String desdeComa = result.substring(posicionPunto + 1, finalChar);
+            tvNoTarjetaQr.setText(hastaComa);
+            tvDescuento.setText(desdeComa);
+            result = "";
+        }
+        return false;
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        scanManagerProvides.initScan(PuntadaRedimirQr.this);
+        if (model.equals("i9000S")) {
+            scanManagerProvides.initScan(PuntadaRedimirQr.this);
+        }
     }
 
-    //    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
-//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
-//        if (result != null) {
-//            if (result.getContents() == null) {
-//                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
-//            } else {
-//                int posicionPunto = result.getContents().indexOf(",");
-//                if (!result.getContents().contains(",")){
-//                    Toast.makeText(getApplicationContext(), "El código QR no contiene descuento asociado", Toast.LENGTH_SHORT).show();
-//                } else{
-//                    String hastaComa = result.getContents().substring(0, posicionPunto);
-//                    int finalChar = result.getContents().length();
-//                    String desdeComa = result.getContents().substring(posicionPunto + 1, finalChar);
-//                    tvNoTarjetaQr.setText(hastaComa);
-//                    tvDescuento.setText(desdeComa);
-//                }
-//            }
-//        } else {
-//            super.onActivityResult(requestCode, resulCode, data);
-//        }
-//    }
+        protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+            } else {
+                if (!result.getContents().contains(",")){
+                    Toast.makeText(getApplicationContext(), "El código QR no contiene descuento asociado", Toast.LENGTH_SHORT).show();
+                } else{
+                    int posicionPunto = result.getContents().indexOf(",");
+                    String hastaComa = result.getContents().substring(0, posicionPunto);
+                    int finalChar = result.getContents().length();
+                    String desdeComa = result.getContents().substring(posicionPunto + 1, finalChar);
+                    tvNoTarjetaQr.setText(hastaComa);
+                    tvDescuento.setText(desdeComa);
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resulCode, data);
+        }
+    }
 }

@@ -59,13 +59,13 @@ import java.util.Map;
 
 public class IniciaVentas extends AppCompatActivity {
     SQLiteBD data;
-    String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid, numerodispositivo, correcto, mensaje;
+    String EstacionId, ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid, numerodispositivo, correcto, mensaje;
     long numeroInternoPosicionCarga, posicioncargaid;
     JSONArray myArray = new JSONArray();
     TextView tvTituloIniciaVenta, tvPredeterminadoCantidad;
     Spinner spCombustible;
     RecyclerView rvPredeterminado;
-    Double descuento;
+    Double descuento, descuentoMagnaYena, descuentoPremiumYena, descuentoDieselYena;
     String claveProducto, descripcioncombustible, precio, numeroTarjeta, nipCliente;
 
 
@@ -82,7 +82,7 @@ public class IniciaVentas extends AppCompatActivity {
     ProgressDialog bar;
 
 
-//    Isla respuestaApiPosicionCargaProductosSucursal;
+    //    Isla respuestaApiPosicionCargaProductosSucursal;
     long TipoProducto = 1, idProducto, IdCombustible;
     double precioproducto;
 
@@ -162,7 +162,7 @@ public class IniciaVentas extends AppCompatActivity {
                                             banderaConDatos = true;
                                         }
                                     }
-                                    if (banderaConDatos.equals(true)){
+                                    if (banderaConDatos.equals(true)) {
                                         Double MontoenCanasta = 0.00;
                                         try {
                                             JSONArray ArregloCadenaRespuesta = new JSONArray(CadenaObjetoRespuesta);
@@ -178,7 +178,7 @@ public class IniciaVentas extends AppCompatActivity {
                                             if (MontoenCanasta.equals(0.00)) {
 //                                                Reintenta();
                                                 Toast.makeText(IniciaVentas.this, "Monto en CERO", Toast.LENGTH_SHORT).show();
-                                            }else{
+                                            } else {
                                                 Intent intent = new Intent(getApplicationContext(), FormasPagoReordenado.class);
                                                 intent.putExtra("numeroEmpleado", usuarioid);
                                                 intent.putExtra("posicionCarga", poscicionCarga);
@@ -196,11 +196,11 @@ public class IniciaVentas extends AppCompatActivity {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                    }else{
+                                    } else {
                                         String titulo = "AVISO";
                                         String mensajes = "Error";
                                         Modales modales = new Modales(IniciaVentas.this);
-                                        View view1 = modales.MostrarDialogoError(IniciaVentas.this,"Aun no concluye el despacho");
+                                        View view1 = modales.MostrarDialogoError(IniciaVentas.this, "Aun no concluye el despacho");
                                         view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
@@ -209,11 +209,11 @@ public class IniciaVentas extends AppCompatActivity {
                                             }
                                         });
                                     }
-                                }else{
+                                } else {
                                     String titulo = "AVISO";
                                     String mensajes = "Error";
                                     Modales modales = new Modales(IniciaVentas.this);
-                                    View view1 = modales.MostrarDialogoError(IniciaVentas.this,Mensaje);
+                                    View view1 = modales.MostrarDialogoError(IniciaVentas.this, Mensaje);
                                     view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -230,7 +230,7 @@ public class IniciaVentas extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
             // Añade la peticion a la cola
@@ -242,14 +242,13 @@ public class IniciaVentas extends AppCompatActivity {
     }
 
 
-
     private void solicitarDespacho() {
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
             startActivity(intent1);
             finish();
-        }else {
+        } else {
 
             String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -264,7 +263,7 @@ public class IniciaVentas extends AppCompatActivity {
                             String titulo = "AVISO";
                             String mensaje = "Listo para Iniciar Despacho";
                             final Modales modales = new Modales(IniciaVentas.this);
-                            View view1 = modales.MostrarDialogoCorrecto(IniciaVentas.this,mensaje);
+                            View view1 = modales.MostrarDialogoCorrecto(IniciaVentas.this, mensaje);
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -289,7 +288,7 @@ public class IniciaVentas extends AppCompatActivity {
                             String titulo = "AVISO";
                             String mensaje = "La posición de carga se encuentra Ocupada";
                             Modales modales = new Modales(IniciaVentas.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensaje,titulo);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensaje, titulo);
                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -326,10 +325,16 @@ public class IniciaVentas extends AppCompatActivity {
         posicioncargaid = getIntent().getLongExtra("pocioncargaid", 0);
         idUsuario = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
         estacionJarreo = getIntent().getStringExtra("estacionjarreo");
-        numeroInternoPosicionCarga = getIntent().getLongExtra("pcnumerointerno",0);
+        numeroInternoPosicionCarga = getIntent().getLongExtra("pcnumerointerno", 0);
         numerodispositivo = data.getIdTarjtero();
         lugarproviene = getIntent().getStringExtra("lugarProviene");
-        descuento = getIntent().getDoubleExtra("Descuento",0 );
+        descuento = getIntent().getDoubleExtra("Descuento", 0);
+
+        descuentoMagnaYena = getIntent().getDoubleExtra("descuentoMagna", 0);
+        descuentoPremiumYena = getIntent().getDoubleExtra("descuentoPremium", 0);
+        descuentoDieselYena = getIntent().getDoubleExtra("descuentoDiesel", 0);
+
+
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
         nipCliente = getIntent().getStringExtra("nip");
         tvTituloIniciaVenta = (TextView) findViewById(R.id.tvTituloIniciaVenta);
@@ -342,9 +347,9 @@ public class IniciaVentas extends AppCompatActivity {
         tvTituloIniciaVenta.setText("PC " + posicioncargaid + ", TIPO DESPACHO");
 
         simbolos.setDecimalSeparator('.');
-        df = new DecimalFormat("#,###.00##",simbolos);
+        df = new DecimalFormat("#,###.00##", simbolos);
 
-        if (lugarproviene.equals("puntadaAcumularQr")){
+        if (lugarproviene.equals("puntadaAcumularQr") || lugarproviene.equals("descuentoYena")) {
             btnDespachoLibreVenta.setEnabled(false);
         }
 
@@ -361,7 +366,7 @@ public class IniciaVentas extends AppCompatActivity {
         bar.show();
 
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -371,7 +376,7 @@ public class IniciaVentas extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                 bar.cancel();
             }
         });
@@ -403,14 +408,13 @@ public class IniciaVentas extends AppCompatActivity {
         imgid = new ArrayList<>();
 
 
-        NombreProducto.add("0") ; // + "    |    " + IdProductos );
+        NombreProducto.add("0"); // + "    |    " + IdProductos );
         ID.add("Seleccione un combustible");
         PrecioProducto.add("");
         ClaveProducto.add("");
         CodigoBarras.add("");
         ProductoId.add("");
         CategoriaId.add("");
-
 
 
         //ArrayList<singleRow> singlerow = new ArrayList<>();
@@ -423,21 +427,21 @@ public class IniciaVentas extends AppCompatActivity {
             String producto = p1.getString("BodegaProductos");
             JSONArray bodegaprod = new JSONArray(producto);
 
-            for (int i = 0; i <bodegaprod.length() ; i++){
+            for (int i = 0; i < bodegaprod.length(); i++) {
                 String IdProductos = "";
                 JSONObject pA = bodegaprod.getJSONObject(i);
                 String productoclave = pA.getString("Producto");
                 JSONObject prod = new JSONObject(productoclave);
                 String categoriaid = prod.getString("ProductCategoryId");
-                if (categoriaid.equals(TipoProducto)){
+                if (categoriaid.equals(TipoProducto)) {
                     //NO CARGA LOS COMBUSTIBLES
-                    String ExProductos=pA.getString("Existencias");
+                    String ExProductos = pA.getString("Existencias");
                     ExistenciaProductos.add(ExProductos);
-                    String TProductoId="2";//prod.getString("TipoSatProductoId");
-                    DescLarga=prod.getString("LongDescription");
-                    idArticulo=prod.getString("Id");
-                    String codigobarras=prod.getString("Barcode");
-                    String PControl=prod.getString("ProductControls");
+                    String TProductoId = "2";//prod.getString("TipoSatProductoId");
+                    DescLarga = prod.getString("LongDescription");
+                    idArticulo = prod.getString("Id");
+                    String codigobarras = prod.getString("Barcode");
+                    String PControl = prod.getString("ProductControls");
 
                     JSONArray PC = new JSONArray(PControl);
                     for (int j = 0; j < PC.length(); j++) {
@@ -445,7 +449,7 @@ public class IniciaVentas extends AppCompatActivity {
                         preciol = Control.getString("Price");
                         IdProductos = Control.getString("ProductId"); //ProductoId
                     }
-                    NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol); // + "    |    " + IdProductos );
+                    NombreProducto.add("ID: " + idArticulo + "    |     $" + preciol); // + "    |    " + IdProductos );
                     ID.add(DescLarga);
                     PrecioProducto.add(preciol);
                     ClaveProducto.add(idArticulo);
@@ -503,7 +507,7 @@ public class IniciaVentas extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 tvPredeterminadoCantidad.setText("");
-                if (position > 0){
+                if (position > 0) {
 //                    String titulo = "PUNTADA QR";
 //                    String mensajes = "¿Descuento con Puntada ( QR )? ";
 //                    Modales modalesPuntada = new Modales(IniciaVentas.this);
@@ -532,11 +536,11 @@ public class IniciaVentas extends AppCompatActivity {
 //                        @Override
 //                        public void onClick(View view) {
 //                            modalesPuntada.alertDialog.dismiss();
-                            claveProducto = ClaveProducto.get(position);
-                            descripcioncombustible = ID.get(position);
-                            precio = PrecioProducto.get(position);
-                            cargaOpcionesPredeterminado();
-                            initializeAdapter();
+                    claveProducto = ClaveProducto.get(position);
+                    descripcioncombustible = ID.get(position);
+                    precio = PrecioProducto.get(position);
+                    cargaOpcionesPredeterminado();
+                    initializeAdapter();
 //                        }
 //                    });
                 }
@@ -551,17 +555,18 @@ public class IniciaVentas extends AppCompatActivity {
 
 
     }
-    private void cargaOpcionesPredeterminado(){
+
+    private void cargaOpcionesPredeterminado() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvPredeterminado.setLayoutManager(linearLayoutManager);
         rvPredeterminado.setHasFixedSize(true);
         lrecyclerViewHeaders = new ArrayList<>();
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Litros","Cantidad en Litros",R.drawable.gas));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pesos","Cantidad en Pesos",R.drawable.moneda));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Litros", "Cantidad en Litros", R.drawable.gas));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pesos", "Cantidad en Pesos", R.drawable.moneda));
 
     }
 
-    private void cargaOpcionesPredeterminadoSolo(){
+    private void cargaOpcionesPredeterminadoSolo() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvPredeterminado.setLayoutManager(linearLayoutManager);
         rvPredeterminado.setHasFixedSize(true);
@@ -591,9 +596,9 @@ public class IniciaVentas extends AppCompatActivity {
         rvPredeterminado.setAdapter(adapter);
     }
 
-    private void EnviaLitrosPesos(String identificador){
+    private void EnviaLitrosPesos(String identificador) {
         String titulo = "PREDETERMINADO";
-        String mensaje = "Ingresa la cantidad de " + identificador ;
+        String mensaje = "Ingresa la cantidad de " + identificador;
         Modales modales = new Modales(IniciaVentas.this);
         View viewLectura = modales.MostrarDialogoInsertaDato(IniciaVentas.this, mensaje, titulo);
         EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
@@ -603,9 +608,9 @@ public class IniciaVentas extends AppCompatActivity {
             public void onClick(View view) {
                 modales.alertDialog.dismiss();
                 String cantidad = edtProductoCantidad.getText().toString();
-                if (cantidad.isEmpty()){
-                    edtProductoCantidad.setError("Ingresa la cantidad de "+ identificador);
-                }else {
+                if (cantidad.isEmpty()) {
+                    edtProductoCantidad.setError("Ingresa la cantidad de " + identificador);
+                } else {
                     String CantidadaEnviar = cantidad;
                     EnviarProductosPredeterminado(Double.parseDouble(CantidadaEnviar), identificador);
 
@@ -620,7 +625,7 @@ public class IniciaVentas extends AppCompatActivity {
         });
     }
 
-    private void EnviarProductosPredeterminado(Double cantidadpredeterminar,String identificador) {
+    private void EnviarProductosPredeterminado(Double cantidadpredeterminar, String identificador) {
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
@@ -630,27 +635,38 @@ public class IniciaVentas extends AppCompatActivity {
 
             JSONObject datos = new JSONObject();
             try {
-                datos.put("TipoProducto","1");
+                datos.put("TipoProducto", "1");
                 datos.put("ProductoId", claveProducto);
                 datos.put("NumeroInterno", claveProducto);
                 datos.put("Descripcion", descripcioncombustible);
                 datos.put("Cantidad", cantidadpredeterminar);
                 datos.put("Precio", precio);
-                //datos.put("Precio", litros);
-                if (identificador.equals("LITROS")){
-                    datos.put("Importe", false);
-                }else{
-                    datos.put("Importe", true);
-                }
-                if (lugarproviene.equals("puntadaAcumularQr")){
+                if (lugarproviene.equals("puntadaAcumularQr")) {
                     datos.put("importedescuento", descuento);
+                } else if (lugarproviene.equals("descuentoYena")) {
+                    switch (claveProducto) {
+                        case "1":
+                            datos.put("importedescuento", descuentoMagnaYena);
+                            break;
+                        case "2":
+                            datos.put("importedescuento", descuentoPremiumYena);
+                            break;
+                        case "3":
+                            datos.put("importedescuento", descuentoDieselYena);
+                            break;
+                    }
                 }
 
                 myArray.put(datos);
+                //datos.put("Precio", litros);
+                if (identificador.equals("LITROS")) {
+                    datos.put("Importe", false);
+                } else {
+                    datos.put("Importe", true);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
 
 
             String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + poscicionCarga;
@@ -663,10 +679,10 @@ public class IniciaVentas extends AppCompatActivity {
                             if (correcto.equals("true")) {
                                 String titulo = "AVISO";
                                 String mensajes = "Listo para Iniciar Despacho";
-                                if (identificador.equals("PESOS")){
+                                if (identificador.equals("PESOS")) {
                                     tvPredeterminadoCantidad.setText("Predeterminado: $" + df.format(cantidadpredeterminar));
-                                }else{
-                                    tvPredeterminadoCantidad.setText("Predeterminado: " + df.format(cantidadpredeterminar) + " " + identificador );
+                                } else {
+                                    tvPredeterminadoCantidad.setText("Predeterminado: " + df.format(cantidadpredeterminar) + " " + identificador);
                                 }
                                 spCombustible.setEnabled(false);
                                 cargaOpcionesPredeterminadoSolo();
@@ -736,6 +752,7 @@ public class IniciaVentas extends AppCompatActivity {
                     // Add headers
                     return headers;
                 }
+
                 //Important part to convert response to JSON Array Again
                 @Override
                 protected com.android.volley.Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
@@ -763,10 +780,4 @@ public class IniciaVentas extends AppCompatActivity {
             queue.add(request_json);
         }
     }
-
-
-
-
-
-
 }

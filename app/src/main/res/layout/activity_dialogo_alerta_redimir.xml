@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
-    android:padding="20dp">
+    android:background="@drawable/dialog_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutDialog"
@@ -56,7 +56,7 @@
         android:layout_height="45dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="10dp"
-        android:backgroundTint="@color/colorWarning"
+        android:backgroundTint="@color/colorInsertarDato"
         android:textColor="@color/white"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
@@ -70,7 +70,7 @@
         android:layout_height="45dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="40dp"
-        android:backgroundTint="@color/colorWarning"
+        android:backgroundTint="@color/yena_color"
         android:textColor="@color/white"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
@@ -82,7 +82,7 @@
         android:id="@+id/buttonPuntada"
         android:layout_width="120dp"
         android:layout_height="45dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/colorWarning"
         android:textColor="@color/white"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"

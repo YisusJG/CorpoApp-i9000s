@@ -751,12 +751,12 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgMonederos -> {
                 intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
                 startActivity(intent)
-////                var manufacturer: String
+//                var manufacturer: String
 //                var model: String
 //                var identificador: String
-////                manufacturer = Build.MANUFACTURER
+//                manufacturer = Build.MANUFACTURER
 //                model = Build.MODEL
-////                identificador = manufacturer + " " + model
+//                identificador = "$manufacturer $model"
 //
 //                if (model == "i9000S") {
 //                    intent = Intent(applicationContext, MonederosElectronicos::class.java)

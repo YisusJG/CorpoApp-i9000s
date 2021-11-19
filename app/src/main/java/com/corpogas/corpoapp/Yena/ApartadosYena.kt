@@ -18,7 +18,7 @@ class ApartadosYena : AppCompatActivity() {
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
 
         val btnConsultaSaldo = findViewById<TextView>(R.id.boton_consultar_saldo)
-        val btnAcumulacion = findViewById<TextView>(R.id.boton_acumular)
+//        val btnAcumulacion = findViewById<TextView>(R.id.boton_acumular)
         val btnRedencion = findViewById<TextView>(R.id.boton_redimir)
 
 
@@ -28,22 +28,16 @@ class ApartadosYena : AppCompatActivity() {
             startActivity(intent)
         }
 
-        btnAcumulacion.setOnClickListener {
-            val intent = Intent(this, PosicionPuntadaRedimir::class.java)
-            intent.putExtra("lugarproviene", "Acumulacion Yena")
-            startActivity(intent)
-        }
+//        btnAcumulacion.setOnClickListener {
+//            val intent = Intent(this, PosicionPuntadaRedimir::class.java)
+//            intent.putExtra("lugarproviene", "Acumulacion Yena")
+//            startActivity(intent)
+//        }
 
         btnRedencion.setOnClickListener {
             val intent = Intent(this, PosicionPuntadaRedimir::class.java)
             intent.putExtra("lugarproviene", "Redencion Yena")
             startActivity(intent)
         }
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, Menu_Principal::class.java)
-        startActivity(intent)
-        finish()
     }
 }

@@ -9,6 +9,7 @@
     import android.content.Intent;
     import android.content.IntentFilter;
     import android.device.scanner.configuration.Triggering;
+    import android.os.Build;
     import android.os.Bundle;
     import android.text.Editable;
     import android.text.InputType;
@@ -27,6 +28,7 @@
     import android.widget.TextView;
     import android.widget.Toast;
 
+    import androidx.annotation.Nullable;
     import androidx.appcompat.app.AppCompatActivity;
     import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,6 +70,8 @@
 //    import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
     public class VentasProductos extends AppCompatActivity implements View.OnClickListener {
+        String model;
+
         ScanManagerProvides scanManagerProvides;
         String result = "";
 
@@ -129,7 +133,10 @@
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_ventas_productos);
-            scanManagerProvides = new ScanManagerProvides();
+
+            // Código para verificar HH
+            model = Build.MODEL;
+
             //instruccion para que aparezca la flecha de regreso
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             simbolos.setDecimalSeparator('.');
@@ -329,76 +336,91 @@
                 }
             });
 
-            btnScanner.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (view.getId() == R.id.btnscanner) {
-                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                            if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
-                                scanManagerProvides.stopDecode();
+            if (model.equals("i9000S")) {
+                scanManagerProvides = new ScanManagerProvides();
+
+                btnScanner.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (view.getId() == R.id.btnscanner) {
+                            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                                if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                    scanManagerProvides.stopDecode();
+                                }
+                            }
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                                scanManagerProvides.startDecode();
                             }
                         }
-                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                            scanManagerProvides.startDecode();
+                        return false;
+                    }
+                });
+
+                Producto.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if (!Producto.getText().toString().equals("")) {
+                            if (Producto.getText().toString().length() > 5) {
+                                buscarCodigoBarra(Producto.getText().toString());
+                            }
                         }
                     }
-                    return false;
-                }
-            });
-
-//            Producto.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable editable) {
-//                    if (!Producto.getText().toString().equals("")) {
-//                        btnScanner.setEnabled(false);
-//                    } else {
-//                        btnScanner.setEnabled(true);
-//                    }
-//                }
-//            });
+                });
+            } else {
+                btnScanner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        IntentIntegrator integrator = new IntentIntegrator(VentasProductos.this);
+                        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                        integrator.setPrompt("Lector - CDP");
+                        integrator.setCameraId(0);
+                        integrator.setBeepEnabled(true);
+                        integrator.setBarcodeImageEnabled(true);
+                        integrator.initiateScan();
+                    }
+                });
+            }
         }
 
-        @Override
-        public boolean dispatchKeyEvent(KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
-                char pressedKey = (char) event.getUnicodeChar();
-                result += pressedKey;
-            }
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
-                buscarCodigoBarra(result);
-                result = "";
-            }
-            return false;
-        }
-
-        //        protected void onActivityResult (int requestCode, int resulCode, Intent data) {
-//            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
-//
-//            if (result != null) {
-//                if (result.getContents() == null) {
-//                    Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
-//                } else {
-////                    Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
-//                    Producto.setText(result.getContents());
-//                    buscarCodigoBarra(result.getContents());
-//                }
-//            } else {
-//                super.onActivityResult(requestCode, resulCode, data);
+        //        @Override
+//        public boolean dispatchKeyEvent(KeyEvent event) {
+//            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
+//                char pressedKey = (char) event.getUnicodeChar();
+//                result += pressedKey;
 //            }
+//            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
+//                buscarCodigoBarra(result);
+//                result = "";
+//            }
+//            return false;
 //        }
 
-        private void Autorizadespacho() {
+        protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+                } else {
+//                    Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
+//                    Producto.setText(result.getContents());
+                    buscarCodigoBarra(result.getContents());
+                }
+            } else {
+                super.onActivityResult(requestCode, resulCode, data);
+            }
+        }
 
+        private void Autorizadespacho() {
 //            if (!Conexion.compruebaConexion(this)) {
 //                Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
 //                Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
@@ -476,16 +498,16 @@
 //
 //        }
 
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-
-            //disable scan
-            Intent intentDisScan = new Intent("ACTION_BAR_SCANCFG");
-            intentDisScan.putExtra("EXTRA_SCAN_POWER", 0);
-            VentasProductos.this.sendBroadcast(intentDisScan);
-
-        }
+//        @Override
+//        protected void onDestroy() {
+//            super.onDestroy();
+//
+//            //disable scan
+//            Intent intentDisScan = new Intent("ACTION_BAR_SCANCFG");
+//            intentDisScan.putExtra("EXTRA_SCAN_POWER", 0);
+//            VentasProductos.this.sendBroadcast(intentDisScan);
+//
+//        }
 
         @Override
         protected void onResume() {
@@ -498,7 +520,9 @@
             Intent intentEnableScan = new Intent("ACTION_BAR_SCANCFG");
             intentEnableScan.putExtra("EXTRA_SCAN_POWER", 1);
             VentasProductos.this.sendBroadcast(intentEnableScan);
-            scanManagerProvides.initScan(VentasProductos.this);
+            if (model.equals("i9000S")) {
+                scanManagerProvides.initScan(VentasProductos.this);
+            }
         }
 
         @Override
@@ -510,24 +534,27 @@
             super.onPause();
         }
 
-
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.btnscanner:
-//                    modo_Escaneo = MVBarcodeScanner.ScanningMode.SINGLE_AUTO;
-                    Intent startIntent = new Intent("ACTION_BAR_TRIGSCAN");
-                    startIntent.putExtra("timeout", 60);// Units per second,and Maximum 9
-//                    tvMsg.setText("Start Scan...");
 
-                    VentasProductos.this.sendBroadcast(startIntent);
-                    break;
-            }
-
-//            new MVBarcodeScanner.Builder().setScanningMode(modo_Escaneo).setFormats(Barcode.ALL_FORMATS)
-//                    .build()
-//                    .launchScanner(this, CODE_SCAN);
         }
+
+        //        @Override
+//        public void onClick(View view) {
+//            switch (view.getId()){
+//                case R.id.btnscanner:
+////                    modo_Escaneo = MVBarcodeScanner.ScanningMode.SINGLE_AUTO;
+//                    Intent startIntent = new Intent("ACTION_BAR_TRIGSCAN");
+//                    startIntent.putExtra("timeout", 60);// Units per second,and Maximum 9
+////                    tvMsg.setText("Start Scan...");
+//
+//                    VentasProductos.this.sendBroadcast(startIntent);
+//                    break;
+//            }
+////            new MVBarcodeScanner.Builder().setScanningMode(modo_Escaneo).setFormats(Barcode.ALL_FORMATS)
+////                    .build()
+////                    .launchScanner(this, CODE_SCAN);
+//        }
 //        @Override
 //        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //            super.onActivityResult(requestCode, resultCode, data);

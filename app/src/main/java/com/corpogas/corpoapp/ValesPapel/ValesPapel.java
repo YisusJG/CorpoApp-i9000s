@@ -12,6 +12,7 @@ import android.device.scanner.configuration.PropertyID;
 import android.device.scanner.configuration.Symbology;
 import android.device.scanner.configuration.Triggering;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -44,6 +45,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
@@ -72,8 +74,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ValesPapel extends AppCompatActivity {
+    String model;
+
     ScanManagerProvides scanManagerProvides;
-    String result;
 
     Spinner spnValesPapel;
     Button btnAgregarVale, btnAceptarValesPapel, btnOtrasFormasPago;
@@ -104,10 +107,9 @@ public class ValesPapel extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vales_papel);
+        model = Build.MODEL;
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
-        scanManagerProvides = new ScanManagerProvides();
-        result = "";
 
         posicionCarga = getIntent().getStringExtra("posicioncarga");
         usuarioid = getIntent().getStringExtra("numeroEmpleado");
@@ -180,30 +182,39 @@ public class ValesPapel extends AppCompatActivity {
             }
         });
 
-        imgEscanearVale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
-
-        imgEscanearVale2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (view.getId() == R.id.imgEscanearVale2) {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                        if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
-                            scanManagerProvides.stopDecode();
+        if (model.equals("i9000S")) {
+            scanManagerProvides = new ScanManagerProvides();
+            imgEscanearVale2.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (view.getId() == R.id.imgEscanearVale2) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                scanManagerProvides.stopDecode();
+                            }
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            scanManagerProvides.startDecode();
                         }
                     }
-                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                        scanManagerProvides.startDecode();
-                    }
+                    return false;
                 }
-                return false;
-            }
-        });
-
+            });
+        } else {
+            imgEscanearVale2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    IntentIntegrator integrator = new IntentIntegrator(ValesPapel.this);
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                    integrator.setPrompt("Lector - CDP");
+                    integrator.setCameraId(0);
+                    integrator.setBeepEnabled(true);
+                    integrator.setBarcodeImageEnabled(true);
+                    integrator.initiateScan();
+                }
+            });
+        }
     }
 
 //    @Override
@@ -222,31 +233,30 @@ public class ValesPapel extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        scanManagerProvides.initScan(ValesPapel.this);
+        if (model.equals("i9000S")) {
+            scanManagerProvides.initScan(ValesPapel.this);
+        }
     }
 
 
-//    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
-//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
-//        if (result != null) {
-//            if (result.getContents() == null) {
-//                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
-//            } else {
-////                if (result.getContents().length() >= 17) {
-//                    tvFolioMonto.setText(result.getContents());
-////                } else {
-////                    int resultInt = Integer.parseInt(result.getContents());
-////                    String residuo = result.getContents().substring(result.getContents().length() - 2);
-//////                    int conversion = resultInt/100;
-//////                    String resultConversion = Integer.toString(conversion);
-////                    tvDenominacionMonto.setText(resultConversion);
-////                    tvDenominacionMonto.setText(result.getContents());
-////                }
-//            }
-//        } else {
-//            super.onActivityResult(requestCode, resulCode, data);
-//        }
-//    }
+    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+            } else {
+                if (tvFolioMonto.getText().toString().length() <= 0) {
+                    if (tvFolioMonto.getText().toString().length() <= 0) {
+                        tvFolioMonto.setText(result.getContents());
+                    }
+                } else {
+                    tvDenominacionMonto.setText(result.getContents());
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resulCode, data);
+        }
+    }
 
     private  void EnviaraDiferentesFormasPago(){
         if (tvMontoACargarPendiente.getText().toString().equals("0.00")){

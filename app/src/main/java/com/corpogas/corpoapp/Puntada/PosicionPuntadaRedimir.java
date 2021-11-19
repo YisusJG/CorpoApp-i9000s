@@ -603,15 +603,33 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
     private void confirmaDescuentoPuntadaQr(String posicionCarga){
         String titulo = "PUNTADA QR";
-        String mensajes = "¿Descuento con Puntada ( QR )? ";
+        String mensajes = "¿Desea aplicar descuento?";
         Modales modalesPuntada = new Modales(PosicionPuntadaRedimir.this);
-        View viewLectura = modalesPuntada.MostrarDialogoAlerta(PosicionPuntadaRedimir.this, mensajes,  "SI", "NO");
+        View viewLectura = modalesPuntada.MostrarDialogoAlertaParaRedencion(PosicionPuntadaRedimir.this, mensajes);
         viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String precio = PrecioProducto.get(position);
-//                String claveProducto = ClaveProducto.get(position);
-//                //LeeTarjeta();
+                Intent intent = new Intent(getApplicationContext(), LecturayEscaneo.class);
+                //Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
+                intent.putExtra("combustible", "");
+                intent.putExtra("posicionCarga", posicionCarga);
+                intent.putExtra("estacionjarreo", "estacionJarreo");
+                intent.putExtra("claveProducto", "");
+                intent.putExtra("precioProducto", "");
+                intent.putExtra("despacholibre", "no");
+                intent.putExtra("lugarProviene", "descuentoYena");
+                intent.putExtra("pocioncarganumerointerno", cargaNumeroInterno);
+                startActivity(intent);
+                finish();
+                modalesPuntada.alertDialog.dismiss();
+            }
+        });
+        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//              String precio = PrecioProducto.get(position);
+//              String claveProducto = ClaveProducto.get(position);
+//              LeeTarjeta();
                 Intent intent = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
                 //Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
                 intent.putExtra("combustible", "");
@@ -627,7 +645,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 modalesPuntada.alertDialog.dismiss();
             }
         });
-        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+        viewLectura.findViewById(R.id.buttonPuntada).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 modalesPuntada.alertDialog.dismiss();
@@ -645,7 +663,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     public void obtieneSaldoTarjeta(String PosicionDeCarga) {

@@ -33,7 +33,6 @@ public class MagReadService {
         mHandler = handler;
         mContext = context;
         magManager = new MagManager();
-        
     }
     
     // 从字节数组到十六进制字符串转换
@@ -155,9 +154,9 @@ public class MagReadService {
                 try {
                     Thread.sleep(800);
                 } catch (Exception e) {
+
                 }
             }
-           
         }
     }
 }

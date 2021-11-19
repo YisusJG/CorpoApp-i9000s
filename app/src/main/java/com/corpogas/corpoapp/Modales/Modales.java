@@ -394,7 +394,7 @@ public class Modales extends Dialog implements
         builder.setView(view);
         ((TextView) view.findViewById(R.id.textTitleEfectivo)).setText(titulo);
 //        ((TextView) view.findViewById(R.id.textMonto)).setText(String.format("$ %.2f", Double.parseDouble(monto)));
-        ((TextView) view.findViewById(R.id.textMonto)).setText("$ " + formatoCifras.format(monto));
+        ((TextView) view.findViewById(R.id.textMonto)).setText("$ " + formatoCifras.format(Double.parseDouble(monto)));
         EditText cantidadRecibida = view.findViewById(R.id.textMontoVales);
 
         cantidadRecibida.addTextChangedListener(new TextWatcher() {

@@ -698,9 +698,8 @@ public class FormasPagoReordenado extends AppCompatActivity {
                 viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FinalizaVenta();
                         modalesImprime.alertDialog.dismiss();
-                        finish();
+                        FinalizaVenta();
                     }
                 });
                 viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
@@ -708,7 +707,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     public void onClick(View view) {
                         modalesImprime.alertDialog.dismiss();
                         ImprimeVenta();
-                        finish();
                     }
                 });
 
@@ -872,8 +870,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     return params;
                 }
             };
-
-
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -900,9 +896,8 @@ public class FormasPagoReordenado extends AppCompatActivity {
             datos.put("IdUsuario", sucursalnumeroempleado);
             datos.put("SucursalId", sucursalId);
             datos.put("IdFormasPago", FormasPagoArreglo);
-            datos.put("SucursalId", sucursalId);
+//            datos.put("SucursalId", sucursalId);
             datos.put("ConfiguracionAplicacionId", data.getIdTarjtero());
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -910,8 +905,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, datos, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                String detalle = null;
+                String detalle;
                 try {
                     detalle = response.getString("Detalle");
                     if (detalle.equals("null")) {
@@ -926,10 +920,8 @@ public class FormasPagoReordenado extends AppCompatActivity {
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                    startActivity(intent);
-                                    finish();
                                     modales.alertDialog.dismiss();
+                                    startActivity(new Intent(FormasPagoReordenado.this, Menu_Principal.class));
                                 }
                             });
                         } catch (Exception e) {
@@ -942,15 +934,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                startActivity(intent);
-                                finish();
                                 modales.alertDialog.dismiss();
+                                startActivity(new Intent(FormasPagoReordenado.this, Menu_Principal.class));
                             }
                         });
-
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -982,7 +970,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
             }
         };
         queue.add(request_json);
-
     }
 
     private void ObtieneMontoDolares(Integer identificador) {

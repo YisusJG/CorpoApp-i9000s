@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.device.scanner.configuration.Triggering;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +34,7 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
+import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.ScanManagerProvides;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
@@ -44,6 +48,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class EntregaFajillas extends AppCompatActivity {
+    String model;
+
     ScanManagerProvides scanManagerProvides;
     String result = "";
 
@@ -70,31 +76,87 @@ public class EntregaFajillas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrega_fajillas);
+        model = Build.MODEL;
+
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         sucursalId = Long.parseLong(data.getIdSucursal());
         ipEstacion = data.getIpEstacion();
-        scanManagerProvides = new ScanManagerProvides();
+
 
         init();
         setVariables();
 
-        imgEscanearFajilla.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (view.getId() == R.id.imgEscanearFajilla) {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                        if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
-                            scanManagerProvides.stopDecode();
+        if (model.equals("i9000S")) {
+            scanManagerProvides = new ScanManagerProvides();
+            imgEscanearFajilla.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (view.getId() == R.id.imgEscanearFajilla) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                scanManagerProvides.stopDecode();
+                            }
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            scanManagerProvides.startDecode();
                         }
                     }
-                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                        scanManagerProvides.startDecode();
+                    return false;
+                }
+            });
+
+            cantidad.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!cantidad.getText().toString().equals("")) {
+                        if (cantidad.getText().toString().length() > 5) {
+                            AgregarFajillaaLista(cantidad.getText().toString());
+                        }
                     }
                 }
-                return false;
+            });
+        } else {
+            imgEscanearFajilla.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    IntentIntegrator integrator = new IntentIntegrator(EntregaFajillas.this);
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                    integrator.setPrompt("Lector - CDP");
+                    integrator.setCameraId(0);
+                    integrator.setBeepEnabled(true);
+                    integrator.setBarcodeImageEnabled(true);
+                    integrator.initiateScan();
+                }
+            });
+        }
+
+
+    }
+
+    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+            } else {
+//                    Toast.makeText(getApplicationContext(), result.getContents(), Toast.LENGTH_SHORT).show();
+//                    Producto.setText(result.getContents());
+                AgregarFajillaaLista(result.getContents());
             }
-        });
+        } else {
+            super.onActivityResult(requestCode, resulCode, data);
+        }
     }
 
 //    @Override
@@ -113,7 +175,9 @@ public class EntregaFajillas extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        scanManagerProvides.initScan(EntregaFajillas.this);
+        if (model.equals("i9000S")) {
+            scanManagerProvides.initScan(EntregaFajillas.this);
+        }
     }
 
     private void init(){
@@ -211,7 +275,7 @@ public class EntregaFajillas extends AppCompatActivity {
         agregarFolio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AgregarFajillaaLista();
+                AgregarFajillaaLista(cantidad.getText().toString());
             }
         });
 
@@ -336,9 +400,8 @@ public class EntregaFajillas extends AppCompatActivity {
     }
 
 
-    private void AgregarFajillaaLista() {
+    private void AgregarFajillaaLista(String cantidad) {
         spnFajillas = (Spinner) findViewById(R.id.spFajillas);
-        cantidad = findViewById(R.id.etCantidad);
         if (cantidad.length() == 0) {
             String titulo = "AVISO";
             Modales modales = new Modales(EntregaFajillas.this);
@@ -354,7 +417,7 @@ public class EntregaFajillas extends AppCompatActivity {
             boolean bandera = false;
             for (Integer m = 0; m < Folio.size(); m++) {
                 String codigo = Folio.get(m);
-                if (codigo.equals(cantidad.getText().toString())) {
+                if (codigo.equals(cantidad)) {
                     bandera = true;
                     break;
                 } else {
@@ -369,7 +432,7 @@ public class EntregaFajillas extends AppCompatActivity {
                     ValorFolio.add("Tipo Fajilla "+fajillaSeleccionadaDescripcion);
                     tipoFajilla.add("2");
                 }
-                Folio.add(cantidad.getText().toString());
+                Folio.add(cantidad);
                 ListAdapterProductos adapterP = new ListAdapterProductos(this, Folio, ValorFolio);
                 listFolio.setTextFilterEnabled(true);
                 listFolio.setAdapter(adapterP);
@@ -401,10 +464,10 @@ public class EntregaFajillas extends AppCompatActivity {
 
                     }
                 });
-                cantidad.setText("");
+
             } else {
                 String titulo = "AVISO";
-                String mensaje = "El folio No. " + cantidad.getText().toString() + " ya fue agregado";
+                String mensaje = "El folio No. " + cantidad + " ya fue agregado";
                 Modales modales = new Modales(EntregaFajillas.this);
                 View view1 = modales.MostrarDialogoAlertaAceptar(EntregaFajillas.this, mensaje, titulo);
                 view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {

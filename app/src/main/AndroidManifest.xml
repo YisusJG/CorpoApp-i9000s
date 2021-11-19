@@ -185,7 +185,8 @@
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
         <activity android:name=".VentaCombustible.Ventas" />
         <activity android:name=".VentaCombustible.EligePrecioLitros" />
-        <activity android:name=".Productos.VentasProductos" />
+        <activity android:name=".Productos.VentasProductos"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 
