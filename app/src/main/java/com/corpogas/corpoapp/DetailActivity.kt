@@ -4,11 +4,25 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import com.android.volley.*
+import com.android.volley.toolbox.HttpHeaderParser
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.corpogas.corpoapp.Configuracion.SQLiteBD
+import com.corpogas.corpoapp.Modales.Modales
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago
 import com.corpogas.corpoapp.VentaCombustible.FormaPagoTarjetasBancarias
+import com.corpogas.corpoapp.VentaCombustible.GenerarTicketVisaAmex
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.UnsupportedEncodingException
+import java.lang.Exception
+import java.util.HashMap
 
 class  DetailActivity : AppCompatActivity() {
     var bundle: Bundle? = null
@@ -26,22 +40,25 @@ class  DetailActivity : AppCompatActivity() {
 
         if (bundle!!.getBoolean("TX_STATUS")) {
             if (bundle!!.getString("TX_JSON_RETURN") == null) {
-                identificador = 1
+                identificador = 2
                 closeApp()
             } else {
-                identificador = 2
+                identificador = 1
                 findViewById<TextView>(R.id.content).text = bundle!!.getString("TX_JSON_RETURN")
+                if (provieneeFPoDFP.equals("1")){
+                    db!!.updatePagoTarjetaResponse(bundle!!.getString("TX_JSON_RETURN").toString().replace("/"," "))
+                    closeApp()
+                }else{
+                    db!!.updateDiferentesFormasPago(bundle!!.getString("TX_JSON_RETURN").toString().replace("/"," "),"1",db!!.getformapagoid())
+                    closeApp()
+                }
                 logger("JSON", bundle!!.getString("TX_JSON_RETURN")!!)
             }
         } else {
             identificador = 2
             findViewById<TextView>(R.id.content).text = bundle!!.getString("TX_ERROR")
         }
-
-
-
         findViewById<Button>(R.id.btnGoHome).setOnClickListener {
-            identificador = 2
             closeApp()
         }
     }
@@ -59,16 +76,18 @@ class  DetailActivity : AppCompatActivity() {
 
     private fun closeApp() {
         if (identificador == 1){
-            db!!.updatePagoTarjetaCorrecto(1)
-
-            startActivity(
-                Intent(
-                    this,
-                    FormaPagoTarjetasBancarias::class.java // Menu_Principal
-
-                ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
-            this.finish()
+            if (provieneeFPoDFP == "1") {
+                db!!.updatePagoTarjetaCorrecto(1)
+                startActivity(
+                    Intent(
+                        this,
+                        FormaPagoTarjetasBancarias::class.java // Menu_Principal
+                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+                this.finish()
+            }else{
+                this.finish()
+            }
         }else{
             db!!.updatePagoTarjetaCorrecto(2)
 

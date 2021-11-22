@@ -307,7 +307,7 @@ public class FormasPago extends AppCompatActivity {
                     case 0: //Diferentes Formas de Pago
                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                         data.close();
-                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
                         Intent intentDiferente = new Intent(getApplicationContext(), DiferentesFormasPago.class);
                         intentDiferente.putExtra("Enviadodesde", "formaspago");
                         intentDiferente.putExtra("idusuario", idusuario);
@@ -391,7 +391,7 @@ public class FormasPago extends AppCompatActivity {
 //                            }else{
                                 data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                 data.close();
-                                data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
 
                                 Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                                 intentVisa.putExtra("lugarProviene", "formaspago");
@@ -407,7 +407,7 @@ public class FormasPago extends AppCompatActivity {
                                 data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                 data.close();
 
-                                data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
                                 Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                                 intentVisa.putExtra("Enviadodesde", "formaspago");
                                 intentVisa.putExtra("posicioncarga", posiciondecargaid);
@@ -426,7 +426,7 @@ public class FormasPago extends AppCompatActivity {
                                         //LeeTarjeta();
                                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                         data.close();
-                                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
 
                                         Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
                                         //intent.putExtra("device_name", m_deviceName);
@@ -451,7 +451,7 @@ public class FormasPago extends AppCompatActivity {
                                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                         data.close();
 
-                                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                        data.InsertarDatosPagoTarjeta("1",posiciondecargaid, formapagoid, Double.toString(MontoCanasta),  "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
                                         Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                                         intentVisa.putExtra("Enviadodesde", "formaspago");
                                         intentVisa.putExtra("posicioncarga", posiciondecargaid);
@@ -724,7 +724,7 @@ public class FormasPago extends AppCompatActivity {
                                     df.setMaximumFractionDigits(2);
                                     data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                     data.close();
-                                    data.InsertarDatosPagoTarjeta("1",posiciondecargaid, Integer.toString(numpago), Double.toString(MontoCanasta),  "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                    data.InsertarDatosPagoTarjeta("1",posiciondecargaid, Integer.toString(numpago), Double.toString(MontoCanasta),  "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
                                     Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                                     intentVisa.putExtra("Enviadodesde", "formaspago");
                                     intentVisa.putExtra("posicioncarga", posiciondecargaid);

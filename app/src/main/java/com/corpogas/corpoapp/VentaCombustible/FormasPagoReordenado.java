@@ -70,6 +70,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
 
     String fechaTicket;
     String posiciondecargaid, sucursalnumeroempleado, claveProducto, numeroTarjeta, nipCliente;
+    long posicioncarganumerointerno;
 
     Double totalPesos, totalDolares, tipoCambio, descuento;
     String puntadaId, provieneDe = "1";
@@ -118,6 +119,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         posiciondecargaid = getIntent().getStringExtra("posicionCarga");
         sucursalnumeroempleado = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
 
+        posicioncarganumerointerno = getIntent().getLongExtra("idposicionCarga", 0);
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
         descuento = getIntent().getDoubleExtra("descuento", 0);
         nipCliente = getIntent().getStringExtra("nipCliente");
@@ -199,7 +201,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     numero_pago = "0";
                     internonumero = "0";
                     NumeroInternoFormaPago.add("0");
-                    lrcvFormaPago.add(new RecyclerViewHeaders("VARIAS FORMAS PAGO", "Forma de Pago:" + 0, R.drawable.variasformaspago));
+                    lrcvFormaPago.add(new RecyclerViewHeaders("PAGO MIXTO", "Forma de Pago:" + 0, R.drawable.variasformaspago));
                 } else {
                     colocarformapago = false;
                     JSONObject nodo1 = nodo.getJSONObject(i);
@@ -357,7 +359,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     case "0": //Diferentes Formas de Pago
                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                         data.close();
-                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, formaPagoIdentificador, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, formaPagoIdentificador, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
                         Intent intentDiferente = new Intent(getApplicationContext(), DiferentesFormasPago.class);
                         intentDiferente.putExtra("Enviadodesde", "formaspago");
                         intentDiferente.putExtra("idusuario", idusuario);
@@ -370,6 +372,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         intentDiferente.putExtra("numeroTarjeta", numeroTarjeta);
                         intentDiferente.putExtra("descuento", descuento);
                         intentDiferente.putExtra("nipCliente", nipCliente);
+                        intentDiferente.putExtra("posicioncargainterno", posicioncarganumerointerno);
                         startActivity(intentDiferente);
                         finish();
                         break;
@@ -445,7 +448,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
 //                            }else{
                             data.getWritableDatabase().delete("PagoTarjeta", null, null);
                             data.close();
-                            data.InsertarDatosPagoTarjeta("1", posiciondecargaid, formaPagoIdentificador, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                            data.InsertarDatosPagoTarjeta("1", posiciondecargaid, formaPagoIdentificador, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta), "");
 
                             Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                             intentVisa.putExtra("lugarProviene", "formaspago");
@@ -461,7 +464,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                 data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                 data.close();
 
-                                data.InsertarDatosPagoTarjeta("1", posiciondecargaid, formaPagoIdentificador, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                data.InsertarDatosPagoTarjeta("1", posiciondecargaid, formaPagoIdentificador, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta), "");
                                 Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                                 intentVisa.putExtra("Enviadodesde", "formaspago");
                                 intentVisa.putExtra("posicioncarga", posiciondecargaid);
@@ -480,7 +483,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                     public void onClick(View view) {
                                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                         data.close();
-                                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, finalFormaPagoIdentificador, Double.toString(MontoCanasta), "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, finalFormaPagoIdentificador, Double.toString(MontoCanasta), "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta), "");
 
                                         Intent intent = new Intent(getApplicationContext(), LecturayEscaneo.class);
                                         //intent.putExtra("device_name", m_deviceName);
@@ -506,7 +509,8 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                         //LeeTarjetaYena();
                                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                         data.close();
-                                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, finalFormaPagoIdentificador, Double.toString(MontoCanasta), "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, finalFormaPagoIdentificador, Double.toString(MontoCanasta), "1", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta), "");
+
 
                                         Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);
                                         //intent.putExtra("device_name", m_deviceName);
@@ -532,7 +536,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                         data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                         data.close();
 
-                                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, finalFormaPagoIdentificador1, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta));
+                                        data.InsertarDatosPagoTarjeta("1", posiciondecargaid, finalFormaPagoIdentificador1, Double.toString(MontoCanasta), "0", provieneDe, "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoCanasta),"");
                                         Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);
                                         intentVisa.putExtra("Enviadodesde", "formaspago");
                                         intentVisa.putExtra("posicioncarga", posiciondecargaid);

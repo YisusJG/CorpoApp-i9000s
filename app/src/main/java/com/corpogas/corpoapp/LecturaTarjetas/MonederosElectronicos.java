@@ -783,7 +783,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                                     df.setMaximumFractionDigits(2);
                                     data.getWritableDatabase().delete("PagoTarjeta", null, null);
                                     data.close();
-                                    data.InsertarDatosPagoTarjeta("1", posiciondeCarga, idformaPago, Double.toString(montoenlacanasta), "0", "1", "0", "", "", "", Double.toString(montoenlacanasta));
+                                    data.InsertarDatosPagoTarjeta("1", posiciondeCarga, idformaPago, Double.toString(montoenlacanasta), "0", "1", "0", "", "", "", Double.toString(montoenlacanasta),"");
                                     Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
                                     intentVisa.putExtra("lugarProviene", "formaspago");
                                     intentVisa.putExtra("posicioncarga", posiciondeCarga);

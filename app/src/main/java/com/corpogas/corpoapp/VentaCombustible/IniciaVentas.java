@@ -258,8 +258,8 @@ public class IniciaVentas extends AppCompatActivity {
                         JSONObject respuesta = new JSONObject(response);
                         String correctoautoriza = respuesta.getString("Correcto");
                         String mensajeautoriza = respuesta.getString("Mensaje");
-                        String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
                         if (correctoautoriza.equals("true")) {
+                            String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
                             String titulo = "AVISO";
                             String mensaje = "Listo para Iniciar Despacho";
                             final Modales modales = new Modales(IniciaVentas.this);

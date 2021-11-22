@@ -57,11 +57,25 @@ public class DiferentesFormasPago extends AppCompatActivity {
     JSONArray FormasPagoArreglo, ArregloFormaPagoVale;
     Bundle args = new Bundle();
     String CadenaFinal, numeroempleado, numeroTarjeta, nipCliente;
-    String BanderaHuella, enviadoDesde, Usuarioid, PosicionCarga, Clavedespachador, OperativaId, NombreCompletoVenta;
+    String  enviadoDesde, Usuarioid, PosicionCarga, Clavedespachador, OperativaId, NombreCompletoVenta;
     Integer TipoTransacionImprimir;
+    Long numerointerno;
     String arregloVales;
     Double MontoenCanasta, montoVales, descuento;
     ProgressDialog bar;
+
+    //Declaramos la lista de titulo
+    List<String> maintitle;
+    //Creamos la lista para los subtitulos
+    List<String> subtitle;
+    //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
+    List<Integer> imgid;
+    List<String> numerotickets;
+    List<String> IdFormaPago;
+    List<String> NumeroInternoFormaPago;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +97,32 @@ public class DiferentesFormasPago extends AppCompatActivity {
         tarjetaNumero = getIntent().getStringExtra("tarjetaNumero");
         pagoConPuntada = getIntent().getStringExtra("pagoconpuntada");
 
-        if (db.getCorrectoIncorrecto().equals("2")){
-            MontoenCanasta = Double.parseDouble(db.getmontototaldfp());
-            PosicionCarga = db.getposcioncarga();
-            numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
-            descuento = getIntent().getDoubleExtra("descuento",0);
-            nipCliente = getIntent().getStringExtra("nipCliente");
+        MontoenCanasta = 0.0;
+        if (db.getFormaPagoMixto()>0 ){
+            MontoenCanasta = db.getMontoTotalFPD(Integer.parseInt(db.getformapagoid()));
+            if (db.getCorrectoIncorrecto().equals("2")){
+                PosicionCarga = db.getposcioncarga();
+                numeroTarjeta = db.getNumeroTarjetaIni(); //getIntent().getStringExtra("numeroTarjeta");
+                descuento = Double.parseDouble(db.getDescuentoIni());   //getIntent().getDoubleExtra("descuento",0);
+                nipCliente = db.getNipIni(); //getIntent().getStringExtra("nipCliente");
+                numerointerno = Long.parseLong(db.getNumeroInternoPCDFPError());
+            }else{
+                if (MontoenCanasta >0.0){
+                    PosicionCarga = db.getposcioncarga();
+                    numeroTarjeta = db.getNumeroTarjetaIni(); //getIntent().getStringExtra("numeroTarjeta");
+                    descuento = Double.parseDouble(db.getDescuentoIni());   //getIntent().getDoubleExtra("descuento",0);
+                    nipCliente = db.getNipIni(); //getIntent().getStringExtra("nipCliente");
+                    numerointerno = Long.parseLong(db.getNumeroInternoPCDFP());
+                }else{
+                    MontoenCanasta = getIntent().getDoubleExtra("montoencanasta", 0.00);
+                    PosicionCarga = getIntent().getStringExtra("posicioncarga");
+                    numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
+                    descuento = getIntent().getDoubleExtra("descuento",0);
+                    nipCliente = getIntent().getStringExtra("nipCliente");
+                    numerointerno = getIntent().getLongExtra("posicioncargainterno", 0);
+
+                }
+            }
 
         }else{
             MontoenCanasta = getIntent().getDoubleExtra("montoencanasta", 0.00);
@@ -96,6 +130,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
             numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
             descuento = getIntent().getDoubleExtra("descuento",0);
             nipCliente = getIntent().getStringExtra("nipCliente");
+            numerointerno = getIntent().getLongExtra("posicioncargainterno", 0);
         }
 
         txtMontoTotal= (TextView) findViewById(R.id.txtMontoTotal);
@@ -115,7 +150,6 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //            }
 //        }
 
-        obtenerformasdepago();
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
         simbolos.setDecimalSeparator('.');
         DecimalFormat df = new DecimalFormat("$#,###.00##",simbolos);
@@ -134,6 +168,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //        }
         txtMontoTotal.setText(df.format(MontoenCanasta).toString());
         txtMontoFaltante.setText(df.format(MontoenCanasta).toString());
+        obtenerformasdepago();
+
         botonEnviar = findViewById(R.id.imprimir);
         botonEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +201,35 @@ public class DiferentesFormasPago extends AppCompatActivity {
                     bar.setIcon(R.drawable.tickets);
                     bar.setCancelable(false);
                     bar.show();
+
+                    FormasPagoArreglo = new JSONArray();
+                    String  FormaPagoId;
+                    String cadenaArreglo="";
+                    for (int g= 0; g< list.getCount(); g++){
+                        FormasPagoObjecto = new JSONObject();
+                        String valorObtenido;
+                        valorObtenido = subtitle.get(g);
+                        valorObtenido = valorObtenido.replace("$", "").replace(",","");
+//                        cantidadObtenida = cantidadObtenida + Double.parseDouble(valorObtenido);
+                        if (Double.parseDouble(valorObtenido)==0.00){
+                        }else{
+                            try {
+                                FormasPagoObjecto.put("Id", IdFormaPago.get(g));
+                                FormasPagoObjecto.put("Importe", Double.parseDouble(valorObtenido));
+                                if (IdFormaPago.get(g).equals("12")){ //Solo para Puntada Redimir
+                                    FormasPagoObjecto.put("NumeroTarjeta", tarjetaNumero);
+                                }
+
+                                if (IdFormaPago.get(g).equals("3") || IdFormaPago.get(g).equals("5") || IdFormaPago.get(g).equals("13")){
+                                    FormasPagoObjecto.put("Trama", db.getresponseFPD(Integer.parseInt(IdFormaPago.get(g)))); //TramaBancariaDetalle
+                                }
+                                FormasPagoArreglo.put(FormasPagoObjecto);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
                     String titulo = "PUNTADA";
                     String mensajes = "¿Desea Acumular la venta a su Tarjeta?";
                     Modales modalesEfectivo = new Modales(DiferentesFormasPago.this);
@@ -262,8 +327,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                     public void onClick(View view) {
                                         db.getWritableDatabase().delete("PagoTarjetaDiferentesFormasPago", null, null);
                                         db.close();
-                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                        startActivity(intent);
+//                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                        startActivity(intent);
                                         finish();
                                         modales.alertDialog.dismiss();
                                         bar.cancel();
@@ -280,6 +345,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                                 @Override
                                 public void onClick(View view) {
+                                    db.getWritableDatabase().delete("PagoTarjetaDiferentesFormasPago", null, null);
+                                    db.close();
                                     Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                     startActivity(intent);
                                     finish();
@@ -296,8 +363,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(DiferentesFormasPago.this, "error", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(DiferentesFormasPago.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    bar.cancel();
+                    botonEnviar.setClickable(true);
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -355,30 +423,21 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
     private void formadepago(String response) {
 
-        //Declaramos la lista de titulo
-        final List<String> maintitle;
         //lo assignamos a un nuevo ArrayList
         maintitle = new ArrayList<String>();
 
-        //Creamos la lista para los subtitulos
-        List<String> subtitle;
         //Lo asignamos a un nuevo ArrayList
         subtitle = new ArrayList<String>();
 
-        //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
-        List<Integer> imgid;
         //La asignamos a un nuevo elemento de ArrayList
         imgid = new ArrayList<>();
 
-        final List<String> numerotickets;
         //Lo asignamos a un nuevo ArrayList
         numerotickets = new ArrayList<String>();
 
-        final List<String> IdFormaPago;
         //Lo asignamos a un nuevo ArrayList
         IdFormaPago = new ArrayList<String>();
 
-        final List<String> NumeroInternoFormaPago;
         //Lo asignamos a un nuevo ArrayList
         NumeroInternoFormaPago = new ArrayList<String>();
 
@@ -417,11 +476,11 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //                        }else{
                             numerotickets.add(numero_ticket);
                             maintitle.add(nombre_pago);
-                            if (db.getCorrectoIncorrecto().equals("2")){
+//                            if (db.getCorrectoIncorrecto().equals("2")){
                                 if (db.getFormaPagoFPD(Integer.parseInt(numero_pago))>0){
                                     if (db.getEstatusCobradoFPD(Integer.parseInt(numero_pago)).equals(1)){
                                         subtitle.add("$"+ db.getMontoFPD(Integer.parseInt(numero_pago)) );
-                                        Double Faltante = Double.parseDouble(txtMontoFaltante.getText().toString());
+                                        Double Faltante = Double.parseDouble(txtMontoFaltante.getText().toString().replace("$","").replace(",",""));
 //                                        txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
                                         txtMontoFaltante.setText(df.format(Faltante-db.getMontoFPD(Integer.parseInt(numero_pago))).toString());
                                     }else{
@@ -430,9 +489,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                 }else{
                                     subtitle.add("$0.00" );
                                 }
-                            }else{
-                                subtitle.add("$0.00" );
-                            }
+//                            }else{
+//                                subtitle.add("$0.00" );
+//                            }
                             IdFormaPago.add(numero_pago);
                             colocarformapago = true;
 //                        }
@@ -521,18 +580,22 @@ public class DiferentesFormasPago extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 Boolean banderaInicia=false;
                 Integer validaInicioError;
-                if (db.getCorrectoIncorrecto().equals("2")){
-                    banderaInicia = true;
-                }
-                if (banderaInicia.equals(true)){
+//                if (db.getCorrectoIncorrecto().equals("2")){
+//                    banderaInicia = true;
+//                }
+//                if (banderaInicia.equals(true)){
                     if (db.getFormaPagoFPD(Integer.parseInt(formaPagoSeleccionada))>0){
                         validaInicioError= db.getEstatusCobradoFPD(Integer.parseInt(formaPagoSeleccionada));
                     }else{
                         validaInicioError= 0;
                     }
-                }else{
-                    validaInicioError= 0;
-                }
+//                }else{
+//                    if (db.getFormaPagoFPD(Integer.parseInt(formaPagoSeleccionada))>0){
+//                        validaInicioError= db.getEstatusCobradoFPD(Integer.parseInt(formaPagoSeleccionada));
+//                    }else{
+//                        validaInicioError= 0;
+//                    }
+//                }
 
                 if (validaInicioError == 0){
                     try {
@@ -611,24 +674,6 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                                 e.printStackTrace();
                                             }
                                         }else{
-                                            //                                        if (Double.parseDouble(cantidad) > Double.parseDouble(montoSeleccionado) ){
-                                            //                                            try {
-                                            //                                                banderaSigue = false;
-                                            //                                                String titulo = "AVISO";
-                                            //                                                String mensaje = "La cantidad no puede ser mayor que la que se había cargado";
-                                            //                                                Modales modales = new Modales(DiferentesFormasPago.this);
-                                            //                                                View view1 = modales.MostrarDialogoAlertaAceptar(DiferentesFormasPago.this,mensaje,titulo);
-                                            //                                                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                            //                                                    @Override
-                                            //                                                    public void onClick(View view) {
-                                            //                                                        modales.alertDialog.dismiss();
-                                            //                                                    }
-                                            //                                                });
-                                            //                                                banderaSigue = false;
-                                            //                                            }catch (Exception e){
-                                            //                                                e.printStackTrace();
-                                            //                                            }
-                                            //                                        }
                                         }
                                     }else{
                                         if (montoSeleccionado.equals("0.00")){
@@ -680,9 +725,6 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         simbolos.setDecimalSeparator('.');
                                         DecimalFormat df = new DecimalFormat("#,##0.00##",simbolos);
 
-    //                                    String cantidadformato = cantidad;
-    //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
-    //                                    cantidad = cantidadformato;
                                         cantidad= df.format(Double.parseDouble(cantidad));
                                         cantidad = "$"+ cantidad;
                                         subtitle.set(position, cantidad);
@@ -692,99 +734,12 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         Double cantidadObtenida;
                                         cantidadObtenida = 0.00;
                                         CadenaFinal="";
-    //                                    if (enviadoDesde.equals("valespapel")){
-    //                                        try {
-    //                                            FormasPagoArreglo = new JSONArray(arregloVales);
-    //                                        } catch (JSONException e) {
-    //                                            e.printStackTrace();
-    //                                        }
-    //                                    }else{
-                                            FormasPagoArreglo = new JSONArray();
-    //                                    }
-                                        JSONObject TramaBancariaDetalle = new JSONObject();
-                                        try {
-                                            TramaBancariaDetalle.put("SucursalId", 497);
-                                            TramaBancariaDetalle.put("EstacionId", 251);
-                                            TramaBancariaDetalle.put(        "RESPONSE_CODe", "00");
-                                            TramaBancariaDetalle.put(        "POS_ID", "POSANDROID");
-                                            TramaBancariaDetalle.put(        "Tag_9B", "E800");
-                                            TramaBancariaDetalle.put(       "Tag_9F26", "A76488169348EBAB");
-                                            TramaBancariaDetalle.put(        "CARD_TYPE", 1);
-                                            TramaBancariaDetalle.put(        "MNEMO_NAME", "Mc");
-                                            TramaBancariaDetalle.put(        "TERMINAL_ID", "POSANDROID");
-                                            TramaBancariaDetalle.put(        "APP_LABEL","Debit MasterCard");
-                                            TramaBancariaDetalle.put(        "TAG_50", "Debit MasterCard");
-                                            TramaBancariaDetalle.put(        "Tag_95", "0000008000");
-                                            TramaBancariaDetalle.put(        "CARD_HOLDER_NAME","ERICK/AGUILA MARTINEZ ");
-                                            TramaBancariaDetalle.put(        "HEADER_1", "SmartPaymentServices");
-                                            TramaBancariaDetalle.put(        "AMOUNT", "6666.89");
-                                            TramaBancariaDetalle.put(        "PREFERRED_NAME", "Debit MasterCard");
-                                            TramaBancariaDetalle.put(        "ACCOUNT_NUMBEr", "1234 5986 1250 4521");
-                                            TramaBancariaDetalle.put(        "AiD", "A0000000041010");
-                                            TramaBancariaDetalle.put(        "SIGNATURE_FLAG", 0);
-                                            TramaBancariaDetalle.put(        "ArQc","A76488169348EBAB");
-                                            TramaBancariaDetalle.put(        "Footer_1", "Pagaré negociable únicamente");
-                                            TramaBancariaDetalle.put(        "TXN_NAME", "VENTA EN LINEA");
-                                            TramaBancariaDetalle.put(        "TXN_TIME","162439");
-                                            TramaBancariaDetalle.put(        "FOOTER_3", "nada");
-                                            TramaBancariaDetalle.put(        "FOOTER_2", "con instituciones de crédito");
-                                            TramaBancariaDetalle.put(        "TAG_9F12", "Debit MasterCard");
-                                            TramaBancariaDetalle.put(        "TXN_APPROVAL_CODE", "420557");
-                                            TramaBancariaDetalle.put(        "Tag_9F34", "440302");
-                                            TramaBancariaDetalle.put(        "CARD_NAME", "Mastercard");
-                                            TramaBancariaDetalle.put(        "Header_2", "Av de los Insurgentes Sur 2453");
-                                            TramaBancariaDetalle.put(        "HEADER_3", "Tizapán San Ángel Tel:55509935");
-                                            TramaBancariaDetalle.put(        "HEADER_4", "Álvaro Obregón, 01090 CDMX");
-                                            TramaBancariaDetalle.put(        "TSN","162544");
-                                            TramaBancariaDetalle.put(        "EXPIRATION_DATE", "**");
-                                            TramaBancariaDetalle.put(        "ENTRY_MODE","05");
-                                            TramaBancariaDetalle.put(        "BRAND_NAME:", "l");
-                                            TramaBancariaDetalle.put(        "Tag_5F2A","0484");
-                                            TramaBancariaDetalle.put(        "TXN_DATE", "210909");
-                                            TramaBancariaDetalle.put(        "SG_REFERENCE", "000036578535");
-                                            TramaBancariaDetalle.put(        "TiP",0.8);
-                                            TramaBancariaDetalle.put(        "FOOTER_4", "nada2");
-                                            TramaBancariaDetalle.put(        "TOTAL_AMOUNT", "6666.97");
-                                            TramaBancariaDetalle.put(        "BANK_NAME", " ALQUIMIADIGITAL.MX");
-                                            TramaBancariaDetalle.put("MERCHANT_ID", "7550587");
 
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        String  FormaPagoId;
-                                        String cadenaArreglo="";
-                                        for (int g= 0; g< list.getCount(); g++)
-                                        {
-                                            FormasPagoObjecto = new JSONObject();
+                                        for (int g= 0; g< list.getCount(); g++){
                                             String valorObtenido;
                                             valorObtenido = subtitle.get(g);
                                             valorObtenido = valorObtenido.replace("$", "").replace(",","");
                                             cantidadObtenida = cantidadObtenida + Double.parseDouble(valorObtenido);
-                                            if (Double.parseDouble(valorObtenido)==0.00){
-                                            }else{
-                                                try {
-                                                    FormasPagoObjecto.put("Id", IdFormaPago.get(g));
-                                                    FormasPagoObjecto.put("Importe", Double.parseDouble(valorObtenido));
-                                                    if (IdFormaPago.get(g).equals("12")){ //Solo para Puntada Redimir
-                                                        FormasPagoObjecto.put("NumeroTarjeta", tarjetaNumero);
-                                                    }
-    //                                                if (IdFormaPago.get(g).equals("3")  ){
-    //                                                    FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
-    //                                                }
-    //                                                if (IdFormaPago.get(g).equals("5") ){
-    //                                                    FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
-    //                                                }
-    //                                                if (IdFormaPago.get(g).equals("13") ){
-                                                   if (IdFormaPago.get(g).equals("3") || IdFormaPago.get(g).equals("5") || IdFormaPago.get(g).equals("13")){
-                                                        FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
-                                                    }
-
-                                                    FormasPagoArreglo.put(FormasPagoObjecto);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
                                         }
 
                                         Double MontoTotal = Double.parseDouble(txtMontoTotal.getText().toString().replace("$","").replace(",",""));
@@ -795,9 +750,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                         if (formaPagoSeleccionada.equals("3") || formaPagoSeleccionada.equals("5") || formaPagoSeleccionada.equals("13")){
                                             db.getWritableDatabase().delete("PagoTarjeta", null, null);
                                             db.close();
-                                            db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$","").replace(",",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal));
+                                            db.InsertarDatosPagoTarjeta("1", PosicionCarga, formaPagoSeleccionada, cantidad.replace("$","").replace(",",""), "0", "2", "0", numeroTarjeta, Double.toString(descuento), nipCliente, Double.toString(MontoTotal), "");
 
-                                            db.InsertarDatosPagoTarjetaDFP(formaPagoSeleccionada, Double.toString(MontoTotal), formaPagoSeleccionada, "", cantidad.replace("$",""), "0");
+                                            db.InsertarDatosPagoTarjetaDFP(formaPagoSeleccionada, Double.toString(MontoTotal), formaPagoSeleccionada, "", cantidad.replace("$",""), "0", PosicionCarga, numerointerno.toString());
                                             Intent intentVisa = new Intent(getApplicationContext(), VentaPagoTarjeta.class);//DiferentesFormasPagoPuntada
                                             intentVisa.putExtra("lugarProviene", "diferentesformaspago");
                                             intentVisa.putExtra("posicioncarga", PosicionCarga);

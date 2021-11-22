@@ -52,12 +52,6 @@ class  VentaPagoTarjeta : AppCompatActivity() {
         val simbolos = DecimalFormatSymbols()
         simbolos.decimalSeparator = '.'
         val df = DecimalFormat("###0.00##", simbolos)
-        //                                    String cantidadformato = cantidad;
-        //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
-        //                                    cantidad = cantidadformato;
-        //                                    String cantidadformato = cantidad;
-        //                                    cantidadformato = df.format(Double.parseDouble(cantidadformato));
-        //                                    cantidad = cantidadformato;
         total = "$"+ df.format(total.toDouble())
 
 
@@ -177,6 +171,18 @@ class  VentaPagoTarjeta : AppCompatActivity() {
     companion object {
         private const val SMART_PACKAGE = "com.smart.smart"
     }
+
+    //Metodo para regresar a la actividad principal
+    override fun onBackPressed() {
+        val titulo = "CORPOApp"
+        val mensajes = "No puedes salir de la venta"
+        val modales = Modales(this@VentaPagoTarjeta)
+        val viewLectura = modales.MostrarDialogoError(this@VentaPagoTarjeta, mensajes)
+        viewLectura.findViewById<View>(R.id.buttonAction).setOnClickListener { //finishAffinity();
+            modales.alertDialog.dismiss()
+        }
+    }
+
 
 
 }

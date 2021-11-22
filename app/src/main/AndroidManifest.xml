@@ -24,6 +24,9 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".VentaCombustible.GenerarTicketVisaAmex"
+            android:exported="true" />
+        <activity
             android:name=".VentaCombustible.FormasPagoReordenado"
             android:exported="true" />
         <activity
@@ -32,11 +35,13 @@
         <activity
             android:name=".Metas.MetasActivity"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".VentaCombustible.IniciaVentas"
@@ -78,10 +83,9 @@
             android:exported="true" />
         <activity
             android:name=".Fajillas.OpcionFajillas"
-            android:exported="true" />
-<!--        <activity-->
-<!--            android:name=".Scaneo"-->
-<!--            android:exported="false" />-->
+            android:exported="true" /> <!-- <activity -->
+        <!-- android:name=".Scaneo" -->
+        <!-- android:exported="false" /> -->
         <activity
             android:name=".VentaCombustible.ImprimePuntada"
             android:exported="true" />

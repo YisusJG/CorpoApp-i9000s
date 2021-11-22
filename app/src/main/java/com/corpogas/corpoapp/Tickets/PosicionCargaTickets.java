@@ -38,6 +38,7 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
@@ -385,7 +386,36 @@ public class PosicionCargaTickets extends AppCompatActivity {
                 cargaNumeroInterno = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getPosicioncarganumerointerno();
                 operativa = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getSubtitulo();
                 if (lugarproviene.equals("Imprimir")){
-                    ValidaTransaccionActiva();
+                    //Valido si hay una transaccion viva en la base de datos de la HH que haya cargado para pago mixto
+                    if (data.getresponseFPDCount(posicionCargaId)>0 ){
+                        String response="";
+                        response = data.getresponseFPD(Integer.parseInt(data.getformapagoid()));
+                        if (response.length()>0){
+                            Intent intentDiferente = new Intent(getApplicationContext(), DiferentesFormasPago.class);
+                            intentDiferente.putExtra("Enviadodesde", "posicioncarga");
+                            startActivity(intentDiferente);
+                            finish();
+                        }else{
+                            ValidaTransaccionActiva();
+                        }
+                    }else{
+                        if (data.getFormaPagoFPDCobrado()>0){
+                            String PCarga = "";
+                            PCarga = data.getNumeroInternoPCDFP();//     getPosicionCargaDFPCobrado();
+                            String titulo = "Transaccion Ocupada";
+                            String mensajes = "Cierre la venta que ya tiene cargado un pago con tarjeta en la posición: "+ PCarga;
+                            Modales modales = new Modales(PosicionCargaTickets.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTickets.this, mensajes, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                }
+                            });
+                        }else{
+                            ValidaTransaccionActiva();
+                        }
+                    }
                 }else{
                     imprimirticket(Long.toString(posicionCargaId), "1", "0" );
                 }
@@ -445,6 +475,10 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
 
+                                    if (MontoenCanasta.equals(0.0)){
+
+                                    }else{
+
                                     String IdOperativa = String.valueOf(cargaNumeroInterno);
                                     if (IdOperativa.equals("21")){ //TarjetaPuntada Redimir
                                         imprimirticket(String.valueOf(posicionCargaId), "REDIMIR", MontoenCanasta.toString());
@@ -467,6 +501,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                                 intent.putExtra("nombrecompleto", "nombreCompletoempleado");
                                                 intent.putExtra("cadenarespuesta", CadenaObjetoRespuesta);
                                                 intent.putExtra("montoenCanasta", MontoenCanasta);
+                                                intent.putExtra("idposicionCarga", cargaNumeroInterno);
                                                 startActivity(intent);
                                                 finish();
                                                 break;
@@ -510,6 +545,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                             default://                No se encontro ninguna forma de operativa
                                                 break;
                                         }
+                                    }
                                     }
                                 }else{
                                     String titulo = "AVISO";

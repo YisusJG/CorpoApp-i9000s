@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
@@ -51,6 +54,23 @@ public class OpcionImprimir extends AppCompatActivity {
 
     private void init() {
         rcViewOpcionImprimir = findViewById(R.id.rcViewOpcionImprimir);
+//        data.InsertarDatosPagoTarjeta("1", "posiciondecargaid", "5", Double.toString(10), "0", "1", "0", "numeroTarjeta", Double.toString(0), "nipCliente", Double.toString(10));
+//
+//
+//        SQLiteDatabase base = data.getWritableDatabase();
+//        Toast.makeText(getApplicationContext(), data.getresponseFPD(5) + " " + data.getMontoFPD(5), Toast.LENGTH_SHORT).show();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(SQLiteBD.DatosPagoTarjetasDiferentesFormasPago.response,"responseobtenido");
+////        contentValues.put(SQLiteBD.DatosPagoTarjetasDiferentesFormasPago.cobrado,"cobrado");
+//
+//        int datos = base.update(SQLiteBD.DatosPagoTarjetasDiferentesFormasPago.nombreTabla, contentValues, SQLiteBD.DatosPagoTarjetasDiferentesFormasPago.IdDFP + " = ? ",
+//                new String[]{"5"});
+//        if (datos!=0){
+//            Toast.makeText(OpcionImprimir.this, "return true", Toast.LENGTH_SHORT).show();
+//        }else{
+//            Toast.makeText(OpcionImprimir.this, "return false", Toast.LENGTH_SHORT).show();
+//        }
+
     }
 
     private void initializeData() {

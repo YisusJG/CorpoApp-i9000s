@@ -40,7 +40,7 @@ import java.util.Map;
 
 public class FormaPagoTarjetasBancarias extends AppCompatActivity {
     SQLiteBD data;
-    String formaPagoId, poscionCarga, total, EstacionId,  ipEstacion,  sucursalId, numeroempleado, provieneeFPoDFP, banderapuntada, numeroTarjeta;
+    String formaPagoId, poscionCarga, total, EstacionId,  ipEstacion,  sucursalId, numeroempleado, provieneeFPoDFP, banderapuntada, numeroTarjeta, responseSmart;
     String FormaPago = "1", FormaPagoMixta = "2";
     EditText amount;
     Button btnimprimeventas;
@@ -67,9 +67,12 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
         amount.setText("$"+total);
 //        if (banderapuntada.equals("0")) { //no actuiza a puntada acumular
             if (provieneeFPoDFP.equals("1")){
+                responseSmart = data.getresponseFormaPago();
                 imprimePagoTarjetaBancaria();
             }else{
-                data.updateDiferentesFormasPago("asdasdasdasd", "1", formaPagoId);
+//                data.updateDiferentesFormasPago("asdasdasdasd", "1", formaPagoId);
+                responseSmart = data.getresponseFPD(Integer.parseInt(formaPagoId));
+
                 finish();
             }
 //        }else{ //Primero Actualiza a puntada acumular y luego imprime
@@ -93,67 +96,27 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
             finish();
         } else {
             JSONObject TramaBancariaDetalle = new JSONObject();
-            try {
-                TramaBancariaDetalle.put("SucursalId", 497);
-                TramaBancariaDetalle.put("EstacionId", 251);
-                TramaBancariaDetalle.put(        "RESPONSE_CODe", "00");
-                TramaBancariaDetalle.put(        "POS_ID", "POSANDROID");
-                TramaBancariaDetalle.put(        "Tag_9B", "E800");
-                TramaBancariaDetalle.put(       "Tag_9F26", "A76488169348EBAB");
-                TramaBancariaDetalle.put(        "CARD_TYPE", 1);
-                TramaBancariaDetalle.put(        "MNEMO_NAME", "Mc");
-                TramaBancariaDetalle.put(        "TERMINAL_ID", "POSANDROID");
-                TramaBancariaDetalle.put(        "APP_LABEL","Debit MasterCard");
-                TramaBancariaDetalle.put(        "TAG_50", "Debit MasterCard");
-                TramaBancariaDetalle.put(        "Tag_95", "0000008000");
-                TramaBancariaDetalle.put(        "CARD_HOLDER_NAME","ERICK/AGUILA MARTINEZ ");
-                TramaBancariaDetalle.put(        "HEADER_1", "SmartPaymentServices");
-                TramaBancariaDetalle.put(        "AMOUNT", "6666.89");
-                TramaBancariaDetalle.put(        "PREFERRED_NAME", "Debit MasterCard");
-                TramaBancariaDetalle.put(        "ACCOUNT_NUMBEr", "1234 5986 1250 4521");
-                TramaBancariaDetalle.put(        "AiD", "A0000000041010");
-                TramaBancariaDetalle.put(        "SIGNATURE_FLAG", 0);
-                TramaBancariaDetalle.put(        "ArQc","A76488169348EBAB");
-                TramaBancariaDetalle.put(        "Footer_1", "Pagaré negociable únicamente");
-                TramaBancariaDetalle.put(        "TXN_NAME", "VENTA EN LINEA");
-                TramaBancariaDetalle.put(        "TXN_TIME","162439");
-                TramaBancariaDetalle.put(        "FOOTER_3", "nada");
-                TramaBancariaDetalle.put(        "FOOTER_2", "con instituciones de crédito");
-                TramaBancariaDetalle.put(        "TAG_9F12", "Debit MasterCard");
-                TramaBancariaDetalle.put(        "TXN_APPROVAL_CODE", "420557");
-                TramaBancariaDetalle.put(        "Tag_9F34", "440302");
-                TramaBancariaDetalle.put(        "CARD_NAME", "Mastercard");
-                TramaBancariaDetalle.put(        "Header_2", "Av de los Insurgentes Sur 2453");
-                TramaBancariaDetalle.put(        "HEADER_3", "Tizapán San Ángel Tel:55509935");
-                TramaBancariaDetalle.put(        "HEADER_4", "Álvaro Obregón, 01090 CDMX");
-                TramaBancariaDetalle.put(        "TSN","162544");
-                TramaBancariaDetalle.put(        "EXPIRATION_DATE", "**");
-                TramaBancariaDetalle.put(        "ENTRY_MODE","05");
-                TramaBancariaDetalle.put(        "BRAND_NAME:", "l");
-                TramaBancariaDetalle.put(        "Tag_5F2A","0484");
-                TramaBancariaDetalle.put(        "TXN_DATE", "210909");
-                TramaBancariaDetalle.put(        "SG_REFERENCE", "000036578535");
-                TramaBancariaDetalle.put(        "TiP",0.8);
-                TramaBancariaDetalle.put(        "FOOTER_4", "nada2");
-                TramaBancariaDetalle.put(        "TOTAL_AMOUNT", "6666.97");
-                TramaBancariaDetalle.put(        "BANK_NAME", " ALQUIMIADIGITAL.MX");
-                TramaBancariaDetalle.put("MERCHANT_ID", "7550587");
+//            try {
+//                TramaBancariaDetalle.put("SucursalId", 497);
+//                TramaBancariaDetalle.put("EstacionId", 251);
+//                TramaBancariaDetalle.put("TRAMA", responseSmart);
 
                 if (provieneeFPoDFP.equals("1")){
                 }else{
+//                    data.updateDiferentesFormasPago(TramaBancariaDetalle.toString(), "1" , formaPagoId );
                     data.updateDiferentesFormasPago(TramaBancariaDetalle.toString(), "1" , formaPagoId );
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
 
             JSONObject FormasPagoObjecto = new JSONObject();
             JSONArray FormasPagoArreglo = new JSONArray();
             try {
                 FormasPagoObjecto.put("Id", formaPagoId);
                 FormasPagoObjecto.put("Importe", total);
-                FormasPagoObjecto.put("TramaBancariaDetalle", TramaBancariaDetalle);
+                FormasPagoObjecto.put("Trama", responseSmart); //TramaBancariaDetalle
                 FormasPagoArreglo.put(FormasPagoObjecto);
             } catch (JSONException e) {
                 e.printStackTrace();

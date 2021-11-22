@@ -359,7 +359,7 @@ class LecturayEscaneo : AppCompatActivity() {
                                     "",
                                     "",
                                     "",
-                                    montoCanasta.toString()
+                                    montoCanasta.toString(),""
                                 )
                                 val intentVisa = Intent(
                                     this@LecturayEscaneo,
@@ -636,5 +636,11 @@ class LecturayEscaneo : AppCompatActivity() {
                 Toast.makeText(this@LecturayEscaneo, t.message, Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, ApartadosYena::class.java)
+        startActivity(intent)
+        finish()
     }
 }
