@@ -70,7 +70,7 @@ public class AdapterMetas extends RecyclerView.Adapter<AdapterMetas.RecyclerView
         recyclerViewHeadersHolder.txvDespachos.setText(String.valueOf(lrecyclerViewHeaders.get(position).getDespachos()));
         recyclerViewHeadersHolder.txvMetas.setText(String.valueOf(lrecyclerViewHeaders.get(position).getMeta()));
         recyclerViewHeadersHolder.txvVendidos.setText(String.valueOf(lrecyclerViewHeaders.get(position).getVendidos()));
-        recyclerViewHeadersHolder.txvDiferencias.setText(String.valueOf(lrecyclerViewHeaders.get(position).getDiferencias()));
+        recyclerViewHeadersHolder.txvDiferencias.setText(String.valueOf(Math.abs(lrecyclerViewHeaders.get(position).getDiferencias())));
 
         if(lrecyclerViewHeaders.get(position).getMeta() > lrecyclerViewHeaders.get(position).getVendidos())
         {
