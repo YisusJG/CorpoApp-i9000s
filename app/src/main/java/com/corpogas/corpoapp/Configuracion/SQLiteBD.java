@@ -1190,6 +1190,15 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     }
 
+    public Double getMontoTotalFPDgeneral(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT montoTotal FROM PagoTarjetaDiferentesFormasPago", null);
+        cursor.moveToFirst();
+        Double montoparcial = cursor.getDouble(0);
+        return montoparcial;
+
+    }
+
 
     public Double getMontoTotalFPD(int tipopago){
         SQLiteDatabase base = getReadableDatabase();

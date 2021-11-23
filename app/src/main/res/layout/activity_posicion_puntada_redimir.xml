@@ -17,8 +17,8 @@
         android:id="@+id/btnCargarTodasPC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cargar Todas las Posciones de Carga"
+        android:text="Cargar Todas las Posiciones de Carga"
         app:layout_constraintTop_toBottomOf="@+id/rcvPosicionCarga"
-        tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -99,7 +99,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
         MontoenCanasta = 0.0;
         if (db.getFormaPagoMixto()>0 ){
-            MontoenCanasta = db.getMontoTotalFPD(Integer.parseInt(db.getformapagoid()));
+            MontoenCanasta = db.getMontoTotalFPDgeneral();
             if (db.getCorrectoIncorrecto().equals("2")){
                 PosicionCarga = db.getposcioncarga();
                 numeroTarjeta = db.getNumeroTarjetaIni(); //getIntent().getStringExtra("numeroTarjeta");
@@ -325,8 +325,8 @@ public class DiferentesFormasPago extends AppCompatActivity {
                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                                     @Override
                                     public void onClick(View view) {
-                                        db.getWritableDatabase().delete("PagoTarjetaDiferentesFormasPago", null, null);
-                                        db.close();
+//                                        db.getWritableDatabase().delete("PagoTarjetaDiferentesFormasPago", null, null);
+//                                        db.close();
 //                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
 //                                        startActivity(intent);
                                         finish();

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -175,6 +176,8 @@ public class ImprimePuntada extends AppCompatActivity {
                     return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
                 }
             };
+//            queue.add(request_json);
+            request_json.setRetryPolicy(new DefaultRetryPolicy(900000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             queue.add(request_json);
         }
     }
@@ -244,6 +247,8 @@ public class ImprimePuntada extends AppCompatActivity {
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                                 @Override
                                 public void onClick(View view) {
+                                    data.getWritableDatabase().delete("PagoTarjetaDiferentesFormasPago", null, null);
+                                    data.close();
                                     Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                     startActivity(intent);
                                     finish();
@@ -282,7 +287,10 @@ public class ImprimePuntada extends AppCompatActivity {
                     return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
                 }
             };
+//            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            request_json.setRetryPolicy(new DefaultRetryPolicy(900000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             queue.add(request_json);
+
         }
     }
 

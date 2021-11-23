@@ -25,6 +25,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
+import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -324,7 +325,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>
                     case "1": //              Operativa normal
                     case "3":
                     case "20"://Operativa Puntada P
-                        Intent intent = new Intent(context, FormasPago.class);
+                        Intent intent = new Intent(context, FormasPagoReordenado.class); //FormasPago
                         //intent.putExtra("estacionjarreo", Estacionjarreo);
                         intent.putExtra("clavedespachador", usuarioclave);
                         intent.putExtra("posicionCarga",posicioncarga);
