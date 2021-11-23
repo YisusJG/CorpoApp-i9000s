@@ -9,7 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvFormasPagoReordenado"
         android:layout_width="354dp"
-        android:layout_height="566dp"
+        android:layout_height="544dp"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp" />

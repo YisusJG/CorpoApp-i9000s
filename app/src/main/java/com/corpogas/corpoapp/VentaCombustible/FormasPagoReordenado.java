@@ -157,50 +157,24 @@ public class FormasPagoReordenado extends AppCompatActivity {
 
     private void formadepago(String response) {
         lrcvFormaPago = new ArrayList<>();
-        //lo assignamos a un nuevo ArrayList
-        maintitle = new ArrayList<String>();
 
-        //Creamos la lista para los subtitulos
-        List<String> subtitle;
-        //Lo asignamos a un nuevo ArrayList
-        subtitle = new ArrayList<String>();
+//        lrcvFormaPago.add(new RecyclerViewHeaders("EFE", "Forma de Pago: 1" , R.drawable.billete));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("TARJETA", "Forma de Pago: 1" , R.drawable.visa));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("DOLARES", "Forma de Pago: 1" , R.drawable.usd));
 
-        //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
-        List<Integer> imgid;
-        //La asignamos a un nuevo elemento de ArrayList
-        imgid = new ArrayList<>();
 
-        //Lo asignamos a un nuevo ArrayList
-        numerotickets = new ArrayList<String>();
-
-        //Lo asignamos a un nuevo ArrayList
-        IdFormaPago = new ArrayList<String>();
-
-        //Lo asignamos a un nuevo ArrayList
-        NumeroInternoFormaPago = new ArrayList<String>();
-
-        AcumulaPuntosArreglo = new ArrayList<String>();
 
 
 
         try {
-            //JSONObject jsonObject = new JSONObject(response);
-            //String formapago = jsonObject.getString("SucursalFormapagos");
             Boolean colocarformapago;
             JSONArray nodo = new JSONArray(response);
-            String numero_pago;
+            String numero_pago = "";
             String internonumero = "";
             String nombre_pago = "";
             for (int i = 0; i <= nodo.length(); i++) {
                 if (i == nodo.length()) {
-                    numerotickets.add("0");
-                    maintitle.add("VARIAS FORMAS DE PAGO");
-                    subtitle.add("Forma de Pago:" + 0);
-                    IdFormaPago.add("0");
                     colocarformapago = true;
-                    numero_pago = "0";
-                    internonumero = "0";
-                    NumeroInternoFormaPago.add("0");
                     lrcvFormaPago.add(new RecyclerViewHeaders("PAGO MIXTO", "Forma de Pago:" + 0, R.drawable.variasformaspago));
                 } else {
                     colocarformapago = false;
@@ -220,22 +194,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         if (numero_pago.equals("14") | numero_pago.equals("0")) {
                             //Nodesplega MErcadoPAgo
                         } else {
-                            numerotickets.add(numero_ticket);
-                            maintitle.add(nombre_pago);
-                            subtitle.add("Forma de Pago:" + numero_pago);
-                            IdFormaPago.add(numero_pago);
-                            NumeroInternoFormaPago.add(internonumero);
                             colocarformapago = true;
-                            AcumulaPuntosArreglo.add(acumulaPuntos);
                         }
                     } else {
                         if (EstacionJarreo.equals("true")) {
                             if (numero_pago.equals("91")) { //JArreo
-                                numerotickets.add(numero_ticket);
-                                maintitle.add(nombre_pago);
-                                subtitle.add("Forma de Pago:" + numero_pago); //numero_pago
-                                IdFormaPago.add(numero_pago);
-                                NumeroInternoFormaPago.add(internonumero);
                                 colocarformapago = true;
                             }
                         }
@@ -245,82 +208,65 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     int idpago = Integer.parseInt(numero_pago); //numero_pago
                     switch (idpago) {
                         case 0:
-                            imgid.add(R.drawable.variasformaspago);
                             break;
                         case 1: //Efectivo
-                            imgid.add(R.drawable.billete);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.billete));
                             break;
                         case 2: //Vales
-                            imgid.add(R.drawable.vale);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.vale));
                             break;
                         case 3: //AMEX
-                            imgid.add(R.drawable.american);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.american));
                             break;
                         case 5: //VISA/MC
-                            imgid.add(R.drawable.visa);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.visa));
                             break;
                         case 6: // VALE/ELEC
-                            imgid.add(R.drawable.valeelectronico);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.valeelectronico));
                             break;
                         case 7: //CREDITO ES
-                            imgid.add(R.drawable.gas);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
                             break;
                         case 8: //CREDITO ES
-                            imgid.add(R.drawable.gas);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
                             break;
                         case 9: //CREDITO ES
-                            imgid.add(R.drawable.gas);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
                             break;
                         case 10: //CORPOMOBILE
-                            imgid.add(R.drawable.gas);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
                             break;
                         case 11: //TANQUELLENO
-                            imgid.add(R.drawable.tanquelleno);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.tanquelleno));
                             break;
                         case 12: //REDENCION PUNTADA
-                            imgid.add(R.drawable.tanquelleno);
                             break;
                         case 13: //GASCARD
-                            imgid.add(R.drawable.gascard);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gascard));
                             break;
                         case 14: //MERCADOPAGO
-                            imgid.add(R.drawable.mercadopago);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.mercadopago));
                             break;
                         case 90://Consigna
-                            imgid.add(R.drawable.gas);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
                             break;
                         case 91: //JARREO
-                            imgid.add(R.drawable.jarreo);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.jarreo));
                             break;
                         case 92://AUTOJARREO
-                            imgid.add(R.drawable.jarreo);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.jarreo));
                             break;
                         case 16://USD
-                            imgid.add(R.drawable.usd);
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.usd));
                             break;
 
                         //case 10:
-                        //    imgid.add(R.drawable.monedero);
                         //    break;
                         default:
-                            imgid.add(R.drawable.gas);
-                            lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
+                            if (idpago == 15){
+                            }else{
+                                lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.gas));
+                            }
                     }
                 }
                 initializeAdapter();
@@ -683,8 +629,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
 //        });
 //        itemTouchHelper.attachToRecyclerView(rcvFormasPagoReordenado);
 
-
-
     }
 
     private void MuestraFormaEfectivo(){
@@ -885,7 +829,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         FormasPagoObjecto = new JSONObject();
         FormasPagoArreglo = new JSONArray();
         try {
-            FormasPagoObjecto.put("Id", formapago);
+            FormasPagoObjecto.put("Id", formaPagoIdentificador);
             FormasPagoObjecto.put("Importe", MontoCanasta);
             FormasPagoArreglo.put(FormasPagoObjecto);
         } catch (JSONException e) {

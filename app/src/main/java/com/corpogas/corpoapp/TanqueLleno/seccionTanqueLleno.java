@@ -115,8 +115,8 @@ public class seccionTanqueLleno extends AppCompatActivity {
         });
 
         rcvTanqueLleno.setAdapter(adapter);
-        RecyclerView.ItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        rcvTanqueLleno.addItemDecoration(divider);
+//        RecyclerView.ItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+//        rcvTanqueLleno.addItemDecoration(divider);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(UP | DOWN,0) {
             @Override
