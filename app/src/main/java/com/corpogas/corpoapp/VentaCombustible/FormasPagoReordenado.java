@@ -162,10 +162,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
 //        lrcvFormaPago.add(new RecyclerViewHeaders("TARJETA", "Forma de Pago: 1" , R.drawable.visa));
 //        lrcvFormaPago.add(new RecyclerViewHeaders("DOLARES", "Forma de Pago: 1" , R.drawable.usd));
 
-
-
-
-
         try {
             Boolean colocarformapago;
             JSONArray nodo = new JSONArray(response);
