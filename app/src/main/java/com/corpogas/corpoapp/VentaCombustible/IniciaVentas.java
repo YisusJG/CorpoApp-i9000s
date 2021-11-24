@@ -66,7 +66,7 @@ public class IniciaVentas extends AppCompatActivity {
     Spinner spCombustible;
     RecyclerView rvPredeterminado;
     Double descuento, descuentoMagnaYena, descuentoPremiumYena, descuentoDieselYena;
-    String claveProducto, descripcioncombustible, precio, numeroTarjeta, nipCliente;
+    String claveProducto, descripcioncombustible, precio, numeroTarjeta, claveTarjeta, nipCliente;
 
 
     List<RecyclerViewHeaders> lrecyclerViewHeaders;
@@ -114,6 +114,7 @@ public class IniciaVentas extends AppCompatActivity {
                 intent.putExtra("numeroOperativa", usuarioid);
                 intent.putExtra("cadenaproducto", "");
                 intent.putExtra("lugarproviene", "Venta");
+                intent.putExtra("lugarProviene", lugarproviene);
                 intent.putExtra("NumeroIsla", data.getIslaId());
                 intent.putExtra("NumeroEmpleado", usuarioid);
                 intent.putExtra("posicionCarga", poscicionCarga);
@@ -128,6 +129,8 @@ public class IniciaVentas extends AppCompatActivity {
                 ValidaTransaccionActiva();
             }
         });
+
+
 
         cargaProductos("1");
     }
@@ -186,7 +189,9 @@ public class IniciaVentas extends AppCompatActivity {
                                                 intent.putExtra("claveProducto", claveProducto);
                                                 intent.putExtra("montoenCanasta", MontoenCanasta);
                                                 intent.putExtra("numeroTarjeta", numeroTarjeta);
+                                                intent.putExtra("claveTarjeta", claveTarjeta);
                                                 intent.putExtra("descuento", descuento);
+                                                intent.putExtra("lugarProviene", lugarproviene);
                                                 intent.putExtra("nipCliente", nipCliente);
                                                 intent.putExtra("IdOperativa", "0");
                                                 startActivity(intent);
@@ -336,6 +341,7 @@ public class IniciaVentas extends AppCompatActivity {
 
 
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
+        claveTarjeta = getIntent().getStringExtra("claveTarjeta");
         nipCliente = getIntent().getStringExtra("nip");
         tvTituloIniciaVenta = (TextView) findViewById(R.id.tvTituloIniciaVenta);
         spCombustible = (Spinner) findViewById(R.id.spCombustible);

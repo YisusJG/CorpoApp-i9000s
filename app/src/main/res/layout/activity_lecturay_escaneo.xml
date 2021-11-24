@@ -26,8 +26,8 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:padding="16dp"
-        android:text="Desliza la Tarjeta o Escanea QR"
+        android:padding="4dp"
+        android:text="Desliza Tarjeta o Escanea QR o Código de barras"
         android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold" />
@@ -38,7 +38,7 @@
         android:layout_height="60dp"
         android:layout_below="@+id/text_lectura_y_escaneo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Escanear QR"
         android:textSize="20sp"
         android:textStyle="bold" />

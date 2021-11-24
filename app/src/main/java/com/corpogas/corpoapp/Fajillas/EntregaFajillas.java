@@ -120,7 +120,7 @@ public class EntregaFajillas extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable editable) {
                     if (!cantidad.getText().toString().equals("")) {
-                        if (cantidad.getText().toString().length() > 5) {
+                        if (cantidad.getText().toString().length() > 6) {
                             AgregarFajillaaLista(cantidad.getText().toString());
                         }
                     }
@@ -140,8 +140,6 @@ public class EntregaFajillas extends AppCompatActivity {
                 }
             });
         }
-
-
     }
 
     protected void onActivityResult (int requestCode, int resulCode, Intent data) {

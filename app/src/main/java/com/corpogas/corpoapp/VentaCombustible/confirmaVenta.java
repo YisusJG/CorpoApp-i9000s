@@ -63,7 +63,7 @@ public class confirmaVenta extends AppCompatActivity {
     JSONArray myArray = new JSONArray();
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     TextView txttotal, txtdespachosolicitado, txtproducto;
-    String lugarproviene, numerooperativa ;
+    String lugarproviene, lugarProviene, numerooperativa ;
     Long NumeroEmpleado, islaId;
     int idSeleccionado;
     JSONObject myJOProductosFaltantes;
@@ -95,6 +95,7 @@ public class confirmaVenta extends AppCompatActivity {
         nombreproducto = getIntent().getStringExtra("Descripcion");
 
         lugarproviene = getIntent().getStringExtra("lugarproviene");
+        lugarProviene = getIntent().getStringExtra("lugarProviene");
         islaId = getIntent().getLongExtra("numeroisla",0);
         NumeroEmpleado = Long.parseLong(db.getNumeroEmpleado());// getIntent().getLongExtra("numeroempleado", 0);
 
@@ -109,9 +110,9 @@ public class confirmaVenta extends AppCompatActivity {
             if (lugarproviene.equals("Corte")){
                 txtdespachosolicitado.setVisibility(View.INVISIBLE);
 
-            }else{
-//                txtdespachosolicitado.setVisibility(View.VISIBLE);
             }
+            //                txtdespachosolicitado.setVisibility(View.VISIBLE);
+
         }
 
         Cobrar.setOnClickListener(new View.OnClickListener() {

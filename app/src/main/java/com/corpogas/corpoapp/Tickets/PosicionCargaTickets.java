@@ -487,6 +487,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                         intent.putExtra("estacionjarreo", "Estacionjarreo");
                                         intent.putExtra("clavedespachador", "ClaveDespachador");
                                         intent.putExtra("numeroempleadosucursal", "numeroempleado");
+                                        intent.putExtra("lugarProviene", lugarproviene);
                                         intent.putExtra("numeroTarjeta", "");
                                         intent.putExtra("descuento", 0);
                                         intent.putExtra("nipCliente", "");
@@ -710,7 +711,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
         EstacionId = data.getIdEstacion();
         sucursalId = Long.parseLong(data.getIdSucursal());
         ipEstacion = data.getIpEstacion();
-        lugarproviene = getIntent().getStringExtra("lugarproviene");
+        lugarproviene = getIntent().getStringExtra("lugarProviene");
         usuarioid = getIntent().getLongExtra("IdUsuario",0);
         usuario = getIntent().getStringExtra("clave");
 

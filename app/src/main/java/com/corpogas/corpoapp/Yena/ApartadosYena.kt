@@ -40,4 +40,9 @@ class ApartadosYena : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, Menu_Principal::class.java))
+    }
 }

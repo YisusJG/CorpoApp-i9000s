@@ -5,6 +5,7 @@ import android.content.Intent
 import android.device.scanner.configuration.Triggering
 import android.media.AudioManager
 import android.media.ToneGenerator
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -80,13 +81,14 @@ class LecturayEscaneo : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lecturay_escaneo)
+        model = Build.MODEL
         val data = SQLiteBD(this)
         val btnEscanear = findViewById<Button>(R.id.button_escanear)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
 
         Init()
 
-        if (lugarProviene == "Acumulacion Yena" || lugarProviene == "Redencion Yena") {
+        if (lugarProviene == "Acumulacion Yena" || lugarProviene == "Redencion Yena" || lugarProviene == "descuentoYena") {
             btnEscanear.visibility = View.GONE
             findViewById<TextView>(R.id.text_lectura_y_escaneo).text = "Desliza la Tarjeta"
         }
@@ -121,8 +123,6 @@ class LecturayEscaneo : AppCompatActivity() {
                 integrator.initiateScan()
             })
         }
-
-
     }
 
     private fun Init() {
@@ -153,20 +153,18 @@ class LecturayEscaneo : AppCompatActivity() {
     }
 
     override fun onPause() {
-        // TODO Auto-generated method stub
-        super.onPause()
         if (model == "i9000S") {
             mReadService!!.stop()
         }
+        super.onPause()
     }
 
     override fun onResume() {
-        // TODO Auto-generated method stub
-        super.onResume()
         if (model == "i9000S") {
-            scanManagerProvides.initScan(this)
             mReadService!!.start()
+            scanManagerProvides.initScan(this)
         }
+        super.onResume()
     }
 
     override fun onActivityResult(requestCode: Int, resulCode: Int, data: Intent?) {
@@ -177,9 +175,10 @@ class LecturayEscaneo : AppCompatActivity() {
             } else {
                 if (lugarProviene == "Consulta Yena") {
                     getSaldo(result.contents)
-                } else if (lugarProviene == "descuentoYena") {
-                    getSaldoparaAcumular(result.contents)
                 }
+//                else if (lugarProviene == "descuentoYena") {
+//                    getSaldoparaAcumular(result.contents)
+//                }
             }
         } else {
             super.onActivityResult(requestCode, resulCode, data)
@@ -194,9 +193,10 @@ class LecturayEscaneo : AppCompatActivity() {
         if (event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
             if (lugarProviene == "Consulta Yena") {
                 getSaldo(result)
-            } else if (lugarProviene == "descuentoYena") {
-                getSaldoparaAcumular(result)
             }
+//            else if (lugarProviene == "descuentoYena") {
+//                getSaldoparaAcumular(result)
+//            }
             result = ""
         }
         return false
@@ -243,7 +243,7 @@ class LecturayEscaneo : AppCompatActivity() {
                 sendToRedencion(tk1, tk2, tk3)
             }
             "descuentoYena" -> {
-                getSaldoparaAcumular(tk2)
+                getSaldoparaAcumular(tk2, tk1)
             }
         }
     }
@@ -264,9 +264,10 @@ class LecturayEscaneo : AppCompatActivity() {
                     return
                 } else {
                     val yenaResponse = response.body()
-                    val objeto = yenaResponse!!.objetoRespuesta
-                    val saldo = objeto.SaldoActualDinero.toString()
-                    if (yenaResponse.isCorrecto) {
+                    if (yenaResponse!!.isCorrecto) {
+                        val objeto = yenaResponse.objetoRespuesta
+                        val saldo = objeto.SaldoActualDinero.toString()
+
                         val intent = Intent(this@LecturayEscaneo, ProductosARedimir::class.java)
                         intent.putExtra("lugarproviene", lugarProviene)
                         intent.putExtra("posicionCarga", posicionCarga)
@@ -279,7 +280,6 @@ class LecturayEscaneo : AppCompatActivity() {
                     } else {
                         val titulo = "AVISO"
                         val mensaje = yenaResponse.mensaje
-
                         val modales = Modales(this@LecturayEscaneo)
                         val viewLectura = modales.MostrarDialogoAlertaAceptar(
                             this@LecturayEscaneo,
@@ -306,118 +306,109 @@ class LecturayEscaneo : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
-        val call = yenaSaldo.postConsultaYena(
-            EndPointYena(
-                sucursalId,
-                numeroEmpleado.toLong(),
-                numeroTarjeta,
-                null,
-                posicionCargaId.toLong()
-            )
-        )
-        call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
-            override fun onResponse(
-                call: Call<RespuestaApi<YenaResponse>>,
-                response: Response<RespuestaApi<YenaResponse>>
-            ) {
+        val call = yenaSaldo.postAcumulaPuntos(EndPointYena(sucursalId, numeroEmpleado.toLong(), numeroTarjeta, claveTarjeta, posicionCargaId.toLong()))
+        call.enqueue(object : Callback<RespuestaApi<Boolean>> {
+            override fun onResponse(call: Call<RespuestaApi<Boolean>>, response: Response<RespuestaApi<Boolean>>) {
                 if (!response.isSuccessful) {
                     return
                 } else {
                     val yenaResponse = response.body()
-                    val mensaje = yenaResponse?.mensaje
                     if (yenaResponse!!.isCorrecto) {
-                        if (lugarProviene == "Acumulacion Yena") {
-                            if (tipoTarjeta == "Puntadaformapago") {
-                                val intent = Intent(this@LecturayEscaneo, DiferentesFormasPago::class.java)
-                                intent.putExtra("banderaHuella", banderaHuella)
-                                intent.putExtra("Enviadodesde", "Monedero")
-//                                intent.putExtra("idusuario", idusuario)
-                                intent.putExtra("posicioncarga", posicionCargaId)
-                                intent.putExtra("claveusuario", numeroEmpleado)
-                                intent.putExtra("idoperativa", idOperativa)
-                                intent.putExtra("formapagoid", formaPagoId)
-                                intent.putExtra("NombreCompleto", nombreCompletoOperacion)
-                                intent.putExtra("montoencanasta", montoCanasta)
-                                intent.putExtra("saldoYena", "0")
-                                intent.putExtra("pagoconpuntada", pagoConYena)
-                                startActivity(intent)
-                            } else if (formaPagoId == "3" || formaPagoId == "5" || formaPagoId == "13") {
-                                val simbolos = DecimalFormatSymbols()
-                                simbolos.decimalSeparator = '.'
-                                val df = DecimalFormat("####.00##", simbolos)
-                                df.maximumFractionDigits = 2
-                                db.writableDatabase.delete("PagoTarjeta", null, null)
-                                db.close()
-                                db.InsertarDatosPagoTarjeta(
-                                    "1",
-                                    posicionCargaId,
-                                    formaPagoId,
-                                    montoCanasta.toString(),
-                                    "0",
-                                    "1",
-                                    "0",
-                                    "",
-                                    "",
-                                    "",
-                                    montoCanasta.toString(),""
-                                )
-                                val intentVisa = Intent(
-                                    this@LecturayEscaneo,
-                                    VentaPagoTarjeta::class.java
-                                ) //DiferentesFormasPagoPuntada
-                                intentVisa.putExtra("lugarProviene", "formaspago")
-                                intentVisa.putExtra("posicioncarga", posicionCargaId)
-                                intentVisa.putExtra("formapagoid", formaPagoId)
+                        val mensaje = yenaResponse.mensaje
+                        if (yenaResponse.objetoRespuesta == true) {
+                            if (lugarProviene == "Acumulacion Yena") {
+                                if (tipoTarjeta == "Puntadaformapago") {
+                                    val intent = Intent(this@LecturayEscaneo, DiferentesFormasPago::class.java)
+                                    intent.putExtra("banderaHuella", banderaHuella)
+                                    intent.putExtra("Enviadodesde", "Monedero")
+//                                  intent.putExtra("idusuario", idusuario)
+                                    intent.putExtra("posicioncarga", posicionCargaId)
+                                    intent.putExtra("claveusuario", numeroEmpleado)
+                                    intent.putExtra("idoperativa", idOperativa)
+                                    intent.putExtra("formapagoid", formaPagoId)
+                                    intent.putExtra("NombreCompleto", nombreCompletoOperacion)
+                                    intent.putExtra("montoencanasta", montoCanasta)
+                                    intent.putExtra("saldoYena", "0")
+                                    intent.putExtra("pagoconpuntada", pagoConYena)
+                                    startActivity(intent)
+                                } else if (formaPagoId == "3" || formaPagoId == "5" || formaPagoId == "13") {
+                                    val simbolos = DecimalFormatSymbols()
+                                    simbolos.decimalSeparator = '.'
+                                    val df = DecimalFormat("####.00##", simbolos)
+                                    df.maximumFractionDigits = 2
+                                    db.writableDatabase.delete("PagoTarjeta", null, null)
+                                    db.close()
+                                    db.InsertarDatosPagoTarjeta(
+                                        "1",
+                                        posicionCargaId,
+                                        formaPagoId,
+                                        montoCanasta.toString(),
+                                        "0",
+                                        "1",
+                                        "0",
+                                        "",
+                                        "",
+                                        "",
+                                        montoCanasta.toString(), ""
+                                    )
+                                    val intentVisa = Intent(
+                                        this@LecturayEscaneo,
+                                        VentaPagoTarjeta::class.java
+                                    ) //DiferentesFormasPagoPuntada
+                                    intentVisa.putExtra("lugarProviene", "formaspago")
+                                    intentVisa.putExtra("posicioncarga", posicionCargaId)
+                                    intentVisa.putExtra("formapagoid", formaPagoId)
 //                                intentVisa.putExtra("montoencanasta", "$" + df.format(montoCanasta))
-                                intentVisa.putExtra("montoencanasta", montoCanasta)
-                                intentVisa.putExtra("numeroTarjeta", "")
-                                startActivity(intentVisa)
+                                    intentVisa.putExtra("montoencanasta", montoCanasta)
+                                    intentVisa.putExtra("numeroTarjeta", "")
+                                    startActivity(intentVisa)
+                                } else {
+                                    val intente =
+                                        Intent(this@LecturayEscaneo, ImprimePuntada::class.java)
+                                    intente.putExtra("posicioncarga", posicionCargaId)
+                                    intente.putExtra("idoperativa", idOperativa)
+                                    intente.putExtra("idformapago", formaPagoId)
+                                    intente.putExtra("nombrepago", nombrePago)
+                                    intente.putExtra("montoencanasta", montoCanasta)
+                                    intente.putExtra("lugarProviene", "FormasPago")
+                                    startActivity(intente)
+                                }
                             } else {
-                                val intente =
-                                    Intent(this@LecturayEscaneo, ImprimePuntada::class.java)
+                                val intente = Intent(this@LecturayEscaneo, ImprimePuntada::class.java)
                                 intente.putExtra("posicioncarga", posicionCargaId)
                                 intente.putExtra("idoperativa", idOperativa)
                                 intente.putExtra("idformapago", formaPagoId)
                                 intente.putExtra("nombrepago", nombrePago)
-                                intente.putExtra("montoencanasta", montoCanasta)
-                                intente.putExtra("lugarProviene", "FormasPago")
+                                intente.putExtra("montoencanasta", 0.0)
+                                intente.putExtra("lugarProviene", "DiferentesFormasPago")
                                 startActivity(intente)
                             }
                         } else {
-                            val intente = Intent(this@LecturayEscaneo, ImprimePuntada::class.java)
-                            intente.putExtra("posicioncarga", posicionCargaId)
-                            intente.putExtra("idoperativa", idOperativa)
-                            intente.putExtra("idformapago", formaPagoId)
-                            intente.putExtra("nombrepago", nombrePago)
-                            intente.putExtra("montoencanasta", 0.0)
-                            intente.putExtra("lugarProviene", "DiferentesFormasPago")
-                            startActivity(intente)
-                        }
-                    } else {
-                        try {
-                            val titulo = "AVISO"
-                            val modales = Modales(this@LecturayEscaneo)
-                            val view1 = modales.MostrarDialogoAlertaAceptar(
-                                this@LecturayEscaneo,
-                                mensaje,
-                                titulo
-                            )
-                            view1.findViewById<View>(R.id.buttonYes).setOnClickListener {
-                                modales.alertDialog.dismiss()
-                                val intente =
-                                    Intent(this@LecturayEscaneo, Menu_Principal::class.java)
-                                startActivity(intente)
+                            try {
+                                val titulo = "AVISO"
+                                val modales = Modales(this@LecturayEscaneo)
+                                val view1 = modales.MostrarDialogoAlertaAceptar(
+                                    this@LecturayEscaneo,
+                                    mensaje,
+                                    titulo
+                                )
+                                view1.findViewById<View>(R.id.buttonYes).setOnClickListener {
+                                    modales.alertDialog.dismiss()
+                                    val intente = Intent(this@LecturayEscaneo, Menu_Principal::class.java)
+                                    startActivity(intente)
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                     }
                 }
             }
 
-            override fun onFailure(call: Call<RespuestaApi<YenaResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<RespuestaApi<Boolean>>, t: Throwable) {
                 Toast.makeText(this@LecturayEscaneo, t.message, Toast.LENGTH_SHORT).show()
             }
+
         })
     }
 
@@ -437,8 +428,8 @@ class LecturayEscaneo : AppCompatActivity() {
                     return
                 } else {
                     val yenaResponse = response.body()
-                    val objeto = yenaResponse!!.objetoRespuesta
-                    if (yenaResponse.isCorrecto) {
+                    if (yenaResponse!!.isCorrecto) {
+                        val objeto = yenaResponse.objetoRespuesta
                         val titulo = "Detalle Tarjeta Yena"
                         val mensaje = objeto.SaldoActualDinero
                         val listaDescuento = objeto.Descuentos
@@ -512,7 +503,7 @@ class LecturayEscaneo : AppCompatActivity() {
         })
     }
 
-    private fun getSaldoparaAcumular(numeroTarjeta: String) {
+    private fun getSaldoparaAcumular(numeroTarjeta: String, claveTarjeta: String) {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -528,10 +519,10 @@ class LecturayEscaneo : AppCompatActivity() {
                     return
                 } else {
                     val yenaResponse = response.body()
-                    val objeto = yenaResponse!!.objetoRespuesta
-                    if (yenaResponse.isCorrecto) {
+                    if (yenaResponse!!.isCorrecto) {
+                        val objeto = yenaResponse.objetoRespuesta
                         val titulo = "Detalle Tarjeta Yena"
-                        val mensaje = formatoCifras.format(objeto.SaldoActualDinero)
+                        val mensaje = objeto.SaldoActualDinero
                         val listaDescuento = objeto.Descuentos
                         val list = mutableListOf<Double>()
                         for (lista in listaDescuento) {
@@ -560,6 +551,7 @@ class LecturayEscaneo : AppCompatActivity() {
                                 intent.putExtra("precioProducto", "precio")
                                 intent.putExtra("despacholibre", "no")
                                 intent.putExtra("numeroTarjeta", numeroTarjeta)
+                                intent.putExtra("claveTarjeta", claveTarjeta)
                                 intent.putExtra("descuentoMagna", list[0])
                                 intent.putExtra("descuentoPremium", list[1])
                                 intent.putExtra("descuentoDiesel", list[2])
@@ -636,11 +628,5 @@ class LecturayEscaneo : AppCompatActivity() {
                 Toast.makeText(this@LecturayEscaneo, t.message, Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, ApartadosYena::class.java)
-        startActivity(intent)
-        finish()
     }
 }

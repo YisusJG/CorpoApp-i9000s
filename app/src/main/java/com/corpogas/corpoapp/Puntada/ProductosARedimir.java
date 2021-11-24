@@ -8,6 +8,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.method.MovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -123,12 +125,12 @@ public class ProductosARedimir extends AppCompatActivity {
 
         if (enviadoDesde.equals("Redencion Yena")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                findViewById(R.id.btnCombustibles).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
-                findViewById(R.id.btnAceites).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
-                findViewById(R.id.btnAgregarProducto).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
-                findViewById(R.id.btnEnviarProducto).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
-                findViewById(R.id.btnIncrementar).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
-                findViewById(R.id.btnDecrementar).setBackgroundColor(getApplicationContext().getColor(R.color.yena_color));
+                findViewById(R.id.btnCombustibles).setBackgroundColor(ProductosARedimir.this.getColor(R.color.yena_color));
+                findViewById(R.id.btnAceites).setBackgroundColor(ProductosARedimir.this.getColor(R.color.yena_color));
+                findViewById(R.id.btnAgregarProducto).setBackgroundColor(ProductosARedimir.this.getColor(R.color.yena_color));
+                findViewById(R.id.btnEnviarProducto).setBackgroundColor(ProductosARedimir.this.getColor(R.color.yena_color));
+                findViewById(R.id.btnIncrementar).setBackgroundColor(ProductosARedimir.this.getColor(R.color.yena_color));
+                findViewById(R.id.btnDecrementar).setBackgroundColor(ProductosARedimir.this.getColor(R.color.yena_color));
             }
         }
 
@@ -205,6 +207,7 @@ public class ProductosARedimir extends AppCompatActivity {
                     });
                 }else{
                     txtproductos = findViewById(R.id.txtproductos);
+                    txtproductos.setMovementMethod(new ScrollingMovementMethod());
                     Integer TipoProducto=2;
                     Double SaldoPorUtilizar;
                     SaldoPorUtilizar= Double.parseDouble(txtSaldoUtilizado.getText().toString().replace("$","").replace(",",""));
@@ -256,7 +259,7 @@ public class ProductosARedimir extends AppCompatActivity {
 
                                     String txtproducto = "Producto: " + numeroInternofinal;  //Integer.parseInt(numeroInternofinal);
                                     String txtcantidad = "Cantidad: " + totalproductosaCargar.getText().toString();
-                                    String txtprecio = "Precio: " + df.format(preciofinal);
+                                    String txtprecio = "Precio: " + df.format(Double.parseDouble(preciofinal));
 
 
 
@@ -264,7 +267,7 @@ public class ProductosARedimir extends AppCompatActivity {
                                     txtproductos.setText(textoresultado);//myArrayVer.toString());
 
                                     Double resultado = SaldoPorUtilizar - Double.parseDouble(preciofinal);
-                                    txtSaldoUtilizado.setText(df.format(resultado.toString()));
+                                    txtSaldoUtilizado.setText(df.format(resultado));
                                     txtDescripcionProducto.setText("");
                                     totalproductosaCargar.setText("1");
                                     banderaProducto = "true";
@@ -293,10 +296,8 @@ public class ProductosARedimir extends AppCompatActivity {
                                         modales.alertDialog.dismiss();
                                         txtDescripcionProducto.setText("");
                                         totalproductosaCargar.setText("1");
-
                                     }
                                 });
-
                             }
 
                         } catch (JSONException e) {
@@ -348,7 +349,7 @@ public class ProductosARedimir extends AppCompatActivity {
                                             }
                                         }
                                     }
-                                    if (bandera == true) {
+                                    if (bandera) {
 
                                         if (SaldoPorUtilizar >= pesospedidos) {
                                             JSONObject jsonParam = new JSONObject();
@@ -583,7 +584,11 @@ public class ProductosARedimir extends AppCompatActivity {
         bar = new ProgressDialog(ProductosARedimir.this);
         bar.setTitle("Cargando Productos");
         bar.setMessage("Ejecutando... ");
-        bar.setIcon(R.drawable.redimirpuntada);
+        if (enviadoDesde.equals("Redencion Yena")) {
+            bar.setIcon(R.drawable.yena);
+        } else {
+            bar.setIcon(R.drawable.redimirpuntada);
+        }
         bar.setCancelable(false);
         bar.show();
 
@@ -816,18 +821,18 @@ public class ProductosARedimir extends AppCompatActivity {
 
     private void enviarProductosServerDesdeYena() {    //JSONArray array2, String NIP
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String NumeroEstacion = EstacionId;
-        String PosicionDeCarga = getIntent().getStringExtra("posicionCarga");
-        String NumeroDeTarjeta = getIntent().getStringExtra("track");
-        String clave = getIntent().getStringExtra("clave");
-        String nip = getIntent().getStringExtra("nip");
-        String empleadoid = getIntent().getStringExtra("empleadoid");
+//        String NumeroEstacion = EstacionId;
+        String PosicionDeCarga = getIntent().getStringExtra("pos");
+//        String NumeroDeTarjeta = getIntent().getStringExtra("track");
+//        String clave = getIntent().getStringExtra("clave");
+//        String nip = getIntent().getStringExtra("nip");
+//        String empleadoid = getIntent().getStringExtra("empleadoid");
         String numeroempleado = db.getNumeroEmpleado();
         String claveTarjeta = getIntent().getStringExtra("track1");
         String numeroTarjeta = getIntent().getStringExtra("track2");
 
 //        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/NumeroEmpleado/" + numeroempleado;
-        String url = "http://" + ipEstacion + "/CorpogasService/Api/yenas";
+        String url = "http://" + ipEstacion + "/CorpogasService/Api/yenas/redimePuntos";
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             datos.put("SucursalId", sucursalId);
@@ -843,16 +848,17 @@ public class ProductosARedimir extends AppCompatActivity {
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, datos, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                String estado = null;
+                Boolean correcto = null;
+                Boolean estado = null;
                 String mensaje = null;
                 try {
-                    estado = response.getString("Estado");
+                    correcto = response.getBoolean("Correcto");
+                    estado = response.getBoolean("ObjetoRespuesta");
                     mensaje = response.getString("Mensaje");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (estado.equals("true")) {
+                if (correcto != null && correcto) {
                     try {
                         String titulo = "YENA REDENCION";
                         String mensajes = mensaje;
@@ -863,13 +869,11 @@ public class ProductosARedimir extends AppCompatActivity {
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
                                 //MODIFICCADO MIKEL 28/05/2021 para q imprima de una vez SOLO PRODUCTOS
-                                if (banderaProducto.equals("true") && banderaCombustible.equals("false")) {
+//                                if (banderaProducto.equals("true") && banderaCombustible.equals("false")) {
                                     // ImprimeTicketPuntadaSoloProductos();
-                                } else {
-                                    Intent intent = new Intent(ProductosARedimir.this, Menu_Principal.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
+//                                } else {
+                                    startActivity(new Intent(ProductosARedimir.this, Menu_Principal.class));
+//                                }
                             }
                         });
                     } catch (Exception e) {
@@ -885,9 +889,7 @@ public class ProductosARedimir extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
-                                Intent intent = new Intent(ProductosARedimir.this, Menu_Principal.class);
-                                startActivity(intent);
-                                finish();
+                                startActivity(new Intent(ProductosARedimir.this, Menu_Principal.class));
                             }
                         });
                     } catch (Exception e) {
@@ -899,7 +901,7 @@ public class ProductosARedimir extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
-
+                startActivity(new Intent(ProductosARedimir.this, Menu_Principal.class));
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {

@@ -122,10 +122,9 @@ public class ImprimePuntada extends AppCompatActivity {
                                 view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                                     @Override
                                     public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
                                         Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                         startActivity(intent);
-                                        finish();
-                                        modales.alertDialog.dismiss();
                                     }
                                 });
                             }catch (Exception e){
@@ -138,10 +137,9 @@ public class ImprimePuntada extends AppCompatActivity {
                             view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() { //buttonYes
                                 @Override
                                 public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
                                     Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                     startActivity(intent);
-                                    finish();
-                                    modales.alertDialog.dismiss();
                                 }
                             });
                         }

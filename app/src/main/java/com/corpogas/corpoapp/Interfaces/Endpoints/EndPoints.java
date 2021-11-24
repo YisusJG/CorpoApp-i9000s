@@ -233,6 +233,12 @@ public interface EndPoints {
     @POST("Api/yenas/consultaSaldo")
     Call<RespuestaApi<YenaResponse>> postConsultaYena(@Body EndPointYena endPointYena);
 
+    @POST("Api/yenas/acumulaPuntos")
+    Call<RespuestaApi<Boolean>> postAcumulaPuntos(@Body EndPointYena endPointYena);
+
+    @POST("Api/yenas/redimePuntos")
+    Call<RespuestaApi<Boolean>> postRedimePuntos(@Body EndPointYena endPointYena);
+
 
 //    METODOS DELETE
 

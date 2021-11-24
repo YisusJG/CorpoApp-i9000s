@@ -709,7 +709,8 @@ class Menu_Principal : AppCompatActivity() {
                             intent.putExtra("lugarproviene", "Ventas")
                             startActivity(intent)
 
-                        }else{
+                        }
+                        else{
                             if(efectivoNoEntregado >= data.maximoEfectivo) {
                                 drawerLayout?.setBackgroundColor(Color.RED)
                                 val mensaje =

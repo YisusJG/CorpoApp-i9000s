@@ -90,7 +90,7 @@ public class OpcionImprimir extends AppCompatActivity {
                 switch (lrecyclerViewHeaders.get(rcViewOpcionImprimir.getChildAdapterPosition(v)).getTitulo()) {
                     case "Imprimir": //Consulta Saldo
                         Intent intentMonedero = new Intent(getApplicationContext(), PosicionCargaTickets.class);
-                        intentMonedero.putExtra("lugarproviene", "Imprimir");
+                        intentMonedero.putExtra("lugarProviene", "Imprimir");
                         startActivity(intentMonedero);
                         finish();
                         break;

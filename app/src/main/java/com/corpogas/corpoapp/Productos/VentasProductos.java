@@ -118,7 +118,7 @@
         List<String> TipoProductoId;
         List<String> DescripcionPr;
         List<String> ACategoria;
-        String lugarproviene ;
+        String lugarproviene, lugarProviene ;
         Long NumeroEmpleado, islaId;
         Integer Propina = 5;
         ProgressDialog bar;
@@ -157,6 +157,7 @@
             numerooperativa = getIntent().getStringExtra("numeroOperativa");
             cadenaproducto = getIntent().getStringExtra("cadenaproducto");
             lugarproviene = getIntent().getStringExtra("lugarproviene");
+            lugarProviene = getIntent().getStringExtra("lugarProviene");
             islaId = db.getIslaId();
             NumeroEmpleado = Long.valueOf(db.getNumeroEmpleado());//getIntent().getLongExtra("NumeroEmpleado", 0);
 
@@ -230,17 +231,29 @@
                             }
                         });
                     } else {
-                        Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
-                        intent.putExtra("posicion", posicion);
-                        intent.putExtra("usuario", usuario);
-                        intent.putExtra("cadenaproducto", myArrayPaso.toString());
-                        intent.putExtra("lugarproviene", lugarproviene);
+                        if (lugarProviene.equals("descuentoYena")) {
+                            Intent intent = new Intent(VentasProductos.this, confirmaVenta.class);
+                            intent.putExtra("posicion", posicion);
+                            intent.putExtra("usuario", usuario);
+                            intent.putExtra("cadenaproducto", myArrayPaso.toString());
+                            intent.putExtra("lugarProviene", lugarProviene);
 //                        intent.putExtra("numeroOpertativa", numerooperativa);
-                        intent.putExtra("numeroisla", islaId);
+                            intent.putExtra("numeroisla", islaId);
 //                        intent.putExtra("numeroempleado", NumeroEmpleado);
-                        startActivity(intent);
-                        finish();
-
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
+                            intent.putExtra("posicion", posicion);
+                            intent.putExtra("usuario", usuario);
+                            intent.putExtra("cadenaproducto", myArrayPaso.toString());
+                            intent.putExtra("lugarproviene", lugarproviene);
+//                        intent.putExtra("numeroOpertativa", numerooperativa);
+                            intent.putExtra("numeroisla", islaId);
+//                        intent.putExtra("numeroempleado", NumeroEmpleado);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 }
             });
@@ -253,7 +266,6 @@
                     //CrearJSON();
                 }
             });
-
 
             incrementar = findViewById(R.id.incrementar);
             incrementar.setOnClickListener(new View.OnClickListener() {
