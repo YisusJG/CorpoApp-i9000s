@@ -217,7 +217,7 @@ public class PuntadaRedimirQr extends AppCompatActivity {
                 result = "";
             }
         }
-        return false;
+        return super.dispatchKeyEvent(event);
     }
 
     @Override
@@ -248,5 +248,10 @@ public class PuntadaRedimirQr extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resulCode, data);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(PuntadaRedimirQr.this, Menu_Principal.class));
     }
 }
