@@ -381,7 +381,7 @@ public class ResumenActivity extends AppCompatActivity {
 
         btnValidarEntrega.setOnClickListener(view -> {
             importeDiferenciaTotal = respuestaApiCierreTicket.getObjetoRespuesta().getImporteDiferenciaTotal();
-            if (importeDiferenciaTotal == 0.0){
+            if (importeDiferenciaTotal <= 0.0){
 
                 titulo = "CORRECTO";
                 mensaje = "No existen diferencias. Hasta Luego: " + db.getNombre();

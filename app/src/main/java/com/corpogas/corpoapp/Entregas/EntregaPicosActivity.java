@@ -279,7 +279,7 @@ public class EntregaPicosActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setVariables(){
         dataBase = new SQLiteBD(getApplicationContext());
-        this.setTitle("Entrega de Picos");
+        this.setTitle(dataBase.getNombreEstacion() + " ( EST.:" + dataBase.getNumeroEstacion() + ")");
 
         ipEstacion = dataBase.getIpEstacion();
         sucursalId = Long.parseLong(dataBase.getIdSucursal());

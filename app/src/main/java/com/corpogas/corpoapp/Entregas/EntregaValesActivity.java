@@ -122,6 +122,8 @@ public class EntregaValesActivity extends AppCompatActivity {
 
     private void init() {
         db = new SQLiteBD(getApplicationContext());
+        this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
+
         dbCorte = new CorteDB(getApplicationContext());
         paperVoucherType = dbCorte.getTipoValePapeles();
         ipEstacion = db.getIpEstacion();

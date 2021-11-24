@@ -524,6 +524,8 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                                 break;
                                             case "11"://                Operativa Desconocida
                                                 break;
+                                            case "16"://                Yena Redencion
+                                                imprimirticket(String.valueOf(posicionCargaId), "YENAREDENCION", MontoenCanasta.toString());
                                             case "54"://                Operativa Predeterminada
                                                 break;
                                             case "55"://                Operativa Jarreo
@@ -544,6 +546,19 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                                 imprimirticket(String.valueOf(posicionCargaId), "MERCADOPAGO", MontoenCanasta.toString());
                                                 break;
                                             default://                No se encontro ninguna forma de operativa
+                                                String titulo = "AVISO";
+                                                String mensaje = "Directiva no Identificada";
+                                                Modales modales = new Modales(PosicionCargaTickets.this);
+                                                View view1 = modales.MostrarDialogoError(PosicionCargaTickets.this, mensaje);
+                                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                        modales.alertDialog.dismiss();
+                                                    }
+                                                });
                                                 break;
                                         }
                                     }
@@ -587,13 +602,18 @@ public class PosicionCargaTickets extends AppCompatActivity {
         JSONObject FormasPagoObjecto = new JSONObject();
         JSONArray FormasPagoArreglo = new JSONArray();
         String valor;
-        if (TipoTarjeta == "TLLENO"  | TipoTarjeta == "TLLENOARILLOS") {
-            valor = "11";
+
+        if (TipoTarjeta == "YENAREDENCION"){
+            valor = "16";
         }else{
-            if (TipoTarjeta == "MERCADOPAGO") {
-                valor = "14";
-            }else{ //Puntada Redimir
-                valor = "12";
+            if (TipoTarjeta == "TLLENO"  | TipoTarjeta == "TLLENOARILLOS") {
+                valor = "11";
+            }else{
+                if (TipoTarjeta == "MERCADOPAGO") {
+                    valor = "14";
+                }else{ //Puntada Redimir
+                    valor = "12";
+                }
             }
         }
 
