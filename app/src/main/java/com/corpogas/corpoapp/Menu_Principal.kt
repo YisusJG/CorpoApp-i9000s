@@ -725,13 +725,15 @@ class Menu_Principal : AppCompatActivity() {
                                     }
 
                             }else{
-                                val mensaje = respuestaApiEfectivoNoEntregado?.Mensaje
-                                val modales = Modales(this@Menu_Principal)
-                                val viewResultado = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensaje, "AVISO")
-                                viewResultado.findViewById<View>(R.id.buttonYes).setOnClickListener {
-                                        modales.alertDialog.dismiss()
-                                    }
-
+//                                val mensaje = respuestaApiEfectivoNoEntregado?.Mensaje LO QUITE::: MIKEL
+//                                val modales = Modales(this@Menu_Principal)
+//                                val viewResultado = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensaje, "AVISO")
+//                                viewResultado.findViewById<View>(R.id.buttonYes).setOnClickListener {
+//                                        modales.alertDialog.dismiss()
+//                                    }
+                                intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
+                                intent.putExtra("lugarproviene", "Ventas")
+                                startActivity(intent)
                             }
                         }
                     }

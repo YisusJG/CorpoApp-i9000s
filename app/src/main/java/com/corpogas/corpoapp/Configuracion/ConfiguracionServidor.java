@@ -163,7 +163,6 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 }
                 estacion = response.body();
                 obtenerMaximoEfectivo();
-                guardarDatosDBEmpresa();
             }
 
             @Override
@@ -353,6 +352,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 respuestaApiMaximoEfectivo = response.body();
                 double maximoEfectivo = respuestaApiMaximoEfectivo.getObjetoRespuesta();
                 data.InsertarMaximoEfectivo(maximoEfectivo);
+                guardarDatosDBEmpresa();
 //                double pruebamaximo = data.getMaximoEfectivo();
             }
 
