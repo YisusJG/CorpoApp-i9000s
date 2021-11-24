@@ -50,7 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class EntregaValesActivity extends AppCompatActivity {
 
     List<PaperVoucherType> paperVoucherType;
-    String ipEstacion,tituloValePapel,numeroEmpleado;
+    String ipEstacion,tituloValePapel,numeroEmpleado, lugarProviene;
     long idValePapel,sucursalId,estacionId,cierreId;
     CorteDB dbCorte;
     SQLiteBD db;
@@ -130,6 +130,7 @@ public class EntregaValesActivity extends AppCompatActivity {
         sucursalId = Long.parseLong(db.getIdSucursal());
         estacionId = Long.parseLong(db.getIdEstacion());
         numeroEmpleado = db.getNumeroEmpleado();
+        lugarProviene = getIntent().getStringExtra("lugarProviene");
         cierreId =   getIntent().getLongExtra("cierreId",0);
         rcvValesPapel = findViewById(R.id.rcvValesPapel);
         snipperTipoVales = findViewById(R.id.idSpinnerFragment);
@@ -225,109 +226,222 @@ public class EntregaValesActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onclicks() {
         imgDetalleVales.setOnClickListener(v -> {
-            imgDetalleVales.setEnabled(false);
-            lCierreValesPapel = new ArrayList<>();
-            lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() >= 1).collect(Collectors.toList());
+            if (lugarProviene.equals("corteVales")) {
+                enviarDesdeCorte();
+            } else {
+                imgDetalleVales.setEnabled(false);
+                lCierreValesPapel = new ArrayList<>();
+                lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() >= 1).collect(Collectors.toList());
 
-            if(lCierreValesPapel.size() >0)
-            {
-                String titulo = "CONFIRMACIÓN";
-                String mensaje = "Ingresa NIP de confirmación.";
-                Modales modales = new Modales(EntregaValesActivity.this);
-                View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
-                EditText edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        imgDetalleVales.setEnabled(true);
-                        String nipAutorizacion = edtNipAutorizacion.getText().toString();
-                        if (nipAutorizacion.isEmpty()){
-                            edtNipAutorizacion.setError("Ingresa NIP");
-                            return;
-                        }else{
-                            List<ValePapel> lValespapelRecepcion = new ArrayList<>();
-                            RecepcionVale recepcionVale = new RecepcionVale();
+                if(lCierreValesPapel.size() >0)
+                {
+                    String titulo = "CONFIRMACIÓN";
+                    String mensaje = "Ingresa NIP de confirmación.";
+                    Modales modales = new Modales(EntregaValesActivity.this);
+                    View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
+                    EditText edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                    edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            imgDetalleVales.setEnabled(true);
+                            String nipAutorizacion = edtNipAutorizacion.getText().toString();
+                            if (nipAutorizacion.isEmpty()){
+                                edtNipAutorizacion.setError("Ingresa NIP");
+                                return;
+                            }else{
+                                List<ValePapel> lValespapelRecepcion = new ArrayList<>();
+                                RecepcionVale recepcionVale = new RecepcionVale();
 
-                            for (CierreValePapel item: lCierreValesPapel)
-                            {
-                                int cantidad = (int) item.getCantidad();
-                                lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
-                            }
+                                for (CierreValePapel item: lCierreValesPapel)
+                                {
+                                    int cantidad = (int) item.getCantidad();
+                                    lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
+                                }
 
-                            recepcionVale.SucursalId = sucursalId;
-                            recepcionVale.Clave = nipAutorizacion;
-                            recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
+                                recepcionVale.SucursalId = sucursalId;
+                                recepcionVale.Clave = nipAutorizacion;
+                                recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
 
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
 
 //                        String gson = new Gson(recepcionVale).toJson();
-                            EndPoints guardarVales = retrofit.create(EndPoints.class);
-                            Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
-                            call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
-                                @Override
-                                public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
-                                    if (!response.isSuccessful()) {
-                                        return;
+                                EndPoints guardarVales = retrofit.create(EndPoints.class);
+                                Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
+                                call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
+                                    @Override
+                                    public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
+                                        if (!response.isSuccessful()) {
+                                            return;
+                                        }
+                                        respuestaGuardaVales = response.body();
+                                        assert respuestaGuardaVales != null;
+                                        if(respuestaGuardaVales.Correcto)
+                                        {
+                                            modales.alertDialog.dismiss();
+                                            String mensajes = respuestaGuardaVales.getMensaje();
+                                            final Modales modales = new Modales(EntregaValesActivity.this);
+                                            View view1 = modales.MostrarDialogoCorrecto(EntregaValesActivity.this,mensajes);
+                                            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    modales.alertDialog.dismiss();
+                                                    dbCorte.getWritableDatabase().delete("TipoValesPapel",null,null);
+                                                    dbCorte.getWritableDatabase().delete("CierreValePapel",null,null);
+                                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                        }else
+                                        {
+                                            edtNipAutorizacion.setError(respuestaGuardaVales.getMensaje());
+                                            return;
+                                        }
+
                                     }
-                                    respuestaGuardaVales = response.body();
-                                    if(respuestaGuardaVales.Correcto)
-                                    {
-                                        modales.alertDialog.dismiss();
-                                        String mensajes = respuestaGuardaVales.getMensaje();
-                                        final Modales modales = new Modales(EntregaValesActivity.this);
-                                        View view1 = modales.MostrarDialogoCorrecto(EntregaValesActivity.this,mensajes);
-                                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                modales.alertDialog.dismiss();
-                                                dbCorte.getWritableDatabase().delete("TipoValesPapel",null,null);
-                                                dbCorte.getWritableDatabase().delete("CierreValePapel",null,null);
-                                                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                    }else
-                                    {
-                                        edtNipAutorizacion.setError(respuestaGuardaVales.getMensaje());
-                                        return;
+
+                                    @Override
+                                    public void onFailure(Call<RespuestaApi<List<ResumenVale>>> call, Throwable t) {
+
+                                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<RespuestaApi<List<ResumenVale>>> call, Throwable t) {
-
-                                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                });
+                            }
                         }
-                    }
-                });
-                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        imgDetalleVales.setEnabled(true);
+                    });
+                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            imgDetalleVales.setEnabled(true);
 
-                        modales.alertDialog.dismiss();
-                    }
-                });
-            }else{
-                String titulo = "AVISO";
-                Modales modales = new Modales(EntregaValesActivity.this);
-                View view1 = modales.MostrarDialogoAlertaAceptar(EntregaValesActivity.this,"No has agregado ningun vale",titulo);
-                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        imgDetalleVales.setEnabled(true);
-                        modales.alertDialog.dismiss();
-                    }
-                });
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+                }else{
+                    String titulo = "AVISO";
+                    Modales modales = new Modales(EntregaValesActivity.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(EntregaValesActivity.this,"No has agregado ningun vale",titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            imgDetalleVales.setEnabled(true);
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+                }
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void enviarDesdeCorte() {
+        imgDetalleVales.setEnabled(false);
+        lCierreValesPapel = new ArrayList<>();
+        lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() >= 1).collect(Collectors.toList());
+
+        if(lCierreValesPapel.size() >0)
+        {
+            String titulo = "CONFIRMACIÓN";
+            String mensaje = "Ingresa NIP de confirmación.";
+            Modales modales = new Modales(EntregaValesActivity.this);
+            View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
+            EditText edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imgDetalleVales.setEnabled(true);
+                    String nipAutorizacion = edtNipAutorizacion.getText().toString();
+                    if (nipAutorizacion.isEmpty()){
+                        edtNipAutorizacion.setError("Ingresa NIP");
+                        return;
+                    }else{
+                        List<ValePapel> lValespapelRecepcion = new ArrayList<>();
+                        RecepcionVale recepcionVale = new RecepcionVale();
+
+                        for (CierreValePapel item: lCierreValesPapel)
+                        {
+                            int cantidad = (int) item.getCantidad();
+                            lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
+                        }
+
+                        recepcionVale.SucursalId = sucursalId;
+                        recepcionVale.Clave = nipAutorizacion;
+                        recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+//                        String gson = new Gson(recepcionVale).toJson();
+                        EndPoints guardarVales = retrofit.create(EndPoints.class);
+                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaValesCorte(recepcionVale,numeroEmpleado);
+                        call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
+                            @Override
+                            public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
+                                if (!response.isSuccessful()) {
+                                    return;
+                                }
+                                respuestaGuardaVales = response.body();
+                                assert respuestaGuardaVales != null;
+                                if(respuestaGuardaVales.Correcto)
+                                {
+                                    modales.alertDialog.dismiss();
+                                    String mensajes = respuestaGuardaVales.getMensaje();
+                                    final Modales modales = new Modales(EntregaValesActivity.this);
+                                    View view1 = modales.MostrarDialogoCorrecto(EntregaValesActivity.this,mensajes);
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                            dbCorte.getWritableDatabase().delete("TipoValesPapel",null,null);
+                                            dbCorte.getWritableDatabase().delete("CierreValePapel",null,null);
+                                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                }else
+                                {
+                                    edtNipAutorizacion.setError(respuestaGuardaVales.getMensaje());
+                                    return;
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<RespuestaApi<List<ResumenVale>>> call, Throwable t) {
+
+                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            });
+            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imgDetalleVales.setEnabled(true);
+
+                    modales.alertDialog.dismiss();
+                }
+            });
+        }else{
+            String titulo = "AVISO";
+            Modales modales = new Modales(EntregaValesActivity.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(EntregaValesActivity.this,"No has agregado ningun vale",titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imgDetalleVales.setEnabled(true);
+                    modales.alertDialog.dismiss();
+                }
+            });
+        }
     }
 }

@@ -631,7 +631,7 @@
 
                 <TextView
                     android:id="@+id/txvGasopass"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -643,14 +643,24 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+
+                <Button
+                    android:id="@+id/btnAgregarValePapel"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="+"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:layout_editor_absoluteY="2dp" />
+
                 <TextView
                     android:id="@+id/txvCantidadGasopass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="42dp"
+                    android:layout_marginStart="28dp"
                     android:layout_marginTop="8dp"
                     android:text="Cantidad"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     style="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="#000"
                     app:layout_constraintStart_toStartOf="parent"
@@ -664,7 +674,7 @@
                     android:layout_marginStart="47dp"
                     android:layout_marginTop="8dp"
                     android:text="Denominacion"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     app:layout_constraintStart_toEndOf="@+id/txvCantidadGasopass"
                     app:layout_constraintTop_toBottomOf="@+id/txvGasopass" />
 
@@ -676,14 +686,14 @@
                     android:layout_marginStart="52dp"
                     android:layout_marginTop="8dp"
                     android:text="Total"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     app:layout_constraintStart_toEndOf="@+id/txvDenominacionGasopass"
                     app:layout_constraintTop_toBottomOf="@+id/txvGasopass" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcvGasopass"
                     android:layout_width="match_parent"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="2dp"
@@ -699,7 +709,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="EFECTIVALE"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:textAlignment="center"
                     android:textColor="#000"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -708,7 +718,7 @@
 
                 <TextView
                     android:id="@+id/txvCantidadEfectiVale"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="42dp"
@@ -721,7 +731,7 @@
 
                 <TextView
                     android:id="@+id/txvDenominacionEfectiVale"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="47dp"
@@ -734,7 +744,7 @@
 
                 <TextView
                     android:id="@+id/txvTotalEfectiVale"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="52dp"
