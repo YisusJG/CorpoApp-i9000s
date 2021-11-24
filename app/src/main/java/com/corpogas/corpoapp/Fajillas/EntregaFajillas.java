@@ -119,11 +119,11 @@ public class EntregaFajillas extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    if (!cantidad.getText().toString().equals("")) {
-                        if (cantidad.getText().toString().length() > 6) {
-                            AgregarFajillaaLista(cantidad.getText().toString());
-                        }
-                    }
+//                    if (!cantidad.getText().toString().equals("")) {
+//                        if (cantidad.getText().toString().length() > 6) {
+//                            AgregarFajillaaLista(cantidad.getText().toString());
+//                        }
+//                    }
                 }
             });
         } else {
