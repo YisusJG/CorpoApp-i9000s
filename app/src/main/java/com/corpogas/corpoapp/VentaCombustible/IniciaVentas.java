@@ -786,4 +786,9 @@ public class IniciaVentas extends AppCompatActivity {
             queue.add(request_json);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(IniciaVentas.this, Menu_Principal.class));
+    }
 }

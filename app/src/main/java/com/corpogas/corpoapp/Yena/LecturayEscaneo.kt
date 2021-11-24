@@ -199,7 +199,7 @@ class LecturayEscaneo : AppCompatActivity() {
 //            }
             result = ""
         }
-        return false
+        return super.dispatchKeyEvent(event);
     }
 
     private val mHandler: Handler = @SuppressLint("HandlerLeak")

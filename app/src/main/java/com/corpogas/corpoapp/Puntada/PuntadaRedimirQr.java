@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
+import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
@@ -195,13 +196,26 @@ public class PuntadaRedimirQr extends AppCompatActivity {
             result += pressedKey;
         }
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
-            int posicionPunto = result.indexOf(",");
-            String hastaComa = result.substring(0, posicionPunto);
-            int finalChar = result.length();
-            String desdeComa = result.substring(posicionPunto + 1, finalChar);
-            tvNoTarjetaQr.setText(hastaComa);
-            tvDescuento.setText(desdeComa);
-            result = "";
+            if (!result.contains(",")){
+//                Toast.makeText(getApplicationContext(), "El código QR no contiene descuento asociado", Toast.LENGTH_SHORT).show();
+                Modales modales = new Modales(PuntadaRedimirQr.this);
+                View viewLectura = modales.MostrarDialogoError(PuntadaRedimirQr.this, "Tarjeta Incorrecta");
+                viewLectura.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                        startActivity(new Intent(PuntadaRedimirQr.this, Menu_Principal.class));
+                    }
+                });
+            } else {
+                int posicionPunto = result.indexOf(",");
+                String hastaComa = result.substring(0, posicionPunto);
+                int finalChar = result.length();
+                String desdeComa = result.substring(posicionPunto + 1, finalChar);
+                tvNoTarjetaQr.setText(hastaComa);
+                tvDescuento.setText(desdeComa);
+                result = "";
+            }
         }
         return false;
     }
