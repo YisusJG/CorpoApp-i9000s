@@ -224,29 +224,29 @@ public class EntregaValesActivity extends AppCompatActivity {
     private void onclicks() {
         imgDetalleVales.setOnClickListener(v -> {
             imgDetalleVales.setEnabled(false);
+            lCierreValesPapel = new ArrayList<>();
+            lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() >= 1).collect(Collectors.toList());
 
-            String titulo = "CONFIRMACIÓN";
-            String mensaje = "Ingresa NIP de confirmación.";
-            Modales modales = new Modales(EntregaValesActivity.this);
-            View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
-            EditText edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-            edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imgDetalleVales.setEnabled(true);
-                    String nipAutorizacion = edtNipAutorizacion.getText().toString();
-                    if (nipAutorizacion.isEmpty()){
-                        edtNipAutorizacion.setError("Ingresa NIP");
-                        return;
-                    }else{
-                        List<ValePapel> lValespapelRecepcion = new ArrayList<>();
-                        RecepcionVale recepcionVale = new RecepcionVale();
-                        lCierreValesPapel = new ArrayList<>();
-                        lCierreValesPapel = dbCorte.getAllCierreValePapel().stream().filter(x->  x.getCantidad() > 1).collect(Collectors.toList());
+            if(lCierreValesPapel.size() >0)
+            {
+                String titulo = "CONFIRMACIÓN";
+                String mensaje = "Ingresa NIP de confirmación.";
+                Modales modales = new Modales(EntregaValesActivity.this);
+                View viewLectura = modales.MostrarDialogoInsertaDato(EntregaValesActivity.this, mensaje, titulo);
+                EditText edtNipAutorizacion= ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                edtNipAutorizacion.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        imgDetalleVales.setEnabled(true);
+                        String nipAutorizacion = edtNipAutorizacion.getText().toString();
+                        if (nipAutorizacion.isEmpty()){
+                            edtNipAutorizacion.setError("Ingresa NIP");
+                            return;
+                        }else{
+                            List<ValePapel> lValespapelRecepcion = new ArrayList<>();
+                            RecepcionVale recepcionVale = new RecepcionVale();
 
-                        if(lCierreValesPapel.size() >0)
-                        {
                             for (CierreValePapel item: lCierreValesPapel)
                             {
                                 int cantidad = (int) item.getCantidad();
@@ -303,31 +303,29 @@ public class EntregaValesActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-
-                        }else{
-                            modales.alertDialog.dismiss();
-                            String titulo = "AVISO";
-                            Modales modales = new Modales(EntregaValesActivity.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(EntregaValesActivity.this,"No has agregado ningun vale",titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                }
-                            });
                         }
                     }
-                }
-            });
-            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imgDetalleVales.setEnabled(true);
+                });
+                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        imgDetalleVales.setEnabled(true);
 
-                    modales.alertDialog.dismiss();
-                }
-            });
-
+                        modales.alertDialog.dismiss();
+                    }
+                });
+            }else{
+                String titulo = "AVISO";
+                Modales modales = new Modales(EntregaValesActivity.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(EntregaValesActivity.this,"No has agregado ningun vale",titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        imgDetalleVales.setEnabled(true);
+                        modales.alertDialog.dismiss();
+                    }
+                });
+            }
         });
     }
 }
