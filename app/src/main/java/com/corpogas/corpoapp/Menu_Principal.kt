@@ -235,6 +235,7 @@ class Menu_Principal : AppCompatActivity() {
         })
 
     }
+    //ksghdfhsdgf
 
     fun obtenerArqueo(){
         val data = SQLiteBD(applicationContext)
