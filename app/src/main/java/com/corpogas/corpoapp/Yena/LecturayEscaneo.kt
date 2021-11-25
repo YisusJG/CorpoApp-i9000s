@@ -334,7 +334,7 @@ class LecturayEscaneo : AppCompatActivity() {
                                 } else if (formaPagoId == "3" || formaPagoId == "5" || formaPagoId == "13") {
                                     val simbolos = DecimalFormatSymbols()
                                     simbolos.decimalSeparator = '.'
-                                    val df = DecimalFormat("####.00##", simbolos)
+                                    val df = DecimalFormat("#,###.00", simbolos)
                                     df.maximumFractionDigits = 2
                                     db.writableDatabase.delete("PagoTarjeta", null, null)
                                     db.close()

@@ -7,6 +7,6 @@ class CurrencyFormatter() {
     var mFormat: DecimalFormat
 
     init {
-        mFormat = DecimalFormat("$ ###,###,##0.00")
+        mFormat = DecimalFormat("#,##0.00")
     }
 }

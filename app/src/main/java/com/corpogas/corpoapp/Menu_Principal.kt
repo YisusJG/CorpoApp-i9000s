@@ -714,7 +714,7 @@ class Menu_Principal : AppCompatActivity() {
                             if(efectivoNoEntregado >= data.maximoEfectivo) {
                                 drawerLayout?.setBackgroundColor(Color.RED)
                                 val mensaje =
-                                    "Tienes " + numFormat.mFormat.format(efectivoNoEntregado) + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
+                                    "Tienes $ " + numFormat.mFormat.format(efectivoNoEntregado) + " en efectivo para entregar. Deposita tus Fajillas para realizar otra venta."
                                 val modales = Modales(this@Menu_Principal)
                                 val efectivoNoEntregadoFormato = DecimalFormat(efectivoNoEntregado.toString())
                                 val viewResultado = modales.MostrarDialogoError(this@Menu_Principal, mensaje)
