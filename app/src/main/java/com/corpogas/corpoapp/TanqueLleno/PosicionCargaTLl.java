@@ -339,6 +339,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
 
 
