@@ -308,7 +308,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                         String titulo = "TanqueLleno";
                         Modales modales = new Modales(PosicionCargaTLl.this);
                         View view1 = modales.MostrarDialogoCorrecto(PosicionCargaTLl.this, mensaje);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
