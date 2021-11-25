@@ -86,6 +86,7 @@ public class OpcionFajillas extends AppCompatActivity {
                     finish();
                 }  else if (titulo.equals("Entrega Vales")) {
                     Intent intent1 = new Intent(getApplicationContext(), EntregaValesActivity.class);
+                    intent1.putExtra("lugarProviene", "turno");
                     startActivity(intent1);
                     finish();
                 }
