@@ -368,6 +368,7 @@ public class EntregaValesActivity extends AppCompatActivity {
                             int cantidad = (int) item.getCantidad();
                             lValespapelRecepcion.add(new ValePapel(item.getTipoValePapelId(), item.getNombreVale(),cantidad,item.Denominacion));
                         }
+                        //dkjfshgdkfjhg
 
                         recepcionVale.SucursalId = sucursalId;
                         recepcionVale.Clave = nipAutorizacion;
