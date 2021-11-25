@@ -26,11 +26,16 @@ import com.corpogas.corpoapp.Corte.Adapters.RVAdapterResumenGastos;
 import com.corpogas.corpoapp.Corte.Adapters.RVAdapterResumenVales;
 import com.corpogas.corpoapp.Corte.Entities.ValePapelTotal;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Entities.Cortes.CierreValePapel;
 import com.corpogas.corpoapp.Entities.Virtuales.CierreTicket;
 import com.corpogas.corpoapp.Entities.Virtuales.FajillaTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.FormaPagoTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.GastoTotal;
 import com.corpogas.corpoapp.Entities.Virtuales.VentaCombustibleTotal;
+import com.corpogas.corpoapp.Entregas.Entities.RecepcionVale;
+import com.corpogas.corpoapp.Entregas.Entities.ResumenVale;
+import com.corpogas.corpoapp.Entregas.Entities.ValePapel;
+import com.corpogas.corpoapp.Entregas.EntregaValesActivity;
 import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.LoginActivity;
@@ -38,6 +43,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,11 +55,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ResumenActivity extends AppCompatActivity {
 
+    List<ValePapelTotal> lGasopass, lEfectivale, lAccor, lSiVale;
+
     ConstraintLayout expandableCombustible, expandableFajilla, expandablePico, expandableVale, expandableFormaPago, expandableJarreo, expandableGastos;
     Button arrowBtnCombustible, arrowBtnFajilla, arrowBtnPico, arrowBtnVale, arrowBtnFormaPago, arrowBtnJarreo, arrowBtnGastos, btnAgregarFajillasResumenActivity, btnValidarEntrega;
     CardView cardViewCombustible, cardViewFajilla, cardViewPico, cardViewVale, cardViewFormaPago, cardViewJarreo, cardViewGastos;
     RecyclerView rcvGasopass, rcvEfectivale, rcvAccor, rcvSiVale, rcvFormaPago, rcvGastos;
     ImageButton btnListaProductosResumenActivity;
+    Button agregarValeCorte;
 
     SQLiteBD db;
     String ipEstacion, idusuario, titulo, mensaje;
@@ -119,6 +128,8 @@ public class ResumenActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext().getApplicationContext());
         rcvGasopass.setLayoutManager(linearLayoutManager);
         rcvGasopass.setHasFixedSize(true);
+
+        agregarValeCorte = findViewById(R.id.btnAgregarValePapel);
 
         rcvEfectivale = findViewById(R.id.rcvEfectivale);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getApplicationContext().getApplicationContext());
@@ -411,11 +422,20 @@ public class ResumenActivity extends AppCompatActivity {
             }
 
         });
+
+        agregarValeCorte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EntregaValesActivity.class);
+                intent.putExtra("lugarProviene", "corteVales");
+                startActivity(intent);
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setTotalVales () {
-        List<ValePapelTotal> lGasopass, lEfectivale, lAccor, lSiVale;
+
         lGasopass = respuestaApiCierreTicket.getObjetoRespuesta().getValePapelesTotal();
         lGasopass = lGasopass.stream().filter(x -> x.getNumeroTipoVale() == 1).collect(Collectors.toList());
         if (lGasopass.size() > 0) SetRecyclerView(lGasopass, 1);

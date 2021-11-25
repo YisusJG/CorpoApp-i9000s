@@ -222,6 +222,9 @@ public interface EndPoints {
     @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}")
     Call<RespuestaApi<List<ResumenVale>>> postGuardaVales(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
 
+    @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/corte")
+    Call<RespuestaApi<List<ResumenVale>>> postGuardaValesCorte(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega);
+
 
 
     @POST("api/fajillasCajaFuerte/entregaFajillasCajaFuerte/numeroEmpleado/{numeroEmpleadoEntrega}")
