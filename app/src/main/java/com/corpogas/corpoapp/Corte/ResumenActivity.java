@@ -408,6 +408,7 @@ public class ResumenActivity extends AppCompatActivity {
                     }
                 });
 
+                //fdsjhgjksfdhgkjdfsh
             }else{
                 titulo = "AVISO";
                 mensaje = "Existe una diferencia en tu efectivo. Verifica con tu superior.";

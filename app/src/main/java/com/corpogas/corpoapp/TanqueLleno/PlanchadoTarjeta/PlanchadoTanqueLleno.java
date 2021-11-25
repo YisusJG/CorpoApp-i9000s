@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -76,6 +78,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
     TextView txtleyendaTl;
     boolean pasa, banderaDatos;
 
+    String tk1;
     JSONArray datosTarjeta = new JSONArray();
 
 
@@ -158,6 +161,23 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
 
             }
         });
+
+        tvDenominaNumeroClienteTl.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                tk1 =  tvDenominaNumeroClienteTl.getText().toString()+"00000000";
+            }
+        });
     }
     private void validaTarjetaPuntada(){
 
@@ -174,9 +194,12 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             final JSONObject jsonObject = new JSONObject();
 
             try {
-                String tk1 =  tvDenominaNumeroClienteTl.getText().toString()+"00000000";
                 datosTarjeta.put("");
-                datosTarjeta.put(tk1);
+                if (tk1 != null) {
+                    datosTarjeta.put(tk1);
+                } else {
+                    datosTarjeta.put("");
+                }
                 datosTarjeta.put("");
                 jsonObject.put("Pistas", datosTarjeta);
             } catch (JSONException e) {
@@ -554,9 +577,6 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             queue.add(request_json);
         }
     }
-
-
-
 
     private void EnviarProductosPredeterminado() {
         if (!Conexion.compruebaConexion(this)) {

@@ -719,6 +719,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                 intente.putExtra("nombrepago", nombrepago);
                                 intente.putExtra("montoencanasta", MontoCanasta);
                                 intente.putExtra("lugarProviene", "FormasPago");
+                                intente.putExtra("lugarProviene2", "descuentoYena");
                                 startActivity(intente);
                             }
                         } else {
@@ -729,6 +730,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                             intente.putExtra("nombrepago", nombrepago);
                             intente.putExtra("montoencanasta", 0.0);
                             intente.putExtra("lugarProviene", "DiferentesFormasPago");
+                            intente.putExtra("lugarProviene2", "descuentoYena");
                             startActivity(intente);
                         }
                     } else {

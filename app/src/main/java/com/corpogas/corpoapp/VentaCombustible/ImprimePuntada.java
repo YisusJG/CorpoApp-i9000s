@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -37,12 +38,13 @@ import java.util.Map;
 public class ImprimePuntada extends AppCompatActivity {
     SQLiteBD data;
     String EstacionId, sucursalId, ipEstacion;
-    String Usuarioid , CargaPosicion, UsuarioClave, FormaPagoId, NombrePago, OperativaId, nombreCompletoVenta,  numeroempleado, lugarProviene;
+    String Usuarioid , CargaPosicion, UsuarioClave, FormaPagoId, NombrePago, OperativaId, nombreCompletoVenta,  numeroempleado, lugarProviene, lugarProviene2;
     Double MontoEnCanasta;
     JSONObject FormasPagoObjecto;
     JSONArray FormasPagoArreglo;
     Integer TipoTransacionImprimir;
     String fechaTicket;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +65,17 @@ public class ImprimePuntada extends AppCompatActivity {
         nombreCompletoVenta = data.getNombreCompleto();
         MontoEnCanasta= getIntent().getDoubleExtra("montoencanasta", 0);
         lugarProviene = getIntent().getStringExtra("lugarProviene");
+        lugarProviene2 = getIntent().getStringExtra("lugarProviene2");
+        textView = findViewById(R.id.textView11);
 
         if (lugarProviene.equals("DiferentesFormasPago")){
             EnviaArregloDiferentesFormasPagos();
         }else{
             Moduloimprime();
+        }
+
+        if (lugarProviene2.equals("Acumulacion Yena") || lugarProviene2.equals("descuentoYena")) {
+            textView.setText("Yena Acumular");
         }
     }
 

@@ -371,6 +371,7 @@ class LecturayEscaneo : AppCompatActivity() {
                                     intente.putExtra("nombrepago", nombrePago)
                                     intente.putExtra("montoencanasta", montoCanasta)
                                     intente.putExtra("lugarProviene", "FormasPago")
+                                    intente.putExtra("lugarProviene2", "Acumulacion Yena");
                                     startActivity(intente)
                                 }
                             } else {
@@ -381,6 +382,7 @@ class LecturayEscaneo : AppCompatActivity() {
                                 intente.putExtra("nombrepago", nombrePago)
                                 intente.putExtra("montoencanasta", 0.0)
                                 intente.putExtra("lugarProviene", "DiferentesFormasPago")
+                                intente.putExtra("lugarProviene2", "Acumulacion Yena");
                                 startActivity(intente)
                             }
                         } else {
