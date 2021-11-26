@@ -10,7 +10,7 @@
         android:layout_width="300dp"
         android:layout_height="140dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/gogas"/>
+        android:src="@drawable/gogas" />
 
     <TextView
         android:id="@+id/boton_consultar_saldo"
@@ -22,10 +22,10 @@
         android:background="@color/colorPrimary"
         android:elevation="16dp"
         android:gravity="center"
+        android:text="Consulta de Saldo"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="Consulta de Saldo" />
+        android:textStyle="bold" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/boton_acumular"-->

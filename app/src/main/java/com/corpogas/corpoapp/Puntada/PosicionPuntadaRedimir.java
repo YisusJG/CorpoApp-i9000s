@@ -68,7 +68,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     String usuario;
     String numerotarjeta;
     String NipCliente;
-    String NipClientemd5;
+    String NipClientemd5, autoJarreo;
     long posicionCargaId;
     long numeroOperativa;
     long cargaNumeroInterno;
@@ -182,6 +182,13 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             String descripcionoperativa = posiciones.getString("DescripcionOperativa");
                             descripcion = posiciones.getString("Descripcion");
                             numeroOperativa = posiciones.getLong("Operativa");
+                            String jarreo;
+                            if (numeroOperativa == 31){
+                                jarreo = "true";
+                            }else{
+                                jarreo = "false";
+                            }
+
                             Boolean banderacarga ;
                             if (pocioncargapendientecobro == true){
                                 banderacarga = false;
@@ -204,7 +211,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                                 String subtitulo = "";//
                                                 //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                 subtitulo =descripcionoperativa;//
-                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno));//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, jarreo));//
                                                 banderaposicionCarga = true;
                                             }
                                         }
@@ -353,7 +360,13 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             boolean pocioncargapendientecobro = posicion.isPendienteCobro();
                             String descripcionoperativa =  posicion.getDescripcionOperativa();
                             String descripcion = posicion.getDescripcion();
+                            String jarreo;
                             numeroOperativa = posicion.getOperativa();
+                            if (numeroOperativa == 31){
+                                jarreo = "true";
+                            }else{
+                                jarreo = "false";
+                            }
                             Boolean banderacarga ;
                             if (pocioncargapendientecobro == true){
                                 banderacarga = false;
@@ -376,7 +389,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                                 String subtitulo = "";//
                                                 //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                 subtitulo =descripcionoperativa;//
-                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno));//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, jarreo));//
                                                 banderaposicionCarga = true;
                                             }
                                         }
@@ -428,6 +441,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             public void onClick(View v) {
                 posicionCargaId=lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getPosicionCargaId();
                 cargaNumeroInterno = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getPosicioncarganumerointerno();
+                autoJarreo = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getJarreo();
                 //posicion = numeroposicioncarga;
                 //solicitarBalanceTarjeta(numeroposicioncarga);
                 switch (lugarproviene){
@@ -464,7 +478,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;
                     case "Ventas":
-                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), "false");
+                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo);
                         break;
                     case "Imprimir":
                     case "Reimprimir":
@@ -508,7 +522,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 //                    JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
 
                         if (correcto.equals("false")){
-                            confirmaDescuentoPuntadaQr(posicionCarga);
+                            if (autoJarreo.equals("true")){
+                                enviarSiguientePantallaVentas(posicionCarga);
+                            }else{
+                                confirmaDescuentoPuntadaQr(posicionCarga);
+                            }
                         }else{
                             Boolean banderaConDatos;
                             if (ObjetoRespuesta.equals("null")) {
@@ -522,8 +540,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             }
 
                             if (banderaConDatos.equals(false)){
-                                confirmaDescuentoPuntadaQr(posicionCarga);
-
+                                if (autoJarreo.equals("true")){
+                                    enviarSiguientePantallaVentas(posicionCarga);
+                                }else{
+                                    confirmaDescuentoPuntadaQr(posicionCarga);
+                                }
                             } else {
 
                                 Double MontoenCanasta = 0.00;
@@ -597,7 +618,20 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         }
     }
 
-    private void enviarSiguientePantallaVentas(){
+    private void enviarSiguientePantallaVentas(String posicionCarga){
+        Intent intent = new Intent(getApplicationContext(), IniciaVentas.class); //VentaProductos
+        intent.putExtra("numeroEmpleado", empleadoNumero);
+        intent.putExtra("posicionCarga", posicionCarga);
+        intent.putExtra("estacionjarreo", autoJarreo);
+        intent.putExtra("pcnumerointerno", cargaNumeroInterno);
+        intent.putExtra("pocioncargaid", cargaNumeroInterno);
+        intent.putExtra("descuento", 0);
+        intent.putExtra("lugarProviene", "ventas");
+        intent.putExtra("numeroTarjeta", "");
+        intent.putExtra("nip", "");
+        startActivity(intent);
+        finish();
+
     }
 
 
@@ -649,18 +683,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 modalesPuntada.alertDialog.dismiss();
-                Intent intent = new Intent(getApplicationContext(), IniciaVentas.class); //VentaProductos
-                intent.putExtra("numeroEmpleado", empleadoNumero);
-                intent.putExtra("posicionCarga", posicionCarga);
-                intent.putExtra("estacionjarreo", "Estacionjarreo");
-                intent.putExtra("pcnumerointerno", cargaNumeroInterno);
-                intent.putExtra("pocioncargaid", cargaNumeroInterno);
-                intent.putExtra("descuento", 0);
-                intent.putExtra("lugarProviene", "ventas");
-                intent.putExtra("numeroTarjeta", "");
-                intent.putExtra("nip", "");
-                startActivity(intent);
-                finish();
+                enviarSiguientePantallaVentas(posicionCarga);
             }
         });
     }

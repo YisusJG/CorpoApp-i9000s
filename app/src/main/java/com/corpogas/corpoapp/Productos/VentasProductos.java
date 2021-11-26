@@ -867,6 +867,7 @@
                         mjasonpaso.put("Cantidad", TotalProducto);
                         mjasonpaso.put("Precio", precioUnitario);
                         mjasonpaso.put("Descripcion", descrProducto);
+                        mjasonpaso.put("Importe", "false");
 
                         myArrayPaso.put(mjasonpaso);
 

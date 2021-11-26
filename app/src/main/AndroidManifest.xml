@@ -24,6 +24,9 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Tickets.FormaPagoAutojarreo"
+            android:exported="true" />
+        <activity
             android:name=".VentaCombustible.GenerarTicketVisaAmex"
             android:exported="true" />
         <activity
@@ -163,7 +166,8 @@
         <activity
             android:name=".Tickets.PosicionCargaTickets"
             android:exported="true" />
-        <activity android:name=".Puntada.ProductosARedimir"
+        <activity
+            android:name=".Puntada.ProductosARedimir"
             android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".Puntada.TarjetaPuntadaProvisional" />
         <activity android:name=".Puntada.PosicionPuntadaRedimir" />
@@ -190,8 +194,9 @@
         <activity android:name=".ObtenerClave.ClaveEmpleado" />
         <activity android:name=".VentaCombustible.Ventas" />
         <activity android:name=".VentaCombustible.EligePrecioLitros" />
-        <activity android:name=".Productos.VentasProductos"
-            android:windowSoftInputMode="adjustNothing"/>
+        <activity
+            android:name=".Productos.VentasProductos"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 

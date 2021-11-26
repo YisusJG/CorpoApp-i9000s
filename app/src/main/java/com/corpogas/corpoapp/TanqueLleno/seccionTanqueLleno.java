@@ -75,7 +75,11 @@ public class seccionTanqueLleno extends AppCompatActivity {
         lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Autorización Telefónica",R.drawable.tanquelleno));
-
+//        lTanqueLleno.add(new RecyclerViewHeaders("Prueba1","Autorización Telefónica",R.drawable.efectivale));
+//        lTanqueLleno.add(new RecyclerViewHeaders("Prueba2","Autorización Telefónica",R.drawable.usd));
+//        lTanqueLleno.add(new RecyclerViewHeaders("Prueba3","Autorización Telefónica",R.drawable.visa));
+//        lTanqueLleno.add(new RecyclerViewHeaders("Prueba4","Autorización Telefónica",R.drawable.american));
+//        lTanqueLleno.add(new RecyclerViewHeaders("Prueba5","Autorización Telefónica",R.drawable.valeelectronico));
 
     }
 

@@ -11,6 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
@@ -23,6 +30,10 @@ import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -353,6 +364,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 double maximoEfectivo = respuestaApiMaximoEfectivo.getObjetoRespuesta();
                 data.InsertarMaximoEfectivo(maximoEfectivo);
                 guardarDatosDBEmpresa();
+                obtenerformasdepago();
 //                double pruebamaximo = data.getMaximoEfectivo();
             }
 
@@ -362,8 +374,54 @@ public class ConfiguracionServidor extends AppCompatActivity{
             }
         });
 
-
     }
+
+
+    //funcion para obtener formas de pago
+    public void obtenerformasdepago() {
+        String url = "http://" + ip2 + "/CorpogasService/api/sucursalformapagos/sucursal/" + estacion.getSucursalId();
+        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Boolean colocarformapago;
+                            JSONArray nodo = new JSONArray(response);
+                            Integer numero_pago;
+                            String internonumero = "";
+                            String nombre_pago = "";
+                            for (int i = 0; i <= nodo.length(); i++) {
+                                colocarformapago = false;
+                                JSONObject nodo1 = nodo.getJSONObject(i);
+                                String formap = nodo1.getString("PaymentMethod"); //FormaPago
+                                JSONObject numerointernoobject = new JSONObject(formap);
+                                internonumero = numerointernoobject.getString("Id"); //NumeroInterno
+                                numero_pago = numerointernoobject.getInt("Id"); //FormaPagoId
+                                nombre_pago = numerointernoobject.getString("LongDescription"); //DescripcionLarga
+                                String numero_ticket = numerointernoobject.getString("PrintsAllowed");
+                                Integer visible = numerointernoobject.getInt("IsFrontVisible"); //VisibleTarjetero
+                                Integer acumulaPuntos = numerointernoobject.getInt("AccumulatePoints");
+                                SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
+                                data.InsertarDatosFormasPago(numero_pago, nombre_pago, visible, acumulaPuntos);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //funcion para capturar errores
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(eventoReq);
+    }
+
+
 
 
     private void obtenerNumeroTarjetero(final long sucursalid) {

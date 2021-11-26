@@ -205,8 +205,10 @@ public class AutorizaFajillas extends AppCompatActivity {
                     titulo.setText("Ingresa tu Contraseña de Jefe de Isla");
 //                }
                 break;
-
-
+            case "Reimprimir":
+                titulo.setText("Ingresa tu Contraseña de Jefe de Isla");
+                txtEtiqueta.setText("Reimpresión");
+                break;
             default:
         }
 //        //Inicializacion y carga de huella
@@ -579,6 +581,12 @@ public class AutorizaFajillas extends AppCompatActivity {
             case "corteFajillas":
                 EnviaFajilla();
                 break;
+            case "Reimprimir":
+                Intent intent = new Intent(getApplicationContext(), PosicionCargaTickets.class);
+                intent.putExtra("lugarProviene", "Reimprimir");
+                intent.putExtra("numeroEmpleado", "");
+                startActivity(intent);
+                finish();
             default:
         }
 

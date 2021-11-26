@@ -13,6 +13,7 @@ import android.util.Log;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
+import com.corpogas.corpoapp.Entities.FormasPago.FormasPagoCataglogo;
 import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
 
 import java.security.PublicKey;
@@ -42,6 +43,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_PAGOTARJETA);
         db.execSQL(TBL_PAGOTARJETA_DIFERENTESFORMASPAGO);
         db.execSQL(TBL_MAXIMO_EFECTIVO_SUCURSAL);
+        db.execSQL(TBL_FORMASPAGO);
 
     }
 
@@ -306,6 +308,46 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     public void execSQL(String sqlDeleteConfiguracionEstacion) {
     }
+
+
+    public static class DatosFormasPago implements BaseColumns{
+        public static final String NOMBRE_TABLA = "formasPago";
+        public static final String IDFORMAPAGO = "idformapago";
+        public static final String NOMBREPAGO = "nombrepago";
+        public static final String VISIBLEINVISIBLE = "visible";
+        public static final String ACUMULAPUNTOS = "acumula";
+    }
+    private static final String TBL_FORMASPAGO =
+        "CREATE TABLE " + DatosFormasPago.NOMBRE_TABLA + " (" +
+                          DatosFormasPago.IDFORMAPAGO + " INTEGER PRIMARY KEY," +
+                          DatosFormasPago.NOMBREPAGO + " TEXT," +
+                          DatosFormasPago.VISIBLEINVISIBLE + " INTEGER," +
+                          DatosFormasPago.ACUMULAPUNTOS + " INTEGER)";
+
+    public void InsertarDatosFormasPago(Integer idformapago, String nombrepago, Integer visible, Integer acumulapuntos){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosFormasPago.IDFORMAPAGO, idformapago);
+        values.put(DatosFormasPago.NOMBREPAGO, nombrepago);
+        values.put(DatosFormasPago.VISIBLEINVISIBLE, visible);
+        values.put(DatosFormasPago.ACUMULAPUNTOS, acumulapuntos);
+
+        long newRowId = base.insert(DatosFormasPago.NOMBRE_TABLA, null, values);
+    }
+
+    public List<FormasPagoCataglogo> getFormasPago(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT * FROM FormasPago", null);
+        List<FormasPagoCataglogo> lFormasPago = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            do{
+                lFormasPago.add(new FormasPagoCataglogo(cursor.getInt(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4)));
+            }while (cursor.moveToNext());
+        }
+        return lFormasPago;
+    }
+
+
 
 
     public static class Datosempresa implements BaseColumns {

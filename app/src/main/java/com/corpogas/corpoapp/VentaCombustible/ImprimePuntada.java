@@ -182,9 +182,8 @@ public class ImprimePuntada extends AppCompatActivity {
                     return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
                 }
             };
-//            queue.add(request_json);
-            request_json.setRetryPolicy(new DefaultRetryPolicy(900000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             queue.add(request_json);
+            request_json.setRetryPolicy(new DefaultRetryPolicy(900000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         }
     }
 

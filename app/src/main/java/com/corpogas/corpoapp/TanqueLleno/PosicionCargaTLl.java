@@ -196,7 +196,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                                 String subtitulo = "";//
                                                 //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                 subtitulo =descripcionoperativa;//
-                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno));//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, "false"));//
                                                 banderaposicionCarga = true;
                                             }
                                         }

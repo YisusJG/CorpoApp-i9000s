@@ -32,6 +32,7 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,6 +70,7 @@ public class confirmaVenta extends AppCompatActivity {
     JSONObject myJOProductosFaltantes;
     SQLiteBD db;
     ProgressDialog bar;
+    String correcto, mensaje;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,7 +267,7 @@ public class confirmaVenta extends AppCompatActivity {
             finish();
         } else {
             //RequestQueue queue = Volley.newRequestQueue(this);
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuario + "/posicionCarga/" + posicion;
+            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + db.getNumeroEmpleado() + "/posicionCarga/" + posicion;
             RequestQueue queue = Volley.newRequestQueue(this);
 
             JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
@@ -275,7 +277,21 @@ public class confirmaVenta extends AppCompatActivity {
                             //Get Final response
                             //Toast.makeText(confirmaVenta.this, "Venta Realizada", Toast.LENGTH_SHORT).show();
                             try {
-                                correcto();
+                                if (correcto.equals("false")){
+                                    String titulo = "AVISO";
+                                    Modales modales = new Modales(confirmaVenta.this);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(confirmaVenta.this,mensaje,titulo);
+                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            bar.cancel();
+                                            modales.alertDialog.dismiss();
+                                        }
+                                    });
+
+                                }else{
+                                    correcto();
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -329,6 +345,9 @@ public class confirmaVenta extends AppCompatActivity {
                             responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
                             //transaccionId =
                             JSONObject obj = new JSONObject(responseString);
+
+                            correcto = obj.getString("Correcto");
+                            mensaje = obj.getString("Mensaje");
                             //Si es valido se asignan valores
                             //Intent intent = new Intent(getApplicationContext(), productoFormapago.class);
                             //DAtos enviados a formaPago
@@ -395,6 +414,7 @@ public class confirmaVenta extends AppCompatActivity {
                 myJOProductosFaltantes.put("Descripcion", descripcioncorta);
                 myJOProductosFaltantes.put("Cantidad", cantidad);
                 myJOProductosFaltantes.put("Precio", precio);
+                myJOProductosFaltantes.put("Importe", "false");
 
             }
             //txttotal.setText("TOTAL :  "+ UFormat(MontoTotal));
@@ -477,6 +497,7 @@ public class confirmaVenta extends AppCompatActivity {
                 mjason.put("Cantidad", Cantidad.get(m));
                 mjason.put("Precio", PrecioProducto.get(m));
                 mjason.put("Descripcion", DescripcionProducto.get(m));
+                mjason.put("Importe", "false");
                 myArray.put(mjason);
             } catch (JSONException e) {
                 e.printStackTrace();

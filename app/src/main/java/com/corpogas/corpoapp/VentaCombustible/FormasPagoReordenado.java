@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.os.IResultReceiver;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -111,6 +112,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         rcvFormasPagoReordenado.setLayoutManager(linearLayoutManager);
         rcvFormasPagoReordenado.setHasFixedSize(true);
         obtenerformasdepago();
+//        obtenerformasdepagoBD();
     }
 
     private void init() {
@@ -143,7 +145,78 @@ public class FormasPagoReordenado extends AppCompatActivity {
 
     }
 
-    //funcion para obtener formas de pago
+    public void obtenerformasdepagoBD() {
+        for (int i = 0; i< data.getFormasPago().size(); i++ ) {
+            switch (data.getFormasPago().get(i).getIdFormaPago()) {
+                case 0:
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.variasformaspago));
+                    break;
+                case 1: //Efectivo
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.billete));
+                    break;
+                case 2: //Vales
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.vale));
+                    break;
+                case 3: //AMEX
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.american));
+                    break;
+                case 5: //VISA/MC
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.visa));
+                    break;
+                case 6: // VALE/ELEC
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.valeelectronico));
+                    break;
+                case 7: //CREDITO ES
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gas));
+                    break;
+                case 8: //CREDITO ES
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gas));
+                    break;
+                case 9: //CREDITO ES
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gas));
+                    break;
+                case 10: //CORPOMOBILE
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gas));
+                    break;
+                case 11: //TANQUELLENO
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.tanquelleno));
+                    break;
+                case 12: //REDENCION PUNTADA
+                    break;
+                case 13: //GASCARD
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gascard));
+                    break;
+                case 14: //MERCADOPAGO
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.mercadopago));
+                    break;
+                case 90://Consigna
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gas));
+                    break;
+                case 91: //JARREO
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.jarreo));
+                    break;
+                case 92://AUTOJARREO
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.jarreo));
+                    break;
+                case 16://USD
+                    lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.usd));
+                    break;
+                default:
+                    if (data.getFormasPago().get(i).getIdFormaPago() == 15){
+                    }else{
+                        lrcvFormaPago.add(new RecyclerViewHeaders(data.getFormasPago().get(i).getNombrePago(),"Forma de Pago:" + data.getFormasPago().get(i).getIdFormaPago(), R.drawable.gas));
+                    }
+
+            }
+        }
+    }
+
+
+    private void ObtieneImagenPago(Integer opagoid){
+
+    }
+
+        //funcion para obtener formas de pago
     public void obtenerformasdepago() {
         String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
         StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
@@ -168,9 +241,15 @@ public class FormasPagoReordenado extends AppCompatActivity {
     private void formadepago(String response) {
         lrcvFormaPago = new ArrayList<>();
 
-//        lrcvFormaPago.add(new RecyclerViewHeaders("EFE", "Forma de Pago: 1" , R.drawable.billete));
-//        lrcvFormaPago.add(new RecyclerViewHeaders("TARJETA", "Forma de Pago: 1" , R.drawable.visa));
-//        lrcvFormaPago.add(new RecyclerViewHeaders("DOLARES", "Forma de Pago: 1" , R.drawable.usd));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Autorización","Autorización Telefónica",R.drawable.tanquelleno));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Prueba1","Autorización Telefónica",R.drawable.efectivale));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Prueba2","Autorización Telefónica",R.drawable.usd));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Prueba3","Autorización Telefónica",R.drawable.visa));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Prueba4","Autorización Telefónica",R.drawable.american));
+//        lrcvFormaPago.add(new RecyclerViewHeaders("Prueba5","Autorización Telefónica",R.drawable.valeelectronico));
 
         try {
             Boolean colocarformapago;
@@ -188,20 +267,16 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     String formap = nodo1.getString("PaymentMethod"); //FormaPago
                     JSONObject numerointernoobject = new JSONObject(formap);
                     internonumero = numerointernoobject.getString("Id"); //NumeroInterno
-
                     numero_pago = numerointernoobject.getString("Id"); //FormaPagoId
-                    //String formapago1 = nodo1.getString("PaymentMethod");
-                    //JSONObject nodo2 = new JSONObject(formapago1);
                     nombre_pago = numerointernoobject.getString("LongDescription"); //DescripcionLarga
                     String numero_ticket = numerointernoobject.getString("PrintsAllowed");
                     String visible = numerointernoobject.getString("IsFrontVisible"); //VisibleTarjetero
                     String acumulaPuntos = numerointernoobject.getString("AccumulatePoints");
                     if (visible.equals("true")) {
                         if (numero_pago.equals("14") | numero_pago.equals("0")) {
-                            //Nodesplega MErcadoPAgo
+                            //Nodespliega MErcadoPAgo
                         } else {
                             colocarformapago = true;
-//                            AcumulaPuntosArreglo.add(acumulaPuntos);
                         }
                     } else {
                         if (EstacionJarreo.equals("true")) {
@@ -266,9 +341,6 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         case 16://USD
                             lrcvFormaPago.add(new RecyclerViewHeaders(nombre_pago, "Forma de Pago:" + numero_pago, R.drawable.usd));
                             break;
-
-                        //case 10:
-                        //    break;
                         default:
                             if (idpago == 15){
                             }else{
@@ -276,11 +348,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
                             }
                     }
                 }
-                initializeAdapter();
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        initializeAdapter();
     }
 
     private void initializeAdapter(){
@@ -577,6 +649,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                             public void onClick(View view) {
                                 modales.alertDialog.dismiss();
                                 rcvFormasPagoReordenado.setEnabled(true);
+                                isClickable=true;
                             }
                         });
                         break;
@@ -624,8 +697,15 @@ public class FormasPagoReordenado extends AppCompatActivity {
                             }
                         }
                         break;
+                    case "91":
+                        ImprimeVenta();
+                        break;
 
-                }
+                    default:
+                        Toast.makeText(FormasPagoReordenado.this, "Forma de Pago " + formaPagoIdentificador + "no codificada ", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(FormasPagoReordenado.this, "Procesando Forma de Pago: " + formaPagoIdentificador, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -1198,6 +1278,13 @@ public class FormasPagoReordenado extends AppCompatActivity {
                 rcvFormasPagoReordenado.setEnabled(true);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getBaseContext(), Menu_Principal.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        finish();
     }
 
 }

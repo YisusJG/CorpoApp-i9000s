@@ -801,6 +801,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                                     intente.putExtra("nombrepago", nombrepago);
                                     intente.putExtra("montoencanasta", MontoenCarrito);
                                     intente.putExtra("lugarProviene", "FormasPago");
+                                    intente.putExtra("lugarProviene2", "");
                                     startActivity(intente);
                                     finish();
                                 }
@@ -814,6 +815,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                             intente.putExtra("nombrepago", nombrepago);
                             intente.putExtra("montoencanasta", MontoenCarrito);
                             intente.putExtra("lugarProviene", "DiferentesFormasPago");
+                            intente.putExtra("lugarProviene2", "");
                             startActivity(intente);
                             finish();
                         }
