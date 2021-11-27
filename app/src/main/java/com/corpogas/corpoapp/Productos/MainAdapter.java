@@ -340,7 +340,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>
                         intent.putExtra("numeroTarjeta", "");
                         intent.putExtra("descuento", 0);
                         intent.putExtra("IdOperativa", numerooperativa);
-
+                        intent.putExtra("lugarProviene", "carrito");
                         myActivity.startActivity(intent);
                         myActivity.finish();
                 }

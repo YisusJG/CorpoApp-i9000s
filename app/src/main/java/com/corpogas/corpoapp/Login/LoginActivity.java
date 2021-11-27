@@ -19,6 +19,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
+import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         db = new SQLiteBD(getApplicationContext());
+        this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         ipEstacion = db.getIpEstacion();
         edtNip = (EditText) findViewById(R.id.edtNip);
         idTarjetero = Long.parseLong(db.getIdTarjtero());

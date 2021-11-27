@@ -393,7 +393,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                             finish();
                                         }else{
                                             String titulo = "AVISO";
-                                            String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                            String mensajes = "Usuario No es un Jefe de Isla o Gerente";
                                             Modales modales = new Modales(AutorizaFajillas.this);
                                             View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
                                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -414,7 +414,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                             finish();
                                         }else{
                                             String titulo = "AVISO";
-                                            String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                            String mensajes = "Usuario No es un Jefe de Isla o Gerente";
                                             Modales modales = new Modales(AutorizaFajillas.this);
                                             View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
                                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -462,7 +462,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                                     enviaActividadSiguiente(idusuario, pass, idRoll);
                                                 }else{
                                                     String titulo = "AVISO";
-                                                    String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                                    String mensajes = "Usuario No es un Jefe de Isla o Gerente";
                                                     Modales modales = new Modales(AutorizaFajillas.this);
                                                     View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
                                                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -480,7 +480,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                             enviaActividadSiguiente(idusuario, pass, idRoll);
                                         }else{
                                             String titulo = "AVISO";
-                                            String mensajes = "Usuario No es un Jefe de Isla o Geremte";
+                                            String mensajes = "Usuario No es un Jefe de Isla o Gerente";
                                             Modales modales = new Modales(AutorizaFajillas.this);
                                             View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensajes, titulo);
                                             view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
@@ -584,7 +584,7 @@ public class AutorizaFajillas extends AppCompatActivity {
             case "Reimprimir":
                 Intent intent = new Intent(getApplicationContext(), PosicionCargaTickets.class);
                 intent.putExtra("lugarProviene", "Reimprimir");
-                intent.putExtra("numeroEmpleado", "");
+                intent.putExtra("numeroEmpleado", numeroempleado);
                 startActivity(intent);
                 finish();
             default:

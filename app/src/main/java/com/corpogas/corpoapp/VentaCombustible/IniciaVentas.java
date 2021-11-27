@@ -193,7 +193,7 @@ public class IniciaVentas extends AppCompatActivity {
                                                     startActivity(intent1);
                                                     finish();
                                                 }else{
-                                                    posicioncargaEmpleadoSucursal(MontoenCanasta.toString());
+                                                    posicioncargaEmpleadoSucursal(MontoenCanasta);
                                                 }
                                             }
 
@@ -792,7 +792,7 @@ public class IniciaVentas extends AppCompatActivity {
         }
     }
 
-    private void posicioncargaEmpleadoSucursal(String MontoenCanasta){
+    private void posicioncargaEmpleadoSucursal(Double montoacargar){
         bar = new ProgressDialog(IniciaVentas.this);
         bar.setTitle("Cargando Posiciones de Carga");
         bar.setMessage("Ejecutando... ");
@@ -801,7 +801,7 @@ public class IniciaVentas extends AppCompatActivity {
         bar.show();
 
         String url;
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/empleado/"+data.getNumeroEmpleado() + "/posicionCarga/" + poscicionCarga;
+            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/posicionCarga/" + poscicionCarga;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -817,7 +817,7 @@ public class IniciaVentas extends AppCompatActivity {
                     if (correcto.equals("false")){
                         String titulo = "AVISO";
                         Modales modales = new Modales(IniciaVentas.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,mensaje,titulo);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this,"Problema con la Posicion de Carga",titulo);
                         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -853,7 +853,7 @@ public class IniciaVentas extends AppCompatActivity {
                                     intent.putExtra("numeroEmpleado", usuarioid);
                                     intent.putExtra("posicionCarga", poscicionCarga);
                                     intent.putExtra("claveProducto", claveProducto);
-                                    intent.putExtra("montoenCanasta", MontoenCanasta);
+                                    intent.putExtra("montoenCanasta", montoacargar);
                                     intent.putExtra("numeroTarjeta", numeroTarjeta);
                                     intent.putExtra("claveTarjeta", claveTarjeta);
                                     intent.putExtra("descuento", descuento);

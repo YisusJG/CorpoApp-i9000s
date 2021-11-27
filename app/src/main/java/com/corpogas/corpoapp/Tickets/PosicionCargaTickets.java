@@ -770,6 +770,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
             }
         };
         queue.add(request_json);
+        request_json.setRetryPolicy(new DefaultRetryPolicy(900000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
 

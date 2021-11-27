@@ -641,17 +641,19 @@ public class FormasPagoReordenado extends AppCompatActivity {
                         break;
                     case "14": //MERCADO PAGO
                     case "17": // VALES PROPIOS
-                        titulo = "AVISO";
-                        final Modales modales = new Modales(FormasPagoReordenado.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(FormasPagoReordenado.this, "Proximamente", titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                                rcvFormasPagoReordenado.setEnabled(true);
-                                isClickable=true;
-                            }
-                        });
+//                        titulo = "AVISO";
+//                        final Modales modales = new Modales(FormasPagoReordenado.this);
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(FormasPagoReordenado.this, "Proximamente", titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                modales.alertDialog.dismiss();
+//                                rcvFormasPagoReordenado.setEnabled(true);
+//                                isClickable=true;
+//                            }
+//                        });
+
+                        ImprimeVenta();
                         break;
                     case "16"://PAGO DOLARES
                         if (numeroTarjeta.length() > 0) {
@@ -874,6 +876,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
             public void onClick(View view) {
                 modalesEfectivo.alertDialog.dismiss();
                 rcvFormasPagoReordenado.setEnabled(true);
+                isClickable=true;
             }
         });
     }
@@ -1208,6 +1211,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
             public void onClick(View view) {
                 modalesEfectivo.alertDialog.dismiss();
                 rcvFormasPagoReordenado.setEnabled(true);
+                isClickable=true;
             }
         });
     }
