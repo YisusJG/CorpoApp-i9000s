@@ -43,6 +43,7 @@ import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,6 +84,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
     RespuestaApi<Transaccion> respuestaApiTransaccion;
     ProgressDialog bar;
     Button btnCargarTodasPosiciones;
+    FloatingActionButton cargarPosicionesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -783,6 +785,14 @@ public class PosicionCargaTickets extends AppCompatActivity {
         ipEstacion = data.getIpEstacion();
         lugarproviene = getIntent().getStringExtra("lugarProviene");
         usuarioid = getIntent().getLongExtra("IdUsuario",0);
+        cargarPosicionesButton = findViewById(R.id.cargasPosiciones);
+        cargarPosicionesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                todasposiciones(2);
+            }
+        });
+
         usuario = data.getNumeroEmpleado(); //getIntent().getStringExtra("clave");
         numeroEmpleadoReimprime = getIntent().getStringExtra("numeroEmpleado");
         btnCargarTodasPosiciones = (Button) findViewById(R.id.btnCargarTodasPosiciones);

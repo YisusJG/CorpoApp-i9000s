@@ -589,26 +589,6 @@ class LecturayEscaneo : AppCompatActivity() {
                                 startActivity(intent)
                             }
                         }
-//                        val modales = Modales(this@LecturayEscaneo)
-//                        val viewLectura = modales.MostrarDialogoCorrectoYena(this@LecturayEscaneo, titulo, "Saldo Disponible: $ $mensaje", "Descuento Magna: $ ${list[0]} \n Descuento Premium: $ ${list[1]} \n Descuento Diesel: $ ${list[2]}", "Aceptar")
-//                        viewLectura.findViewById<View>(R.id.buttonAction).setOnClickListener {
-//                            modales.alertDialog.dismiss()
-////                            Intent intent = new Intent(getApplicationContext(), EligePrecioLitros.class);
-//                            val intent = Intent(applicationContext, IniciaVentas::class.java)
-//                            intent.putExtra("combustible", "claveProducto")
-//                            intent.putExtra("posicionCarga", posCarga)
-//                            intent.putExtra("estacionjarreo", estacionJarreo)
-//                            intent.putExtra("claveProducto", "claveProducto")
-//                            intent.putExtra("precioProducto", "precio")
-//                            intent.putExtra("despacholibre", "no")
-//                            intent.putExtra("numeroTarjeta", numeroTarjeta)
-//                            intent.putExtra("descuentoMagna", list[0])
-//                            intent.putExtra("descuentoPremium", list[1])
-//                            intent.putExtra("descuentoDiesel", list[2])
-//                            intent.putExtra("lugarProviene", lugarProviene)
-//                            intent.putExtra("pocioncargaid", posicionCargaNumInterno)
-//                            startActivity(intent)
-//                        }
                     } else {
                         val titulo = "AVISO"
                         val mensaje = yenaResponse.mensaje
@@ -630,5 +610,9 @@ class LecturayEscaneo : AppCompatActivity() {
                 Toast.makeText(this@LecturayEscaneo, t.message, Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, Menu_Principal::class.java))
     }
 }

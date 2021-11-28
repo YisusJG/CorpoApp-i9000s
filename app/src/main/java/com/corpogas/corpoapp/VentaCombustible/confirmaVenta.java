@@ -184,7 +184,7 @@ public class confirmaVenta extends AppCompatActivity {
                 modales.alertDialog.dismiss();
 //                Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
 //                startActivity(intente);
-                bar.cancel();
+//                bar.cancel();
                 finish();
             }
         });

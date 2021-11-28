@@ -84,6 +84,7 @@ public class IniciaVentas extends AppCompatActivity {
     ProgressDialog bar;
 
 
+
     //    Isla respuestaApiPosicionCargaProductosSucursal;
     long TipoProducto = 1, idProducto, IdCombustible;
     double precioproducto;
@@ -193,7 +194,21 @@ public class IniciaVentas extends AppCompatActivity {
                                                     startActivity(intent1);
                                                     finish();
                                                 }else{
-                                                    posicioncargaEmpleadoSucursal(MontoenCanasta);
+//                                                    posicioncargaEmpleadoSucursal(MontoenCanasta);
+                                                    Intent intent = new Intent(getApplicationContext(), FormasPagoReordenado.class);
+                                                    intent.putExtra("numeroEmpleado", usuarioid);
+                                                    intent.putExtra("posicionCarga", poscicionCarga);
+                                                    intent.putExtra("claveProducto", claveProducto);
+                                                    intent.putExtra("montoenCanasta", MontoenCanasta);
+                                                    intent.putExtra("numeroTarjeta", numeroTarjeta);
+                                                    intent.putExtra("claveTarjeta", claveTarjeta);
+                                                    intent.putExtra("descuento", descuento);
+                                                    intent.putExtra("lugarProviene", lugarproviene);
+                                                    intent.putExtra("nipCliente", nipCliente);
+                                                    intent.putExtra("IdOperativa", "0");
+                                                    intent.putExtra("estacionjarreo", "true");
+                                                    startActivity(intent);
+                                                    finish();
                                                 }
                                             }
 
@@ -801,7 +816,7 @@ public class IniciaVentas extends AppCompatActivity {
         bar.show();
 
         String url;
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/posicionCarga/" + poscicionCarga;
+        url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/posicionCarga/" + poscicionCarga;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -844,29 +859,29 @@ public class IniciaVentas extends AppCompatActivity {
                             Long numeroOperativa = posiciones.getLong("Operativa");
                             Boolean banderacarga ;
                             banderacarga = false;
-                                if (pocioncargapendientecobro == true){
+                            if (pocioncargapendientecobro == true){
 //                                    String titulo = "PC " + posicionCargaNumeroInterno;
 //                                    String subtitulo = "";//
-                                    //    subtitulo = "Magna  |  Premium  |  Diesel";
+                                //    subtitulo = "Magna  |  Premium  |  Diesel";
 //                                    subtitulo =descripcionoperativa;//
-                                    Intent intent = new Intent(getApplicationContext(), FormasPagoReordenado.class);
-                                    intent.putExtra("numeroEmpleado", usuarioid);
-                                    intent.putExtra("posicionCarga", poscicionCarga);
-                                    intent.putExtra("claveProducto", claveProducto);
-                                    intent.putExtra("montoenCanasta", montoacargar);
-                                    intent.putExtra("numeroTarjeta", numeroTarjeta);
-                                    intent.putExtra("claveTarjeta", claveTarjeta);
-                                    intent.putExtra("descuento", descuento);
-                                    intent.putExtra("lugarProviene", lugarproviene);
-                                    intent.putExtra("nipCliente", nipCliente);
-                                    intent.putExtra("IdOperativa", "0");
-                                    intent.putExtra("estacionjarreo", jarreo);
-                                    startActivity(intent);
-                                    finish();
-                                }
+                                Intent intent = new Intent(getApplicationContext(), FormasPagoReordenado.class);
+                                intent.putExtra("numeroEmpleado", usuarioid);
+                                intent.putExtra("posicionCarga", poscicionCarga);
+                                intent.putExtra("claveProducto", claveProducto);
+                                intent.putExtra("montoenCanasta", montoacargar);
+                                intent.putExtra("numeroTarjeta", numeroTarjeta);
+                                intent.putExtra("claveTarjeta", claveTarjeta);
+                                intent.putExtra("descuento", descuento);
+                                intent.putExtra("lugarProviene", lugarproviene);
+                                intent.putExtra("nipCliente", nipCliente);
+                                intent.putExtra("IdOperativa", "0");
+                                intent.putExtra("estacionjarreo", jarreo);
+                                startActivity(intent);
+                                finish();
                             }
                         }
-                        bar.cancel();
+                    }
+                    bar.cancel();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
