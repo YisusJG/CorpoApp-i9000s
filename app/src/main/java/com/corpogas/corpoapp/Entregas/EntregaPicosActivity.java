@@ -2,8 +2,10 @@ package com.corpogas.corpoapp.Entregas;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +29,9 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.Adapters.RVAdapterPicos;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.VentaCombustible.IniciaVentas;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +50,7 @@ public class EntregaPicosActivity extends AppCompatActivity {
     TextView textSumaTotalBilletes;
     Button btnAceptar;
     SQLiteBD dataBase;
+    DecimalFormat formato = new DecimalFormat("#,##0.00##");
 
     String ipEstacion, titulo, mensaje, cantidadBilletes;
     int  sumaTotal;
@@ -80,6 +85,37 @@ public class EntregaPicosActivity extends AppCompatActivity {
         obtenerCierreVariables();
         SetRecyclerView();
         onClickButton();
+
+        editTextMorralla.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String suma = editTextMorralla.getText().toString();
+                if (!suma.equals("")) {
+                    if (Double.parseDouble(suma) >= 200) {
+                        String titulo = "AVISO";
+                        String mensajes = "No puedes ingresar una morralla de monedas igual o mayor a $200";
+                        Modales modales = new Modales(EntregaPicosActivity.this);
+                        View view1 = modales.MostrarDialogoError(EntregaPicosActivity.this, mensajes);
+                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void obtenerCierreVariables() {
@@ -247,17 +283,42 @@ public class EntregaPicosActivity extends AppCompatActivity {
                             editText.setError("Ingresa un valor");
 
                         } else {
-                            int cantiBilletes = Integer.parseInt(cantidadBilletes);
-                            int totalBilletes = 0;
-                            totalBilletes = (int) (denominacion * Integer.parseInt(cantidadBilletes));
+                            if (denominacion < 1000) {
+                                int cantiBilletes = Integer.parseInt(cantidadBilletes);
+                                int totalBilletes = 0;
+                                totalBilletes = (int) (denominacion * Integer.parseInt(cantidadBilletes));
+                                if (totalBilletes < 1000) {
+                                    recepcionFajillas.set(updateIndex, new RecepcionFajilla(sucursalId, 3, cantiBilletes, denominacion, totalBilletes));
 
-                            recepcionFajillas.set(updateIndex, new RecepcionFajilla(sucursalId, 3, cantiBilletes, denominacion, totalBilletes));
-
-                            adapterPicos.notifyItemChanged(updateIndex);
-                            modales.alertDialog.dismiss();;
-                            adapterPicos.isClickable = false;
-                            setTextSumaTotalBilletes();
-                            SetRecyclerView();
+                                    adapterPicos.notifyItemChanged(updateIndex);
+                                    modales.alertDialog.dismiss();;
+                                    adapterPicos.isClickable = false;
+                                    setTextSumaTotalBilletes();
+                                    SetRecyclerView();
+                                } else {
+                                    String titulo = "AVISO";
+                                    String mensajes = "La suma de tus billetes no puede ser igual o mayor a $1,000";
+                                    Modales modales = new Modales(EntregaPicosActivity.this);
+                                    View view1 = modales.MostrarDialogoError(EntregaPicosActivity.this, mensajes);
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                        }
+                                    });
+                                }
+                            } else {
+                                String titulo = "AVISO";
+                                String mensajes = "No puedes ingresar una denominación de $1,000";
+                                Modales modales = new Modales(EntregaPicosActivity.this);
+                                View view1 = modales.MostrarDialogoError(EntregaPicosActivity.this, mensajes);
+                                view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        modales.alertDialog.dismiss();
+                                    }
+                                });
+                            }
                         }
                     }
                 });
@@ -294,7 +355,20 @@ public class EntregaPicosActivity extends AppCompatActivity {
         for (RecepcionFajilla item : recepcionFajillas) {
             sumaTotal = (int) recepcionFajillas.stream().filter(x -> x.getTipoFajilla() == 3).mapToDouble(RecepcionFajilla::getImporte).sum();
         }
-        textSumaTotalBilletes.setText("TOTAL BILLETES: $" + sumaTotal);
+        if (sumaTotal < 1000) {
+            textSumaTotalBilletes.setText("TOTAL BILLETES: $" + formato.format(sumaTotal));
+        } else {
+            String titulo = "AVISO";
+            String mensajes = "No puedes ingresar un pico de billetes igual o mayor a $1,000";
+            Modales modales = new Modales(EntregaPicosActivity.this);
+            View view1 = modales.MostrarDialogoError(EntregaPicosActivity.this, mensajes);
+            view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
+        }
     }
 
     private void onClickButton() {
@@ -365,7 +439,6 @@ public class EntregaPicosActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void agregaPicosMorralla() {
         String cantidadMorralla = editTextMorralla.getText().toString();
-
         if (!cantidadMorralla.isEmpty()) {
             cantiMorralla = Double.parseDouble(cantidadMorralla);
             recepcionFajillas.add(new RecepcionFajilla(sucursalId, 4, 1, (int) cantiMorralla, (int) cantiMorralla));

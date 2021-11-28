@@ -109,7 +109,7 @@
             android:exported="true" />
         <activity
             android:name=".Entregas.EntregaPicosActivity"
-            android:exported="false" />
+        android:exported="false" />
         <activity
             android:name=".Entregas.EntregaValesActivity"
             android:exported="false" />
