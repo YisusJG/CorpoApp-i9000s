@@ -240,7 +240,7 @@ public class ResumenActivity extends AppCompatActivity {
         btnAgregarFajillasResumenActivity = findViewById(R.id.btnAgregarFajillasResumenActivity);
         btnListaProductosResumenActivity = findViewById(R.id.btnListaProductosResumenActivity);
         btnValidarEntrega = findViewById(R.id.btnValidarEntrega);
-
+        btnValidarEntrega.setEnabled(false);
 
 
 //        imgTotalPicos = findViewById(R.id.imgTotalPicos);
@@ -524,6 +524,8 @@ public class ResumenActivity extends AppCompatActivity {
                     setTotalVales();
                     setTotalFormasPago();
                     setTotalGastos();
+                    btnValidarEntrega.setEnabled(true);
+
                     // ImprimirTicketCierre();
                 }else{
                     titulo = "AVISO";
