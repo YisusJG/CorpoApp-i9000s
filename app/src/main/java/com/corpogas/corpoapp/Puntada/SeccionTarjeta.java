@@ -56,6 +56,7 @@ public class SeccionTarjeta extends AppCompatActivity {
         lrecyclerViewHeaders = new ArrayList<>();
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir","Paga con Puntos",R.drawable.redimirpuntada));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir QR","Lee QR para Pago con Puntos",R.drawable.redimirpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Descuento QR","Lee QR para descuento",R.drawable.redimirpuntada));
 
         //        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Consulta Saldo","Saldo Tarjeta",R.drawable.registrarpuntada));
@@ -88,6 +89,10 @@ public class SeccionTarjeta extends AppCompatActivity {
                     case "Puntada Redimir QR":
                         PuntadaProceso = "RedimirQr";
                         RedencionConsultaPuntada("RedimirQr");
+                        break;
+                    case "Descuento QR":
+                        PuntadaProceso = "DescuentoQr";
+                        RedencionConsultaPuntada("DescuentoQr");
                         break;
                     default:
                         break;
@@ -128,13 +133,21 @@ public class SeccionTarjeta extends AppCompatActivity {
                             startActivity(intentQr);
                             finish();
                         }else{
-                            Intent intentMonedero = new Intent(getApplicationContext(), MonederosElectronicos.class);
-                            intentMonedero.putExtra("Enviadodesde", "menuprincipal");
-                            intentMonedero.putExtra("tipoTarjeta", "Puntada");
-                            intentMonedero.putExtra("lugarproviene", PuntadaProceso);
-                            intentMonedero.putExtra("nip", NIPCliente);
-                            startActivity(intentMonedero);
-                            finish();
+                            if (PuntadaProceso.equals("DescuentoQr")){
+                                Intent intentQr = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
+                                intentQr.putExtra("nip", NIPCliente);
+                                intentQr.putExtra("lugarProviene", "DescuentoQr");
+                                startActivity(intentQr);
+                                finish();
+                            }else{
+                                Intent intentMonedero = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                                intentMonedero.putExtra("Enviadodesde", "menuprincipal");
+                                intentMonedero.putExtra("tipoTarjeta", "Puntada");
+                                intentMonedero.putExtra("lugarproviene", PuntadaProceso);
+                                intentMonedero.putExtra("nip", NIPCliente);
+                                startActivity(intentMonedero);
+                                finish();
+                            }
                         }
                     }
                 }
