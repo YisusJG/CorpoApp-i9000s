@@ -120,6 +120,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         usuario = db.getNumeroEmpleado();//getIntent().getStringExtra("ClaveDespachador");   getClave()
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nip");
+
+        descuento = getIntent().getStringExtra("descuento");
+        descuentoPorLitro = Double.parseDouble(descuento);
         simbolos.setDecimalSeparator('.');
         df = new DecimalFormat("###,###.00",simbolos);
         df.setMaximumFractionDigits(2);
@@ -630,10 +633,12 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         intent.putExtra("estacionjarreo", autoJarreo);
         intent.putExtra("pcnumerointerno", cargaNumeroInterno);
         intent.putExtra("pocioncargaid", cargaNumeroInterno);
-        intent.putExtra("descuento", 0);
+        intent.putExtra("descuento", descuentoPorLitro);
         intent.putExtra("lugarProviene", "ventas");
         intent.putExtra("numeroTarjeta", "");
-        intent.putExtra("nip", "");
+        intent.putExtra("nip", NipCliente);
+        intent.putExtra("banderaDescuento", banderaDescuento);
+
         startActivity(intent);
         finish();
 
@@ -856,8 +861,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
 
     private void enviarProductosARedimir(String Posi, String saldo, String Claveusuario, Long Idusuario, String track, String NipTarjeta){
-        descuento = getIntent().getStringExtra("descuento");
-        descuentoPorLitro = Double.parseDouble(descuento);
 
         Intent intent = new Intent(getApplicationContext(), ProductosARedimir.class);
         intent.putExtra("pos", Posi);
