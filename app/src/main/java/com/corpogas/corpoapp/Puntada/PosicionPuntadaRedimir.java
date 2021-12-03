@@ -470,6 +470,20 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         startActivity(intent2);
                         break;
 
+                    case "Descuento Yena":
+                        Intent intentDesc = new Intent(getApplicationContext(), LecturayEscaneo.class);
+                        //Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
+                        intentDesc.putExtra("combustible", "");
+                        intentDesc.putExtra("posicionCarga", posicionCargaId);
+                        intentDesc.putExtra("estacionjarreo", "estacionJarreo");
+                        intentDesc.putExtra("claveProducto", "");
+                        intentDesc.putExtra("precioProducto", "");
+                        intentDesc.putExtra("despacholibre", "no");
+                        intentDesc.putExtra("lugarProviene", "descuentoYena");
+                        intentDesc.putExtra("pocioncarganumerointerno", cargaNumeroInterno);
+                        startActivity(intentDesc);
+                        break;
+
 
                     case "Registrar":
                         RegistraTarjeta();

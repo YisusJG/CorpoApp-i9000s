@@ -614,5 +614,6 @@ class LecturayEscaneo : AppCompatActivity() {
 
     override fun onBackPressed() {
         startActivity(Intent(this, Menu_Principal::class.java))
+        finish()
     }
 }

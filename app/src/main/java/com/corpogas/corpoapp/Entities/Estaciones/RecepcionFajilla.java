@@ -45,7 +45,12 @@ public class RecepcionFajilla implements Serializable {
         this.TipoFajilla = tipoFajilla;
         this.Folio = folio;
         this.Cantidad = cantidad;
+    }
 
+    public RecepcionFajilla(long sucursalId, long tipoFajilla, int cantidad){
+        this.SucursalId = sucursalId;
+        this.TipoFajilla = tipoFajilla;
+        this.Cantidad = cantidad;
     }
 
 

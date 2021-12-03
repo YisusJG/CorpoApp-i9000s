@@ -356,9 +356,7 @@ public class AutorizaFajillas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         }else {
-
             final String pass = pasword.getText().toString();
-
             //Conexion con la base y ejecuta valida clave
             String url = "http://" + ipEstacion + "/CorpogasService/api/Empleados/clave/" + pass;
             // Utilizamos el metodo Post para validar la contraseña
@@ -379,7 +377,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                 nombrecompleto = respuestaobjeto.getString("NombreCompleto");
                                 numeroempleado = respuestaobjeto.getString("NumeroEmpleado");
                                 idRoll = respuestaobjeto.getString("RolId");
-                                if (valido == "true") {
+                                if (valido.equals("true")) {
                                     ejecutar=false;
 //                                numerodispositivo.setText("Coloca cualquier dedo en el lector");
 //                                numerodispositivo.setVisibility(View.VISIBLE);
@@ -589,7 +587,6 @@ public class AutorizaFajillas extends AppCompatActivity {
                 finish();
             default:
         }
-
     }
 
     private void EnviaFajilla(){
@@ -601,8 +598,8 @@ public class AutorizaFajillas extends AppCompatActivity {
             finish();
         } else {
 //            totalFajillas = getIntent().getLongExtra("TotalFajillas", 0);
+            String tipo = getIntent().getStringExtra("tipoFajillaFM");
             valorTipoFajilla = getIntent().getLongExtra("TipoFajilla", 0);
-            Folio = getIntent().getStringArrayListExtra("Folio");
             tipoFajillas = getIntent().getStringArrayListExtra("TipoFajillas");
 
 
@@ -610,9 +607,18 @@ public class AutorizaFajillas extends AppCompatActivity {
             jsonArrayDatosFajillas = new JSONArray();
 
 
-            for (int i = 0; i < Folio.size(); i++) {
+            if (tipo.equals("Morralla")) {
+                for (int i = 0; i < tipoFajillas.size(); i++) {
+                    lRecepcionFajillas.add(new RecepcionFajilla(Long.parseLong(sucursalId), Long.parseLong(tipoFajillas.get(i)), 1));
+                }
+            } else {
+                Folio = getIntent().getStringArrayListExtra("Folio");
+                for (int i = 0; i < tipoFajillas.size(); i++) {
                     lRecepcionFajillas.add(new RecepcionFajilla(Long.parseLong(sucursalId), Long.parseLong(tipoFajillas.get(i)), Folio.get(i), 1));
+                }
             }
+
+
             // Esta linea nos da el resultado de lo que estoy enviando para checar en el postman como confirmacion
             //String json = new Gson().toJson(lRecepcionFajillas);
 
@@ -622,7 +628,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                     .build();
 
             EndPoints recibirFajillas = retrofit.create(EndPoints.class);
-            if (lugarProviene.equals("corteFajillas")){
+            if (lugarProviene.equals("corteFajillas")) {
                 Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillasCorte(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario);
                 call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
                     @Override
@@ -645,13 +651,13 @@ public class AutorizaFajillas extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     modales.alertDialog.dismiss();
+                                    Intent intent;
                                     if (lugarProviene.equals("corteFajillas")){
-                                        Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
-                                        startActivity(intent);
+                                        intent = new Intent(AutorizaFajillas.this, ResumenActivity.class);
                                     }else{
-                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                        startActivity(intent);
+                                        intent = new Intent(AutorizaFajillas.this, Menu_Principal.class);
                                     }
+                                    startActivity(intent);
                                     finish();
                                 }
                             });
@@ -703,13 +709,13 @@ public class AutorizaFajillas extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     modales.alertDialog.dismiss();
+                                    Intent intent;
                                     if (lugarProviene.equals("corteFajillas")){
-                                        Intent intent = new Intent(getApplicationContext(), ResumenActivity.class);
-                                        startActivity(intent);
+                                        intent = new Intent(getApplicationContext(), ResumenActivity.class);
                                     }else{
-                                        Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                        startActivity(intent);
+                                        intent = new Intent(getApplicationContext(), Menu_Principal.class);
                                     }
+                                    startActivity(intent);
                                     finish();
                                 }
                             });

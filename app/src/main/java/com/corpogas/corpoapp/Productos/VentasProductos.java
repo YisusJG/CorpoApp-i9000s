@@ -14,6 +14,7 @@
     import android.text.Editable;
     import android.text.InputType;
     import android.text.TextWatcher;
+    import android.text.method.ScrollingMovementMethod;
     import android.util.Log;
     import android.view.KeyEvent;
     import android.view.MotionEvent;
@@ -162,6 +163,7 @@
             NumeroEmpleado = Long.valueOf(db.getNumeroEmpleado());//getIntent().getLongExtra("NumeroEmpleado", 0);
 
             txtproductos=findViewById(R.id.txtproductos);
+            txtproductos.setMovementMethod(new ScrollingMovementMethod());
             btnScanner = findViewById(R.id.btnscanner);
 
             if (cadenaproducto.length()>0){
@@ -243,7 +245,7 @@
                             startActivity(intent);
                             finish();
                         } else {
-                            Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
+                            Intent intent = new Intent(VentasProductos.this, confirmaVenta.class);
                             intent.putExtra("posicion", posicion);
                             intent.putExtra("usuario", usuario);
                             intent.putExtra("cadenaproducto", myArrayPaso.toString());
@@ -285,13 +287,13 @@
             //CantidadProducto();
             cantidadProducto = findViewById(R.id.cantidadProducto);
             Producto= findViewById(R.id.Producto);
+            Producto.requestFocus();
             cantidad = cantidadProducto.toString();
             txtDescripcion = findViewById(R.id.txtDescripcion);
             precio = findViewById(R.id.precio);
             existencias = findViewById(R.id.existencias);
             productoIdentificador = findViewById(R.id.productoIdentificador);
             tipoproductoid = findViewById(R.id.tipoproductoid);
-            txtproductos = findViewById(R.id.txtproductos);
             categoria = findViewById(R.id.categoria);
             //procedimiento que despliega la lista de productos
             MostrarProductos();
@@ -868,18 +870,16 @@
                         mjasonpaso.put("Precio", precioUnitario);
                         mjasonpaso.put("Descripcion", descrProducto);
                         mjasonpaso.put("Importe", "false");
-
                         myArrayPaso.put(mjasonpaso);
 
                         mjasonver.put("Producto:", Integer.parseInt(numInterno));
                         mjasonver.put("Cantidad:", TotalProducto);
                         mjasonver.put("Precio:", precioUnitario);
-
                         myArrayVer.put(mjasonver);
+
                         String txtproducto= "Producto: "+Integer.parseInt(numInterno);
                         String txtcantidad= "Cantidad: "+TotalProducto;
                         String txtprecio= "Precio: $"+ df.format(precioUnitario);
-
 
                         textoresultado = textoresultado + " " + txtproducto + " " + txtcantidad + " " +txtprecio + "     ";
                         txtproductos.setText(textoresultado);//myArrayVer.toString());
@@ -899,6 +899,7 @@
                         //Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
                     }
                     Producto.setText("");
+                    Producto.requestFocus();
                     txtDescripcion.setText("");
                     cantidadProducto.setText("1");
                     precio.setText("");

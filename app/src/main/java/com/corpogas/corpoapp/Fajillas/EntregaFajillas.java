@@ -59,13 +59,14 @@ public class EntregaFajillas extends AppCompatActivity {
     Button aceptar, btnIncrementar, btnDecrementar, agregarFolio;
     ListView listFolio;
     ArrayList<String> FolioFajilla, Folio, ValorFolio;
-    ArrayList<String> tipoFajilla;
+    ArrayList<String> tipoFajilla, tipoMorralla, contaStrings;
     String lugarProviene, m_deviceName, ipEstacion, claveUsuario, nombreCompleto,  password, islaId, descripciones ;
     String fajillaSeleccionada, fajillaSeleccionadaDescripcion;
 //    String[] opciones2 = new String[2];
     ImageButton imgEscanearFajilla;
     SQLiteBD db;
     Long sucursalId, idUsuario, totalFajillas ;
+    ListAdapterProductos adapterP;
 
 //    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
 
@@ -188,6 +189,8 @@ public class EntregaFajillas extends AppCompatActivity {
         ValorFolio = new ArrayList<String>();
         Folio = new ArrayList<String>();
         tipoFajilla = new ArrayList<String>();
+        tipoMorralla = new ArrayList<String>();
+        contaStrings = new ArrayList<String>();
 
         if (lugarProviene.equals("corteFajillas")){
             idUsuario = Long.valueOf(db.getUsuarioId());
@@ -225,14 +228,25 @@ public class EntregaFajillas extends AppCompatActivity {
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Folio.isEmpty()) {
-                    Intent intent1 = new Intent(EntregaFajillas.this, AutorizaFajillas.class); //despachdorclave
-                    intent1.putExtra("lugarProviene", lugarProviene);
-                    intent1.putExtra("TotalFajillas", totalFajillas);
-                    intent1.putExtra("TipoFajilla", valorTipoFajilla);
-                    intent1.putStringArrayListExtra("Folio", Folio);
-                    intent1.putStringArrayListExtra("TipoFajillas", tipoFajilla);
-                    startActivity(intent1);
+                if (!tipoMorralla.isEmpty()) {
+                    if (valorTipoFajilla == 2 ) {
+                        Intent intent1 = new Intent(EntregaFajillas.this, AutorizaFajillas.class); //despachdorclave
+                        intent1.putExtra("lugarProviene", lugarProviene);
+                        intent1.putExtra("TipoFajilla", valorTipoFajilla);
+                        intent1.putStringArrayListExtra("TipoFajillas", tipoMorralla);
+                        intent1.putExtra("tipoFajillaFM", "Morralla");
+                        startActivity(intent1);
+                    }
+                } else if (!tipoFajilla.isEmpty()) {
+                    if (valorTipoFajilla == 1) {
+                        Intent intent1 = new Intent(EntregaFajillas.this, AutorizaFajillas.class); //despachdorclave
+                        intent1.putExtra("lugarProviene", lugarProviene);
+                        intent1.putExtra("TipoFajilla", valorTipoFajilla);
+                        intent1.putStringArrayListExtra("Folio", Folio);
+                        intent1.putStringArrayListExtra("TipoFajillas", tipoFajilla);
+                        intent1.putExtra("tipoFajillaFM", "Fajilla");
+                        startActivity(intent1);
+                    }
                 } else {
                     Toast.makeText(EntregaFajillas.this, "Debe ingresar por lo menos una entrada", Toast.LENGTH_SHORT).show();
                     cantidad.setText("");
@@ -336,10 +350,18 @@ public class EntregaFajillas extends AppCompatActivity {
                                     fajillaSeleccionada = fajillaSeleccionadaDescripcion.substring(0, fajillaSeleccionadaDescripcion.indexOf(" -"));
                                     switch (fajillaSeleccionada){
                                         case "BILLETE":
-                                            valorTipoFajilla =1;
+                                            valorTipoFajilla = 1;
+                                            findViewById(R.id.tvTitulo2).setVisibility(View.VISIBLE);
+                                            findViewById(R.id.etCantidad).setVisibility(View.VISIBLE);
+                                            findViewById(R.id.imgEscanearFajilla).setVisibility(View.VISIBLE);
+                                            agregarFolio.setText("Agregar Folio");
                                             break;
                                         case "MORRALLA":
-                                            valorTipoFajilla =2;
+                                            valorTipoFajilla = 2;
+                                            findViewById(R.id.tvTitulo2).setVisibility(View.GONE);
+                                            findViewById(R.id.etCantidad).setVisibility(View.GONE);
+                                            findViewById(R.id.imgEscanearFajilla).setVisibility(View.GONE);
+                                            agregarFolio.setText("Agregar Morralla");
                                             break;
                                         default:
                                             valorTipoFajilla =1;
@@ -400,84 +422,189 @@ public class EntregaFajillas extends AppCompatActivity {
 
     private void AgregarFajillaaLista(String cantidad) {
         spnFajillas = (Spinner) findViewById(R.id.spFajillas);
-        if (cantidad.length() == 0) {
-            String titulo = "AVISO";
-            Modales modales = new Modales(EntregaFajillas.this);
-            View view1 = modales.MostrarDialogoAlertaAceptar(EntregaFajillas.this, "Digite un folio", titulo);
-            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    modales.alertDialog.dismiss();
+//        if (cantidad.length() == 0) {
+            if (fajillaSeleccionada.equals("MORRALLA")) {
+                if (valorTipoFajilla == 2) {
+                    ValorFolio.add("Tipo " + fajillaSeleccionadaDescripcion);
+                    tipoMorralla.add("2");
+                    int conta = (int) tipoMorralla.size();
+                    contaStrings.add(String.valueOf(conta));
+                    adapterP = new ListAdapterProductos(this, contaStrings, ValorFolio);
+                    listFolio.setTextFilterEnabled(true);
+                    listFolio.setAdapter(adapterP);
+                    listFolio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int identificador, long l) {
+                            String titulo = "¿Estás seguro?";
+                            String mensajes = "¿Deseas eliminar el elemento seleccionado?";
+                            Modales modalesA = new Modales(EntregaFajillas.this);
+                            View viewLectura = modalesA.MostrarDialogoAlerta(EntregaFajillas.this, mensajes, "SI", "NO");
+                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ValorFolio.remove(identificador);
+                                    contaStrings.remove(identificador);
+
+                                    ListAdapterProductos adapterP = new ListAdapterProductos(EntregaFajillas.this, contaStrings, ValorFolio);
+                                    listFolio.setAdapter(adapterP);
+                                    adapterP.notifyDataSetChanged();
+                                    modalesA.alertDialog.dismiss();
+                                }
+                            });
+                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modalesA.alertDialog.dismiss();
+                                }
+                            });
+
+                        }
+                    });
+
                 }
-            });
-
-        } else {
-            boolean bandera = false;
-            for (Integer m = 0; m < Folio.size(); m++) {
-                String codigo = Folio.get(m);
-                if (codigo.equals(cantidad)) {
-                    bandera = true;
-                    break;
-                } else {
-                    bandera = false;
-                }
-            }
-            if (!bandera) {
-                if (valorTipoFajilla == 1) {
-                    ValorFolio.add("Tipo Fajilla "+fajillaSeleccionadaDescripcion);
-                    tipoFajilla.add("1");
-                }else if (valorTipoFajilla == 2) {
-                    ValorFolio.add("Tipo Fajilla "+fajillaSeleccionadaDescripcion);
-                    tipoFajilla.add("2");
-                }
-                Folio.add(cantidad);
-                ListAdapterProductos adapterP = new ListAdapterProductos(this, Folio, ValorFolio);
-                listFolio.setTextFilterEnabled(true);
-                listFolio.setAdapter(adapterP);
-                listFolio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int identificador, long l) {
-                        String titulo = "Estas seguro?";
-                        String mensajes = "Deseas eliminar el elemento seleccionado?";
-                        Modales modalesA = new Modales(EntregaFajillas.this);
-                        View viewLectura = modalesA.MostrarDialogoAlerta(EntregaFajillas.this, mensajes, "SI", "NO");
-                        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ValorFolio.remove(identificador);
-                                Folio.remove(identificador);
-
-                                ListAdapterProductos adapterP = new ListAdapterProductos(EntregaFajillas.this, Folio, ValorFolio);
-                                listFolio.setAdapter(adapterP);
-                                adapterP.notifyDataSetChanged();
-                                modalesA.alertDialog.dismiss();
-                            }
-                        });
-                        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modalesA.alertDialog.dismiss();
-                            }
-                        });
-
-                    }
-                });
-
             } else {
-                String titulo = "AVISO";
-                String mensaje = "El folio No. " + cantidad + " ya fue agregado";
-                Modales modales = new Modales(EntregaFajillas.this);
-                View view1 = modales.MostrarDialogoAlertaAceptar(EntregaFajillas.this, mensaje, titulo);
-                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        modales.alertDialog.dismiss();
+                boolean bandera = false;
+                for (Integer m = 0; m < Folio.size(); m++) {
+                    String codigo = Folio.get(m);
+                    if (codigo.equals(cantidad)) {
+                        bandera = true;
+                        break;
+                    } else {
+                        bandera = false;
                     }
-                });
+                }
+                if (!bandera) {
+                    if (valorTipoFajilla == 1) {
+                        ValorFolio.add("Tipo Fajilla " + fajillaSeleccionadaDescripcion);
+                        tipoFajilla.add("1");
+                    }
+//                else if (valorTipoFajilla == 2) {
+//                    ValorFolio.add("Tipo Fajilla "+fajillaSeleccionadaDescripcion);
+//                    tipoFajilla.add("2");
+//                }
+                    Folio.add(cantidad);
+                    adapterP = new ListAdapterProductos(this, Folio, ValorFolio);
+                    listFolio.setTextFilterEnabled(true);
+                    listFolio.setAdapter(adapterP);
+                    listFolio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int identificador, long l) {
+                            String titulo = "Estas seguro?";
+                            String mensajes = "Deseas eliminar el elemento seleccionado?";
+                            Modales modalesA = new Modales(EntregaFajillas.this);
+                            View viewLectura = modalesA.MostrarDialogoAlerta(EntregaFajillas.this, mensajes, "SI", "NO");
+                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ValorFolio.remove(identificador);
+                                    Folio.remove(identificador);
+
+                                    ListAdapterProductos adapterP = new ListAdapterProductos(EntregaFajillas.this, Folio, ValorFolio);
+                                    listFolio.setAdapter(adapterP);
+                                    adapterP.notifyDataSetChanged();
+                                    modalesA.alertDialog.dismiss();
+                                }
+                            });
+                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modalesA.alertDialog.dismiss();
+                                }
+                            });
+
+                        }
+                    });
+                } else {
+                    String titulo = "AVISO";
+                    String mensaje = "El folio No. " + cantidad + " ya fue agregado";
+                    Modales modales = new Modales(EntregaFajillas.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(EntregaFajillas.this, mensaje, titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+                }
             }
-        }
+//        }
     }
 
 
-
+//    private void AgregarFajillaaLista2(String cantidad) {
+//        spnFajillas = (Spinner) findViewById(R.id.spFajillas);
+////        if (cantidad.length() == 0) {
+//        if (fajillaSeleccionada.equals("MORRALLA")) {
+//            if (valorTipoFajilla == 2) {
+//                ValorFolio.add("Tipo " + fajillaSeleccionadaDescripcion);
+//                tipoFajilla.add("2");
+//                int conta = (int) tipoFajilla.size();
+//                Folio.add(String.valueOf(conta));
+//            }
+//        } else {
+//            boolean bandera = false;
+//            for (Integer m = 0; m < Folio.size(); m++) {
+//                String codigo = Folio.get(m);
+//                if (codigo.equals(cantidad)) {
+//                    bandera = true;
+//                    break;
+//                } else {
+//                    bandera = false;
+//                }
+//            }
+//            if (!bandera) {
+//                if (valorTipoFajilla == 1) {
+//                    ValorFolio.add("Tipo " + fajillaSeleccionadaDescripcion);
+//                    tipoFajilla.add("1");
+//                }
+////                else if (valorTipoFajilla == 2) {
+////                    ValorFolio.add("Tipo Fajilla "+fajillaSeleccionadaDescripcion);
+////                    tipoFajilla.add("2");
+////                }
+//                Folio.add(cantidad);
+//
+//            } else {
+//                String titulo = "AVISO";
+//                String mensaje = "El folio No. " + cantidad + " ya fue agregado";
+//                Modales modales = new Modales(EntregaFajillas.this);
+//                View view1 = modales.MostrarDialogoAlertaAceptar(EntregaFajillas.this, mensaje, titulo);
+//                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        modales.alertDialog.dismiss();
+//                    }
+//                });
+//            }
+//        }
+//        adapterP = new ListAdapterProductos(this, Folio, ValorFolio);
+//        listFolio.setTextFilterEnabled(true);
+//        listFolio.setAdapter(adapterP);
+//        listFolio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int identificador, long l) {
+//                String titulo = "Estas seguro?";
+//                String mensajes = "Deseas eliminar el elemento seleccionado?";
+//                Modales modalesA = new Modales(EntregaFajillas.this);
+//                View viewLectura = modalesA.MostrarDialogoAlerta(EntregaFajillas.this, mensajes, "SI", "NO");
+//                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        ValorFolio.remove(identificador);
+//                        Folio.remove(identificador);
+//
+//                        ListAdapterProductos adapterP = new ListAdapterProductos(EntregaFajillas.this, Folio, ValorFolio);
+//                        listFolio.setAdapter(adapterP);
+//                        adapterP.notifyDataSetChanged();
+//                        modalesA.alertDialog.dismiss();
+//                    }
+//                });
+//                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        modalesA.alertDialog.dismiss();
+//                    }
+//                });
+//            }
+//        });
+//    }
 }

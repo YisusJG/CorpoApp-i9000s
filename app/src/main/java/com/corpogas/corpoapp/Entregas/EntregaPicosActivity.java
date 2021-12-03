@@ -50,7 +50,7 @@ public class EntregaPicosActivity extends AppCompatActivity {
     TextView textSumaTotalBilletes;
     Button btnAceptar;
     SQLiteBD dataBase;
-    DecimalFormat formato = new DecimalFormat("#,##0.00##");
+    DecimalFormat formato = new DecimalFormat("#,##0.00#");
 
     String ipEstacion, titulo, mensaje, cantidadBilletes;
     int  sumaTotal;

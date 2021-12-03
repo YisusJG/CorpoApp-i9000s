@@ -70,7 +70,6 @@ public class IniciaVentas extends AppCompatActivity {
     Double descuento, descuentoMagnaYena, descuentoPremiumYena, descuentoDieselYena;
     String claveProducto, descripcioncombustible, precio, numeroTarjeta, claveTarjeta, nipCliente;
 
-
     List<RecyclerViewHeaders> lrecyclerViewHeaders;
 
     Button btnAgregarProducto, btnDespachoLibreVenta, btnCobrarPosicionCarga;
@@ -110,6 +109,7 @@ public class IniciaVentas extends AppCompatActivity {
                 solicitarDespacho();
             }
         });
+
         btnAgregarProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

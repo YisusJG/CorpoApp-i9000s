@@ -5,57 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".Yena.ApartadosYena">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="300dp"
-        android:layout_height="140dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/gogas" />
-
-    <TextView
-        android:id="@+id/boton_consultar_saldo"
-        android:layout_width="260dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:background="@color/colorPrimary"
-        android:elevation="16dp"
-        android:gravity="center"
-        android:text="Consulta de Saldo"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-<!--    <TextView-->
-<!--        android:id="@+id/boton_acumular"-->
-<!--        android:layout_width="260dp"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_below="@+id/boton_consultar_saldo"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="40dp"-->
-<!--        android:background="@color/colorPrimary"-->
-<!--        android:elevation="16dp"-->
-<!--        android:gravity="center"-->
-<!--        android:text="Acumular"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="18sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:visibility="invisible" />-->
-
-    <TextView
-        android:id="@+id/boton_redimir"
-        android:layout_width="260dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/boton_consultar_saldo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:background="@color/colorPrimary"
-        android:elevation="16dp"
-        android:gravity="center"
-        android:text="Redimir"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_yena"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

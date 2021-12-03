@@ -74,7 +74,7 @@ class Menu_Principal : AppCompatActivity() {
     lateinit var bar: ProgressDialog
     var list: ListView? = null
     lateinit var downloadController:DownloadController
-    lateinit var txtVersionApk:TextView
+    lateinit var txtVersionApk: TextView
     lateinit var txtCerrarSesion: TextView
     lateinit var txtNombreUsuarioMainNav: TextView
     lateinit var txtRolMainNav: TextView

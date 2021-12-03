@@ -56,9 +56,6 @@
             android:name=".Yena.LecturayEscaneo"
             android:exported="true" />
         <activity
-            android:name=".Yena.Redencion.RedencionYena"
-            android:exported="true" />
-        <activity
             android:name=".Cofre.CofreActivity"
             android:exported="true">
 
@@ -119,7 +116,8 @@
         <activity android:name=".LecturaCodigoBarrasQR.ScanManagerDemo" />
         <activity
             android:name=".Fajillas.EntregaFajillas"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".Corte.ResumenActivity"
             android:exported="true" />
@@ -196,7 +194,7 @@
         <activity android:name=".VentaCombustible.EligePrecioLitros" />
         <activity
             android:name=".Productos.VentasProductos"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 
