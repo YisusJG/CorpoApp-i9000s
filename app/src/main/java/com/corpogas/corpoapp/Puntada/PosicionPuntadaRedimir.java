@@ -125,6 +125,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         df = new DecimalFormat("###,###.00",simbolos);
         df.setMaximumFractionDigits(2);
 
+        descuento = getIntent().getStringExtra("descuento");
+        descuentoPorLitro = Double.parseDouble(descuento);
 
     }
     public void PosicionCarga(Integer Identificador){
@@ -490,7 +492,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         RegistraTarjeta();
                         break;
                     case "RedimirQR":
-
                     case "Redimir":
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;
@@ -498,8 +499,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo, false);
                         break;
                     case "DescuentoQr":
-                        descuento = getIntent().getStringExtra("descuento");
-                        descuentoPorLitro = Double.parseDouble(descuento);
                         ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo, true);
                         break;
 
@@ -518,7 +517,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
         rcvPosicionCarga.setAdapter(adapter);
     }
-
 
 
     private void ValidaTransaccionActiva(String posicionCarga, String numerooperativa, String Estacionjarreo, Boolean banderaDescuento) {
@@ -651,7 +649,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         intent.putExtra("pcnumerointerno", cargaNumeroInterno);
         intent.putExtra("pocioncargaid", cargaNumeroInterno);
         intent.putExtra("descuento", descuentoPorLitro);
-        intent.putExtra("lugarProviene", "ventas");
+        intent.putExtra("lugarProviene", lugarproviene); //"ventas"
         intent.putExtra("numeroTarjeta", "");
         intent.putExtra("nip", NipCliente);
         intent.putExtra("banderaDescuento", banderaDescuento);

@@ -373,7 +373,7 @@ public class IniciaVentas extends AppCompatActivity {
         simbolos.setDecimalSeparator('.');
         df = new DecimalFormat("#,###.00##", simbolos);
 
-        if (lugarproviene.equals("puntadaAcumularQr") || lugarproviene.equals("descuentoYena")) {
+        if (lugarproviene.equals("DescuentoQr") || lugarproviene.equals("descuentoYena")) {
             btnDespachoLibreVenta.setEnabled(false);
         }
 

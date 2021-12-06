@@ -72,17 +72,20 @@ class ApartadosYena : AppCompatActivity() {
                     PuntadaProceso = "Yena Consulta de Saldo"
                     val intent = Intent(this, PosicionPuntadaRedimir::class.java)
                     intent.putExtra("lugarproviene", "Consulta Yena")
+                    intent.putExtra("descuento", "0")
                     startActivity(intent)
                 }
                 "Yena Redención" -> {
                     PuntadaProceso = "Yena Redención"
                     val intent = Intent(this, PosicionPuntadaRedimir::class.java)
                     intent.putExtra("lugarproviene", "Redencion Yena")
+                    intent.putExtra("descuento", "0")
                     startActivity(intent)
                 }
                 "Yena Descuento" -> {
                     val intent = Intent(this, PosicionPuntadaRedimir::class.java)
                     intent.putExtra("lugarproviene", "Descuento Yena")
+                    intent.putExtra("descuento", "0")
                     startActivity(intent)
                 }
                 else -> {}

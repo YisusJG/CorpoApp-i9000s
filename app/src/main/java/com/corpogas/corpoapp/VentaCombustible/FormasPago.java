@@ -1014,24 +1014,24 @@ public class FormasPago extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 modalesEfectivo.alertDialog.dismiss();
-                String titulo = "IMPRIMIR";
-                String mensajes = "¿Desea finalizar la venta?";
-                Modales modalesImprime = new Modales(FormasPago.this);
-                View viewLectura = modalesImprime.MostrarDialogoAlerta(FormasPago.this, mensajes,  "FINALIZAR", "IMPRIMIR");
-                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        FinalizaVenta();
-                        modalesImprime.alertDialog.dismiss();
-                    }
-                });
-                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        modalesImprime.alertDialog.dismiss();
+//                String titulo = "IMPRIMIR";
+//                String mensajes = "¿Desea finalizar la venta?";
+//                Modales modalesImprime = new Modales(FormasPago.this);
+//                View viewLectura = modalesImprime.MostrarDialogoAlerta(FormasPago.this, mensajes,  "FINALIZAR", "IMPRIMIR");
+//                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        FinalizaVenta();
+//                        modalesImprime.alertDialog.dismiss();
+//                    }
+//                });
+//                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        modalesImprime.alertDialog.dismiss();
                         ImprimeVenta();
-                    }
-                });
+//                    }
+//                });
 
             }
         });
