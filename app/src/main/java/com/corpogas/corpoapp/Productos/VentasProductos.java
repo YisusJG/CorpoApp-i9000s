@@ -83,8 +83,8 @@
 
         //Declaracion de objetos
         Button btnAgregar,btnEnviar, incrementar, decrementar, comprar, btnsolicitadespacho;
-        TextView  txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
-        EditText cantidadProducto, Producto, tipoproductoid, empleado, categoria;
+        TextView  cantidadProducto, txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
+        EditText Producto, tipoproductoid, empleado, categoria;
         String cantidad;
         JSONObject mjason = new JSONObject();
         JSONArray myArray = new JSONArray();
@@ -356,6 +356,8 @@
                 btnScanner.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
+                        Producto.setText("");
+                        Producto.clearFocus();
                         if (view.getId() == R.id.btnscanner) {
                             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                                 if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
@@ -366,6 +368,7 @@
                                 scanManagerProvides.startDecode();
                             }
                         }
+                        Producto.requestFocus();
                         return false;
                     }
                 });
@@ -394,6 +397,8 @@
                 btnScanner.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Producto.setText("");
+                        Producto.clearFocus();
                         IntentIntegrator integrator = new IntentIntegrator(VentasProductos.this);
                         integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
                         integrator.setPrompt("Lector - CDP");
@@ -401,6 +406,7 @@
                         integrator.setBeepEnabled(true);
                         integrator.setBarcodeImageEnabled(true);
                         integrator.initiateScan();
+                        Producto.requestFocus();
                     }
                 });
             }
@@ -603,7 +609,6 @@
                 String existencia = ExistenciaProductos.get(indicecodigo);
                 String idproduc = ProductosId.get(indicecodigo);
                 String categoriaid = ACategoria.get(indicecodigo);
-
                 Producto.setText(paso);
                 txtDescripcion.setText(Descripcion);
                 precio.setText(precioUnitario);

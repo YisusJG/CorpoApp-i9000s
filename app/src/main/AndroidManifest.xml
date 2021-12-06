@@ -117,7 +117,7 @@
         <activity
             android:name=".Fajillas.EntregaFajillas"
             android:exported="true"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".Corte.ResumenActivity"
             android:exported="true" />
@@ -194,7 +194,7 @@
         <activity android:name=".VentaCombustible.EligePrecioLitros" />
         <activity
             android:name=".Productos.VentasProductos"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".LecturaTarjetas.MonederosElectronicos" />
 

@@ -191,18 +191,19 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <EditText
+    <TextView
         android:id="@+id/cantidadProducto"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="37dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="192dp"
-        android:layout_marginBottom="504dp"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:inputType="number"
-        android:text="1" />
+        android:layout_marginEnd="181dp"
+        android:layout_marginBottom="512dp"
+        android:gravity="center"
+        android:text="1"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/decrementar"
