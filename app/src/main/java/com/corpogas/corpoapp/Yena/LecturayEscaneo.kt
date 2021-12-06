@@ -545,7 +545,7 @@ class LecturayEscaneo : AppCompatActivity() {
                             )
                             viewLectura.findViewById<View>(R.id.buttonAction).setOnClickListener {
                                 modales.alertDialog.dismiss()
-                                val intent = Intent(applicationContext, IniciaVentas::class.java)
+                                val intent = Intent(this@LecturayEscaneo, IniciaVentas::class.java)
                                 intent.putExtra("combustible", "claveProducto")
                                 intent.putExtra("posicionCarga", posCarga)
                                 intent.putExtra("estacionjarreo", estacionJarreo)

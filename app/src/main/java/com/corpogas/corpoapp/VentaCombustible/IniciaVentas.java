@@ -672,7 +672,7 @@ public class IniciaVentas extends AppCompatActivity {
                 } else if (lugarproviene.equals("descuentoYena")) {
                     switch (claveProducto) {
                         case "1":
-                            datos.put("importedescuento", descuentoMagnaYena);
+                            datos.put("importedescuento",  descuentoMagnaYena);
                             break;
                         case "2":
                             datos.put("importedescuento", descuentoPremiumYena);
