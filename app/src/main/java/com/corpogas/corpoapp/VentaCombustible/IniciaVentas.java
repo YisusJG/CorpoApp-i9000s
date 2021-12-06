@@ -133,8 +133,6 @@ public class IniciaVentas extends AppCompatActivity {
             }
         });
 
-
-
         cargaProductos("1");
     }
 

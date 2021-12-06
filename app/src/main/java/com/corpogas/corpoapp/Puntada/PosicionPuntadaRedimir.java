@@ -469,14 +469,17 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         break;
 
                     case "Descuento Yena":
-                        Intent intentDesc = new Intent(getApplicationContext(), LecturayEscaneo.class);
+                        Intent intentDesc = new Intent(PosicionPuntadaRedimir.this, LecturayEscaneo.class);
                         //Intent intent = new Intent(getApplicationContext(), ScanManagerDemo.class);
                         intentDesc.putExtra("combustible", "");
+                        intentDesc.putExtra("numeroEmpleado", empleadoNumero);
                         intentDesc.putExtra("posicionCarga", posicionCargaId);
                         intentDesc.putExtra("estacionjarreo", "estacionJarreo");
                         intentDesc.putExtra("claveProducto", "");
                         intentDesc.putExtra("precioProducto", "");
                         intentDesc.putExtra("despacholibre", "no");
+                        intentDesc.putExtra("pcnumerointerno", cargaNumeroInterno);
+                        intentDesc.putExtra("pocioncargaid", cargaNumeroInterno);
                         intentDesc.putExtra("lugarProviene", "descuentoYena");
                         intentDesc.putExtra("pocioncarganumerointerno", cargaNumeroInterno);
                         startActivity(intentDesc);
