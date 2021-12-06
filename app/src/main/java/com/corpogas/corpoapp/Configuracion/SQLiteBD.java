@@ -322,10 +322,10 @@ public class SQLiteBD extends SQLiteOpenHelper {
         "CREATE TABLE " + DatosFormasPago.NOMBRE_TABLA + " (" +
                           DatosFormasPago.IDFORMAPAGO + " INTEGER PRIMARY KEY," +
                           DatosFormasPago.NOMBREPAGO + " TEXT," +
-                          DatosFormasPago.VISIBLEINVISIBLE + " INTEGER," +
-                          DatosFormasPago.ACUMULAPUNTOS + " INTEGER)";
+                          DatosFormasPago.VISIBLEINVISIBLE + " BOOLEAN," +
+                          DatosFormasPago.ACUMULAPUNTOS + " BOOLEAN)";
 
-    public void InsertarDatosFormasPago(Integer idformapago, String nombrepago, Integer visible, Integer acumulapuntos){
+    public void InsertarDatosFormasPago(Integer idformapago, String nombrepago, Boolean visible, Boolean acumulapuntos){
         SQLiteDatabase base = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatosFormasPago.IDFORMAPAGO, idformapago);
@@ -334,6 +334,16 @@ public class SQLiteBD extends SQLiteOpenHelper {
         values.put(DatosFormasPago.ACUMULAPUNTOS, acumulapuntos);
 
         long newRowId = base.insert(DatosFormasPago.NOMBRE_TABLA, null, values);
+    }
+
+    public int getFormaPagoPuntadaYena(Integer identificador){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor mCount= base.rawQuery("SELECT  count(*) FROM formaspago  WHERE idformapago = " + identificador, null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+        return count;
+
     }
 
     public List<FormasPagoCataglogo> getFormasPago(){

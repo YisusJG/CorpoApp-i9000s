@@ -98,6 +98,11 @@ class Menu_Principal : AppCompatActivity() {
     var respuestaApiArqueo: RespuestaApi<List<Arqueo>>? = null
     var respuestaApiEfectivoNoEntregado: RespuestaApi<Double>? = null
 
+    var fidelidad: Int? = null;
+    var Puntada:Int? = 1;
+    var Yena:Int? = 2
+    val Ninguna:Int? = 3
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -755,8 +760,28 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 //            }
             R.id.btnImgMonederos -> {
-                intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
-                startActivity(intent)
+                val data = SQLiteBD(applicationContext)
+                fidelidad = data.getFormaPagoPuntadaYena(12); //0;//
+                if (fidelidad!! > 0) {
+                    intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
+                    startActivity(intent)
+                } else {
+                    fidelidad = data.getFormaPagoPuntadaYena(15); //0;//
+                    if (fidelidad!! > 0) {
+                        intent = Intent(applicationContext, ApartadosYena::class.java) //ProcesoVenta
+                        startActivity(intent)
+                    } else {
+                        fidelidad = Ninguna
+                        val titulo = "AVISO"
+                        val mensajes = "No tiene configurado ningún método de pago para fidelidad"
+                        val modales = Modales(this@Menu_Principal)
+                        val viewLectura = modales.MostrarDialogoAlertaAceptar(this@Menu_Principal, mensajes, titulo)
+                        viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener { //finishAffinity();
+                            modales.alertDialog.dismiss()
+                        }
+                    }
+                }
+
 //                var manufacturer: String
 //                var model: String
 //                var identificador: String
@@ -831,10 +856,10 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            R.id.btn_yena -> {
-                intent = Intent(applicationContext, ApartadosYena::class.java) //ProcesoVenta
-                startActivity(intent)
-            }
+//            R.id.btn_yena -> {
+//                intent = Intent(applicationContext, ApartadosYena::class.java) //ProcesoVenta
+//                startActivity(intent)
+//            }
 
 
 //            R.id.btnImgJarreo -> {

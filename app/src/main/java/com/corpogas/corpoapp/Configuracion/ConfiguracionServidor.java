@@ -390,7 +390,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
                             Integer numero_pago;
                             String internonumero = "";
                             String nombre_pago = "";
-                            for (int i = 0; i <= nodo.length(); i++) {
+                            for (int i = 0; i < nodo.length(); i++) {
                                 colocarformapago = false;
                                 JSONObject nodo1 = nodo.getJSONObject(i);
                                 String formap = nodo1.getString("PaymentMethod"); //FormaPago
@@ -399,10 +399,11 @@ public class ConfiguracionServidor extends AppCompatActivity{
                                 numero_pago = numerointernoobject.getInt("Id"); //FormaPagoId
                                 nombre_pago = numerointernoobject.getString("LongDescription"); //DescripcionLarga
                                 String numero_ticket = numerointernoobject.getString("PrintsAllowed");
-                                Integer visible = numerointernoobject.getInt("IsFrontVisible"); //VisibleTarjetero
-                                Integer acumulaPuntos = numerointernoobject.getInt("AccumulatePoints");
+                                Boolean visible = numerointernoobject.getBoolean("IsFrontVisible"); //VisibleTarjetero
+                                Boolean acumulapuntos = numerointernoobject.getBoolean("AccumulatePoints");
+
                                 SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
-                                data.InsertarDatosFormasPago(numero_pago, nombre_pago, visible, acumulaPuntos);
+                                data.InsertarDatosFormasPago(numero_pago, nombre_pago, visible, acumulapuntos);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

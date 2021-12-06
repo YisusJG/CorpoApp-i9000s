@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
         txtNumeroDispositivoLogin = findViewById(R.id.txtNumeroDispositivoLogin);
         txtNumeroDispositivoLogin.setText("No. Dispositivo: " + db.getIdTarjtero());
 
-
     }
 
     //BORRAR PARA PRUEBA ESTE COMENTARIO
@@ -83,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                                      nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi,rolDescripcionApi,islaId);
 
             Intent intent = new Intent(LoginActivity.this, Menu_Principal.class);
+
             startActivity(intent);
             finish();
         }else {
