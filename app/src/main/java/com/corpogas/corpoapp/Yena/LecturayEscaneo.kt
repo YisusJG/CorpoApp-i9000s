@@ -243,7 +243,7 @@ class LecturayEscaneo : AppCompatActivity() {
                 sendToRedencion(tk1, tk2, tk3)
             }
             "descuentoYena" -> {
-                getSaldoparaAcumular(tk2, tk1)
+                getSaldoparaDesc(tk2, tk1)
             }
         }
     }
@@ -505,7 +505,7 @@ class LecturayEscaneo : AppCompatActivity() {
         })
     }
 
-    private fun getSaldoparaAcumular(numeroTarjeta: String, claveTarjeta: String) {
+    private fun getSaldoparaDesc(numeroTarjeta: String, claveTarjeta: String) {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -581,9 +581,9 @@ class LecturayEscaneo : AppCompatActivity() {
                                 intent.putExtra("precioProducto", "precio")
                                 intent.putExtra("despacholibre", "no")
                                 intent.putExtra("numeroTarjeta", numeroTarjeta)
-                                intent.putExtra("descuentoMagna", list[0])
-                                intent.putExtra("descuentoPremium", list[1])
-                                intent.putExtra("descuentoDiesel", list[2])
+//                                intent.putExtra("descuentoMagna", list[0])
+//                                intent.putExtra("descuentoPremium", list[1])
+//                                intent.putExtra("descuentoDiesel", list[2])
                                 intent.putExtra("lugarProviene", lugarProviene)
                                 intent.putExtra("pocioncargaid", posicionCargaNumInterno)
                                 startActivity(intent)
