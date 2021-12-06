@@ -562,7 +562,7 @@ class LecturayEscaneo : AppCompatActivity() {
                                 startActivity(intent)
                             }
                         } else {
-                            val descuentos = ""
+                            val descuentos = "No tienes Descuentos"
                             val modales = Modales(this@LecturayEscaneo)
                             val viewLectura = modales.MostrarDialogoCorrectoYena(
                                 this@LecturayEscaneo,
@@ -573,20 +573,22 @@ class LecturayEscaneo : AppCompatActivity() {
                             )
                             viewLectura.findViewById<View>(R.id.buttonAction).setOnClickListener {
                                 modales.alertDialog.dismiss()
-                                val intent = Intent(applicationContext, IniciaVentas::class.java)
-                                intent.putExtra("combustible", "claveProducto")
-                                intent.putExtra("posicionCarga", posCarga)
-                                intent.putExtra("estacionjarreo", estacionJarreo)
-                                intent.putExtra("claveProducto", "claveProducto")
-                                intent.putExtra("precioProducto", "precio")
-                                intent.putExtra("despacholibre", "no")
-                                intent.putExtra("numeroTarjeta", numeroTarjeta)
+                                val intent = Intent(applicationContext, Menu_Principal::class.java)
+                                startActivity(intent)
+                                finish()
+//                                intent.putExtra("combustible", "claveProducto")
+//                                intent.putExtra("posicionCarga", posCarga)
+//                                intent.putExtra("estacionjarreo", estacionJarreo)
+//                                intent.putExtra("claveProducto", "claveProducto")
+//                                intent.putExtra("precioProducto", "precio")
+//                                intent.putExtra("despacholibre", "no")
+//                                intent.putExtra("numeroTarjeta", numeroTarjeta)
 //                                intent.putExtra("descuentoMagna", list[0])
 //                                intent.putExtra("descuentoPremium", list[1])
 //                                intent.putExtra("descuentoDiesel", list[2])
-                                intent.putExtra("lugarProviene", lugarProviene)
-                                intent.putExtra("pocioncargaid", posicionCargaNumInterno)
-                                startActivity(intent)
+//                                intent.putExtra("lugarProviene", lugarProviene)
+//                                intent.putExtra("pocioncargaid", posicionCargaNumInterno)
+//                                startActivity(intent)
                             }
                         }
                     } else {
