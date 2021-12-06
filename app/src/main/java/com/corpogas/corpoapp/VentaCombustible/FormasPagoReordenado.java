@@ -420,6 +420,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
                                     titulo = "PUNTADA";
                                     String mensajes = "¿Desea Acumular la venta a su Tarjeta?";
                                     Modales modalesEfectivo = new Modales(FormasPagoReordenado.this);
+//                                    View viewLecturas = modalesEfectivo.MostrarDialogoAlertaParaRedencion(FormasPagoReordenado.this, mensajes);
                                     View viewLecturas = modalesEfectivo.MostrarDialogoAlertaParaRedencion(FormasPagoReordenado.this, mensajes);
                                     viewLecturas.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                         @Override

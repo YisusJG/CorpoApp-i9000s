@@ -401,7 +401,6 @@ public class ConfiguracionServidor extends AppCompatActivity{
                                 String numero_ticket = numerointernoobject.getString("PrintsAllowed");
                                 Boolean visible = numerointernoobject.getBoolean("IsFrontVisible"); //VisibleTarjetero
                                 Boolean acumulapuntos = numerointernoobject.getBoolean("AccumulatePoints");
-
                                 SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
                                 data.InsertarDatosFormasPago(numero_pago, nombre_pago, visible, acumulapuntos);
                             }

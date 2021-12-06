@@ -761,7 +761,7 @@ class Menu_Principal : AppCompatActivity() {
 //            }
             R.id.btnImgMonederos -> {
                 val data = SQLiteBD(applicationContext)
-                fidelidad = data.getFormaPagoPuntadaYena(12); //0;//
+                fidelidad = data.getFormaPagoPuntadaYena(12); //0;//  poner en cero para prueba
                 if (fidelidad!! > 0) {
                     intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
                     startActivity(intent)

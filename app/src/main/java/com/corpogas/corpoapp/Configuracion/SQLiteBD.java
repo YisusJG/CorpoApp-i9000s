@@ -337,7 +337,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
     }
 
     public int getFormaPagoPuntadaYena(Integer identificador){
-        SQLiteDatabase base = getReadableDatabase();
+        SQLiteDatabase base = getReadableDatabase(); //
         Cursor mCount= base.rawQuery("SELECT  count(*) FROM formaspago  WHERE idformapago = " + identificador, null);
         mCount.moveToFirst();
         int count= mCount.getInt(0);
