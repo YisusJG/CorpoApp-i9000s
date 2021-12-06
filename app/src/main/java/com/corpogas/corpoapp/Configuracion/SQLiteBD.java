@@ -44,6 +44,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_PAGOTARJETA_DIFERENTESFORMASPAGO);
         db.execSQL(TBL_MAXIMO_EFECTIVO_SUCURSAL);
         db.execSQL(TBL_FORMASPAGO);
+        db.execSQL(TBL_TARJETAQRPUNTADAYENA);
 
     }
 
@@ -347,7 +348,68 @@ public class SQLiteBD extends SQLiteOpenHelper {
         return lFormasPago;
     }
 
+    public static class DatosTarjetaPuntadaYena implements  BaseColumns{
+        public static final String NOMBRE_TABLA = "tarjetaqr";
+        public static final String IDPOSICIONCARGA = "idposicioncarga";
+        public static final String NUMEROPOSICIONCARGA = "numeroposicioncarga";
+        public static final String NUMEROTARJETA = "numerotarjeta";
+        public static final String NIPTARJETAPUNTADAYENA = "nip";
+        public static final String DESCUENTOTARJETA = "descuento";
 
+    }
+
+    private static final String TBL_TARJETAQRPUNTADAYENA =
+            "CREATE TABLE " + DatosTarjetaPuntadaYena.NOMBRE_TABLA + " (" +
+                    DatosTarjetaPuntadaYena.IDPOSICIONCARGA + " INTEGER PRIMARY KEY," +
+                    DatosTarjetaPuntadaYena.NUMEROPOSICIONCARGA + " TEXT," +
+                    DatosTarjetaPuntadaYena.NUMEROTARJETA + " TEXT," +
+                    DatosTarjetaPuntadaYena.NIPTARJETAPUNTADAYENA + " TEXT," +
+                    DatosTarjetaPuntadaYena.DESCUENTOTARJETA + " REAL)";
+
+    public void InsertarDatosTarjetaPuntadaYena(Integer idposicionCarga, String numeroposicioncarga, String numerotarjeta, String niptarjeta, Double descuentotarjeta){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosTarjetaPuntadaYena.IDPOSICIONCARGA, idposicionCarga);
+        values.put(DatosTarjetaPuntadaYena.NUMEROPOSICIONCARGA, numeroposicioncarga);
+        values.put(DatosTarjetaPuntadaYena.NUMEROTARJETA, numerotarjeta);
+        values.put(DatosTarjetaPuntadaYena.NIPTARJETAPUNTADAYENA, niptarjeta);
+        values.put(DatosTarjetaPuntadaYena.DESCUENTOTARJETA, descuentotarjeta);
+
+        long newRowId = base.insert(DatosFormasPago.NOMBRE_TABLA, null, values);
+    }
+
+
+    public String getNumeroPosicionCargaTarjetaPuntadaYena(String posicioncargaseleccionada){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT numeroposicioncarga FROM tarjetaqr WHERE idposicioncarga = " + posicioncargaseleccionada, null);
+        cursor.moveToFirst();
+        String numeroposicioncargaqr = cursor.getString(0);
+        return numeroposicioncargaqr;
+    }
+
+    public String getNumeroTarjetaPuntadaYena(String posicioncargaseleccionada){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT numerotarjeta FROM tarjetaqr WHERE idposicioncarga = " + posicioncargaseleccionada, null);
+        cursor.moveToFirst();
+        String numerotarjetaqr = cursor.getString(0);
+        return numerotarjetaqr;
+    }
+
+    public String getNipPuntadaYena(String posicioncargaseleccionada){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT niptarjeta FROM tarjetaqr WHERE idposicioncarga = " + posicioncargaseleccionada, null);
+        cursor.moveToFirst();
+        String numeroposicioncargaqr = cursor.getString(0);
+        return numeroposicioncargaqr;
+    }
+
+    public Integer getDescuentoPuntadaYena(String posicioncargaseleccionada){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT descuentotarjeta FROM tarjetaqr WHERE idposicioncarga = " + posicioncargaseleccionada, null);
+        cursor.moveToFirst();
+        Integer numeroposicioncargaqr = cursor.getInt(0);
+        return numeroposicioncargaqr;
+    }
 
 
     public static class Datosempresa implements BaseColumns {

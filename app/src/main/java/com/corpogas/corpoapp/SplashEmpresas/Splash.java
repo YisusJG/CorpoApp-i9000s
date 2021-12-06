@@ -8,12 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
 
+import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Login.LoginActivity;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
 
 public class Splash extends AppCompatActivity {
-
+    SQLiteBD db;
     private final int DURACION_SPLASH = 2000;
 
 
@@ -21,6 +22,8 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        db = new SQLiteBD(this);
+        this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
 
         setContentView(R.layout.activity_splash);
 

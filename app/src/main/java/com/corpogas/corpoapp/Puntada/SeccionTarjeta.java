@@ -54,13 +54,13 @@ public class SeccionTarjeta extends AppCompatActivity {
 
     private void initializeData() {
         lrecyclerViewHeaders = new ArrayList<>();
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir","Paga con Puntos",R.drawable.redimirpuntada));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Redimir QR","Lee QR para Pago con Puntos",R.drawable.redimirpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pago con Puntos","Redimir",R.drawable.redimirpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pago con Puntos QR","Redimir con QR",R.drawable.redimirpuntada));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Descuento QR","Lee QR para descuento",R.drawable.redimirpuntada));
 
         //        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Consulta Saldo","Saldo Tarjeta",R.drawable.registrarpuntada));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada App","Descarga App de Puntada",R.drawable.registrarpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Consulta Saldo","Saldo Tarjeta",R.drawable.registrarpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Descarga App","App de Puntada",R.drawable.registrarpuntada));
 
         NumeroTarjeta = getIntent().getStringExtra("track");
     }
@@ -71,22 +71,22 @@ public class SeccionTarjeta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 switch (lrecyclerViewHeaders.get(recyclerViewSeccionTarjeta.getChildAdapterPosition(v)).getTitulo()) {
-                    case "Puntada Consulta Saldo": //Consulta Saldo
+                    case "Consulta Saldo": //Consulta Saldo
                         PuntadaProceso = "ConsultaSaldoPuntada";
                         RedencionConsultaPuntada("ConsultaSaldoPuntada" );
                         break;
-                    case "Puntada Redimir"://Redimir
+                    case "Pago con Puntos"://Redimir
                         PuntadaProceso = "Redimir";
                         RedencionConsultaPuntada("Redimir");
                         break;
                     case "Puntada Registrar"://Registrar
                         break;
-                    case "Puntada App":
+                    case "Descarga App":
                         Intent intentApp = new Intent(getApplicationContext(), PuntadaQr.class);
                         startActivity(intentApp);
                         finish();
                         break;
-                    case "Puntada Redimir QR":
+                    case "Pago con Puntos QR":
                         PuntadaProceso = "RedimirQr";
                         RedencionConsultaPuntada("RedimirQr");
                         break;

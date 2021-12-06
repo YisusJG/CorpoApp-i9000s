@@ -398,7 +398,7 @@ public class confirmaVenta extends AppCompatActivity {
 
                 ID.add(descripcioncorta);
 
-                NombreProducto.add("ID: " + numerointerno + "    |     $"+precio);
+                NombreProducto.add("ID: " + numerointerno + "    |     $"+precio + "    | " + cantidad + " Piezas");
                 PrecioProducto.add(precio);
                 ClaveProducto.add(numerointerno);
                 //codigoBarras.add(codigobarras);

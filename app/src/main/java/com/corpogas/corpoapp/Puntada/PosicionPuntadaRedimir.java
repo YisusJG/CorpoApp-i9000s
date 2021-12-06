@@ -121,8 +121,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         numerotarjeta = getIntent().getStringExtra("track"); //"6ABE322B"; //
         NipCliente = getIntent().getStringExtra("nip");
 
-        descuento = getIntent().getStringExtra("descuento");
-        descuentoPorLitro = Double.parseDouble(descuento);
         simbolos.setDecimalSeparator('.');
         df = new DecimalFormat("###,###.00",simbolos);
         df.setMaximumFractionDigits(2);
@@ -497,6 +495,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                         ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo, false);
                         break;
                     case "DescuentoQr":
+                        descuento = getIntent().getStringExtra("descuento");
+                        descuentoPorLitro = Double.parseDouble(descuento);
                         ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo, true);
                         break;
 

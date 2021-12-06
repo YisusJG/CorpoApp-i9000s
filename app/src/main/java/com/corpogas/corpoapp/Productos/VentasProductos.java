@@ -884,20 +884,20 @@
                         textoresultado = textoresultado + " " + txtproducto + " " + txtcantidad + " " +txtprecio + "     ";
                         txtproductos.setText(textoresultado);//myArrayVer.toString());
                         ProductosAgregados = +ProductosAgregados;
-                    }else{
-                        String titulo = "AVISO";
-                        String mensaje = "Producto: "+ ProductoId+" cargado anteriormente";
-                        Modales modales = new Modales(VentasProductos.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-
-                        //Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
-                    }
+                    }//else{
+//                        String titulo = "AVISO";
+//                        String mensaje = "Producto: "+ ProductoId+" cargado anteriormente";
+//                        Modales modales = new Modales(VentasProductos.this);
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                modales.alertDialog.dismiss();
+//                            }
+//                        });
+//
+//                        //Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
+//                    }
                     Producto.setText("");
                     Producto.requestFocus();
                     txtDescripcion.setText("");

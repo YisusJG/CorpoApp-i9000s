@@ -708,6 +708,7 @@ class Menu_Principal : AppCompatActivity() {
 
                             intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
                             intent.putExtra("lugarproviene", "Ventas")
+                            intent.putExtra("descuento", "0")
                             startActivity(intent)
 
                         }
@@ -734,6 +735,7 @@ class Menu_Principal : AppCompatActivity() {
 //                                    }
                                 intent = Intent(applicationContext, PosicionPuntadaRedimir::class.java) //ProcesoVenta
                                 intent.putExtra("lugarproviene", "Ventas")
+                                intent.putExtra("descuento", "0")
                                 startActivity(intent)
                             }
                         }
