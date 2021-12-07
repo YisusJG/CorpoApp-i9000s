@@ -56,6 +56,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Url;
@@ -127,7 +128,8 @@ public interface EndPoints {
     // METODO PARA VALIDAR NIP DE USUARIO
 
     @GET("api/asignacionDispositivos/validaNip/{nip}/dispositivoId/{dispositivoId}")
-    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId);
+    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId,  @Header("Authorization") String authHeader); // para token
+//    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId);  antes
 
     //Metodo para obtener Precio fajillas y Denominaciones de Billetes
 

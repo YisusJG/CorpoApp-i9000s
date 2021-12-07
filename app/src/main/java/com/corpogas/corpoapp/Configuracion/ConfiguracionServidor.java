@@ -138,7 +138,8 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void ConectarIP() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -151,7 +152,8 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 if(!response.isSuccessful())
                 {
                     String titulo = "AVISO";
-                    String mensaje = "La direccion IP que ingresaste no es Valida";
+                    String mensaje = "Se ha denegado la autorización para esta solicitud.";
+//                    String mensaje = "La direccion IP que ingresaste no es Valida";
                     final Modales modales = new Modales(ConfiguracionServidor.this);
                     View view1 = modales.MostrarDialogoAlertaAceptar(ConfiguracionServidor.this, mensaje, titulo);
                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {

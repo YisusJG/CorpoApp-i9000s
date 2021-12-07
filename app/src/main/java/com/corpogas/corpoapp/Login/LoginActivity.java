@@ -93,12 +93,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void obtenerValidacionNip(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/") antes
+                .baseUrl("http://"+ ipEstacion  +"/CorpogasService_entities_token/") // token
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerValidacionNip = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero );
+        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero ,"");
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override

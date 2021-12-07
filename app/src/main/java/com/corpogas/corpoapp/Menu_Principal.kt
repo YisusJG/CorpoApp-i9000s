@@ -861,7 +861,6 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 //            }
 
-
 //            R.id.btnImgJarreo -> {
 //                intent = Intent(applicationContext, ClaveEmpleado::class.java) //ClaveDespachadorAcumular
 //                intent.putExtra("LugarProviene", "JarreoTodaEstacion")
