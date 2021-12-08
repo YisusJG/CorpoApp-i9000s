@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -101,7 +102,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
         rcvPosicionCarga.setHasFixedSize(true);
-        PosicionCarga(1);
+//        PosicionCarga(1);
         btnCargarTodasPC = (Button) findViewById(R.id.btnCargarTodasPC);
         btnCargarTodasPC.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +129,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     token = response.body();
                     assert token != null;
                     bearerToken = token.Mensaje;
+                    PosicionCarga(1);
                 } else {
                     bearerToken = "";
                 }
@@ -313,7 +315,18 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + bearerToken);
+                return headers;
+            }
+        }
+
+
+                ;
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);

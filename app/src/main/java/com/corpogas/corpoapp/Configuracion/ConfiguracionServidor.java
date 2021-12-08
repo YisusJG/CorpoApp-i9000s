@@ -30,7 +30,6 @@ import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
-import com.corpogas.corpoapp.Token.TokenKt;
 
 import org.json.JSONArray;
 import org.json.JSONException;
