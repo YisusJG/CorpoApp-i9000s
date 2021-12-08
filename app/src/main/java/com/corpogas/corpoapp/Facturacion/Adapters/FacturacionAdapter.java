@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Facturacion.ClienteFacturas;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
@@ -49,6 +50,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,6 +59,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.FacturacionVH>{
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     List<RespuestaRFC> facturacionList;
     Context mContext; // Declara aquí
     ClienteFacturas clienteFacturas;
@@ -141,6 +145,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
         //
         public FacturacionVH (@NonNull View itemView) {
             super(itemView);
+            getToken();
             razsonSocialTxt = itemView.findViewById(R.id.razon_social);
             emailTxt = itemView.findViewById(R.id.email);
             idClienteTxt = itemView.findViewById(R.id.id_cliente);
@@ -263,6 +268,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                     viewFactura.findViewById(R.id.btnEnviarFactura).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+//                            getToken();
                             clienteFacturas.ObtenProgressDialog("Enviando Factura al correo...");
                             solicitudFactura = new SolicitudFactura();
                             solicitudFactura.setDispositivoId(db.getIdTarjtero());
@@ -277,12 +283,13 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                             String json = new Gson().toJson(solicitudFactura);
 
                             Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
 
                             EndPoints solicitarFactura = retrofit.create(EndPoints.class);
-                            Call<RespuestaApi<RespuestaSolicitudFactura>> call = solicitarFactura.postSolicitarFactura(id,Long.parseLong(idUsuario),solicitudFactura);
+                            Call<RespuestaApi<RespuestaSolicitudFactura>> call = solicitarFactura.postSolicitarFactura(id,Long.parseLong(idUsuario),solicitudFactura, "Bearer " +bearerToken);
                             call.enqueue(new Callback<RespuestaApi<RespuestaSolicitudFactura>>() {
 
                                 @Override
@@ -469,6 +476,36 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
         }
 
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(mContext.getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
 }

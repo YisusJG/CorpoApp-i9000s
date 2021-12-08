@@ -42,6 +42,7 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import com.corpogas.corpoapp.Cofre.CofreActivity
 import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario
 //import com.corpogas.corpoapp.Corte.Fragments.PicosFragment
 import com.corpogas.corpoapp.Entities.Virtuales.Arqueo
 import com.corpogas.corpoapp.Entregas.OpcionesEntregaActivity
@@ -70,18 +71,20 @@ import java.text.DecimalFormat
 import java.util.concurrent.TimeUnit
 
 class Menu_Principal : AppCompatActivity() {
+    lateinit var bearerToken: String
+    var token: RespuestaApi<AccesoUsuario?>? = null
     var drawerLayout: DrawerLayout? = null
     lateinit var bar: ProgressDialog
     var list: ListView? = null
     lateinit var downloadController:DownloadController
     lateinit var txtVersionApk: TextView
-    lateinit var txtCerrarSesion: TextView
-    lateinit var txtNombreUsuarioMainNav: TextView
-    lateinit var txtRolMainNav: TextView
-    lateinit var txtIdDispositivoMainNav: TextView
-    lateinit var txtCerrarSesionTemporalMainNav: TextView
-    lateinit var cardVScanner:CardView
-    lateinit var cardFondoVentas:CardView
+    private lateinit var txtCerrarSesion: TextView
+    private lateinit var txtNombreUsuarioMainNav: TextView
+    private lateinit var txtRolMainNav: TextView
+    private lateinit var txtIdDispositivoMainNav: TextView
+    private lateinit var txtCerrarSesionTemporalMainNav: TextView
+    private lateinit var cardVScanner:CardView
+    private lateinit var cardFondoVentas:CardView
 
     //-------Variables necesarias para ininicalizar el lector de huellas
     private val GENERAL_ACTIVITY_RESULT = 1
@@ -92,13 +95,13 @@ class Menu_Principal : AppCompatActivity() {
     //    Reader m_reader;
     var banderaHuella = ""
     private val imgFoto: ImageSwitcher? = null
-    var imagen: ImageView? = null
-    var ImageDisplay: Boolean? = null
+    private var imagen: ImageView? = null
+    private var ImageDisplay: Boolean? = null
     var applicationUpdate: RespuestaApi<Update>? = null
     var respuestaApiArqueo: RespuestaApi<List<Arqueo>>? = null
     var respuestaApiEfectivoNoEntregado: RespuestaApi<Double>? = null
 
-    var fidelidad: Int? = null;
+    private var fidelidad: Int? = null;
     var Puntada:Int? = 1;
     var Yena:Int? = 2
     val Ninguna:Int? = 3
@@ -108,8 +111,8 @@ class Menu_Principal : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
         val data = SQLiteBD(this)
-
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
+        getToken()
         drawerLayout = findViewById(R.id.drawer_layout)
         cardVScanner = findViewById(R.id.crdvScanner)
         cardFondoVentas = findViewById(R.id.PruebaFondoVentas)
@@ -117,7 +120,8 @@ class Menu_Principal : AppCompatActivity() {
         if(mostrarOpcionScanner ==1 || mostrarOpcionScanner == 3){
             cardVScanner.visibility = View.VISIBLE
         }
-        obtenerEfectivoNoEntregado()
+//        obtenerEfectivoNoEntregado()
+
 
         //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,"open navigation drawer", "close navigation drawer");
@@ -165,7 +169,7 @@ class Menu_Principal : AppCompatActivity() {
         txtIdDispositivoMainNav = findViewById(R.id.txtIdDispositivoMainNav)
         txtCerrarSesionTemporalMainNav = findViewById(R.id.txtCerrarSesionTemporalMainNav)
         ImageDisplay = true
-        BuscarActualizacion
+//        BuscarActualizacion
         txtNombreUsuarioMainNav.setText(data.nombreCompleto)
 //        txtRolMainNav.setText((data.rol).toString())
         txtRolMainNav.setText(data.rolDescripcion)
@@ -177,6 +181,35 @@ class Menu_Principal : AppCompatActivity() {
             cerrarSesionTemporal()
         }
 
+    }
+
+    private fun getToken() {
+        val retrofit = Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val obtenerToken = retrofit.create(EndPoints::class.java)
+        val call = obtenerToken.getAccesoUsuario(497L, "1111")
+        call.timeout().timeout(60, TimeUnit.SECONDS)
+        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
+            override fun onResponse(
+                call: Call<RespuestaApi<AccesoUsuario?>>,
+                response: Response<RespuestaApi<AccesoUsuario?>>
+            ) {
+                if (response.isSuccessful) {
+                    token = response.body()
+                    bearerToken = token?.Mensaje ?: ""
+                    obtenerEfectivoNoEntregado()
+                    BuscarActualizacion
+                } else {
+                    bearerToken = ""
+                }
+            }
+
+            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
+                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     fun deleteDatos(){
@@ -203,12 +236,13 @@ class Menu_Principal : AppCompatActivity() {
     fun obtenerEfectivoNoEntregado(){
         val data = SQLiteBD(applicationContext)
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+//            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val obtenerEfectivoNoEntregado = retrofit.create(EndPoints::class.java)
-        val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado)
+        val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado, "Bearer $bearerToken")
         call.timeout().timeout(60, TimeUnit.SECONDS)
         call.enqueue(object : Callback<RespuestaApi<Double>> {
             override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
@@ -245,12 +279,15 @@ class Menu_Principal : AppCompatActivity() {
     fun obtenerArqueo(){
         val data = SQLiteBD(applicationContext)
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+//            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val obtenerArqueo = retrofit.create(EndPoints::class.java)
-        val call = obtenerArqueo.getArqueo((data.idSucursal).toLong(),data.numeroEmpleado)
+        val call = obtenerArqueo.getArqueo((data.idSucursal).toLong(),data.numeroEmpleado,
+            "Bearer $bearerToken"
+        )
         call.timeout().timeout(60, TimeUnit.SECONDS)
         call.enqueue(object : Callback<RespuestaApi<List<Arqueo>>> {
             override fun onResponse(call: Call<RespuestaApi<List<Arqueo>>>, response: Response<RespuestaApi<List<Arqueo>>> ) {
@@ -306,11 +343,12 @@ class Menu_Principal : AppCompatActivity() {
             val data = SQLiteBD(applicationContext)
 
             val retrofit = Retrofit.Builder()
-                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+//                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val actualizaApp = retrofit.create(EndPoints::class.java)
-            val call = actualizaApp.getActializaApp(data.idSucursal)
+            val call = actualizaApp.getActializaApp(data.idSucursal, "Bearer $bearerToken")
             call.timeout().timeout(60, TimeUnit.SECONDS)
             call.enqueue(object : Callback<RespuestaApi<Update>> {
                 override fun onResponse(call: Call<RespuestaApi<Update>>, response: Response<RespuestaApi<Update>>) {
@@ -692,12 +730,15 @@ class Menu_Principal : AppCompatActivity() {
                 val numFormat = CurrencyFormatter()
                 val data = SQLiteBD(applicationContext)
                 val retrofit = Retrofit.Builder()
-                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+//                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
 
                 val obtenerEfectivoNoEntregado = retrofit.create(EndPoints::class.java)
-                val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado)
+                val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado,
+                    "Bearer $bearerToken"
+                )
                 call.timeout().timeout(60, TimeUnit.SECONDS)
                 call.enqueue(object : Callback<RespuestaApi<Double>> {
                     override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {

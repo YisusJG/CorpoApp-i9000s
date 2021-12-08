@@ -42,10 +42,15 @@ import java.lang.Exception
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import kotlin.properties.Delegates
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario
+import java.util.concurrent.TimeUnit
+
 
 class LecturayEscaneo : AppCompatActivity() {
     var model: String? = null
 
+    var bearerToken: String? = null
+    var token: RespuestaApi<AccesoUsuario?>? = null
     private var mReadService: MagReadService? = null
     private lateinit var scanManagerProvides: ScanManagerProvides
 
@@ -82,6 +87,7 @@ class LecturayEscaneo : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lecturay_escaneo)
         model = Build.MODEL
+        getToken()
         val data = SQLiteBD(this)
         val btnEscanear = findViewById<Button>(R.id.button_escanear)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
@@ -123,6 +129,35 @@ class LecturayEscaneo : AppCompatActivity() {
                 integrator.initiateScan()
             })
         }
+    }
+
+    private fun getToken() {
+        val retrofit =
+            Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        val obtenerToken = retrofit.create(EndPoints::class.java)
+        val call = obtenerToken.getAccesoUsuario(497L, "1111")
+        call.timeout().timeout(60, TimeUnit.SECONDS)
+        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
+            override fun onResponse(
+                call: Call<RespuestaApi<AccesoUsuario?>>,
+                response: Response<RespuestaApi<AccesoUsuario?>>
+            ) {
+                if (response.isSuccessful) {
+                    token = response.body()
+                    assert(token != null)
+                    bearerToken = token!!.Mensaje
+                } else {
+                    bearerToken = ""
+                }
+            }
+
+            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
+                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun Init() {
@@ -250,11 +285,12 @@ class LecturayEscaneo : AppCompatActivity() {
 
     private fun sendToRedencion(claveTarjeta: String, numeroTarjeta: String, tk3: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+//            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
-        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta))
+        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta), "Bearer " +bearerToken)
         call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
             override fun onResponse(
                 call: Call<RespuestaApi<YenaResponse>>,
@@ -302,11 +338,14 @@ class LecturayEscaneo : AppCompatActivity() {
 
     private fun sendToAcumulacion(claveTarjeta: String, numeroTarjeta: String, tk3: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+//            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
-        val call = yenaSaldo.postAcumulaPuntos(EndPointYena(sucursalId, numeroEmpleado.toLong(), numeroTarjeta, claveTarjeta, posicionCargaId.toLong()))
+        val call = yenaSaldo.postAcumulaPuntos(EndPointYena(sucursalId, numeroEmpleado.toLong(), numeroTarjeta, claveTarjeta, posicionCargaId.toLong()),
+            "Bearer $bearerToken"
+        )
         call.enqueue(object : Callback<RespuestaApi<Boolean>> {
             override fun onResponse(call: Call<RespuestaApi<Boolean>>, response: Response<RespuestaApi<Boolean>>) {
                 if (!response.isSuccessful) {
@@ -416,11 +455,14 @@ class LecturayEscaneo : AppCompatActivity() {
 
     private fun getSaldo(numeroTarjeta: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+//            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
-        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta))
+        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta),
+            "Bearer $bearerToken"
+        )
         call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
             override fun onResponse(
                 call: Call<RespuestaApi<YenaResponse>>,
@@ -507,11 +549,14 @@ class LecturayEscaneo : AppCompatActivity() {
 
     private fun getSaldoparaDesc(numeroTarjeta: String, claveTarjeta: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+//            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
-        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta))
+        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta),
+            "Bearer $bearerToken"
+        )
         call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
             override fun onResponse(
                 call: Call<RespuestaApi<YenaResponse>>,

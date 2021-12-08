@@ -58,6 +58,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PosicionCargaTLl extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     RecyclerView rcvPosicionCarga;
     String EstacionId;
     Long sucursalId;
@@ -86,6 +89,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_carga_t_ll);
+        getToken();
         init();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
@@ -100,6 +104,36 @@ public class PosicionCargaTLl extends AppCompatActivity {
         });
 
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void init() {
         rcvPosicionCarga = (RecyclerView)findViewById(R.id.rcvPosicionCarga);
@@ -366,12 +400,13 @@ public class PosicionCargaTLl extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+//                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerIniAuto = retrofit.create(EndPoints.class);
-        Call<RespuestaTanqueLleno> call = obtenerIniAuto.getInicializaAuto(usuario, respuestaIniAuto1);
+        Call<RespuestaTanqueLleno> call = obtenerIniAuto.getInicializaAuto(usuario, respuestaIniAuto1, "Bearer " +bearerToken);
         call.timeout().timeout(120, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaTanqueLleno>() {
             @Override

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Corte.ProcesoCorte;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Sucursales.BranchPaymentMethod;
@@ -54,6 +55,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FormasDePago extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     RecyclerView rcvFormasPago;
     List<RecyclerViewHeaders> lFormasPago;
     SQLiteBD db;
@@ -69,16 +73,47 @@ public class FormasDePago extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formas_de_pago);
+        getToken();
         init();
         rcvFormasPago = findViewById(R.id.rcvFormasPago);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvFormasPago.setLayoutManager(linearLayoutManager);
         rcvFormasPago.setHasFixedSize(true);
-        obtenerformasdepago();
+//        obtenerformasdepago();
 
 
     }
 
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    obtenerformasdepago();
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void init() {
         db = new SQLiteBD(getApplicationContext());
@@ -98,13 +133,14 @@ public class FormasDePago extends AppCompatActivity {
 
     private void obtenerformasdepago() {
 
-           Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ipEstacion+"/CorpogasService/")
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints formasPago = retrofit.create(EndPoints.class);
-        Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(sucursalId);
+        Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(sucursalId, "Bearer " +bearerToken);
 
         call.enqueue(new Callback<List<BranchPaymentMethod>>() {
 
@@ -231,12 +267,13 @@ public class FormasDePago extends AppCompatActivity {
             public void onClick(View view) {
                 modales.alertDialog.dismiss();
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                        .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
                 EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(sucursalId,posicioncarga,usuarioid);
+                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(sucursalId,posicioncarga,usuarioid, "Bearer " +bearerToken);
                 call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
 
 
@@ -308,13 +345,14 @@ public class FormasDePago extends AppCompatActivity {
 
         try {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
 
             EndPoints generaTicket = retrofit.create(EndPoints.class);
-            Call<Ticket> call = generaTicket.getGenerarTicket(ticketRequest);
+            Call<Ticket> call = generaTicket.getGenerarTicket(ticketRequest, "Bearer " +bearerToken);
             call.enqueue(new Callback<Ticket>() {
 
 

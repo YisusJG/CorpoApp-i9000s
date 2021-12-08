@@ -34,6 +34,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FajillasBilletesFragment extends Fragment {
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
    View view;
    EditText fajillasBilletes;
    Button btnValidaFajillas;
@@ -56,6 +58,7 @@ public class FajillasBilletesFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_fajillas_billetes, container, false);
 
+        getToken();
         init();
         getObjetos();
         setVariables();
@@ -63,6 +66,36 @@ public class FajillasBilletesFragment extends Fragment {
 
         return view;
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(requireContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void init() {
         fajillasBilletes = (EditText) view.findViewById(R.id.editTextFajillasBilletes);
@@ -134,12 +167,13 @@ public class FajillasBilletesFragment extends Fragment {
 //        arrayListCierreFajillas.add(new CierreFajilla(sucursalId,cierreId,1,0,Integer.parseInt(billetes),fajillaBilletes));
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+//                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints guardaFoliosCierreListaFajillas = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreFajilla>>> call = guardaFoliosCierreListaFajillas.postGuardaFoliosCierreListaFajillas(arrayListCierreFajillas, idusuario);
+        Call<RespuestaApi<List<CierreFajilla>>> call = guardaFoliosCierreListaFajillas.postGuardaFoliosCierreListaFajillas(arrayListCierreFajillas, idusuario, "Bearer " +bearerToken);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<List<CierreFajilla>>>() {
 

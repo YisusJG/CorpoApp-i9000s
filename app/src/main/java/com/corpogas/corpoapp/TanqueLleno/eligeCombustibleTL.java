@@ -24,6 +24,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.BodegaProducto;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.ProductControl;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +55,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class eligeCombustibleTL extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     SQLiteBD db;
     ListView list;
     boolean pasa;
@@ -101,6 +106,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_elige_combustible_t_l);
 
+        getToken();
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         EstacionId = db.getIdEstacion();
@@ -109,7 +115,38 @@ public class eligeCombustibleTL extends AppCompatActivity {
 //        numerodispositivo= db.getIdTarjtero();
         numerointernoSucursal = db.getNumeroFranquicia();
         init();
-        cargaCombustible();
+//        cargaCombustible();
+    }
+
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    cargaCombustible();
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void init(){
@@ -321,12 +358,13 @@ public class eligeCombustibleTL extends AppCompatActivity {
             finish();
         } else {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString());
+            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString(), "Bearer " +bearerToken);
             call.enqueue(new Callback<Isla>() {
 
 

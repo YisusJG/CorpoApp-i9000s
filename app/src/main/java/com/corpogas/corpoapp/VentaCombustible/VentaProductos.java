@@ -20,6 +20,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.BodegaProducto;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.ProductControl;
@@ -45,6 +47,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +55,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VentaProductos extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     SQLiteBD data;
     String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid;
     long numeroInternoPosicionCarga, posicioncargaid;
@@ -78,6 +83,7 @@ public class VentaProductos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_venta_productos);
 
+        getToken();
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
@@ -142,6 +148,37 @@ public class VentaProductos extends AppCompatActivity {
         cargaProductos("1");
 
     }
+
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void ValidaTransaccionActiva() {
         if (!Conexion.compruebaConexion(this)) {
@@ -368,12 +405,13 @@ public class VentaProductos extends AppCompatActivity {
             finish();
         } else {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(Long.parseLong(sucursalId), poscicionCarga.toString());
+            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(Long.parseLong(sucursalId), poscicionCarga, "Bearer " +bearerToken);
             call.enqueue(new Callback<Isla>() {
 
 

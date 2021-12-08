@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Facturacion.Adapters.FacturacionAdapter;
 import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
@@ -22,6 +23,7 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +32,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClienteFacturas extends Activity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     RespuestaApi<List<RespuestaRFC>> respuestaApiRfc;
     String ipEstacion, RFC, nombrefacturo, idUsuario;
     PeticionRFC peticionRFC;
@@ -47,6 +51,7 @@ public class ClienteFacturas extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cliente_facturas);
+        getToken();
         txtObtenRFC =(TextInputLayout)findViewById(R.id.filledRFC);
         db = new SQLiteBD(getApplicationContext());
         recyclerViewFacturacion = findViewById(R.id.recyclerViewFactura);
@@ -55,6 +60,36 @@ public class ClienteFacturas extends Activity {
         ipEstacion = db.getIpEstacion();
 
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     public void onClickObtenCliente(View v) {
         bar = new ProgressDialog(ClienteFacturas.this);
@@ -104,12 +139,13 @@ public class ClienteFacturas extends Activity {
 //        String json = new Gson().toJson(peticionRFC);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerRfcCliente = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<RespuestaRFC>>> call = obtenerRfcCliente.postObtenerRfcs(peticionRFC);
+        Call<RespuestaApi<List<RespuestaRFC>>> call = obtenerRfcCliente.postObtenerRfcs(peticionRFC, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<List<RespuestaRFC>>>() {
 
             @Override

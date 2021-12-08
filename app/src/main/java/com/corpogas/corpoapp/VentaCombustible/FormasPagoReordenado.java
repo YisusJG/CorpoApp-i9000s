@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.EndPointYena;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,6 +67,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FormasPagoReordenado extends AppCompatActivity {
     RecyclerView rcvFormasPagoReordenado;
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     SQLiteBD data;
 
     String formapago, nombrepago, lugarProviene, numticket; //numticket, numeroTicket = "";
@@ -107,6 +111,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formas_pago_reordenado);
 
+        getToken();
         init();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvFormasPagoReordenado.setLayoutManager(linearLayoutManager);
@@ -114,6 +119,36 @@ public class FormasPagoReordenado extends AppCompatActivity {
         obtenerformasdepago();
 //        obtenerformasdepagoBD();
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void init() {
         data = new SQLiteBD(FormasPagoReordenado.this);
@@ -745,11 +780,12 @@ public class FormasPagoReordenado extends AppCompatActivity {
 //        String tipoTarjeta = "Puntada";
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+//                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EndPoints yenaSaldo = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Boolean>> call = yenaSaldo.postAcumulaPuntos(new EndPointYena(Long.parseLong(sucursalId), Long.parseLong(sucursalnumeroempleado), numeroTarjeta, claveTarjeta, Long.parseLong(posiciondecargaid), null));
+        Call<RespuestaApi<Boolean>> call = yenaSaldo.postAcumulaPuntos(new EndPointYena(Long.parseLong(sucursalId), Long.parseLong(sucursalnumeroempleado), numeroTarjeta, claveTarjeta, Long.parseLong(posiciondecargaid), null), "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<Boolean>>() {
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, retrofit2.Response<RespuestaApi<Boolean>> response) {

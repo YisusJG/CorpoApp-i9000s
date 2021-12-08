@@ -26,6 +26,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class IslasEstacion extends AppCompatActivity {
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     String islaCorte, password, nombreCompleto;
     TextView textNombre;
     Spinner islasEstacion;
@@ -58,7 +61,7 @@ public class IslasEstacion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_islas_estacion);
-
+        getToken();
         // Traemos los Metodos de la clase SQliteBD
         db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
@@ -83,8 +86,39 @@ public class IslasEstacion extends AppCompatActivity {
         password = respuestaApiAccesoUsuario.getObjetoRespuesta().getClave();
 
 
-        islasJefeIsla();
+//        islasJefeIsla();
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    islasJefeIsla();
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     public void islasJefeIsla() {
 
@@ -126,12 +160,13 @@ public class IslasEstacion extends AppCompatActivity {
     public void obtenerLecturasMecanicas(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerLecturasMecanicas = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreCarrete>>> call = obtenerLecturasMecanicas.getLecturaInicialMecanica(sucursalId, islaId);
+        Call<RespuestaApi<List<CierreCarrete>>> call = obtenerLecturasMecanicas.getLecturaInicialMecanica(sucursalId, islaId, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<List<CierreCarrete>>>() {
 
             @Override
@@ -172,12 +207,13 @@ public class IslasEstacion extends AppCompatActivity {
     public void ObtenerCierreId(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerCierreId = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Cierre>> call = obtenerCierreId.getCrearCierre(sucursalId, islaId, idusuario);
+        Call<RespuestaApi<Cierre>> call = obtenerCierreId.getCrearCierre(sucursalId, islaId, idusuario, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<Cierre>>() {
 
 
@@ -216,12 +252,13 @@ public class IslasEstacion extends AppCompatActivity {
     public void obtenerDespachoDetalles(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerDespachoDetalles = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreDespachoDetalle>>> call = obtenerDespachoDetalles.getDespachoDetalle(sucursalId, islaId);
+        Call<RespuestaApi<List<CierreDespachoDetalle>>> call = obtenerDespachoDetalles.getDespachoDetalle(sucursalId, islaId, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<List<CierreDespachoDetalle>>>() {
 
 

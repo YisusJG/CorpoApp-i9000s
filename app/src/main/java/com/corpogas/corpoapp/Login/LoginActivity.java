@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Entities.Estaciones.EstacionControl;
@@ -24,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +35,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     EditText edtNip;
     TextView txtNumeroDispositivoLogin;
     String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, rolDescripcionApi;
@@ -45,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getToken();
         db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         ipEstacion = db.getIpEstacion();
@@ -54,6 +59,37 @@ public class LoginActivity extends AppCompatActivity {
         txtNumeroDispositivoLogin.setText("No. Dispositivo: " + db.getIdTarjtero());
 
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     //BORRAR PARA PRUEBA ESTE COMENTARIO
 
@@ -99,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerValidacionNip = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero ,"");
+        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override

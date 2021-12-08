@@ -40,11 +40,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import com.google.gson.Gson
-
-
-
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario
+import java.util.concurrent.TimeUnit
 
 class CofreActivity : AppCompatActivity() {
+    var bearerToken: String? = null
+    var token: RespuestaApi<AccesoUsuario?>? = null
     private lateinit var txtScanner: EditText
     private var mScan: ImageView? = null
     lateinit var txtResponsable: TextView
@@ -169,8 +170,39 @@ class CofreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cofre)
+        getToken()
         initView()
     }
+
+    private fun getToken() {
+        val retrofit =
+            Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        val obtenerToken = retrofit.create(EndPoints::class.java)
+        val call = obtenerToken.getAccesoUsuario(497L, "1111")
+        call.timeout().timeout(60, TimeUnit.SECONDS)
+        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
+            override fun onResponse(
+                call: Call<RespuestaApi<AccesoUsuario?>>,
+                response: Response<RespuestaApi<AccesoUsuario?>>
+            ) {
+                if (response.isSuccessful) {
+                    token = response.body()
+                    assert(token != null)
+                    bearerToken = token!!.Mensaje
+                } else {
+                    bearerToken = ""
+                }
+            }
+
+            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
+                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 
     override fun onPause() {
         super.onPause()
@@ -208,12 +240,15 @@ class CofreActivity : AppCompatActivity() {
 
     private fun ObtenerFajillasCofre(datoScaner: String){
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://$ipEstacion/CorpogasService/")
+//            .baseUrl("http://$ipEstacion/CorpogasService/")
+            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val getFajillasCofre= retrofit.create(EndPoints::class.java)
-        val call = getFajillasCofre.getFajillasCofre(sucursalId,numeroEmpleado,datoScaner)
+        val call = getFajillasCofre.getFajillasCofre(sucursalId,numeroEmpleado,datoScaner,
+            "Bearer $bearerToken"
+        )
         call.enqueue(object : Callback<RespuestaApi<RecepcionFajillasNoEnCajaFuerte<TotalFajillaCajaFuerte>>>{
             override fun onResponse(
                 call: Call<RespuestaApi<RecepcionFajillasNoEnCajaFuerte<TotalFajillaCajaFuerte>>>,
@@ -286,7 +321,8 @@ class CofreActivity : AppCompatActivity() {
                lCofreFajillas.add(EnviarFajillaCofre(idRecepcionFajilla))
 
                 val retrofit = Retrofit.Builder()
-                    .baseUrl("http://$ipEstacion/CorpogasService/")
+//                    .baseUrl("http://$ipEstacion/CorpogasService/")
+                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
 
@@ -295,7 +331,9 @@ class CofreActivity : AppCompatActivity() {
 //                var vernumem= numeroEmpleado
 
                 val getFajillasCofre= retrofit.create(EndPoints::class.java)
-                val call = getFajillasCofre.postGuardaFajillasCofre(lCofreFajillas ,numeroEmpleado)
+                val call = getFajillasCofre.postGuardaFajillasCofre(lCofreFajillas ,numeroEmpleado,
+                    "Bearer $bearerToken"
+                )
                 call.enqueue(object : Callback<RespuestaApi<List<StatusFajilla>>>{
                     override fun onResponse(
                         call: Call<RespuestaApi<List<StatusFajilla>>>,

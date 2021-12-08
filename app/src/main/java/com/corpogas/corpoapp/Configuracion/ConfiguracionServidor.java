@@ -17,7 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Estacion;
 import com.corpogas.corpoapp.Entities.Sistemas.Conexion;
@@ -30,6 +30,7 @@ import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
 import com.corpogas.corpoapp.SplashEmpresas.SplashGulf;
+import com.corpogas.corpoapp.Token.TokenKt;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +48,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ConfiguracionServidor extends AppCompatActivity{
+
     EditText edtOct1, edtOct2, edtOct3, edtOct4;
     Button btnenviar;
     String oct1, oct2,oct3,oct4,ip2;
@@ -59,6 +61,9 @@ public class ConfiguracionServidor extends AppCompatActivity{
     RespuestaApi<Double> respuestaApiMaximoEfectivo;
     SQLiteBD data;
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class ConfiguracionServidor extends AppCompatActivity{
          setContentView(R.layout.activity_configuracion_servidor);
         this.setTitle("Configuracion Inicial Servidor");
         getMacAddress();
+        getToken();
         data = new SQLiteBD(getApplicationContext());
         boolean verdad = data.checkDataBase("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db");
         if(verdad == true){
@@ -111,16 +117,15 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
                     if (oct1.isEmpty()){
                         Toast.makeText(getApplicationContext(),"Ingresa el campo 1",Toast.LENGTH_LONG).show();
-                        //happy
                     }else{
                         if (oct2.isEmpty()){
-                            Toast.makeText(getApplicationContext(),"Ingresa este campo 2",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),"Ingresa el campo 2",Toast.LENGTH_LONG).show();
                         }else{
                             if (oct3.isEmpty()){
-                                Toast.makeText(getApplicationContext(),"Ingresa este campo 3",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),"Ingresa el campo 3",Toast.LENGTH_LONG).show();
                             }else{
                                 if (oct4.isEmpty()){
-                                    Toast.makeText(getApplicationContext(),"Ingresa este campo 4",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(),"Ingresa el campo 4",Toast.LENGTH_LONG).show();
                                 }else{
                                     ConectarIP();
                                 }
@@ -135,8 +140,36 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
     }
 
-    private void ConectarIP() {
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(ConfiguracionServidor.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void ConectarIP() {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
                 .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
@@ -144,13 +177,12 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 .build();
 
         EndPoints conectarIp = retrofit.create(EndPoints.class);
-        Call<Estacion> call = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4);
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<Estacion>() {
+        Call<Estacion> call2 = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4, "Bearer " + bearerToken);
+        call2.timeout().timeout(60, TimeUnit.SECONDS);
+        call2.enqueue(new Callback<Estacion>() {
             @Override
             public void onResponse(Call<Estacion> call, Response<Estacion> response) {
-                if(!response.isSuccessful())
-                {
+                if(!response.isSuccessful()) {
                     String titulo = "AVISO";
                     String mensaje = "Se ha denegado la autorización para esta solicitud.";
 //                    String mensaje = "La direccion IP que ingresaste no es Valida";
@@ -308,12 +340,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
 //        String getUrl = "http://10.0.2.11/CorpoCoreService/api/actualizaciones/sucursalId/"+data.getIdSucursal()+"/aplicacionId/3/lastUpdates"; //Produccion
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService/")
+                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints actualizaApp = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Update>> call = actualizaApp.getActializaApp(data.getIdSucursal());
+        Call<RespuestaApi<Update>> call = actualizaApp.getActializaApp(data.getIdSucursal(), "Bearer " + bearerToken);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<Update>>() {
             @Override
@@ -348,12 +381,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void obtenerMaximoEfectivo(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenMaximoEfectivo = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Double>> call = obtenMaximoEfectivo.getMaximoEfectivo(Long.parseLong(String.valueOf(estacion.getSucursalId())));
+        Call<RespuestaApi<Double>> call = obtenMaximoEfectivo.getMaximoEfectivo(Long.parseLong(String.valueOf(estacion.getSucursalId())), "Bearer " +bearerToken);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<Double>>() {
 
@@ -432,12 +466,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
         String verMac = mac;
         ConfiguracionAplicacion configuracionAplicacion = new ConfiguracionAplicacion(sucursalid,0,3,"",mac,0,false,true,0);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-        Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion);
+        Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion, "Bearer " +bearerToken);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<ConfiguracionAplicacion>() {
             @Override
@@ -467,12 +502,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
         //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService/")
+                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints guardaDatosEncabezado = retrofit.create(EndPoints.class);
-        Call<Ticket> call = guardaDatosEncabezado.getTicketsApi(sucursalid);
+        Call<Ticket> call = guardaDatosEncabezado.getTicketsApi(sucursalid, "Bearer " +bearerToken);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<Ticket>() {
             @Override

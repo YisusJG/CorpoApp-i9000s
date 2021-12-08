@@ -37,6 +37,7 @@ import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Corte.ResumenActivity;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajilla;
@@ -59,6 +60,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -67,6 +69,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AutorizaFajillas extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     //datos para huella
     private static final String TAG = "FingerprintActivity";
     TextView usuario, carga, txtEtiqueta, titulo, numerodispositivo;
@@ -124,6 +129,7 @@ public class AutorizaFajillas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autoriza_fajillas);
 
+        getToken();
         SQLiteBD data = new SQLiteBD(this);
 //        dbCorte = new CorteDB(getApplicationContext());
         this.setTitle(data.getRazonSocial());
@@ -224,6 +230,36 @@ public class AutorizaFajillas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         }
+    }
+
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 //    @RequiresApi(api = Build.VERSION_CODES.N)
@@ -610,13 +646,14 @@ public class AutorizaFajillas extends AppCompatActivity {
             //String json = new Gson().toJson(lRecepcionFajillas);
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             EndPoints recibirFajillas = retrofit.create(EndPoints.class);
             if (lugarProviene.equals("corteFajillas")){
-                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillasCorte(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario);
+                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillasCorte(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, "Bearer " +bearerToken);
                 call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
@@ -674,7 +711,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                 });
 
             }else{
-                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillas(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario);
+                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillas(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, "Bearer " +bearerToken);
                 call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {

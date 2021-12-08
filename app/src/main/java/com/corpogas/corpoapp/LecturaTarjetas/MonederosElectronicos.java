@@ -26,6 +26,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Menu_Principal;
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +64,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MonederosElectronicos extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     String model;
 
     ProgressDialog bar;
@@ -130,6 +135,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_monederos_electronicos);
         model = Build.MODEL;
+        getToken();
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
 
@@ -161,6 +167,36 @@ public class MonederosElectronicos extends AppCompatActivity {
         df = new DecimalFormat("###,###.00", simbolos);
         df.setMaximumFractionDigits(2);
 
+    }
+
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -216,12 +252,13 @@ public class MonederosElectronicos extends AppCompatActivity {
 
         Bin bin = new Bin(pistas);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+//                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(idSucursal, bin);
+        Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(idSucursal, bin, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<Bin>>() {
 
             @Override

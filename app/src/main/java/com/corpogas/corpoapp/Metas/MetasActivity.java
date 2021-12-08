@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entregas.Adapters.RVAdapterValesPapel;
 import com.corpogas.corpoapp.Entregas.Entities.ResumenVale;
@@ -22,6 +23,7 @@ import com.corpogas.corpoapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,6 +33,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MetasActivity extends AppCompatActivity {
 //    private TextView txvTipoProducto,txvDespachos,txvMetas,txvVendidos,txtDiferencias;
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     private RecyclerView rcvMetas;
     String ipEstacion,numeroEmpleado;
     Long sucursalId;
@@ -41,9 +46,41 @@ public class MetasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metas);
+        getToken();
         init();
-        initialData();
+//        initialData();
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    initialData();
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void init() {
         db = new SQLiteBD(getApplicationContext());
@@ -59,12 +96,13 @@ public class MetasActivity extends AppCompatActivity {
     private void initialData() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints metas = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<Metas>>> call = metas.getMetas(sucursalId,numeroEmpleado);
+        Call<RespuestaApi<List<Metas>>> call = metas.getMetas(sucursalId,numeroEmpleado, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<List<Metas>>>() {
             @Override
             public void onResponse(Call<RespuestaApi<List<Metas>>> call, Response<RespuestaApi<List<Metas>>> response) {

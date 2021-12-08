@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +38,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FormasPagoFragment extends Fragment {
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     View view;
     SQLiteBD db;
     TextView totalPicos, subTotalOficina;
@@ -60,12 +63,43 @@ public class FormasPagoFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_formas_pago, container, false);
 
+        getToken();
         init();
         getObjetos();
         setVariables();
-        obtenerFormaPagosUltimoTurno();
+//        obtenerFormaPagosUltimoTurno();
 
         return view;
+    }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    obtenerFormaPagosUltimoTurno();
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(requireContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void init(){
@@ -94,12 +128,13 @@ public class FormasPagoFragment extends Fragment {
     public void obtenerFormaPagosUltimoTurno(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerFormaPagosUltimoTurno = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreFormaPago>>> call = obtenerFormaPagosUltimoTurno.getFormaPagosUltimoTurno(sucursalId, islaId);
+        Call<RespuestaApi<List<CierreFormaPago>>> call = obtenerFormaPagosUltimoTurno.getFormaPagosUltimoTurno(sucursalId, islaId, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<List<CierreFormaPago>>>() {
 
 

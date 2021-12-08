@@ -50,6 +50,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EntregaPicos extends AppCompatActivity {
 
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     RecyclerView rcvPicos;
     EditText editTextMorralla, editText;
     TextView textSumaTotalBilletes;
@@ -79,15 +81,51 @@ public class EntregaPicos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrega_picos);
 
+        getToken();
         init();
         getObjetos();
         setVariables();
-        if (lPicos.size() == 0) obtenerCierreVariables();
+//        if (lPicos.size() == 0) {
+//            obtenerCierreVariables();
+//        }
         SetRecyclerView();
         onClickButton();
 //        SetRecyclerView();
 //        SetEditTextMorralla();
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    if (lPicos.size() == 0) {
+                        obtenerCierreVariables();
+                    }
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void init() {
         rcvPicos = findViewById(R.id.rcvPicos);
@@ -122,12 +160,14 @@ public class EntregaPicos extends AppCompatActivity {
     private void obtenerCierreVariables() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ipEstacion + "/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+//                .baseUrl("http://" + ipEstacion + "/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
+
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerCierreVariables = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<CierreVariables>> call = obtenerCierreVariables.getCierreVariables(sucursalId);
+        Call<RespuestaApi<CierreVariables>> call = obtenerCierreVariables.getCierreVariables(sucursalId, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<CierreVariables>>() {
 
             @Override
@@ -309,7 +349,7 @@ public class EntregaPicos extends AppCompatActivity {
                                         String json = new Gson().toJson(lPicos);
 
                                         EndPoints guardaPicoBilletes = retrofit.create(EndPoints.class);
-                                        Call<RespuestaApi<List<ResumenFajilla>>> call2 = guardaPicoBilletes.postGuardaFajillas(lPicos, db.getNumeroEmpleado(), db.getNumeroEmpleado());
+                                        Call<RespuestaApi<List<ResumenFajilla>>> call2 = guardaPicoBilletes.postGuardaFajillas(lPicos, db.getNumeroEmpleado(), db.getNumeroEmpleado(), "Bearer " +bearerToken);
                                         call2.timeout().timeout(60, TimeUnit.SECONDS);
                                         call2.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
 
@@ -511,14 +551,15 @@ public class EntregaPicos extends AppCompatActivity {
                                         if(respuestaApiAccesoUsuario.getObjetoRespuesta().getRolId() == 1 || respuestaApiAccesoUsuario.getObjetoRespuesta().getRolId() == 3){
 
                                             Retrofit retrofit = new Retrofit.Builder()
-                                                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+//                                                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                                                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                                                     .addConverterFactory(GsonConverterFactory.create())
                                                     .build();
 
                                             //            String json = new Gson().toJson(recepcionFajilla);
 
                                             EndPoints postGuardaPicosMorralla = retrofit.create(EndPoints.class);
-                                            Call<RespuestaApi<List<ResumenFajilla>>> call2 = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado());
+                                            Call<RespuestaApi<List<ResumenFajilla>>> call2 = postGuardaPicosMorralla.postGuardaFajillas(recepcionFajilla, db.getNumeroEmpleado(), db.getNumeroEmpleado(), "Bearer " +bearerToken);
                                             call2.timeout().timeout(60, TimeUnit.SECONDS);
                                             call2.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
 

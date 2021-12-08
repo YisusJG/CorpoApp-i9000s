@@ -48,6 +48,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EntregaValesActivity extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
 
     List<PaperVoucherType> paperVoucherType;
     String ipEstacion,tituloValePapel,numeroEmpleado, lugarProviene;
@@ -69,22 +71,59 @@ public class EntregaValesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrega_vales);
+        getToken();
         init();
-        if(paperVoucherType.size() == 0) insertarValesPapelSqlite();
+//        if(paperVoucherType.size() == 0){
+//            insertarValesPapelSqlite();
+//        }
         tipoValesPapel();
         onclicks();
     }
 
 
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    if(paperVoucherType.size() == 0){
+                        insertarValesPapelSqlite();
+                    }
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private void insertarValesPapelSqlite() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
 
         EndPoints obtenValesPapel = retrofit.create(EndPoints.class);
-        Call<List<PaperVoucherType>> call = obtenValesPapel.getTipoValePapel();
+        Call<List<PaperVoucherType>> call = obtenValesPapel.getTipoValePapel("Bearer " +bearerToken);
         call.enqueue(new Callback<List<PaperVoucherType>>() {
             @Override
             public void onResponse(Call<List<PaperVoucherType>> call, Response<List<PaperVoucherType>> response) {
@@ -264,13 +303,14 @@ public class EntregaValesActivity extends AppCompatActivity {
                                 recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
 
                                 Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                                        .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
 
 //                        String gson = new Gson(recepcionVale).toJson();
                                 EndPoints guardarVales = retrofit.create(EndPoints.class);
-                                Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado);
+                                Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado, "Bearer " +bearerToken);
                                 call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
                                     @Override
                                     public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
@@ -375,13 +415,14 @@ public class EntregaValesActivity extends AppCompatActivity {
                         recepcionVale.ValesPapelRecepcion = lValespapelRecepcion;
 
                         Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
 
 //                        String gson = new Gson(recepcionVale).toJson();
                         EndPoints guardarVales = retrofit.create(EndPoints.class);
-                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaValesCorte(recepcionVale,numeroEmpleado);
+                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaValesCorte(recepcionVale,numeroEmpleado, "Bearer " +bearerToken);
                         call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
                             @Override
                             public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {

@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Conexion;
+import com.corpogas.corpoapp.Configuracion.ConfiguracionServidor;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Accesos.Control;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,6 +62,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PosicionPuntadaRedimir extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     RecyclerView rcvPosicionCarga;
     String EstacionId;
     Long sucursalId;
@@ -92,6 +97,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_puntada_redimir);
         init();
+        getToken();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
         rcvPosicionCarga.setHasFixedSize(true);
@@ -101,6 +107,35 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PosicionCarga(2);
+            }
+        });
+    }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -295,12 +330,13 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+//                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario); //getAccesoUsuario
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario, "Bearer " +bearerToken); //getAccesoUsuario
         call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
             @Override

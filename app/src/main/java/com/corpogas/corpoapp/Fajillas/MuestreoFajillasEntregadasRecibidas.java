@@ -22,6 +22,7 @@ import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Adapters.RVAdapterFajillas;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.RecepcionFajillaEntregada;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
@@ -38,6 +39,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +47,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MuestreoFajillasEntregadasRecibidas extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
     RecyclerView rcvFajillasEntregadas;
     SQLiteBD data;
     long usuarioid,sucursalId, numeroEmpleado;
@@ -63,14 +67,46 @@ public class MuestreoFajillasEntregadasRecibidas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muestreo_fajillas_entregadas_recibidas);
+        getToken();
         init();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvFajillasEntregadas.setLayoutManager(linearLayoutManager);
         rcvFajillasEntregadas.setHasFixedSize(true);
 
-        cargaFajillas();
+//        cargaFajillas();
 
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                    cargaFajillas();
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
     private void init() {
@@ -117,12 +153,13 @@ public class MuestreoFajillasEntregadasRecibidas extends AppCompatActivity {
             finish();
         } else {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://" + ipEstacion + "/corpogasService/")
+//                    .baseUrl("http://" + ipEstacion + "/corpogasService/")
+                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             EndPoints obtenerFajillas = retrofit.create(EndPoints.class);
-            Call<RespuestaApi<RecepcionFajillaEntregada>> call = obtenerFajillas.getFajillas(sucursalId, numeroEmpleado);
+            Call<RespuestaApi<RecepcionFajillaEntregada>> call = obtenerFajillas.getFajillas(sucursalId, numeroEmpleado, "Bearer " +bearerToken);
             call.enqueue(new Callback<RespuestaApi<RecepcionFajillaEntregada>>() {
                 @Override
                 public void onResponse(Call<RespuestaApi<RecepcionFajillaEntregada>> call, retrofit2.Response<RespuestaApi<RecepcionFajillaEntregada>> response) {

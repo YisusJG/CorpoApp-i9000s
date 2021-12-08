@@ -287,7 +287,8 @@
             //CantidadProducto();
             cantidadProducto = findViewById(R.id.cantidadProducto);
             Producto= findViewById(R.id.Producto);
-            Producto.requestFocus();
+//            Producto.requestFocus();
+            Producto.clearFocus();
             cantidad = cantidadProducto.toString();
             txtDescripcion = findViewById(R.id.txtDescripcion);
             precio = findViewById(R.id.precio);
@@ -352,23 +353,22 @@
 
             if (model.equals("i9000S")) {
                 scanManagerProvides = new ScanManagerProvides();
-
                 btnScanner.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
-                        Producto.setText("");
-                        Producto.clearFocus();
                         if (view.getId() == R.id.btnscanner) {
                             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                                 if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                    Producto.requestFocus();
                                     scanManagerProvides.stopDecode();
                                 }
                             }
                             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                                Producto.setText("");
+                                Producto.clearFocus();
                                 scanManagerProvides.startDecode();
                             }
                         }
-                        Producto.requestFocus();
                         return false;
                     }
                 });
@@ -412,7 +412,7 @@
             }
         }
 
-        //        @Override
+//                @Override
 //        public boolean dispatchKeyEvent(KeyEvent event) {
 //            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
 //                char pressedKey = (char) event.getUnicodeChar();
@@ -422,7 +422,7 @@
 //                buscarCodigoBarra(result);
 //                result = "";
 //            }
-//            return false;
+//            return super.dispatchKeyEvent(event);
 //        }
 
         protected void onActivityResult (int requestCode, int resulCode, Intent data) {
@@ -904,7 +904,7 @@
 //                        //Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
 //                    }
                     Producto.setText("");
-                    Producto.requestFocus();
+                    Producto.clearFocus();
                     txtDescripcion.setText("");
                     cantidadProducto.setText("1");
                     precio.setText("");

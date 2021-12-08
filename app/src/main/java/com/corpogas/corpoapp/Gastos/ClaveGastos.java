@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
 import com.corpogas.corpoapp.EnProcesoDeDesarrollo.EnDesarrollo;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
 import com.corpogas.corpoapp.Menu_Principal;
@@ -38,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +48,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClaveGastos extends AppCompatActivity {
+    String bearerToken;
+    RespuestaApi<AccesoUsuario> token;
+
     SQLiteBD db;
     //datos para huella
     private static final String TAG = "FingerprintActivity";
@@ -90,6 +95,7 @@ public class ClaveGastos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_gastos);
+        getToken();
         init();
 
         this.setTitle(db.getRazonSocial());
@@ -97,6 +103,37 @@ public class ClaveGastos extends AppCompatActivity {
         numerodispositivo.setVisibility(View.INVISIBLE);
 
     }
+
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
+        call.timeout().timeout(60, TimeUnit.SECONDS);
+        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+            @Override
+            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+                if (response.isSuccessful()) {
+                    token = response.body();
+                    assert token != null;
+                    bearerToken = token.Mensaje;
+                } else {
+                    bearerToken = "";
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private void init() {
         db = new SQLiteBD(this);
         pasword = findViewById(R.id.edtclavedespachador);
@@ -139,12 +176,13 @@ public class ClaveGastos extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+//                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
+                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints datosEmpleado = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado(pass);
+        Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado(pass, "Bearer " +bearerToken);
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override
