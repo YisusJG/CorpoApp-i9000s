@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="20dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/txtNombreProductoInventario"
+            style="@style/Theme.TextViewInventarioTituloProducto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="PRODUCTO"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/txtTituloId"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="15dp"
+            android:text="ID:"
+            android:textColor="@color/darkGrayColor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtNombreProductoInventario"/>
+
+        <TextView
+            android:id="@+id/txtNumeroId"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="101"
+            app:layout_constraintBottom_toBottomOf="@+id/txtTituloId"
+            app:layout_constraintStart_toEndOf="@+id/txtTituloId"
+            app:layout_constraintTop_toTopOf="@+id/txtTituloId"/>
+
+        <TextView
+            android:id="@+id/txtTituloExistencias"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:text="EXISTENCIAS:"
+            android:textColor="@color/darkGrayColor"
+            app:layout_constraintBottom_toBottomOf="@+id/txtNumeroId"
+            app:layout_constraintStart_toEndOf="@+id/txtNumeroId"
+            app:layout_constraintTop_toTopOf="@+id/txtNumeroId"/>
+
+        <TextView
+            android:id="@+id/txtNumeroExistencias"
+            style="@style/Theme.TextViewMetasSubtitulos"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="497"
+            app:layout_constraintBottom_toBottomOf="@+id/txtTituloExistencias"
+            app:layout_constraintStart_toEndOf="@+id/txtTituloExistencias"
+            app:layout_constraintTop_toTopOf="@+id/txtTituloExistencias"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -14,6 +14,7 @@ import com.corpogas.corpoapp.Entities.Cortes.CierreDespachoDetalle;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFajilla;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFormaPago;
 import com.corpogas.corpoapp.Entities.Cortes.LecturaManguera;
+import com.corpogas.corpoapp.Entities.Estaciones.BodegaProducto;
 import com.corpogas.corpoapp.Entities.Estaciones.Combustible;
 import com.corpogas.corpoapp.Entities.Estaciones.DiferenciaPermitida;
 import com.corpogas.corpoapp.Entities.Estaciones.Empleado;
@@ -194,7 +195,8 @@ public interface EndPoints {
 
 
 
-
+    @GET("api/BodegaProductos/obtieneExistenciaPorEmpleado/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
+    Call<RespuestaApi<List<BodegaProducto>>> getExistenciaPorEmpleado(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
 
 //   METODOS POST
 

@@ -494,6 +494,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+
             startActivity(intent1);
             finish();
         } else {
