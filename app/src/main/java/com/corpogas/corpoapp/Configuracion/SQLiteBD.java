@@ -45,6 +45,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(TBL_MAXIMO_EFECTIVO_SUCURSAL);
         db.execSQL(TBL_FORMASPAGO);
         db.execSQL(TBL_TARJETAQRPUNTADAYENA);
+        db.execSQL(TBL_TOKEN);
 
     }
 
@@ -58,6 +59,7 @@ public class SQLiteBD extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_TBL_PICOS);
         db.execSQL(SQL_DELETE_TBL_PRECIO_FAJILLAS);
         db.execSQL(SQL_DELETE_PAGOTARJETA);
+        db.execSQL(SQL_DELETE_TOKEN);
         onCreate(db);
 
     }
@@ -742,6 +744,59 @@ public class SQLiteBD extends SQLiteOpenHelper {
         }
     }
 //   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
+
+    //<-------------------------------------------------------PARAMETROS DE LA TABLA EMPLEADO------------------------------------------------>
+
+    public static class TokenAsignado implements BaseColumns{
+        public static final String nombreTabla = "TokenAsignado";
+        public static final String token = "Token";
+    }
+
+    //<------------------------------------------------------------------CREACION DE TABLA TOKENASIGNADO---------------------------------------------------------------------->
+
+    private static final String TBL_TOKEN = "CREATE TABLE " + TokenAsignado.nombreTabla+ "("+
+        TokenAsignado._ID + " INTEGER PRIMARY KEY," +
+        TokenAsignado.token + " TEXT)";
+
+    public static final String SQL_DELETE_TOKEN =
+            "DROP TABLE IF EXISTS " + TokenAsignado.nombreTabla;
+
+    //    <----------------------------------------------------------------------INSERT DE TABLA TOKENASIGNADO------------------------------------------------------------------->
+
+    public void InsertarToken(String token){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TokenAsignado.token, token);
+
+        long newRowId = base.insert(TokenAsignado.nombreTabla, null, values);
+    }
+
+    //<----------------------------------------------------------------------SELECTS DE TABLA TOKENASIGNADO -------------------------------------------------------->
+
+    public String getToken(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT Token FROM TokenAsignado", null);
+        cursor.moveToFirst();
+        String token = cursor.getString(0);
+        return token;
+    }
+
+    //<----------------------------------------------------------------------UPDATE DE TABLA TOKENASIGNADO -------------------------------------------------------->
+
+
+    public boolean updateToken(String tokenObtenido){
+        SQLiteDatabase base = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TokenAsignado.token,tokenObtenido);
+
+        int datos = base.update(TokenAsignado.nombreTabla, contentValues, TokenAsignado._ID + " = ? ", new String[]{String.valueOf("1")});
+        if (datos!=0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     //<-------------------------------------------------------PARAMETROS DE LA TABLA EMPLEADO------------------------------------------------>
     public static class DatosEmpleado implements BaseColumns {

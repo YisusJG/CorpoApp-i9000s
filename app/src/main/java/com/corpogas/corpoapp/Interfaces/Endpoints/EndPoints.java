@@ -7,6 +7,7 @@ import com.corpogas.corpoapp.Cofre.Entities.TotalFajillaCajaFuerte;
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Catalogos.Bin;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Entities.Common.EstadoPosicion;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
 import com.corpogas.corpoapp.Entities.Cortes.Cierre;
 import com.corpogas.corpoapp.Entities.Cortes.CierreCarrete;
@@ -193,10 +194,13 @@ public interface EndPoints {
     @GET("api/objetivoVentas/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<List<Metas>>> getMetas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado, @Header("Authorization") String authHeader);
 
-
-
     @GET("api/BodegaProductos/obtieneExistenciaPorEmpleado/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<List<BodegaProducto>>> getExistenciaPorEmpleado(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
+    // METODO PARA OBTENER POSICIONES DE CARGA POR EMPLEADO
+    @GET("api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/{sucursalId}/empleado/{numeroEmpleado}")
+    Call<RespuestaApi<List<EstadoPosicion>>> obtenerPosicionCargaEmpleadoId(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+
 
 //   METODOS POST
 
@@ -276,8 +280,6 @@ public interface EndPoints {
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @POST("api/recepcionVales/guardaVale/numeroEmpleadoEntrega/{numeroEmpleadoEntrega}/corte")
     Call<RespuestaApi<List<ResumenVale>>> postGuardaValesCorte(@Body RecepcionVale recepcionVale,@Path("numeroEmpleadoEntrega") String numeroEmpleadoEntrega, @Header("Authorization") String authHeader);
-
-
 
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @POST("api/fajillasCajaFuerte/entregaFajillasCajaFuerte/numeroEmpleado/{numeroEmpleadoEntrega}")

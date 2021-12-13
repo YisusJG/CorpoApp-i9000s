@@ -268,11 +268,13 @@ public class MonederosElectronicos extends AppCompatActivity {
                     return;
                 }
                 respuestaApiBin = response.body();
+
                 boolean correcto = respuestaApiBin.Correcto;
                 if (correcto) {
                     String mesanje = respuestaApiBin.Mensaje;
                     long formaPagoId = respuestaApiBin.getObjetoRespuesta().getTipoMonedero().PaymentMethodId;    //tiopoMonedero.getString("PaymentMethodId"); //TipoMonederoId
                     long idMonedero = respuestaApiBin.getObjetoRespuesta().getTipoMonedero().Id;//tiopoMonedero.getString("Id");
+
                     if (idMonedero == 1 && formaPagoId == 12) { //PUNTADA
                         if (tipoTarjeta.equals("TanqueLleno")) {
                             String titulo = "AVISO";

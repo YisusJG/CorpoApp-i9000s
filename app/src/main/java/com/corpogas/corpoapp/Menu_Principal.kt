@@ -55,6 +55,7 @@ import com.corpogas.corpoapp.Jarreos.Jarreos
 import com.corpogas.corpoapp.Login.EntregaPicos
 import com.corpogas.corpoapp.Login.LoginActivity
 import com.corpogas.corpoapp.Metas.MetasActivity
+import com.corpogas.corpoapp.Monederos.ElegirMonedero
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Productos.Inventario
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
@@ -872,7 +873,7 @@ class Menu_Principal : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.btnImgTarjeta -> {
-                intent = Intent(applicationContext, seccionTanqueLleno::class.java) //TarjetaNfc
+                intent = Intent(applicationContext, ElegirMonedero::class.java) //TarjetaNfc //seccionTanqueLleno
 //                intent.putExtra("device_name", m_deviceName)
                 startActivity(intent)
             }
