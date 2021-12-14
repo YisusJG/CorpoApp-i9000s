@@ -201,6 +201,10 @@ public interface EndPoints {
     @GET("api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/{sucursalId}/empleado/{numeroEmpleado}")
     Call<RespuestaApi<List<EstadoPosicion>>> obtenerPosicionCargaEmpleadoId(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
 
+    // METODO PARA OBTENER POSICIONES DE CARGA POR SUCURSAL
+    @GET("api/posicionCargas/GetPosicionCargasEstacion/sucursal/{sucursalId}")
+    Call<RespuestaApi<List<EstadoPosicion>>> obtenerPosicionCargasEstacion(@Path("sucursalId") long sucursalId);
+
 
 //   METODOS POST
 

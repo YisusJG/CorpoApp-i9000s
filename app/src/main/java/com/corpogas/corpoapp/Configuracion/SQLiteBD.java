@@ -816,7 +816,6 @@ public class SQLiteBD extends SQLiteOpenHelper {
         public static final String rolDescripcion = "RolDescripcion";
         public static final String islaId = "IslaId";
 
-
     }
     //<------------------------------------------------------------------CREACION DE TABLA EMPLEADO---------------------------------------------------------------------->
 
@@ -839,7 +838,6 @@ public class SQLiteBD extends SQLiteOpenHelper {
 
     public static final String SQL_DELETE_TBL_EMPLEADO =
             "DROP TABLE IF EXISTS " + DatosEmpleado.nombreTabla;
-
 
 
         //    <----------------------------------------------------------------------INSERT DE TABLA EMPLEADO------------------------------------------------------------------->

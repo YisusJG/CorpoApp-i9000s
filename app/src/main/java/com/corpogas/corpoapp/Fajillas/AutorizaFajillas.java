@@ -711,6 +711,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                 });
 
             }else{
+                String json = new Gson().toJson(lRecepcionFajillas);
                 Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillas(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, "Bearer " +bearerToken);
                 call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
                     @Override

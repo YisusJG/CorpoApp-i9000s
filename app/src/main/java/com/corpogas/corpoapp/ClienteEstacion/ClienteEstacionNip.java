@@ -66,8 +66,8 @@ public class ClienteEstacionNip extends AppCompatActivity {
             return;
         }
         if (password.equals("1234")){
-            Intent intent5 = new Intent(getApplicationContext(), PosicionCargaTLl.class);
-            startActivity(intent5);
+            Intent intent = new Intent(getApplicationContext(), PosicionCargaCE.class);
+            startActivity(intent);
             finish();
             return;
         }

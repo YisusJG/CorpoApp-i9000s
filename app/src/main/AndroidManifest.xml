@@ -24,6 +24,9 @@
         android:theme="@style/Theme.CorpoApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ClienteEstacion.PosicionCargaCE"
+            android:exported="true" />
+        <activity
             android:name=".ClienteEstacion.ClienteEstacionNip"
             android:exported="true" />
         <activity
