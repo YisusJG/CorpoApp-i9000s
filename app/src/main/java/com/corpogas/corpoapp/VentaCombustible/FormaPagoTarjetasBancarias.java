@@ -22,9 +22,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 
@@ -37,6 +42,12 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FormaPagoTarjetasBancarias extends AppCompatActivity {
     SQLiteBD data;
@@ -52,6 +63,8 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
         setContentView(R.layout.activity_forma_pago_tarjetas_bancarias);
         data = new SQLiteBD(getApplicationContext());
 
+
+
         formaPagoId = data.getformapagoid(); //intent.getStringExtra("formapagoid")
         poscionCarga = data.getposcioncarga(); //intent.getStringExtra("posicioncarga")
         total = data.getmonto(); //intent.getStringExtra("montoencanasta")
@@ -62,13 +75,12 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
         sucursalId = data.getIdSucursal();
         numeroempleado = data.getNumeroEmpleado();
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
-
         amount = (EditText) findViewById(R.id.amountventa);
         amount.setText("$"+total);
 //        if (banderapuntada.equals("0")) { //no actuiza a puntada acumular
             if (provieneeFPoDFP.equals("1")){
                 responseSmart = data.getresponseFormaPago();
-                imprimePagoTarjetaBancaria();
+                imprimePagoTarjetaBancaria(1);
             }else{
 //                data.updateDiferentesFormasPago("asdasdasdasd", "1", formaPagoId);
                 responseSmart = data.getresponseFPD(Integer.parseInt(formaPagoId));
@@ -83,12 +95,13 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
         btnimprimeventas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imprimePagoTarjetaBancaria();
+                imprimePagoTarjetaBancaria(2);
             }
         });
     }
 
-    private void imprimePagoTarjetaBancaria(){
+
+    private void imprimePagoTarjetaBancaria(Integer identificador){
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
@@ -123,7 +136,9 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
             }
 
             JSONObject datos = new JSONObject();
-            String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/tickets/generar";
+
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 datos.put("PosicionCargaId", poscionCarga);
@@ -189,12 +204,17 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(FormaPagoTarjetasBancarias.this, "error", Toast.LENGTH_SHORT).show();
+                    if (identificador == 1) {
+                        GlobalToken.errorTokenWithReload(FormaPagoTarjetasBancarias.this);
+                    } else {
+                        GlobalToken.errorToken(FormaPagoTarjetasBancarias.this);
+                    }
 
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", data.getToken());
                     return headers;
                 }
 
@@ -263,7 +283,7 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
                             case "13"://VALES ELECTRONICOS
                             case "3": //AMEX
                             case "5": //VISA
-                                imprimePagoTarjetaBancaria();
+                                imprimePagoTarjetaBancaria(2);
 
                                 break;
                             default:

@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +28,7 @@ import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Adapters.RVAdapterItem;
 import com.corpogas.corpoapp.ConexionInternet.ComprobarConexionInternet;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Common.ProductoTarjetero;
@@ -39,6 +41,7 @@ import com.corpogas.corpoapp.MyListAdapter;
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -54,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -95,6 +99,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<MainModel> mainModels;
     MainAdapter mainAdapter;
+    SQLiteBD db;
 
 
     @Override
@@ -102,8 +107,9 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mostrar_carrito_transacciones);
 
-        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
+
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
@@ -173,6 +179,7 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
         });
     }
 
+
     private void VaciaCarrito() {
 //        if (!Conexion.compruebaConexion(this)) {
 //            Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
@@ -187,7 +194,9 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
             viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/BorraProductos/sucursal/" + sucursalId + "/usuario/" + usuarioid + "/posicionCarga/" + posicioncarga;
+//                    String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/BorraProductos/sucursal/" + sucursalId + "/usuario/" + usuarioid + "/posicionCarga/" + posicioncarga;
+                    String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/ventaProductos/BorraProductos/sucursal/" + sucursalId + "/usuario/" + usuarioid + "/posicionCarga/" + posicioncarga;
+
                     // Utilizamos el metodo Post para validar la contraseña
                     StringRequest eventoReq = new StringRequest(Request.Method.DELETE, url,
                             new com.android.volley.Response.Listener<String>() {
@@ -231,37 +240,45 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                             }, new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            GlobalToken.errorToken(MostrarCarritoTransacciones.this);
                             //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                             //VolleyLog.e("Error: ", volleyError.getMessage());
-                            String algo = new String(error.networkResponse.data);
-                            try {
-                                //creamos un json Object del String algo
-                                JSONObject errorCaptado = new JSONObject(algo);
-                                //Obtenemos el elemento ExceptionMesage del errro enviado
-                                String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                                try {
-                                    String titulo = "AVISO";
-                                    String mensaje = "" + errorMensaje;
-                                    Modales modales = new Modales(MostrarCarritoTransacciones.this);
-                                    View view1 = modales.MostrarDialogoAlertaAceptar(MostrarCarritoTransacciones.this, mensaje, titulo);
-                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            modales.alertDialog.dismiss();
-                                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+//                            String algo = new String(error.networkResponse.data);
+//                            try {
+//                                //creamos un json Object del String algo
+//                                JSONObject errorCaptado = new JSONObject(algo);
+//                                //Obtenemos el elemento ExceptionMesage del errro enviado
+//                                String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                                try {
+//                                    String titulo = "AVISO";
+//                                    String mensaje = "" + errorMensaje;
+//                                    Modales modales = new Modales(MostrarCarritoTransacciones.this);
+//                                    View view1 = modales.MostrarDialogoAlertaAceptar(MostrarCarritoTransacciones.this, mensaje, titulo);
+//                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View view) {
+//                                            modales.alertDialog.dismiss();
+//                                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                            startActivity(intent);
+//                                            finish();
+//                                        }
+//                                    });
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
                         }
-                    });
+                    }) {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<>();
+                            headers.put("Authorization", db.getToken());
+                            return headers;
+                        }
+                    };
                     // Añade la peticion a la cola
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -294,7 +311,8 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     //Utilizamos el metodo POST para  finalizar la Venta
-                    String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posicioncarga + "/usuario/" + usuarioid;
+//                    String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posicioncarga + "/usuario/" + usuarioid;
+                    String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posicioncarga + "/usuario/" + usuarioid;
                     StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                             new com.android.volley.Response.Listener<String>() {
                                 @Override
@@ -349,13 +367,15 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                             }, new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            GlobalToken.errorToken(MostrarCarritoTransacciones.this);
                         }
                     }) {
                         @Override
                         protected Map<String, String> getParams() {
                             // Colocar parametros para ingresar la  url
                             Map<String, String> params = new HashMap<String, String>();
+                            params.put("Authorization", db.getToken());
                             return params;
                         }
                     };

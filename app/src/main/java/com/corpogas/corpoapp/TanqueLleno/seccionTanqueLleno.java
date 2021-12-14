@@ -29,6 +29,7 @@ import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.TanqueLleno.NFC.TarjetaNFC;
 import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.Ventas;
 
 import java.util.ArrayList;
@@ -71,8 +72,8 @@ public class seccionTanqueLleno extends AppCompatActivity {
 
     private void initializeData() {
         lTanqueLleno = new ArrayList<>();
-        lTanqueLleno.add(new RecyclerViewHeaders("Banda Magnética","Tarjeta TanqueLleno",R.drawable.tanquelleno));
-        lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
+        lTanqueLleno.add(new RecyclerViewHeaders("Lectura Tarjeta","Tarjeta TanqueLleno/NFC",R.drawable.tanquelleno));
+//        lTanqueLleno.add(new RecyclerViewHeaders("NFC","Tarjeta NFC",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("Arillos","Lectura de Arillos",R.drawable.tanquelleno));
         lTanqueLleno.add(new RecyclerViewHeaders("Autorización","Autorización Telefónica",R.drawable.tanquelleno));
 //        lTanqueLleno.add(new RecyclerViewHeaders("Prueba1","Autorización Telefónica",R.drawable.efectivale));
@@ -92,18 +93,20 @@ public class seccionTanqueLleno extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"Seleccion :" + lCombustible.get(rcvCombustible.getChildAdapterPosition(v)).getTitulo(), Toast.LENGTH_SHORT).show();
                 titulo = lTanqueLleno.get(rcvTanqueLleno.getChildAdapterPosition(v)).getTitulo();
 
-                if (titulo.equals("Banda Magnética")) {
+                if (titulo.equals("Lectura Tarjeta")) {
                     Intent intent = new Intent(getApplicationContext(), MonederosElectronicos.class);   //LeeTarjeta
                     intent.putExtra("Enviadodesde", "TanqueLlenoBandaMagnetica");
                     intent.putExtra("tipoTarjeta", "TanqueLleno");
                     startActivity(intent);
                     finish();
 
-                } else if (titulo.equals("NFC")) {
-                    Intent intent1 = new Intent(getApplicationContext(), TarjetaNFC.class);
-                    startActivity(intent1);
-                    finish();
-                } else if (titulo.equals("Autorización")) {
+                }
+//                else if (titulo.equals("NFC")) {
+//                    Intent intent1 = new Intent(getApplicationContext(), TarjetaNFC.class);
+//                    startActivity(intent1);
+//                    finish();
+//                }
+                else if (titulo.equals("Autorización")) {
                     Intent intent1 = new Intent(getApplicationContext(), PosicionCargaTLl.class); //PlanchadoTanqueLleno
                     intent1.putExtra("lugarproviene", "Planchado");
                     startActivity(intent1);

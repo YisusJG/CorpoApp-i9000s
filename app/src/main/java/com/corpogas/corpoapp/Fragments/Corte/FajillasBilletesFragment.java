@@ -20,6 +20,7 @@ import com.corpogas.corpoapp.Entities.Sucursales.PriceBankRoll;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class FajillasBilletesFragment extends Fragment {
-
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
    View view;
    EditText fajillasBilletes;
    Button btnValidaFajillas;
@@ -58,42 +56,13 @@ public class FajillasBilletesFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_fajillas_billetes, container, false);
 
-        getToken();
+
         init();
         getObjetos();
         setVariables();
         onClickButton();
 
         return view;
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(requireContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -173,7 +142,7 @@ public class FajillasBilletesFragment extends Fragment {
                 .build();
 
         EndPoints guardaFoliosCierreListaFajillas = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreFajilla>>> call = guardaFoliosCierreListaFajillas.postGuardaFoliosCierreListaFajillas(arrayListCierreFajillas, idusuario, "Bearer " +bearerToken);
+        Call<RespuestaApi<List<CierreFajilla>>> call = guardaFoliosCierreListaFajillas.postGuardaFoliosCierreListaFajillas(arrayListCierreFajillas, idusuario, db.getToken());
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<List<CierreFajilla>>>() {
 
@@ -181,6 +150,7 @@ public class FajillasBilletesFragment extends Fragment {
             @Override
             public void onResponse(Call<RespuestaApi<List<CierreFajilla>>> call, Response<RespuestaApi<List<CierreFajilla>>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(requireActivity());
                     return;
                 }
                 respuestaApiCierreFajilla = response.body();

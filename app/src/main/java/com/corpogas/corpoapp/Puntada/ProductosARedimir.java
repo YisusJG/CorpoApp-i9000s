@@ -28,9 +28,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +48,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductosARedimir extends AppCompatActivity {
     Button btnAgregar,btnEnviar, incrementar, decrementar, btnMostrarCombustibles, btnMostrarProductos;
@@ -101,6 +112,8 @@ public class ProductosARedimir extends AppCompatActivity {
         setContentView(R.layout.activity_productos_a_redimir);
         db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
+
+
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
@@ -508,6 +521,7 @@ public class ProductosARedimir extends AppCompatActivity {
         });
     }
 
+
     private void Aumentar() {
         if (txtDescripcionProducto.length() == 0){
             String titulo = "AVISO";
@@ -593,7 +607,9 @@ public class ProductosARedimir extends AppCompatActivity {
         bar.show();
 
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+posicionCarga.toString();
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+posicionCarga.toString();
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+posicionCarga.toString();
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -602,9 +618,17 @@ public class ProductosARedimir extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                GlobalToken.errorToken(ProductosARedimir.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", db.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         requestQueue.add(stringRequest);
     }
@@ -718,7 +742,9 @@ public class ProductosARedimir extends AppCompatActivity {
         String empleadoid = getIntent().getStringExtra("empleadoid");
         String numeroempleado = db.getNumeroEmpleado();
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/NumeroEmpleado/"+numeroempleado;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/NumeroEmpleado/"+numeroempleado;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/puntadas/actualizaPuntos/NumeroEmpleado/"+numeroempleado;
+
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             datos.put("RequestID","37");
@@ -793,12 +819,13 @@ public class ProductosARedimir extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
+                GlobalToken.errorToken(ProductosARedimir.this);
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", db.getToken());
                 return headers;
             }
 
@@ -832,7 +859,9 @@ public class ProductosARedimir extends AppCompatActivity {
         String numeroTarjeta = getIntent().getStringExtra("track2");
 
 //        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/NumeroEmpleado/" + numeroempleado;
-        String url = "http://" + ipEstacion + "/CorpogasService/Api/yenas/redimePuntos";
+//        String url = "http://" + ipEstacion + "/CorpogasService/Api/yenas/redimePuntos";
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/Api/yenas/redimePuntos";
+
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             datos.put("SucursalId", sucursalId);
@@ -900,12 +929,14 @@ public class ProductosARedimir extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ProductosARedimir.this, Menu_Principal.class));
+//                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(ProductosARedimir.this, Menu_Principal.class));
+                GlobalToken.errorToken(ProductosARedimir.this);
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", db.getToken());
                 return headers;
             }
 

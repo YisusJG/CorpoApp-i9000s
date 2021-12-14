@@ -18,7 +18,9 @@
         tools:ignore="MissingConstraints,SpeakableTextPresentCheck"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
-        tools:visibility="invisible"></EditText>
+        tools:visibility="invisible">
+
+    </EditText>
 
     <Button
         android:id="@+id/picc_check"
@@ -32,7 +34,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgNFC"
-        tools:ignore="MissingConstraints"></Button>
+        tools:ignore="MissingConstraints">
+
+    </Button>
 
     <ImageView
         android:id="@+id/imgNFC"

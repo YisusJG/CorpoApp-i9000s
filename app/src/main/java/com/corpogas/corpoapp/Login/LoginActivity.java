@@ -20,6 +20,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.SplashEmpresas.Splash;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -34,9 +35,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
-
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     EditText edtNip;
     TextView txtNumeroDispositivoLogin;
     String ipEstacion, nip, nombreApi, apellidoPaternoApi, apellidoMaternoApi, nombreCompletoApi, claveApi, correoApi, numeroEmpleadoApi, rolDescripcionApi;
@@ -49,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getToken();
+
         db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         ipEstacion = db.getIpEstacion();
@@ -57,37 +55,36 @@ public class LoginActivity extends AppCompatActivity {
         idTarjetero = Long.parseLong(db.getIdTarjtero());
         txtNumeroDispositivoLogin = findViewById(R.id.txtNumeroDispositivoLogin);
         txtNumeroDispositivoLogin.setText("No. Dispositivo: " + db.getIdTarjtero());
-
     }
 
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    private void getToken() {
+//        Retrofit retrofit = new Retrofit.Builder()
+////                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+//                .baseUrl("http://"+ipEstacion+"/CorpogasService_entities_token/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        EndPoints obtenerToken = retrofit.create(EndPoints.class);
+//        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(Long.parseLong(db.getIdSucursal()), db.getClave());
+//        call.timeout().timeout(60, TimeUnit.SECONDS);
+//        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+//            @Override
+//            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
+//                if (response.isSuccessful()) {
+//                    token = response.body();
+//                    assert token != null;
+//                    bearerToken = token.Mensaje;
+//                } else {
+//                    bearerToken = "";
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
 
 
@@ -95,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void usuarioCorrecto(){
         boolean correcto = respuestaApiEmpleado.Correcto;
-        if (correcto == true){
+        if (correcto){
             sucursalIdApi = respuestaApiEmpleado.getObjetoRespuesta().getSucursalId();
             estacionIdApi = respuestaApiEmpleado.getObjetoRespuesta().getEstacionId();
             rolIdApi = respuestaApiEmpleado.getObjetoRespuesta().getRolId();
@@ -117,11 +114,16 @@ public class LoginActivity extends AppCompatActivity {
             db.InsertarDatosEmpleado(sucursalIdApi, estacionIdApi,rolIdApi, nombreApi, apellidoPaternoApi, apellidoMaternoApi,
                                      nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi,rolDescripcionApi,islaId);
 
-            Intent intent = new Intent(LoginActivity.this, Menu_Principal.class);
-
-            startActivity(intent);
-            finish();
-        }else {
+            GlobalToken.getToken(LoginActivity.this);
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            Intent intent = new Intent(LoginActivity.this, Menu_Principal.class);
+//            startActivity(intent);
+//            finish();
+        } else {
             edtNip.setError(respuestaApiEmpleado.Mensaje);
         }
 
@@ -129,13 +131,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void obtenerValidacionNip(){
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ ipEstacion  +"/corpogasService/") antes
-                .baseUrl("http://"+ ipEstacion  +"/CorpogasService_entities_token/") // token
+                .baseUrl("http://"+ ipEstacion  +"/corpogasService/") //antes
+//                .baseUrl("http://"+ ipEstacion  +"/CorpogasService_entities_token/") // token
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerValidacionNip = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero, "Bearer " +bearerToken);
+        Call<RespuestaApi<Empleado>> call = obtenerValidacionNip.getValidaNip(Integer.parseInt(nip), idTarjetero);
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override
@@ -145,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 respuestaApiEmpleado = response.body();
                 usuarioCorrecto();
-
             }
 
             @Override
@@ -172,12 +173,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
-
             case KeyEvent.KEYCODE_ENTER:
                 validacionCampoPassword();
                 return true;
-            default:
-                return super.onKeyUp(keyCode, event);
+            default: return super.onKeyUp(keyCode, event);
         }
     }
 

@@ -27,11 +27,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.corpoapp.Yena.LecturayEscaneo;
 
@@ -46,6 +51,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DiferentesFormasPago extends AppCompatActivity {
     SQLiteBD db;
@@ -83,10 +94,11 @@ public class DiferentesFormasPago extends AppCompatActivity {
         setContentView(R.layout.activity_diferentes_formas_pago);
         db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
+
+
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
-
         Usuarioid = db.getUsuarioId();
         Clavedespachador = db.getClave();
         NombreCompletoVenta = getIntent().getStringExtra("NombreCompleto");
@@ -284,6 +296,7 @@ public class DiferentesFormasPago extends AppCompatActivity {
 
     }
 
+
     private void EnviaArregloDiferentesFormasPagos() {
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
@@ -292,7 +305,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
             finish();
         } else {
             JSONObject datos = new JSONObject();
-            String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/tickets/generar";
+
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
 
@@ -363,13 +378,15 @@ public class DiferentesFormasPago extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(DiferentesFormasPago.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    bar.cancel();
-                    botonEnviar.setClickable(true);
+//                    Toast.makeText(DiferentesFormasPago.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    bar.cancel();
+//                    botonEnviar.setClickable(true);
+                    GlobalToken.errorToken(DiferentesFormasPago.this);
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", db.getToken());
                     return headers;
                 }
 
@@ -400,7 +417,9 @@ public class DiferentesFormasPago extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/sucursalformapagos/sucursal/" + sucursalId;
+
             StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
@@ -411,9 +430,17 @@ public class DiferentesFormasPago extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorTokenWithReload(DiferentesFormasPago.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", db.getToken());
+                    return headers;
+                }
+            };
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

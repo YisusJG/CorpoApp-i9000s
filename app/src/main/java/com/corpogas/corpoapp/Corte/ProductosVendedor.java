@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,13 +32,17 @@ import com.corpogas.corpoapp.Login.EntregaPicos;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +50,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductosVendedor extends AppCompatActivity {
-
     Button btnAutorizacion, btnVentaProductos, btnRefresh;
     TextView tvEntregado, tvRecibi;
     EditText edtNipAutorizacion;
@@ -95,6 +99,7 @@ public class ProductosVendedor extends AppCompatActivity {
         onClicks();
         ObtieneProductosCierre(1);
     }
+
 
 
     private void init() {
@@ -170,7 +175,8 @@ public class ProductosVendedor extends AppCompatActivity {
     private void ObtieneProductosCierre(Integer integer) {
         btnAutorizacion.setEnabled(true);
 //            banderaSigue = true;
-        String url = "http://" + ipEstacion + "/CorpogasService/api/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/\napi/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -193,7 +199,6 @@ public class ProductosVendedor extends AppCompatActivity {
 
                             }
                         });
-
                     }
 
                 } catch (JSONException e) {
@@ -207,20 +212,28 @@ public class ProductosVendedor extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                GlobalToken.errorTokenWithReload(ProductosVendedor.this);
                 //asiganmos a una variable el error para desplegar la descripcion de Tickets no asignados a la terminal
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    Toast.makeText(getApplicationContext(), errorMensaje, Toast.LENGTH_SHORT).show();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                String algo = new String(error.networkResponse.data);
+//                try {
+//                    //creamos un json Object del String algo
+//                    JSONObject errorCaptado = new JSONObject(algo);
+//                    //Obtenemos el elemento ExceptionMesage del errro enviado
+//                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                    Toast.makeText(getApplicationContext(), errorMensaje, Toast.LENGTH_SHORT).show();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", db.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);

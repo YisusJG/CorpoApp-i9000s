@@ -20,6 +20,7 @@ import com.corpogas.corpoapp.Metas.Adapters.AdapterMetas;
 import com.corpogas.corpoapp.Metas.Entities.Metas;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +33,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MetasActivity extends AppCompatActivity {
-//    private TextView txvTipoProducto,txvDespachos,txvMetas,txvVendidos,txtDiferencias;
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
 
     private RecyclerView rcvMetas;
     String ipEstacion,numeroEmpleado;
@@ -46,39 +44,8 @@ public class MetasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_metas);
-        getToken();
         init();
-//        initialData();
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    initialData();
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
+        initialData();
     }
 
 
@@ -102,11 +69,12 @@ public class MetasActivity extends AppCompatActivity {
                 .build();
 
         EndPoints metas = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<Metas>>> call = metas.getMetas(sucursalId,numeroEmpleado, "Bearer " +bearerToken);
+        Call<RespuestaApi<List<Metas>>> call = metas.getMetas(sucursalId,numeroEmpleado, db.getToken());
         call.enqueue(new Callback<RespuestaApi<List<Metas>>>() {
             @Override
             public void onResponse(Call<RespuestaApi<List<Metas>>> call, Response<RespuestaApi<List<Metas>>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorTokenWithReload(MetasActivity.this);
                     return;
                 }
 

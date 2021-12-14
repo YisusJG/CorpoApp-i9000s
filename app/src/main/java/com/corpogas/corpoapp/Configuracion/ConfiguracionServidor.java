@@ -60,9 +60,6 @@ public class ConfiguracionServidor extends AppCompatActivity{
     RespuestaApi<Double> respuestaApiMaximoEfectivo;
     SQLiteBD data;
 
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +67,10 @@ public class ConfiguracionServidor extends AppCompatActivity{
          setContentView(R.layout.activity_configuracion_servidor);
         this.setTitle("Configuracion Inicial Servidor");
         getMacAddress();
-        getToken();
         data = new SQLiteBD(getApplicationContext());
+//        getToken();
         boolean verdad = data.checkDataBase("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db");
-        if(verdad == true){
+        if(verdad){
             String tipo = data.getTipoEstacion();
             if (tipo.equals("CORPOGAS")){
                 Intent intent = new Intent(getApplicationContext(), Splash.class);
@@ -139,44 +136,15 @@ public class ConfiguracionServidor extends AppCompatActivity{
 
     }
 
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(ConfiguracionServidor.this,t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void ConectarIP() {
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
+                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+//                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints conectarIp = retrofit.create(EndPoints.class);
-        Call<Estacion> call2 = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4, "Bearer " + bearerToken);
+        Call<Estacion> call2 = conectarIp.getEstacionApi(oct1,oct2,oct3,oct4);
         call2.timeout().timeout(60, TimeUnit.SECONDS);
         call2.enqueue(new Callback<Estacion>() {
             @Override
@@ -191,15 +159,12 @@ public class ConfiguracionServidor extends AppCompatActivity{
                         @Override
                         public void onClick(View view) {
                             modales.alertDialog.dismiss();
-
                             edtOct1.setText("");
                             edtOct2.setText("");
                             edtOct3.setText("");
                             edtOct4.setText("");
 
                             edtOct1.requestFocus();
-
-
                         }
                     });
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
@@ -339,13 +304,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
 //        String getUrl = "http://10.0.2.11/CorpoCoreService/api/actualizaciones/sucursalId/"+data.getIdSucursal()+"/aplicacionId/3/lastUpdates"; //Produccion
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/")
-                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints actualizaApp = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Update>> call = actualizaApp.getActializaApp(data.getIdSucursal(), "Bearer " + bearerToken);
+        Call<RespuestaApi<Update>> call = actualizaApp.getActializaApp(data.getIdSucursal());
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<Update>>() {
             @Override
@@ -380,13 +345,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
     private void obtenerMaximoEfectivo(){
 
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenMaximoEfectivo = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Double>> call = obtenMaximoEfectivo.getMaximoEfectivo(Long.parseLong(String.valueOf(estacion.getSucursalId())), "Bearer " +bearerToken);
+        Call<RespuestaApi<Double>> call = obtenMaximoEfectivo.getMaximoEfectivo(Long.parseLong(String.valueOf(estacion.getSucursalId())));
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaApi<Double>>() {
 
@@ -465,13 +430,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
         String verMac = mac;
         ConfiguracionAplicacion configuracionAplicacion = new ConfiguracionAplicacion(sucursalid,0,3,"",mac,0,false,true,0);
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-        Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion, "Bearer " +bearerToken);
+        Call<ConfiguracionAplicacion> call = obtenNumeroTarjetero.getConexionApi(configuracionAplicacion);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<ConfiguracionAplicacion>() {
             @Override
@@ -502,13 +467,13 @@ public class ConfiguracionServidor extends AppCompatActivity{
         //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
 
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/")
-                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
+                .baseUrl("http://"+ip2+"/CorpogasService/")
+//                .baseUrl("http://"+ip2+"/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints guardaDatosEncabezado = retrofit.create(EndPoints.class);
-        Call<Ticket> call = guardaDatosEncabezado.getTicketsApi(sucursalid, "Bearer " +bearerToken);
+        Call<Ticket> call = guardaDatosEncabezado.getTicketsApi(sucursalid);
         call.timeout().timeout(60, TimeUnit.SECONDS);
         call.enqueue(new Callback<Ticket>() {
             @Override

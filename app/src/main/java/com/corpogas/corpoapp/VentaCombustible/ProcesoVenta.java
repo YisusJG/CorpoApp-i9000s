@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,13 +35,16 @@ import com.corpogas.corpoapp.MyListAdapter;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -50,8 +54,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProcesoVenta extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     RecyclerView rcvProcesoVenta;
     ListView listPosicionesCarga;
     String EstacionId,  ipEstacion, lugarproviene, IdUsuario;
@@ -82,7 +84,7 @@ public class ProcesoVenta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proceso_venta);
-        getToken();
+
         init();
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 //        rcvProcesoVenta.setLayoutManager(linearLayoutManager);
@@ -97,37 +99,6 @@ public class ProcesoVenta extends AppCompatActivity {
         });
         posicionCargaFinaliza(1);
     }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
 
     private void init() {
         rcvProcesoVenta = (RecyclerView)findViewById(R.id.rcvPosicionCargaTicket);
@@ -154,9 +125,11 @@ public class ProcesoVenta extends AppCompatActivity {
 
         String url;
         if (Identificador.equals(1)){
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + IdUsuario;
+//            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + IdUsuario;
+            url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + IdUsuario;
         }else{
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+//            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+            url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
         }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
@@ -265,32 +238,44 @@ public class ProcesoVenta extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        String titulo = "Jarreo";
-                        String mensajes = errorMensaje;
-                        Modales modales = new Modales(ProcesoVenta.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(ProcesoVenta.this, mensajes, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (Identificador == 1) {
+                    GlobalToken.errorTokenWithReload(ProcesoVenta.this);
+                } else  {
+                    GlobalToken.errorToken(ProcesoVenta.this);
                 }
+//                String algo = new String(error.networkResponse.data);
+//                try {
+//                    //creamos un json Object del String algo
+//                    JSONObject errorCaptado = new JSONObject(algo);
+//                    //Obtenemos el elemento ExceptionMesage del errro enviado
+//                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                    try {
+//                        String titulo = "Jarreo";
+//                        String mensajes = errorMensaje;
+//                        Modales modales = new Modales(ProcesoVenta.this);
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(ProcesoVenta.this, mensajes, titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                modales.alertDialog.dismiss();
+//                            }
+//                        });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", data.getToken());
+                return params;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
@@ -620,13 +605,14 @@ public class ProcesoVenta extends AppCompatActivity {
                 .build();
 
         EndPoints AutorizaDespacho = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Boolean>> call = AutorizaDespacho.getAutorizaDespacho(posicionCargaId,empleadoNumero, "Bearer " +bearerToken);
+        Call<RespuestaApi<Boolean>> call = AutorizaDespacho.getAutorizaDespacho(posicionCargaId,empleadoNumero, data.getToken());
         call.enqueue(new Callback<RespuestaApi<Boolean>>() {
 
 
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(ProcesoVenta.this);
                     return;
                 }
                 respuestaApiAutorizaDespacho = response.body();
@@ -683,13 +669,14 @@ public class ProcesoVenta extends AppCompatActivity {
                 .build();
 
         EndPoints TicketPendienteCobro = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro(sucursalId, posicionCargaId, "Bearer " +bearerToken);
+        Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro(sucursalId, posicionCargaId, data.getToken());
         call.enqueue(new Callback<RespuestaApi<Boolean>>() {
 
 
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(ProcesoVenta.this);
                     return;
                 }
                 respuestaApiTicketPendienteCobro = response.body();
@@ -731,13 +718,14 @@ public class ProcesoVenta extends AppCompatActivity {
                 .build();
 
         EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(sucursalId,posicionCargaId,empleadoNumero, "Bearer " +bearerToken);
+        Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(sucursalId,posicionCargaId,empleadoNumero, data.getToken());
         call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
 
 
             @Override
             public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(ProcesoVenta.this);
                     return;
                 }
                 respuestaApiTransaccion = response.body();

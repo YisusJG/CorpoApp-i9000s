@@ -41,9 +41,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.google.zxing.BarcodeFormat;
 
 import org.json.JSONArray;
@@ -56,6 +61,12 @@ import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClaveTicketPendiente extends AppCompatActivity {
     EditText contrasena;
@@ -97,11 +108,13 @@ public class ClaveTicketPendiente extends AppCompatActivity {
     LottieAnimationView animationView2;
 
     ImageView imgViewIcono;
+    SQLiteBD db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_ticket_pendiente);
+
         mHandler = new Handler(Looper.getMainLooper());
         textResultado = findViewById(R.id.textresultado);
 //        btnTutorial = (ImageButton)findViewById(R.id.btnTutorial);
@@ -116,7 +129,7 @@ public class ClaveTicketPendiente extends AppCompatActivity {
         usuario= findViewById(R.id.usuario);
         data = new SQLiteBD(getApplicationContext());
 
-        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getRazonSocial());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         sucursalId=db.getIdSucursal();
@@ -147,6 +160,7 @@ public class ClaveTicketPendiente extends AppCompatActivity {
 
     }
 
+
     private void  validaClave(){
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
@@ -158,8 +172,8 @@ public class ClaveTicketPendiente extends AppCompatActivity {
             //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
             //Conexion con la base y ejecuta valida clave
-            String url = "http://"+ipEstacion+"/CorpogasService/api/Empleados/clave/"+pass;
-
+//            String url = "http://"+ipEstacion+"/CorpogasService/api/Empleados/clave/"+pass;
+            String url = "http://"+ipEstacion+"/CorpogasService_entities_token/api/Empleados/clave/"+pass;
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                     new Response.Listener<String>() {
@@ -210,37 +224,45 @@ public class ClaveTicketPendiente extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-                    //VolleyLog.e("Error: ", volleyError.getMessage());
-                    String algo = new String(error.networkResponse.data) ;
-                    try {
-                        //creamos un json Object del String algo
-                        JSONObject errorCaptado = new JSONObject(algo);
-                        //Obtenemos el elemento ExceptionMesage del errro enviado
-                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                        try {
-                            String titulo = "AVISO";
-                            String mensajes = "" + errorMensaje ;
-                            Modales modales = new Modales(ClaveTicketPendiente.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(ClaveTicketPendiente.this,mensajes,titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
-                                    startActivity(intente);
-                                    finish();
-                                }
-                            });
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    GlobalToken.errorToken(ClaveTicketPendiente.this);
+//                    //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+//                    //VolleyLog.e("Error: ", volleyError.getMessage());
+//                    String algo = new String(error.networkResponse.data) ;
+//                    try {
+//                        //creamos un json Object del String algo
+//                        JSONObject errorCaptado = new JSONObject(algo);
+//                        //Obtenemos el elemento ExceptionMesage del errro enviado
+//                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                        try {
+//                            String titulo = "AVISO";
+//                            String mensajes = "" + errorMensaje ;
+//                            Modales modales = new Modales(ClaveTicketPendiente.this);
+//                            View view1 = modales.MostrarDialogoAlertaAceptar(ClaveTicketPendiente.this,mensajes,titulo);
+//                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                    startActivity(intente);
+//                                    finish();
+//                                }
+//                            });
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", db.getToken());
+                    return headers;
+                }
+            };
 
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -271,7 +293,9 @@ public class ClaveTicketPendiente extends AppCompatActivity {
             final String totaltotalTexto="";
 
             //Conexion con la base y ejecuta consulta para saber si tiene tickets Pendientes
-            String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/sucursalId/"+sucursalId+"/numeroDispositivo/"+numeroTarjetero+"/usuarioId/"+data.getNumeroEmpleado();
+//            String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/sucursalId/"+sucursalId+"/numeroDispositivo/"+numeroTarjetero+"/usuarioId/"+data.getNumeroEmpleado();
+            String url = "http://"+ipEstacion+"/CorpogasService_entities_token/api/tickets/pendiente/sucursalId/"+sucursalId+"/numeroDispositivo/"+numeroTarjetero+"/usuarioId/"+data.getNumeroEmpleado();
+
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.POST,url,  //POST
                     new Response.Listener<String>() {
@@ -377,38 +401,46 @@ public class ClaveTicketPendiente extends AppCompatActivity {
                 String PruebaError;
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    GlobalToken.errorToken(ClaveTicketPendiente.this);
                     //asiganmos a una variable el error para desplegar la descripcion de Tickets no asignados a la terminal
-                    String algo = new String(error.networkResponse.data) ;
-                    try {
-                        //creamos un json Object del String algo
-                        JSONObject errorCaptado = new JSONObject(algo);
-                        //Obtenemos el elemento ExceptionMesage del errro enviado
-                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                        try {
-                            String titulo = "AVISO";
-                            String mensaje = " "+ errorMensaje;
-                            Modales modales = new Modales(ClaveTicketPendiente.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(ClaveTicketPendiente.this,mensaje,titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
-                                    startActivity(intente);
-                                    finish();
-                                }
-                            });
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        //MostrarDialogoSimple(errorMensaje);
-                        //Toast.makeText(getApplicationContext(),errorMensaje,Toast.LENGTH_SHORT).show();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+//                    String algo = new String(error.networkResponse.data) ;
+//                    try {
+//                        //creamos un json Object del String algo
+//                        JSONObject errorCaptado = new JSONObject(algo);
+//                        //Obtenemos el elemento ExceptionMesage del errro enviado
+//                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                        try {
+//                            String titulo = "AVISO";
+//                            String mensaje = " "+ errorMensaje;
+//                            Modales modales = new Modales(ClaveTicketPendiente.this);
+//                            View view1 = modales.MostrarDialogoAlertaAceptar(ClaveTicketPendiente.this,mensaje,titulo);
+//                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                    startActivity(intente);
+//                                    finish();
+//                                }
+//                            });
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//                        //MostrarDialogoSimple(errorMensaje);
+//                        //Toast.makeText(getApplicationContext(),errorMensaje,Toast.LENGTH_SHORT).show();
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", db.getToken());
+                    return headers;
+                }
+            };
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

@@ -43,14 +43,13 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import kotlin.properties.Delegates
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario
+import com.corpogas.corpoapp.Token.GlobalToken
 import java.util.concurrent.TimeUnit
 
 
 class LecturayEscaneo : AppCompatActivity() {
     var model: String? = null
 
-    var bearerToken: String? = null
-    var token: RespuestaApi<AccesoUsuario?>? = null
     private var mReadService: MagReadService? = null
     private lateinit var scanManagerProvides: ScanManagerProvides
 
@@ -80,6 +79,7 @@ class LecturayEscaneo : AppCompatActivity() {
     private lateinit var posCarga: String
     private lateinit var estacionJarreo: String
     private var posicionCargaNumInterno by Delegates.notNull<Long>()
+    lateinit var data: SQLiteBD
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -87,8 +87,7 @@ class LecturayEscaneo : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lecturay_escaneo)
         model = Build.MODEL
-        getToken()
-        val data = SQLiteBD(this)
+        data = SQLiteBD(this)
         val btnEscanear = findViewById<Button>(R.id.button_escanear)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
 
@@ -129,35 +128,6 @@ class LecturayEscaneo : AppCompatActivity() {
                 integrator.initiateScan()
             })
         }
-    }
-
-    private fun getToken() {
-        val retrofit =
-            Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val obtenerToken = retrofit.create(EndPoints::class.java)
-        val call = obtenerToken.getAccesoUsuario(497L, "1111")
-        call.timeout().timeout(60, TimeUnit.SECONDS)
-        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
-            override fun onResponse(
-                call: Call<RespuestaApi<AccesoUsuario?>>,
-                response: Response<RespuestaApi<AccesoUsuario?>>
-            ) {
-                if (response.isSuccessful) {
-                    token = response.body()
-                    assert(token != null)
-                    bearerToken = token!!.Mensaje
-                } else {
-                    bearerToken = ""
-                }
-            }
-
-            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
-                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     private fun Init() {
@@ -290,13 +260,14 @@ class LecturayEscaneo : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
-        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta), "Bearer " +bearerToken)
+        val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta), data.token)
         call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
             override fun onResponse(
                 call: Call<RespuestaApi<YenaResponse>>,
                 response: Response<RespuestaApi<YenaResponse>>
             ) {
                 if (!response.isSuccessful) {
+                    GlobalToken.errorToken(this@LecturayEscaneo)
                     return
                 } else {
                     val yenaResponse = response.body()
@@ -344,11 +315,12 @@ class LecturayEscaneo : AppCompatActivity() {
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
         val call = yenaSaldo.postAcumulaPuntos(EndPointYena(sucursalId, numeroEmpleado.toLong(), numeroTarjeta, claveTarjeta, posicionCargaId.toLong()),
-            "Bearer $bearerToken"
+            data.token
         )
         call.enqueue(object : Callback<RespuestaApi<Boolean>> {
             override fun onResponse(call: Call<RespuestaApi<Boolean>>, response: Response<RespuestaApi<Boolean>>) {
                 if (!response.isSuccessful) {
+                    GlobalToken.errorToken(this@LecturayEscaneo)
                     return
                 } else {
                     val yenaResponse = response.body()
@@ -461,7 +433,7 @@ class LecturayEscaneo : AppCompatActivity() {
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
         val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta),
-            "Bearer $bearerToken"
+            data.token
         )
         call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
             override fun onResponse(
@@ -469,6 +441,7 @@ class LecturayEscaneo : AppCompatActivity() {
                 response: Response<RespuestaApi<YenaResponse>>
             ) {
                 if (!response.isSuccessful) {
+                    GlobalToken.errorToken(this@LecturayEscaneo)
                     return
                 } else {
                     val yenaResponse = response.body()
@@ -555,7 +528,7 @@ class LecturayEscaneo : AppCompatActivity() {
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
         val call = yenaSaldo.postConsultaYena(EndPointYena(sucursalId, numEmpleado, numeroTarjeta),
-            "Bearer $bearerToken"
+            data.token
         )
         call.enqueue(object : Callback<RespuestaApi<YenaResponse>> {
             override fun onResponse(
@@ -563,6 +536,7 @@ class LecturayEscaneo : AppCompatActivity() {
                 response: Response<RespuestaApi<YenaResponse>>
             ) {
                 if (!response.isSuccessful) {
+                    GlobalToken.errorToken(this@LecturayEscaneo)
                     return
                 } else {
                     val yenaResponse = response.body()

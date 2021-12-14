@@ -44,6 +44,7 @@ import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.Puntada.PuntadaQr;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.corpoapp.Yena.LecturayEscaneo;
@@ -68,9 +69,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FormasPagoReordenado extends AppCompatActivity {
     RecyclerView rcvFormasPagoReordenado;
-
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     SQLiteBD data;
 
     String formapago, nombrepago, lugarProviene, numticket; //numticket, numeroTicket = "";
@@ -116,42 +114,12 @@ public class FormasPagoReordenado extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formas_pago_reordenado);
 
-        getToken();
         init();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvFormasPagoReordenado.setLayoutManager(linearLayoutManager);
         rcvFormasPagoReordenado.setHasFixedSize(true);
         obtenerformasdepago();
 //        obtenerformasdepagoBD();
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -277,7 +245,8 @@ public class FormasPagoReordenado extends AppCompatActivity {
 
         //funcion para obtener formas de pago
     public void obtenerformasdepago() {
-        String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/sucursalformapagos/sucursal/" + sucursalId;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/sucursalformapagos/sucursal/" + sucursalId;
         StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -288,9 +257,17 @@ public class FormasPagoReordenado extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                GlobalToken.errorTokenWithReload(FormasPagoReordenado.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -1233,11 +1210,12 @@ public class FormasPagoReordenado extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EndPoints yenaSaldo = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Boolean>> call = yenaSaldo.postAcumulaPuntos(new EndPointYena(Long.parseLong(sucursalId), Long.parseLong(sucursalnumeroempleado), numeroTarjeta, claveTarjeta, Long.parseLong(posiciondecargaid), null), "Bearer " +bearerToken);
+        Call<RespuestaApi<Boolean>> call = yenaSaldo.postAcumulaPuntos(new EndPointYena(Long.parseLong(sucursalId), Long.parseLong(sucursalnumeroempleado), numeroTarjeta, claveTarjeta, Long.parseLong(posiciondecargaid), null), data.getToken());
         call.enqueue(new Callback<RespuestaApi<Boolean>>() {
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, retrofit2.Response<RespuestaApi<Boolean>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(FormasPagoReordenado.this);
                     return;
                 }
                 RespuestaApi<Boolean> yenaResponse = response.body();
@@ -1451,7 +1429,9 @@ public class FormasPagoReordenado extends AppCompatActivity {
             finish();
         } else {
             //Utilizamos el metodo POST para  finalizar la Venta
-            String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado ;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado ;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posiciondecargaid + "/usuario/" + sucursalnumeroempleado ;
+
             StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
                         @Override
@@ -1506,13 +1486,15 @@ public class FormasPagoReordenado extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(FormasPagoReordenado.this);
                 }
             }) {
                 @Override
                 protected Map<String, String> getParams() {
                     // Colocar parametros para ingresar la  url
                     Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", data.getToken());
                     return params;
                 }
             };
@@ -1535,7 +1517,9 @@ public class FormasPagoReordenado extends AppCompatActivity {
         }
 
         JSONObject datos = new JSONObject();
-        String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/tickets/generar";
+
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             datos.put("PosicionCargaId", posiciondecargaid);
@@ -1594,12 +1578,13 @@ public class FormasPagoReordenado extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(FormasPagoReordenado.this, "error", Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(FormasPagoReordenado.this, "error", Toast.LENGTH_SHORT).show();
+                GlobalToken.errorToken(FormasPagoReordenado.this);
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", data.getToken());
                 return headers;
             }
 
@@ -1621,7 +1606,9 @@ public class FormasPagoReordenado extends AppCompatActivity {
     }
 
     private void ObtieneMontoDolares(Integer identificador) {
-        String url = "http://" + ipEstacion + "/CorpogasService/api/transacciones/resumenultimaTransaccion/sucursalId/" + sucursalId + "/posicionCargaId/" + posiciondecargaid + "/formapago/16";
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/transacciones/resumenultimaTransaccion/sucursalId/" + sucursalId + "/posicionCargaId/" + posiciondecargaid + "/formapago/16";
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/transacciones/resumenultimaTransaccion/sucursalId/" + sucursalId + "/posicionCargaId/" + posiciondecargaid + "/formapago/16";
+
         StringRequest eventoReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -1655,9 +1642,17 @@ public class FormasPagoReordenado extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                GlobalToken.errorToken(FormasPagoReordenado.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

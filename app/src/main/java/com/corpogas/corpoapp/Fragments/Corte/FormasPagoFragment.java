@@ -20,6 +20,7 @@ import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Cortes.CierreFormaPago;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,9 +38,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FormasPagoFragment extends Fragment {
-
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     View view;
     SQLiteBD db;
     TextView totalPicos, subTotalOficina;
@@ -63,44 +61,14 @@ public class FormasPagoFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_formas_pago, container, false);
 
-        getToken();
         init();
         getObjetos();
         setVariables();
-//        obtenerFormaPagosUltimoTurno();
+        obtenerFormaPagosUltimoTurno();
 
         return view;
     }
 
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    obtenerFormaPagosUltimoTurno();
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(requireContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void init(){
 
@@ -134,13 +102,14 @@ public class FormasPagoFragment extends Fragment {
                 .build();
 
         EndPoints obtenerFormaPagosUltimoTurno = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<CierreFormaPago>>> call = obtenerFormaPagosUltimoTurno.getFormaPagosUltimoTurno(sucursalId, islaId, "Bearer " +bearerToken);
+        Call<RespuestaApi<List<CierreFormaPago>>> call = obtenerFormaPagosUltimoTurno.getFormaPagosUltimoTurno(sucursalId, islaId, db.getToken());
         call.enqueue(new Callback<RespuestaApi<List<CierreFormaPago>>>() {
 
 
             @Override
             public void onResponse(Call<RespuestaApi<List<CierreFormaPago>>> call, Response<RespuestaApi<List<CierreFormaPago>>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorTokenWithReload(requireActivity());
                     return;
                 }
                 respuestaApiCierreFormaPago = response.body();

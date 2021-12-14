@@ -38,6 +38,7 @@ import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.Adapters.AdapterBodegaProducto;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,29 +89,30 @@ public class Inventario extends AppCompatActivity {
     private void obtenerExistencias() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-//                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
+//                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         EndPoints obtenerExistencias = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<BodegaProducto>>> call = obtenerExistencias.getExistenciaPorEmpleado(sucursalId,numeroEmpleado);
+        Call<RespuestaApi<List<BodegaProducto>>> call = obtenerExistencias.getExistenciaPorEmpleado(sucursalId,numeroEmpleado, db.getToken());
         call.enqueue(new Callback<RespuestaApi<List<BodegaProducto>>>() {
 
             @Override
             public void onResponse(Call<RespuestaApi<List<BodegaProducto>>> call, retrofit2.Response<RespuestaApi<List<BodegaProducto>>> response) {
                 if (!response.isSuccessful()) {
-//                    GlobalToken.errorTokenWithReload(Inventario.this);
+                    GlobalToken.errorTokenWithReload(Inventario.this);
                     return;
                 }
 
                 respuestaApiBodegaProducto = response.body();
+                assert respuestaApiBodegaProducto != null;
                 if (respuestaApiBodegaProducto.Correcto){
                     initialAdapter(respuestaApiBodegaProducto.getObjetoRespuesta());
-                }else{
+                } else {
                     String titulo = "AVISO";
                     Modales modales = new Modales(Inventario.this);
-                    View view1 = modales.MostrarDialogoAlertaAceptar(Inventario.this,"Ha ocurrido un error",titulo);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(Inventario.this,response.message(),titulo);
                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +36,7 @@ import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.Puntada.PuntadaRedimirQr;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.corpoapp.TanqueLleno.ListAdapterConbustiblesTLl;
 import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
@@ -46,7 +48,9 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -55,8 +59,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VentaProductos extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     SQLiteBD data;
     String EstacionId,  ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid;
     long numeroInternoPosicionCarga, posicioncargaid;
@@ -83,8 +85,7 @@ public class VentaProductos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_venta_productos);
 
-        getToken();
-        SQLiteBD db = new SQLiteBD(getApplicationContext());
+
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         EstacionId = data.getIdEstacion();
@@ -92,6 +93,7 @@ public class VentaProductos extends AppCompatActivity {
         ipEstacion = data.getIpEstacion();
 
         init();
+
 
         lstProductos = findViewById(R.id.lstProductos);
         btnCombustibleVenta = findViewById(R.id.btnGasolinas);
@@ -143,40 +145,9 @@ public class VentaProductos extends AppCompatActivity {
 //        btnIncrementarProducto.setEnabled(false);
         btnEscanearProducto.setEnabled(true);
 
-//        cargaProductos("1");
-//        cargaCombustible();
         cargaProductos("1");
-
-    }
-
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
+//        cargaCombustible();
+//        cargaProductos("1");
     }
 
 
@@ -188,7 +159,8 @@ public class VentaProductos extends AppCompatActivity {
             finish();
         } else {
 
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/posicionCargaId/" + poscicionCarga;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/posicionCargaId/" + poscicionCarga;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/ventaProductos/sucursal/"+sucursalId+"/posicionCargaId/" + poscicionCarga;
 
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
@@ -266,9 +238,16 @@ public class VentaProductos extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(VentaProductos.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", data.getToken());
+                    return headers;
+                }
+            };
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -287,7 +266,9 @@ public class VentaProductos extends AppCompatActivity {
             finish();
         }else {
 
-            String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -340,9 +321,17 @@ public class VentaProductos extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    GlobalToken.errorToken(VentaProductos.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", data.getToken());
+                    return headers;
+                }
+            };
             RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(stringRequest);
@@ -411,13 +400,14 @@ public class VentaProductos extends AppCompatActivity {
                     .build();
 
             EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(Long.parseLong(sucursalId), poscicionCarga, "Bearer " +bearerToken);
+            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(Long.parseLong(sucursalId), poscicionCarga, data.getToken());
             call.enqueue(new Callback<Isla>() {
 
 
                 @Override
                 public void onResponse(Call<Isla> call, retrofit2.Response<Isla> response) {
                     if (!response.isSuccessful()) {
+                        GlobalToken.errorToken(VentaProductos.this);
                         return;
                     }
                     respuestaApiPosicionCargaProductosSucursal = response.body();
@@ -561,7 +551,9 @@ public class VentaProductos extends AppCompatActivity {
 
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         String posicion = getIntent().getStringExtra("pos");
-        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/islas/productos/sucursal/"+sucursalId+"/posicionCargaId/"+poscicionCarga;
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -571,9 +563,17 @@ public class VentaProductos extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                GlobalToken.errorTokenWithReload(VentaProductos.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

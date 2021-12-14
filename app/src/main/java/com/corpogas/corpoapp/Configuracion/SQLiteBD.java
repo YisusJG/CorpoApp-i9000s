@@ -754,6 +754,13 @@ public class SQLiteBD extends SQLiteOpenHelper {
             return false;
         }
     }
+
+
+    //   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
+
+
+
+
 //   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
 
     //<-------------------------------------------------------PARAMETROS DE LA TABLA EMPLEADO------------------------------------------------>

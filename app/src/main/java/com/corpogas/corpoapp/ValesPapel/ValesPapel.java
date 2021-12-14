@@ -45,15 +45,20 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.Puntada.PuntadaRedimirQr;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.ScanManagerProvides;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
@@ -72,6 +77,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ValesPapel extends AppCompatActivity {
     String model;
@@ -110,6 +121,8 @@ public class ValesPapel extends AppCompatActivity {
         model = Build.MODEL;
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
+
+
 
         posicionCarga = getIntent().getStringExtra("posicioncarga");
         usuarioid = getIntent().getStringExtra("numeroEmpleado");
@@ -484,7 +497,9 @@ public class ValesPapel extends AppCompatActivity {
             }
     //        FormasPagoArreglo.put(datosVale);
             JSONObject datos = new JSONObject();
-            String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/tickets/generar";
+
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 datos.put("PosicionCargaId", posicionCarga);
@@ -547,12 +562,13 @@ public class ValesPapel extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(ValesPapel.this, "error", Toast.LENGTH_SHORT).show();
-
+//                    Toast.makeText(ValesPapel.this, "error", Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(ValesPapel.this);
                 }
             }){
                 public Map<String,String> getHeaders() throws AuthFailureError {
                     Map<String,String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", data.getToken());
                     return headers;
                 }
                 protected Response<JSONObject> parseNetwokResponse(NetworkResponse response){
@@ -590,7 +606,7 @@ public class ValesPapel extends AppCompatActivity {
         tvMontoACargarPendiente = (TextView) findViewById(R.id.tvMontoACargarPendiente);
         tvFolioMonto = (EditText) findViewById(R.id.tvFolioMonto);
         tvDenominacionMonto = (EditText) findViewById(R.id.tvDenominacionMonto);
-        data = new SQLiteBD(getApplicationContext());
+//        data = new SQLiteBD(getApplicationContext());
         ipEstacion = data.getIpEstacion();
 
         IDMontos = new ArrayList<String>();
@@ -608,7 +624,9 @@ public class ValesPapel extends AppCompatActivity {
 //        bar.setCancelable(false);
 //        bar.show();
 
-        url = "http://" + ipEstacion + "/CorpogasService/api/TipoValePapeles";
+//        url = "http://" + ipEstacion + "/CorpogasService/api/TipoValePapeles";
+        url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/TipoValePapeles";
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -653,9 +671,17 @@ public class ValesPapel extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                GlobalToken.errorTokenWithReload(ValesPapel.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);

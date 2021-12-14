@@ -18,6 +18,7 @@ import com.corpogas.corpoapp.Facturacion.Entities.PeticionRFC;
 import com.corpogas.corpoapp.Facturacion.Entities.RespuestaRFC;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
@@ -32,8 +33,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClienteFacturas extends Activity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     RespuestaApi<List<RespuestaRFC>> respuestaApiRfc;
     String ipEstacion, RFC, nombrefacturo, idUsuario;
     PeticionRFC peticionRFC;
@@ -51,43 +50,15 @@ public class ClienteFacturas extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cliente_facturas);
-        getToken();
+
         txtObtenRFC =(TextInputLayout)findViewById(R.id.filledRFC);
         db = new SQLiteBD(getApplicationContext());
+        ipEstacion = db.getIpEstacion();
         recyclerViewFacturacion = findViewById(R.id.recyclerViewFactura);
         nombrefacturo=getIntent().getStringExtra("nombrecompleto");
         idUsuario = db.getNumeroEmpleado();
         ipEstacion = db.getIpEstacion();
 
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -145,12 +116,13 @@ public class ClienteFacturas extends Activity {
                 .build();
 
         EndPoints obtenerRfcCliente = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<List<RespuestaRFC>>> call = obtenerRfcCliente.postObtenerRfcs(peticionRFC, "Bearer " +bearerToken);
+        Call<RespuestaApi<List<RespuestaRFC>>> call = obtenerRfcCliente.postObtenerRfcs(peticionRFC, db.getToken());
         call.enqueue(new Callback<RespuestaApi<List<RespuestaRFC>>>() {
 
             @Override
             public void onResponse(Call<RespuestaApi<List<RespuestaRFC>>> call, Response<RespuestaApi<List<RespuestaRFC>>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(ClienteFacturas.this);
                     return;
                 }
                 respuestaApiRfc = response.body();
@@ -193,7 +165,7 @@ public class ClienteFacturas extends Activity {
 
     private void setRecyclerView() {
         lstRfc = (List<RespuestaRFC>) respuestaApiRfc.getObjetoRespuesta();
-        FacturacionAdapter facturacionAdapter = new FacturacionAdapter(lstRfc,getApplicationContext(),ClienteFacturas.this,db,idUsuario);
+        FacturacionAdapter facturacionAdapter = new FacturacionAdapter(ClienteFacturas.this, lstRfc,getApplicationContext(),ClienteFacturas.this,db,idUsuario);
         recyclerViewFacturacion.setAdapter(facturacionAdapter);
         recyclerViewFacturacion.setHasFixedSize(true);
     }

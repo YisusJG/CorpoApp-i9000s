@@ -41,11 +41,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import com.google.gson.Gson
 import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario
+import com.corpogas.corpoapp.Token.GlobalToken
 import java.util.concurrent.TimeUnit
 
 class CofreActivity : AppCompatActivity() {
-    var bearerToken: String? = null
-    var token: RespuestaApi<AccesoUsuario?>? = null
     private lateinit var txtScanner: EditText
     private var mScan: ImageView? = null
     lateinit var txtResponsable: TextView
@@ -170,37 +169,7 @@ class CofreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cofre)
-        getToken()
         initView()
-    }
-
-    private fun getToken() {
-        val retrofit =
-            Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val obtenerToken = retrofit.create(EndPoints::class.java)
-        val call = obtenerToken.getAccesoUsuario(497L, "1111")
-        call.timeout().timeout(60, TimeUnit.SECONDS)
-        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
-            override fun onResponse(
-                call: Call<RespuestaApi<AccesoUsuario?>>,
-                response: Response<RespuestaApi<AccesoUsuario?>>
-            ) {
-                if (response.isSuccessful) {
-                    token = response.body()
-                    assert(token != null)
-                    bearerToken = token!!.Mensaje
-                } else {
-                    bearerToken = ""
-                }
-            }
-
-            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
-                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
 
@@ -247,7 +216,7 @@ class CofreActivity : AppCompatActivity() {
 
         val getFajillasCofre= retrofit.create(EndPoints::class.java)
         val call = getFajillasCofre.getFajillasCofre(sucursalId,numeroEmpleado,datoScaner,
-            "Bearer $bearerToken"
+            data?.token
         )
         call.enqueue(object : Callback<RespuestaApi<RecepcionFajillasNoEnCajaFuerte<TotalFajillaCajaFuerte>>>{
             override fun onResponse(
@@ -257,6 +226,7 @@ class CofreActivity : AppCompatActivity() {
 
                 if (!response.isSuccessful) {
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
+                    GlobalToken.errorToken(this@CofreActivity)
                     return
                 }else
                 {
@@ -332,7 +302,7 @@ class CofreActivity : AppCompatActivity() {
 
                 val getFajillasCofre= retrofit.create(EndPoints::class.java)
                 val call = getFajillasCofre.postGuardaFajillasCofre(lCofreFajillas ,numeroEmpleado,
-                    "Bearer $bearerToken"
+                    data?.token
                 )
                 call.enqueue(object : Callback<RespuestaApi<List<StatusFajilla>>>{
                     override fun onResponse(
@@ -340,6 +310,7 @@ class CofreActivity : AppCompatActivity() {
                         response: Response<RespuestaApi<List<StatusFajilla>>>
                     ) {
                         if (!response.isSuccessful) {//
+                            GlobalToken.errorToken(this@CofreActivity)
                             return
                         }else
                         {

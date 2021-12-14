@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,11 +36,13 @@ import com.corpogas.corpoapp.Entities.Tarjetas.RespuestaTanqueLleno;
 import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -59,9 +62,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PosicionCargaTLl extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
-
     RecyclerView rcvPosicionCarga;
     String EstacionId;
     Long sucursalId;
@@ -91,7 +91,6 @@ public class PosicionCargaTLl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_carga_t_ll);
-        getToken();
         init();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
@@ -114,35 +113,6 @@ public class PosicionCargaTLl extends AppCompatActivity {
         });
 
 
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -173,9 +143,13 @@ public class PosicionCargaTLl extends AppCompatActivity {
 
         String url;
         if (Identificador.equals(1)){
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + numeroempleado;
+//            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + numeroempleado;
+            url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + numeroempleado;
+
         }else{
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+//            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+            url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+
         }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
@@ -280,32 +254,40 @@ public class PosicionCargaTLl extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        String titulo = "Jarreo";
-                        String mensajes = errorMensaje;
-                        Modales modales = new Modales(PosicionCargaTLl.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this, mensajes, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                GlobalToken.errorTokenWithReload(PosicionCargaTLl.this);
+//                String algo = new String(error.networkResponse.data);
+//                try {
+//                    //creamos un json Object del String algo
+//                    JSONObject errorCaptado = new JSONObject(algo);
+//                    //Obtenemos el elemento ExceptionMesage del errro enviado
+//                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                    try {
+//                        String titulo = "Jarreo";
+//                        String mensajes = errorMensaje;
+//                        Modales modales = new Modales(PosicionCargaTLl.this);
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTLl.this, mensajes, titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                modales.alertDialog.dismiss();
+//                            }
+//                        });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
@@ -339,7 +321,8 @@ public class PosicionCargaTLl extends AppCompatActivity {
     }
 
     private void enviaPeticionArillo(){
-        String url = "http://" + ipEstacion + "/CorpogasService/Api/tanqueLleno/Arillo/posicionCargaId/" + posicionCargaId + "/numeroEmpleado/"+numeroempleado;
+//        String url = "http://" + ipEstacion + "/CorpogasService/Api/tanqueLleno/Arillo/posicionCargaId/" + posicionCargaId + "/numeroEmpleado/"+numeroempleado;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/Api/tanqueLleno/Arillo/posicionCargaId/" + posicionCargaId + "/numeroEmpleado/"+numeroempleado;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -380,9 +363,17 @@ public class PosicionCargaTLl extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                GlobalToken.errorToken(PosicionCargaTLl.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
@@ -417,12 +408,13 @@ public class PosicionCargaTLl extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerIniAuto = retrofit.create(EndPoints.class);
-        Call<RespuestaTanqueLleno> call = obtenerIniAuto.getInicializaAuto(usuario, respuestaIniAuto1, "Bearer " +bearerToken);
+        Call<RespuestaTanqueLleno> call = obtenerIniAuto.getInicializaAuto(usuario, respuestaIniAuto1, data.getToken());
         call.timeout().timeout(120, TimeUnit.SECONDS);
         call.enqueue(new Callback<RespuestaTanqueLleno>() {
             @Override
             public void onResponse(Call<RespuestaTanqueLleno> call, Response<RespuestaTanqueLleno> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(PosicionCargaTLl.this);
                     return;
                 }
                 respuestaTanqueLleno = response.body();
@@ -590,7 +582,9 @@ public class PosicionCargaTLl extends AppCompatActivity {
             bar.setCancelable(false);
             bar.show();
 
-            String url = "http://"+ipEstacion+"/CorpogasService/api/tanqueLleno/InicioAutorizacion/clave/" + usuario;
+//            String url = "http://"+ipEstacion+"/CorpogasService/api/tanqueLleno/InicioAutorizacion/clave/" + usuario;
+            String url = "http://"+ipEstacion+"/CorpogasService_entities_token/api/tanqueLleno/InicioAutorizacion/clave/" + usuario;
+
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                     new com.android.volley.Response.Listener<String>() {
@@ -761,21 +755,22 @@ public class PosicionCargaTLl extends AppCompatActivity {
                     }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    bar.cancel();
-                    //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                    String titulo = "AVISO";
-                    String mensaje = "Problema de Conexión con TanqueLleno";
-                    Modales modales = new Modales(PosicionCargaTLl.this);
-                    View view1 = modales.MostrarDialogoError(PosicionCargaTLl.this, mensaje);
-                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                            startActivity(intent);
-                            finish();
-                            modales.alertDialog.dismiss();
-                        }
-                    });
+                    GlobalToken.errorToken(PosicionCargaTLl.this);
+//                    bar.cancel();
+//                    //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                    String titulo = "AVISO";
+//                    String mensaje = "Problema de Conexión con TanqueLleno";
+//                    Modales modales = new Modales(PosicionCargaTLl.this);
+//                    View view1 = modales.MostrarDialogoError(PosicionCargaTLl.this, mensaje);
+//                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+//                            startActivity(intent);
+//                            finish();
+//                            modales.alertDialog.dismiss();
+//                        }
+//                    });
 
                 }
             }) {
@@ -787,6 +782,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                     params.put("PosicionCarga", String.valueOf(posicionCargaId));
                     params.put("TarjetaCliente", numerotarjeta);
                     params.put("NIP", NipClientemd5);
+                    params.put("Authorization", data.getToken());
                     return params;
                 }
             };

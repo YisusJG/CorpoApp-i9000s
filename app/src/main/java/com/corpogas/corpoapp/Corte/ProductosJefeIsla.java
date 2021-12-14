@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,13 +33,17 @@ import com.corpogas.corpoapp.Login.EntregaPicos;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,7 +51,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductosJefeIsla extends AppCompatActivity {
-
     int resultado;
     Button btnAutorizacion, btnVentaProductos, btnRefresh;
     TextView tvEntregado, tvRecibi;
@@ -96,6 +100,7 @@ public class ProductosJefeIsla extends AppCompatActivity {
         onClicks();
         ObtieneProductosCierre(1);
     }
+
 
     private void init() {
         tvRecibi = (TextView) findViewById(R.id.tvRecibi);
@@ -174,7 +179,8 @@ public class ProductosJefeIsla extends AppCompatActivity {
     private void ObtieneProductosCierre(Integer integer) {
         btnAutorizacion.setEnabled(true);
 //            banderaSigue = true;
-        String url = "http://" + ipEstacion + "/CorpogasService/api/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/cierreDetalles/ObtieneVentasPorDespachador/sucursalId/" + sucursalId + "/numeroEmpleado/" + idusuario;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -197,7 +203,6 @@ public class ProductosJefeIsla extends AppCompatActivity {
 
                             }
                         });
-
                     }
 
                 } catch (JSONException e) {
@@ -210,18 +215,21 @@ public class ProductosJefeIsla extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 //asiganmos a una variable el error para desplegar la descripcion de Tickets no asignados a la terminal
                 String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    Toast.makeText(getApplicationContext(), errorMensaje, Toast.LENGTH_SHORT).show();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                //creamos un json Object del String algo
+                GlobalToken.errorTokenWithReload(ProductosJefeIsla.this);
+//                    JSONObject errorCaptado = new JSONObject(algo);
+                //Obtenemos el elemento ExceptionMesage del error enviado
+//                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                    Toast.makeText(getApplicationContext(), errorMensaje, Toast.LENGTH_SHORT).show();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", db.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);

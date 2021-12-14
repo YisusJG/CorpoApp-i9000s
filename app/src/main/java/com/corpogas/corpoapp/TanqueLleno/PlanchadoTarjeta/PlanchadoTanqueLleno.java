@@ -35,9 +35,11 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.TanqueLleno.ListAdapterConbustiblesTLl;
 import com.corpogas.corpoapp.TanqueLleno.eligeCombustibleTL;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,8 +61,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnClickListener {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     String numerodispositivo ,ClaveTanqueLleno, EstacionId, ipEstacion, numerointernoSucursal,  usuario, SucursalEmpleadoId, nipCliente, nipMd5Cliente, productoid,  nombrecombustible;
     String mensaje = "", correcto = "";
     EditText tvDenominaNumeroClienteTl, tvMontoTL, tvOdometroMontoTl, tvPlacasTl, tvNumeroFolioTl;
@@ -85,15 +85,14 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
 
     String tk1;
     JSONArray datosTarjeta = new JSONArray();
+    SQLiteBD db;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planchado_tanque_lleno);
-
-        getToken();
-        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         EstacionId = db.getIdEstacion();
         sucursalId = Long.parseLong(db.getIdSucursal());
@@ -104,7 +103,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
         usuario = db.getNumeroEmpleado();  // getUsuarioId();
 
         init();
-//        cargaCombustible();
+        cargaCombustible();
         btnAceptarProductoTl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,36 +186,6 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
         });
     }
 
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    cargaCombustible();
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
 
     private void validaTarjetaPuntada(){
 
@@ -228,7 +197,9 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             finish();
         } else {
             SQLiteBD data = new SQLiteBD(getApplicationContext());
-            String URL = "http://" + data.getIpEstacion() + "/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+//            String URL = "http://" + data.getIpEstacion() + "/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+            String URL = "http://" + data.getIpEstacion() + "/CorpogasService_entities_token/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             final JSONObject jsonObject = new JSONObject();
 
@@ -297,13 +268,15 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    onDestroy();
-                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
-                    startActivity(intente);
+//                    onDestroy();
+//                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+//                    startActivity(intente);
+                    GlobalToken.errorToken(PlanchadoTanqueLleno.this);
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", db.getToken());
                     return headers;
                 }
 
@@ -358,13 +331,14 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                     .build();
 
             EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString(), "Bearer " +bearerToken);
+            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString(), db.getToken());
             call.enqueue(new Callback<Isla>() {
 
 
                 @Override
                 public void onResponse(Call<Isla> call, Response<Isla> response) {
                     if (!response.isSuccessful()) {
+                        GlobalToken.errorTokenWithReload(PlanchadoTanqueLleno.this);
                         return;
                     }
                     respuestaApiPosicionCargaProductosSucursal = response.body();
@@ -522,7 +496,9 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             startActivity(intent1);
             finish();
         } else {
-            String URL = "http://"+ipEstacion+"/CorpogasService/api/tanqueLleno/EnviarProductosAutorizacion";
+//            String URL = "http://"+ipEstacion+"/CorpogasService/api/tanqueLleno/EnviarProductosAutorizacion";
+            String URL = "http://"+ipEstacion+"/CorpogasService_entities_token/api/tanqueLleno/EnviarProductosAutorizacion";
+
             RequestQueue queue = Volley.newRequestQueue(this);
             JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, datos, new com.android.volley.Response.Listener<JSONObject>() {
                 @Override
@@ -576,22 +552,24 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    String error1 = error.networkResponse.data.toString();
-//                    Toast.makeText(PlanchadoTanqueLleno.this, "error: "+error1, Toast.LENGTH_SHORT).show();
-                    String titulo = "TARJETA TANQUELLENO";
-                    String mensaje = "Fallo en la conexión con consola";
-                    Modales modales = new Modales(PlanchadoTanqueLleno.this);
-                    View view1 = modales.MostrarDialogoAlertaAceptar(PlanchadoTanqueLleno.this,mensaje,titulo);
-                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            modales.alertDialog.dismiss();
-                            pasa = false;                        }
-                    });
+                    GlobalToken.errorToken(PlanchadoTanqueLleno.this);
+//                    String error1 = error.networkResponse.data.toString();
+////                    Toast.makeText(PlanchadoTanqueLleno.this, "error: "+error1, Toast.LENGTH_SHORT).show();
+//                    String titulo = "TARJETA TANQUELLENO";
+//                    String mensaje = "Fallo en la conexión con consola";
+//                    Modales modales = new Modales(PlanchadoTanqueLleno.this);
+//                    View view1 = modales.MostrarDialogoAlertaAceptar(PlanchadoTanqueLleno.this,mensaje,titulo);
+//                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            modales.alertDialog.dismiss();
+//                            pasa = false;                        }
+//                    });
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", db.getToken());
                     return headers;
                 }
 

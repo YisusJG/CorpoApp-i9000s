@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,15 +29,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
-import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
-import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.ListAdapterProductos;
-import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.ScanManagerProvides;
-import com.corpogas.corpoapp.ValesPapel.ValesPapel;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -46,6 +43,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntregaFajillas extends AppCompatActivity {
     String model;
@@ -66,6 +65,7 @@ public class EntregaFajillas extends AppCompatActivity {
     ImageButton imgEscanearFajilla;
     SQLiteBD db;
     Long sucursalId, idUsuario, totalFajillas ;
+    SQLiteBD data;
 
 //    RespuestaApi<AccesoUsuario> respuestaApiAccesoUsuario;
 
@@ -78,10 +78,11 @@ public class EntregaFajillas extends AppCompatActivity {
         setContentView(R.layout.activity_entrega_fajillas);
         model = Build.MODEL;
 
-        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         sucursalId = Long.parseLong(data.getIdSucursal());
         ipEstacion = data.getIpEstacion();
+
 
 
         init();
@@ -189,6 +190,12 @@ public class EntregaFajillas extends AppCompatActivity {
         Folio = new ArrayList<String>();
         tipoFajilla = new ArrayList<String>();
 
+        spnFajillas = (Spinner) findViewById(R.id.spFajillas);
+        cantidad =  findViewById(R.id.etCantidad);
+        aceptar = (Button) findViewById(R.id.btnAceptarFajilla);
+        agregarFolio = findViewById(R.id.agregarFolio);
+        imgEscanearFajilla = (ImageButton) findViewById(R.id.imgEscanearFajilla);
+
         if (lugarProviene.equals("corteFajillas")){
             idUsuario = Long.valueOf(db.getUsuarioId());
         }else{
@@ -201,12 +208,6 @@ public class EntregaFajillas extends AppCompatActivity {
     }
 
     private void setVariables(){
-        spnFajillas = (Spinner) findViewById(R.id.spFajillas);
-        cantidad =  findViewById(R.id.etCantidad);
-        aceptar = (Button) findViewById(R.id.btnAceptarFajilla);
-        agregarFolio = findViewById(R.id.agregarFolio);
-        imgEscanearFajilla = (ImageButton) findViewById(R.id.imgEscanearFajilla);
-
 //        imgEscanearFajilla.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -220,7 +221,6 @@ public class EntregaFajillas extends AppCompatActivity {
 //
 //            }
 //        });
-
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,7 +304,9 @@ public class EntregaFajillas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            String url = "http://" + ipEstacion + "/CorpogasService/api/PrecioFajillas/sucursal/" + sucursalId;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/PrecioFajillas/sucursal/" + sucursalId;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/PrecioFajillas/sucursal/" + sucursalId;
+
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -313,7 +315,7 @@ public class EntregaFajillas extends AppCompatActivity {
                         String correcto = respuesta.getString("Correcto");
                         String mensaje = respuesta.getString("Mensaje");
 
-                        if (correcto.equals("true") ) {
+                        if (correcto.equals("true")) {
                             String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
                             JSONArray tiposFajilla = new JSONArray(objetoRespuesta);
 
@@ -353,28 +355,33 @@ public class EntregaFajillas extends AppCompatActivity {
                                 }
                             });
 
-                        }else{
-                            Toast.makeText(EntregaFajillas.this, "Sin Tipos de Fahilla", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EntregaFajillas.this, "Sin Tipos de Fajilla", Toast.LENGTH_SHORT).show();
                             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
                             //Se envian los parametros de posicion y usuario
                             intent1.putExtra("device_name", m_deviceName);
                             //inicia el activity
                             startActivity(intent1);
                             finish();
-
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    GlobalToken.errorTokenWithReload(EntregaFajillas.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", data.getToken());
+                    return headers;
+                }
+            };
             RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
             requestQueue.add(stringRequest);
         }

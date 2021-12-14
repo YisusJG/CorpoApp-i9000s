@@ -31,8 +31,10 @@ import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Entities.Sucursales.ProductControl;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 
 import org.json.JSONArray;
@@ -55,8 +57,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class eligeCombustibleTL extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     SQLiteBD db;
     ListView list;
     boolean pasa;
@@ -106,8 +106,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_elige_combustible_t_l);
 
-        getToken();
-        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        db = new SQLiteBD(getApplicationContext());
         this.setTitle(db.getNombreEstacion() + " ( EST.:" + db.getNumeroEstacion() + ")");
         EstacionId = db.getIdEstacion();
         sucursalId = Long.parseLong(db.getIdSucursal());
@@ -115,39 +114,9 @@ public class eligeCombustibleTL extends AppCompatActivity {
 //        numerodispositivo= db.getIdTarjtero();
         numerointernoSucursal = db.getNumeroFranquicia();
         init();
-//        cargaCombustible();
+        cargaCombustible();
     }
 
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    cargaCombustible();
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void init(){
         Cantidad = findViewById(R.id.cantidad);
@@ -229,7 +198,9 @@ public class eligeCombustibleTL extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            String URL = "http://"+ipEstacion+"/CorpogasService/api/tanqueLleno/EnviarProductos";
+//            String URL = "http://"+ipEstacion+"/CorpogasService/api/tanqueLleno/EnviarProductos";
+            String URL = "http://"+ipEstacion+"/CorpogasService_entities_token/\napi/tanqueLleno/EnviarProductos";
+
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 datos = new JSONObject();
@@ -301,13 +272,15 @@ public class eligeCombustibleTL extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    String error1 = error.networkResponse.data.toString();
-                    Toast.makeText(eligeCombustibleTL.this, "error: "+error1, Toast.LENGTH_SHORT).show();
-                    pasa = false;
+//                    String error1 = error.networkResponse.data.toString();
+//                    Toast.makeText(eligeCombustibleTL.this, "error: "+error1, Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(eligeCombustibleTL.this);
+//                    pasa = false;
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", db.getToken());
                     return headers;
                 }
 
@@ -364,13 +337,14 @@ public class eligeCombustibleTL extends AppCompatActivity {
                     .build();
 
             EndPoints PosicionCargaProductosSucursal = retrofit.create(EndPoints.class);
-            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString(), "Bearer " +bearerToken);
+            Call<Isla> call = PosicionCargaProductosSucursal.getPosicionCargaProductosSucursal(sucursalId, PosicioCargaNumerico.toString(), db.getToken());
             call.enqueue(new Callback<Isla>() {
 
 
                 @Override
                 public void onResponse(Call<Isla> call, Response<Isla> response) {
                     if (!response.isSuccessful()) {
+                        GlobalToken.errorTokenWithReload(eligeCombustibleTL.this);
                         return;
                     }
                     respuestaApiPosicionCargaProductosSucursal = response.body();

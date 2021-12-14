@@ -49,6 +49,7 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -69,9 +70,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AutorizaFajillas extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
-
     //datos para huella
     private static final String TAG = "FingerprintActivity";
     TextView usuario, carga, txtEtiqueta, titulo, numerodispositivo;
@@ -121,6 +119,7 @@ public class AutorizaFajillas extends AppCompatActivity {
 
     JSONObject datosFajillasFinal;
     JSONArray jsonArrayDatosFajillas;
+    SQLiteBD data;
 
 
 
@@ -128,9 +127,7 @@ public class AutorizaFajillas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autoriza_fajillas);
-
-        getToken();
-        SQLiteBD data = new SQLiteBD(this);
+        data = new SQLiteBD(this);
 //        dbCorte = new CorteDB(getApplicationContext());
         this.setTitle(data.getRazonSocial());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
@@ -170,7 +167,6 @@ public class AutorizaFajillas extends AppCompatActivity {
 //        lFajillas = dbCorte.getFajillas();
 //        ObtenerValorFajillasBilletes();
 //        ObtenerValorFajillasMonedas();
-
 
         switch (lugarProviene) {
             case "corteFajillas":
@@ -230,36 +226,6 @@ public class AutorizaFajillas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         }
-    }
-
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, retrofit2.Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 //    @RequiresApi(api = Build.VERSION_CODES.N)
@@ -394,7 +360,9 @@ public class AutorizaFajillas extends AppCompatActivity {
             final String pass = pasword.getText().toString();
 
             //Conexion con la base y ejecuta valida clave
-            String url = "http://" + ipEstacion + "/CorpogasService/api/Empleados/clave/" + pass;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/Empleados/clave/" + pass;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/Empleados/clave/" + pass;
+
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
@@ -543,6 +511,7 @@ public class AutorizaFajillas extends AppCompatActivity {
                                             finish();
                                         }
                                     });
+//                                    GlobalToken.errorToken(AutorizaFajillas.this);
                                 }
                             } catch (JSONException e) {
                                 //herramienta  para diagnostico de excepciones
@@ -566,36 +535,45 @@ public class AutorizaFajillas extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                     //VolleyLog.e("Error: ", volleyError.getMessage());
-                    String algo = new String(error.networkResponse.data);
-                    try {
-                        //creamos un json Object del String algo
-                        JSONObject errorCaptado = new JSONObject(algo);
-                        //Obtenemos el elemento ExceptionMesage del errro enviado
-                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                        try {
-                            String titulo = "AVISO";
-                            String mensaje = "" + errorMensaje;
-                            Modales modales = new Modales(AutorizaFajillas.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensaje, titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    GlobalToken.errorToken(AutorizaFajillas.this);
+//                    String algo = new String(error.networkResponse.data);
+//                    try {
+//                        //creamos un json Object del String algo
+//                        JSONObject errorCaptado = new JSONObject(algo);
+//                        //Obtenemos el elemento ExceptionMesage del errro enviado
+//                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                        try {
+//                            String titulo = "AVISO";
+//                            String mensaje = "" + errorMensaje;
+//                            Modales modales = new Modales(AutorizaFajillas.this);
+//                            View view1 = modales.MostrarDialogoAlertaAceptar(AutorizaFajillas.this, mensaje, titulo);
+//                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
+//                            });
+//
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", data.getToken());
+                    return headers;
+                }
+            };
 
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -653,11 +631,12 @@ public class AutorizaFajillas extends AppCompatActivity {
 
             EndPoints recibirFajillas = retrofit.create(EndPoints.class);
             if (lugarProviene.equals("corteFajillas")){
-                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillasCorte(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, "Bearer " +bearerToken);
+                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillasCorte(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, data.getToken());
                 call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(AutorizaFajillas.this);
                             return;
                         }
                         respuestaApiResumenFajilla = response.body();
@@ -712,11 +691,12 @@ public class AutorizaFajillas extends AppCompatActivity {
 
             }else{
                 String json = new Gson().toJson(lRecepcionFajillas);
-                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillas(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, "Bearer " +bearerToken);
+                Call<RespuestaApi<List<ResumenFajilla>>> call = recibirFajillas.postGuardaFajillas(lRecepcionFajillas, numeroEmpleadoSale.toString(), idusuario, data.getToken());
                 call.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(AutorizaFajillas.this);
                             return;
                         }
                         respuestaApiResumenFajilla = response.body();

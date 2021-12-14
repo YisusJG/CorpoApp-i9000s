@@ -65,6 +65,7 @@ import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
 import com.corpogas.corpoapp.VentaPagoTarjeta
 import com.corpogas.corpoapp.Tickets.OpcionImprimir
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets
+import com.corpogas.corpoapp.Token.GlobalToken
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta
 import com.corpogas.corpoapp.Yena.ApartadosYena
 import com.corpogas.gogasmanagement.Entities.Helpers.CurrencyFormatter
@@ -73,8 +74,6 @@ import java.text.DecimalFormat
 import java.util.concurrent.TimeUnit
 
 class Menu_Principal : AppCompatActivity() {
-    lateinit var bearerToken: String
-    var token: RespuestaApi<AccesoUsuario?>? = null
     var drawerLayout: DrawerLayout? = null
     lateinit var bar: ProgressDialog
     var list: ListView? = null
@@ -106,15 +105,17 @@ class Menu_Principal : AppCompatActivity() {
     private var fidelidad: Int? = null;
     var Puntada:Int? = 1;
     var Yena:Int? = 2
-    val Ninguna:Int? = 3
+    private val Ninguna: Int = 3
+    lateinit var data: SQLiteBD
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu__principal)
-        val data = SQLiteBD(this)
+        data = SQLiteBD(this)
         this.title = data.nombreEstacion + " (EST: " + data.numeroEstacion + ")"
-        getToken()
+//        getToken()
+//        GlobalToken.getToken(this)
         drawerLayout = findViewById(R.id.drawer_layout)
         cardVScanner = findViewById(R.id.crdvScanner)
         cardFondoVentas = findViewById(R.id.PruebaFondoVentas)
@@ -122,7 +123,7 @@ class Menu_Principal : AppCompatActivity() {
         if(mostrarOpcionScanner ==1 || mostrarOpcionScanner == 3){
             cardVScanner.visibility = View.VISIBLE
         }
-//        obtenerEfectivoNoEntregado()
+        obtenerEfectivoNoEntregado()
 
 
         //        Toolbar toolbar = findViewById(R.id.toolbar);
@@ -185,37 +186,36 @@ class Menu_Principal : AppCompatActivity() {
 
     }
 
-    private fun getToken() {
-        val retrofit = Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val obtenerToken = retrofit.create(EndPoints::class.java)
-        val call = obtenerToken.getAccesoUsuario(497L, "1111")
-        call.timeout().timeout(60, TimeUnit.SECONDS)
-        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
-            override fun onResponse(
-                call: Call<RespuestaApi<AccesoUsuario?>>,
-                response: Response<RespuestaApi<AccesoUsuario?>>
-            ) {
-                if (response.isSuccessful) {
-                    token = response.body()
-                    bearerToken = token?.Mensaje ?: ""
-                    obtenerEfectivoNoEntregado()
-                    BuscarActualizacion
-                } else {
-                    bearerToken = ""
-                }
-            }
-
-            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
-                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
+//    private fun getToken() {
+//        val retrofit = Retrofit.Builder() //                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
+//            .baseUrl("http://"+data.ipEstacion+"/CorpogasService_entities_token/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//        val obtenerToken = retrofit.create(EndPoints::class.java)
+//        val call = obtenerToken.getAccesoUsuario(data.idSucursal.toLong(), data.clave)
+//        call.timeout().timeout(60, TimeUnit.SECONDS)
+//        call.enqueue(object : Callback<RespuestaApi<AccesoUsuario?>> {
+//            override fun onResponse(
+//                call: Call<RespuestaApi<AccesoUsuario?>>,
+//                response: Response<RespuestaApi<AccesoUsuario?>>
+//            ) {
+//                if (response.isSuccessful) {
+//                    token = response.body()
+//                    bearerToken = token?.Mensaje ?: ""
+//                    obtenerEfectivoNoEntregado()
+//                    BuscarActualizacion
+//                } else {
+//                    bearerToken = ""
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<RespuestaApi<AccesoUsuario?>>, t: Throwable) {
+//                Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//    }
 
     fun deleteDatos(){
-
         val mensajes = "¿ESTÁS SEGURO DE FINALIZAR TU SESIÓN?"
         val modales = Modales(this)
         val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
@@ -236,7 +236,7 @@ class Menu_Principal : AppCompatActivity() {
     }
 
     fun obtenerEfectivoNoEntregado(){
-        val data = SQLiteBD(applicationContext)
+//        val data = SQLiteBD(applicationContext)
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
             .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
@@ -244,11 +244,12 @@ class Menu_Principal : AppCompatActivity() {
             .build()
 
         val obtenerEfectivoNoEntregado = retrofit.create(EndPoints::class.java)
-        val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado, "Bearer $bearerToken")
+        val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado, data.token)
         call.timeout().timeout(60, TimeUnit.SECONDS)
         call.enqueue(object : Callback<RespuestaApi<Double>> {
             override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
                 if (!response.isSuccessful) {
+                    GlobalToken.errorTokenWithReload(this@Menu_Principal)
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                     return
                 }
@@ -287,13 +288,12 @@ class Menu_Principal : AppCompatActivity() {
             .build()
 
         val obtenerArqueo = retrofit.create(EndPoints::class.java)
-        val call = obtenerArqueo.getArqueo((data.idSucursal).toLong(),data.numeroEmpleado,
-            "Bearer $bearerToken"
-        )
+        val call = obtenerArqueo.getArqueo((data.idSucursal).toLong(),data.numeroEmpleado, data.token)
         call.timeout().timeout(60, TimeUnit.SECONDS)
         call.enqueue(object : Callback<RespuestaApi<List<Arqueo>>> {
             override fun onResponse(call: Call<RespuestaApi<List<Arqueo>>>, response: Response<RespuestaApi<List<Arqueo>>> ) {
                 if (!response.isSuccessful) {
+                    GlobalToken.errorToken(this@Menu_Principal)
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                     return
                 }
@@ -335,7 +335,6 @@ class Menu_Principal : AppCompatActivity() {
             override fun onFailure(call: Call<RespuestaApi<List<Arqueo>>>, t: Throwable) {
                 Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
             }
-
         })
     }
 
@@ -345,16 +344,15 @@ class Menu_Principal : AppCompatActivity() {
             val data = SQLiteBD(applicationContext)
 
             val retrofit = Retrofit.Builder()
-//                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
-                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService_entities_token/")
+                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
+//                    .baseUrl("http://"+data.ipEstacion+"/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val actualizaApp = retrofit.create(EndPoints::class.java)
-            val call = actualizaApp.getActializaApp(data.idSucursal, "Bearer $bearerToken")
+            val call = actualizaApp.getActializaApp(data.idSucursal)
             call.timeout().timeout(60, TimeUnit.SECONDS)
             call.enqueue(object : Callback<RespuestaApi<Update>> {
                 override fun onResponse(call: Call<RespuestaApi<Update>>, response: Response<RespuestaApi<Update>>) {
-
                     if (!response.isSuccessful) {
 //                    mJsonTxtView.setText("Codigo: "+ response.code());
                         return
@@ -491,9 +489,6 @@ class Menu_Principal : AppCompatActivity() {
 //        stringRequest.retryPolicy = DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
 //        requestQueue.add(stringRequest)
     }
-
-
-
 
     fun ClicMenu(view: View?) {
         openDrawer(drawerLayout)
@@ -738,14 +733,12 @@ class Menu_Principal : AppCompatActivity() {
                     .build()
 
                 val obtenerEfectivoNoEntregado = retrofit.create(EndPoints::class.java)
-                val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado,
-                    "Bearer $bearerToken"
-                )
+                val call = obtenerEfectivoNoEntregado.getEfectivoNoEntregado((data.idSucursal).toLong(),data.numeroEmpleado, data.token)
                 call.timeout().timeout(60, TimeUnit.SECONDS)
                 call.enqueue(object : Callback<RespuestaApi<Double>> {
                     override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
                         if (!response.isSuccessful) {
-//                    mJsonTxtView.setText("Codigo: "+ response.code());
+                            GlobalToken.errorToken(this@Menu_Principal)
                             return
                         }
                         respuestaApiEfectivoNoEntregado = response.body()
@@ -758,9 +751,8 @@ class Menu_Principal : AppCompatActivity() {
                             intent.putExtra("lugarproviene", "Ventas")
                             intent.putExtra("descuento", "0")
                             startActivity(intent)
-
-                        }
-                        else{
+                            finish()
+                        } else {
                             if(efectivoNoEntregado >= data.maximoEfectivo) {
                                 drawerLayout?.setBackgroundColor(Color.RED)
                                 val mensaje =
@@ -805,11 +797,13 @@ class Menu_Principal : AppCompatActivity() {
             R.id.btnImgMonederos -> {
                 val data = SQLiteBD(applicationContext)
                 fidelidad = data.getFormaPagoPuntadaYena(12); //0;//  poner en cero para prueba
+//                fidelidad = 0
                 if (fidelidad!! > 0) {
                     intent = Intent(applicationContext, SeccionTarjeta::class.java)  //MonederosElectronicos SeccionTarjeta
                     startActivity(intent)
                 } else {
                     fidelidad = data.getFormaPagoPuntadaYena(15); //0;//
+//                    fidelidad = 1
                     if (fidelidad!! > 0) {
                         intent = Intent(applicationContext, ApartadosYena::class.java) //ProcesoVenta
                         startActivity(intent)

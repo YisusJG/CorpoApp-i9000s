@@ -33,6 +33,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.google.gson.Gson;
 
@@ -48,8 +49,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EntregaValesActivity extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
 
     List<PaperVoucherType> paperVoucherType;
     String ipEstacion,tituloValePapel,numeroEmpleado, lugarProviene;
@@ -71,46 +70,13 @@ public class EntregaValesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrega_vales);
-        getToken();
+
         init();
-//        if(paperVoucherType.size() == 0){
-//            insertarValesPapelSqlite();
-//        }
+        if(paperVoucherType.size() == 0){
+            insertarValesPapelSqlite();
+        }
         tipoValesPapel();
         onclicks();
-    }
-
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    if(paperVoucherType.size() == 0){
-                        insertarValesPapelSqlite();
-                    }
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -123,11 +89,12 @@ public class EntregaValesActivity extends AppCompatActivity {
 
 
         EndPoints obtenValesPapel = retrofit.create(EndPoints.class);
-        Call<List<PaperVoucherType>> call = obtenValesPapel.getTipoValePapel("Bearer " +bearerToken);
+        Call<List<PaperVoucherType>> call = obtenValesPapel.getTipoValePapel(db.getToken());
         call.enqueue(new Callback<List<PaperVoucherType>>() {
             @Override
             public void onResponse(Call<List<PaperVoucherType>> call, Response<List<PaperVoucherType>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorTokenWithReload(EntregaValesActivity.this);
                     return;
                 }
                 paperVoucherType = response.body();
@@ -310,11 +277,12 @@ public class EntregaValesActivity extends AppCompatActivity {
 
 //                        String gson = new Gson(recepcionVale).toJson();
                                 EndPoints guardarVales = retrofit.create(EndPoints.class);
-                                Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado, "Bearer " +bearerToken);
+                                Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaVales(recepcionVale,numeroEmpleado, db.getToken());
                                 call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
                                     @Override
                                     public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
                                         if (!response.isSuccessful()) {
+                                            GlobalToken.errorToken(EntregaValesActivity.this);
                                             return;
                                         }
                                         respuestaGuardaVales = response.body();
@@ -422,11 +390,12 @@ public class EntregaValesActivity extends AppCompatActivity {
 
 //                        String gson = new Gson(recepcionVale).toJson();
                         EndPoints guardarVales = retrofit.create(EndPoints.class);
-                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaValesCorte(recepcionVale,numeroEmpleado, "Bearer " +bearerToken);
+                        Call<RespuestaApi<List<ResumenVale>>> call = guardarVales.postGuardaValesCorte(recepcionVale,numeroEmpleado, db.getToken());
                         call.enqueue(new Callback<RespuestaApi<List<ResumenVale>>>() {
                             @Override
                             public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
                                 if (!response.isSuccessful()) {
+                                    GlobalToken.errorToken(EntregaValesActivity.this);
                                     return;
                                 }
                                 respuestaGuardaVales = response.body();

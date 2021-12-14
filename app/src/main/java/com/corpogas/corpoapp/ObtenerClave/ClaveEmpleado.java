@@ -36,6 +36,7 @@ import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PosicionCargaTLl;
 //import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 
 import org.json.JSONArray;
@@ -52,9 +53,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClaveEmpleado extends AppCompatActivity {
-
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     //datos para huella
     private static final String TAG = "FingerprintActivity";
     TextView usuario, carga, txtEtiqueta, titulo, numerodispositivo;
@@ -99,40 +97,10 @@ public class ClaveEmpleado extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_empleado);
-        getToken();
         init();
 
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         numerodispositivo.setVisibility(View.INVISIBLE);
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void init() {
@@ -186,12 +154,13 @@ public class ClaveEmpleado extends AppCompatActivity {
                 .build();
 
         EndPoints datosEmpleado = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado(pass, "Bearer " +bearerToken);
+        Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado(pass, data.getToken());
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @Override
             public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(ClaveEmpleado.this);
                     return;
                 }
                 respuestaApiEmpleado = response.body();

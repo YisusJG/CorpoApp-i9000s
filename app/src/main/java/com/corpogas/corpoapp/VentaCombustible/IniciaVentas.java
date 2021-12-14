@@ -32,9 +32,12 @@ import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Adapters.RVAdapter;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
+import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.Isla;
 import com.corpogas.corpoapp.Fajillas.EntregaFajillas;
+import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
@@ -47,6 +50,7 @@ import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.TanqueLleno.ListAdapterConbustiblesTLl;
 import com.corpogas.corpoapp.Tickets.FormaPagoAutojarreo;
 import com.corpogas.corpoapp.Tickets.PosicionCargaTickets;
+import com.corpogas.corpoapp.Token.GlobalToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +62,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class IniciaVentas extends AppCompatActivity {
     SQLiteBD data;
@@ -143,7 +153,9 @@ public class IniciaVentas extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
+
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
@@ -247,9 +259,17 @@ public class IniciaVentas extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(IniciaVentas.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", data.getToken());
+                    return headers;
+                }
+            };
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -267,7 +287,9 @@ public class IniciaVentas extends AppCompatActivity {
             finish();
         } else {
 
-            String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/despachos/autorizaDespacho/posicionCargaId/" + poscicionCarga + "/usuarioId/" + usuarioid;
+
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -321,9 +343,17 @@ public class IniciaVentas extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    GlobalToken.errorToken(IniciaVentas.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", data.getToken());
+                    return headers;
+                }
+            };
             RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(stringRequest);
@@ -391,7 +421,9 @@ public class IniciaVentas extends AppCompatActivity {
         bar.show();
 
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/islas/productos/sucursal/" + sucursalId + "/posicionCargaId/" + poscicionCarga;
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -401,10 +433,18 @@ public class IniciaVentas extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                bar.cancel();
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                bar.cancel();
+                GlobalToken.errorTokenWithReload(IniciaVentas.this);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -704,7 +744,9 @@ public class IniciaVentas extends AppCompatActivity {
             }
 
 
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + poscicionCarga;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + poscicionCarga;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/ventaProductos/GuardaProductos/sucursal/" + sucursalId + "/origen/" + numerodispositivo + "/usuario/" + usuarioid + "/posicionCarga/" + poscicionCarga;
+
             RequestQueue queue = Volley.newRequestQueue(this);
             JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
                     new com.android.volley.Response.Listener<JSONArray>() {
@@ -751,40 +793,42 @@ public class IniciaVentas extends AppCompatActivity {
                     }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
+                    GlobalToken.errorToken(IniciaVentas.this);
                     //VolleyLog.e("Error: ", volleyError.getMessage());
-                    String algo = new String(volleyError.networkResponse.data);
-                    try {
-                        //creamos un json Object del String algo
-                        JSONObject errorCaptado = new JSONObject(algo);
-                        //Obtenemos el elemento ExceptionMesage del errro enviado
-                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                        try {
-                            String titulo = "AVISO";
-                            String mensajes = "" + errorMensaje;
-                            Modales modales = new Modales(IniciaVentas.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensajes, titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
-                                    startActivity(intente);
-                                    finish();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+//                    String algo = new String(volleyError.networkResponse.data);
+//                    try {
+//                        //creamos un json Object del String algo
+//                        JSONObject errorCaptado = new JSONObject(algo);
+//                        //Obtenemos el elemento ExceptionMesage del errro enviado
+//                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                        try {
+//                            String titulo = "AVISO";
+//                            String mensajes = "" + errorMensaje;
+//                            Modales modales = new Modales(IniciaVentas.this);
+//                            View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensajes, titulo);
+//                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+//                                    startActivity(intente);
+//                                    finish();
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
                     // Add headers
+                    headers.put("Authorization", data.getToken());
                     return headers;
                 }
 
@@ -825,7 +869,9 @@ public class IniciaVentas extends AppCompatActivity {
         bar.show();
 
         String url;
-        url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/posicionCarga/" + poscicionCarga;
+//        url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/posicionCarga/" + poscicionCarga;
+        url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/ObtienePosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/posicionCarga/" + poscicionCarga;
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -898,33 +944,41 @@ public class IniciaVentas extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                bar.cancel();
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        String titulo = "Jarreo";
-                        String mensajes = errorMensaje;
-                        Modales modales = new Modales(IniciaVentas.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensajes, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                GlobalToken.errorToken(IniciaVentas.this);
+//                bar.cancel();
+//                String algo = new String(error.networkResponse.data);
+//                try {
+//                    //creamos un json Object del String algo
+//                    JSONObject errorCaptado = new JSONObject(algo);
+//                    //Obtenemos el elemento ExceptionMesage del errro enviado
+//                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                    try {
+//                        String titulo = "Jarreo";
+//                        String mensajes = errorMensaje;
+//                        Modales modales = new Modales(IniciaVentas.this);
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(IniciaVentas.this, mensajes, titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                modales.alertDialog.dismiss();
+//                            }
+//                        });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);

@@ -38,8 +38,10 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.Productos.VentasProductos;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPago;
 import com.corpogas.corpoapp.VentaCombustible.FormasPagoReordenado;
@@ -57,6 +59,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -111,6 +114,19 @@ public class PosicionCargaTickets extends AppCompatActivity {
                 }
             }
         }
+
+        cargarPosicionesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                todasposiciones(2);
+            }
+        });
+        btnCargarTodasPosiciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                todasposiciones(2);
+            }
+        });
     }
 
 
@@ -125,9 +141,11 @@ public class PosicionCargaTickets extends AppCompatActivity {
 
             String url;
             if (Identificador.equals(posicionEmpleado)){
-                url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/empleado/"+usuario;
+//                url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/empleado/"+usuario;
+                url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargaPendienteCobroPorEmpleado/sucursal/" + sucursalId + "/empleado/"+usuario;
             }else{
-                url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasPendienteCobro/sucursal/" + sucursalId;
+//                url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasPendienteCobro/sucursal/" + sucursalId;
+                url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargasPendienteCobro/sucursal/" + sucursalId;
             }
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
@@ -269,33 +287,41 @@ public class PosicionCargaTickets extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    bar.cancel();
-                    String algo = new String(error.networkResponse.data);
-                    try {
-                        //creamos un json Object del String algo
-                        JSONObject errorCaptado = new JSONObject(algo);
-                        //Obtenemos el elemento ExceptionMesage del errro enviado
-                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                        try {
-                            String titulo = "Jarreo";
-                            String mensajes = errorMensaje;
-                            Modales modales = new Modales(PosicionCargaTickets.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTickets.this, mensajes, titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    GlobalToken.errorTokenWithReload(PosicionCargaTickets.this);
+//                    bar.cancel();
+//                    String algo = new String(error.networkResponse.data);
+//                    try {
+//                        //creamos un json Object del String algo
+//                        JSONObject errorCaptado = new JSONObject(algo);
+//                        //Obtenemos el elemento ExceptionMesage del errro enviado
+//                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                        try {
+//                            String titulo = "Jarreo";
+//                            String mensajes = errorMensaje;
+//                            Modales modales = new Modales(PosicionCargaTickets.this);
+//                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTickets.this, mensajes, titulo);
+//                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Authorization", data.getToken());
+                    return params;
+                }
+            };
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(stringRequest);
@@ -376,7 +402,9 @@ public class PosicionCargaTickets extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCargaId;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCargaId;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCargaId;
+
             // Utilizamos el metodo Post para validar la contraseña
             StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                     new com.android.volley.Response.Listener<String>() {
@@ -535,10 +563,18 @@ public class PosicionCargaTickets extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-                    bar.cancel();
+//                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+//                    bar.cancel();
+                    GlobalToken.errorToken(PosicionCargaTickets.this);
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Authorization", data.getToken());
+                    return params;
+                }
+            };
             // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             eventoReq.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -570,6 +606,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
         }
 
         if (lugarproviene.equals("Reimprimir")){
+
         }else{
             try {
                 FormasPagoObjecto.put("Id", valor);
@@ -581,7 +618,8 @@ public class PosicionCargaTickets extends AppCompatActivity {
         }
 
         JSONObject datos = new JSONObject();
-        String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/generar";
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/tickets/generar";
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             datos.put("PosicionCargaId", carga);
@@ -603,7 +641,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
 
-                String detalle = null;
+                String detalle = "";
                 try {
                     detalle = response.getString("Detalle");
                     if (detalle.equals("null")) {
@@ -650,12 +688,13 @@ public class PosicionCargaTickets extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(PosicionCargaTickets.this, "error", Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(PosicionCargaTickets.this, error.toString(), Toast.LENGTH_SHORT).show();
+                GlobalToken.errorToken(PosicionCargaTickets.this);
             }
         }){
             public Map<String,String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
+                Map<String,String> headers = new HashMap<>();
+                headers.put("Authorization", data.getToken());
                 return headers;
             }
             protected Response<JSONObject> parseNetwokResponse(NetworkResponse response){

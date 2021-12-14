@@ -30,6 +30,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Login.Adapters.RVAdapterPicos;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.R;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.IniciaVentas;
 
 import java.text.DecimalFormat;
@@ -45,9 +46,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EntregaPicosActivity extends AppCompatActivity {
-
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
     RecyclerView rcvPicos;
     EditText editTextMorralla, editText;
     TextView textSumaTotalBilletes;
@@ -82,11 +80,9 @@ public class EntregaPicosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrega_picos);
-
-        getToken();
         init();
         setVariables();
-//        obtenerCierreVariables();
+        obtenerCierreVariables();
         SetRecyclerView();
         onClickButton();
 
@@ -122,36 +118,6 @@ public class EntregaPicosActivity extends AppCompatActivity {
         });
     }
 
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    obtenerCierreVariables();
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
 
 
     private void obtenerCierreVariables() {
@@ -163,12 +129,13 @@ public class EntregaPicosActivity extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerCierreVariables = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<CierreVariables>> call = obtenerCierreVariables.getCierreVariables(sucursalId, "Bearer " +bearerToken);
+        Call<RespuestaApi<CierreVariables>> call = obtenerCierreVariables.getCierreVariables(sucursalId, dataBase.getToken());
         call.enqueue(new Callback<RespuestaApi<CierreVariables>>() {
 
             @Override
             public void onResponse(Call<RespuestaApi<CierreVariables>> call, Response<RespuestaApi<CierreVariables>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorTokenWithReload(EntregaPicosActivity.this);
                     return;
                 }
                 RespuestaApi<CierreVariables> respuestaApiCierreVariables = response.body();
@@ -206,14 +173,14 @@ public class EntregaPicosActivity extends AppCompatActivity {
                 .build();
 
         EndPoints validaClave = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Empleado>> call = validaClave.getDatosEmpleado(clave, "Bearer " +bearerToken);
+        Call<RespuestaApi<Empleado>> call = validaClave.getDatosEmpleado(clave, dataBase.getToken());
         call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Ocurrio un error.", Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(EntregaPicosActivity.this);
                     return;
                 }
                 RespuestaApi<Empleado> respuestaApi = response.body();
@@ -233,13 +200,14 @@ public class EntregaPicosActivity extends AppCompatActivity {
                                 .build();
 
                         EndPoints guardaPicoBilletes = retrofit2.create(EndPoints.class);
-                        Call<RespuestaApi<List<ResumenFajilla>>> call2 = guardaPicoBilletes.postGuardaFajillas(recepcionFajillas, idusuario, idusuario, "Bearer " +bearerToken);
+                        Call<RespuestaApi<List<ResumenFajilla>>> call2 = guardaPicoBilletes.postGuardaFajillas(recepcionFajillas, idusuario, idusuario, dataBase.getToken());
                         call2.timeout().timeout(60, TimeUnit.SECONDS);
                         call2.enqueue(new Callback<RespuestaApi<List<ResumenFajilla>>>() {
 
                             @Override
                             public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call2, Response<RespuestaApi<List<ResumenFajilla>>> response) {
                                 if (!response.isSuccessful()) {
+                                    GlobalToken.errorToken(EntregaPicosActivity.this);
                                     return;
                                 }
                                 RespuestaApi<List<ResumenFajilla>> respuestaApi = response.body();

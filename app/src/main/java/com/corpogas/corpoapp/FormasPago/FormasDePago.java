@@ -30,9 +30,11 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.PruebasEndPoint;
 import com.corpogas.corpoapp.R;
 
 import com.corpogas.corpoapp.Service.PrintBillService;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 import com.google.gson.Gson;
 
@@ -55,8 +57,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FormasDePago extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
 
     RecyclerView rcvFormasPago;
     List<RecyclerViewHeaders> lFormasPago;
@@ -73,46 +73,14 @@ public class FormasDePago extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formas_de_pago);
-        getToken();
         init();
         rcvFormasPago = findViewById(R.id.rcvFormasPago);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvFormasPago.setLayoutManager(linearLayoutManager);
         rcvFormasPago.setHasFixedSize(true);
-//        obtenerformasdepago();
+        obtenerformasdepago();
 
 
-    }
-
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    obtenerformasdepago();
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void init() {
@@ -140,13 +108,14 @@ public class FormasDePago extends AppCompatActivity {
                 .build();
 
         EndPoints formasPago = retrofit.create(EndPoints.class);
-        Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(sucursalId, "Bearer " +bearerToken);
+        Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(sucursalId, db.getToken());
 
         call.enqueue(new Callback<List<BranchPaymentMethod>>() {
 
             @Override
             public void onResponse(Call<List<BranchPaymentMethod>> call, Response<List<BranchPaymentMethod>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorTokenWithReload(FormasDePago.this);
                     return;
                 }
                 respuestaListaSucursalFormasPago = response.body();
@@ -273,13 +242,14 @@ public class FormasDePago extends AppCompatActivity {
                         .build();
 
                 EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(sucursalId,posicioncarga,usuarioid, "Bearer " +bearerToken);
+                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(sucursalId,posicioncarga,usuarioid, db.getToken());
                 call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
 
 
                     @Override
                     public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(FormasDePago.this);
                             return;
                         }
                         respuestaApiTransaccion = response.body();
@@ -352,13 +322,14 @@ public class FormasDePago extends AppCompatActivity {
 
 
             EndPoints generaTicket = retrofit.create(EndPoints.class);
-            Call<Ticket> call = generaTicket.getGenerarTicket(ticketRequest, "Bearer " +bearerToken);
+            Call<Ticket> call = generaTicket.getGenerarTicket(ticketRequest, db.getToken());
             call.enqueue(new Callback<Ticket>() {
 
 
                 @Override
                 public void onResponse(Call<Ticket> call, Response<Ticket> response) {
                     if (!response.isSuccessful()) {
+                        GlobalToken.errorToken(FormasDePago.this);
                         return;
                     }
                     respuestaTicketRequest = response.body();

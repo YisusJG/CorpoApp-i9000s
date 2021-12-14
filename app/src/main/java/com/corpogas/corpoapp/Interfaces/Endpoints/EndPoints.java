@@ -69,15 +69,15 @@ public interface EndPoints {
 //    METODOS GET
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @GET("api/actualizaciones/sucursalId/{sucursalId}/aplicacionId/3/lastUpdates")
-    Call<RespuestaApi<Update>> getActializaApp(@Path("sucursalId") String sucursalId, @Header("Authorization") String auth);
+    Call<RespuestaApi<Update>> getActializaApp(@Path("sucursalId") String sucursalId);
 
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @GET("api/estaciones/ip/{octeto1}/{octeto2}/{octeto3}/{octeto4}")
-    Call<Estacion> getEstacionApi(@Path("octeto1") String octeto1, @Path("octeto2") String octeto2, @Path("octeto3") String octeto3, @Path("octeto4") String octeto4, @Header("Authorization") String auth);
+    Call<Estacion> getEstacionApi(@Path("octeto1") String octeto1, @Path("octeto2") String octeto2, @Path("octeto3") String octeto3, @Path("octeto4") String octeto4);
 
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @GET("api/tickets/cabecero/sucursalId/{sucursalId}")
-    Call<Ticket> getTicketsApi(@Path("sucursalId") long sucursalId, @Header("Authorization") String auth);
+    Call<Ticket> getTicketsApi(@Path("sucursalId") long sucursalId);
 
     @GET("api/accesoUsuarios/sucursal/{sucursalId}/clave/{clave}")
     Call<RespuestaApi<AccesoUsuario>> getAccesoUsuario(@Path("sucursalId") long sucursalId, @Path("clave") String clave);
@@ -151,7 +151,7 @@ public interface EndPoints {
 
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @GET("api/asignacionDispositivos/validaNip/{nip}/dispositivoId/{dispositivoId}")
-    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId,  @Header("Authorization") String authHeader); // para token
+    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId); // para token
 //    Call<RespuestaApi<Empleado>> getValidaNip(@Path("nip") int nip, @Path("dispositivoId") long dispositivoId);  antes
 
     //Metodo para obtener Precio fajillas y Denominaciones de Billetes
@@ -183,7 +183,7 @@ public interface EndPoints {
     //METOTO PARA OBTENER EL MAXIMO DE EFECTIVO QUE PUEDE TENER UN DESPACHADOR POR ESTACION
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @GET("api/Consolas/sucursalId/{sucursalId}/maximoEfectivo")
-    Call<RespuestaApi<Double>> getMaximoEfectivo(@Path("sucursalId") long sucursalId, @Header("Authorization") String authHeader);
+    Call<RespuestaApi<Double>> getMaximoEfectivo(@Path("sucursalId") long sucursalId);
 
     //METODO PARA OBTENER EL EFECTIVO NO ENTREGADO
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
@@ -194,8 +194,9 @@ public interface EndPoints {
     @GET("api/objetivoVentas/sucursal/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
     Call<RespuestaApi<List<Metas>>> getMetas(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado, @Header("Authorization") String authHeader);
 
+    @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @GET("api/BodegaProductos/obtieneExistenciaPorEmpleado/sucursalId/{sucursalId}/numeroEmpleado/{numeroEmpleado}")
-    Call<RespuestaApi<List<BodegaProducto>>> getExistenciaPorEmpleado(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado);
+    Call<RespuestaApi<List<BodegaProducto>>> getExistenciaPorEmpleado(@Path("sucursalId") long sucursalId, @Path("numeroEmpleado") String numeroEmpleado, @Header("Authorization") String authHeader);
 
     // METODO PARA OBTENER POSICIONES DE CARGA POR EMPLEADO
     @GET("api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/{sucursalId}/empleado/{numeroEmpleado}")
@@ -210,7 +211,7 @@ public interface EndPoints {
 
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @POST("api/ConfiguracionAplicaciones/ValidarConexion")
-    Call<ConfiguracionAplicacion> getConexionApi(@Body ConfiguracionAplicacion configuracionAplicacion, @Header("Authorization") String authHeader);
+    Call<ConfiguracionAplicacion> getConexionApi(@Body ConfiguracionAplicacion configuracionAplicacion);
 
     @Headers({ "Content-Type: application/json;charset=UTF-8"})
     @POST("api/bines/obtieneBinTarjeta/sucursalId/{sucursalId}")

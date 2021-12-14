@@ -34,7 +34,9 @@ import com.corpogas.corpoapp.Entities.Tickets.TicketRequest;
 import com.corpogas.corpoapp.Entities.Ventas.Transaccion;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Modales.Modales;
+import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.Service.PrintBillService;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -78,16 +80,12 @@ public class PruebasEndPoint extends AppCompatActivity {
     List<LecturaManguera> respuestaApiLecturaManguera;
     RespuestaApi<DiferenciaPermitida> respuestaApiDiferenciaPermitida;
     RespuestaApi<Cierre> respuestaApiCierreCabero;
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pruebas_end_point);
         data = new SQLiteBD(getApplicationContext());
-
-        getToken();
 
         btnPeticionBin = (Button) findViewById(R.id.btnPeticionBin);
         btnPeticionAccesoUsuario = (Button) findViewById(R.id.btnPeticionAccesoUsuario);
@@ -192,12 +190,13 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints acumularPuntosPuntada = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Puntada>> call = acumularPuntosPuntada.getActualizaPuntos("2222", puntada, "Bearer " +bearerToken);
+                Call<RespuestaApi<Puntada>> call = acumularPuntosPuntada.getActualizaPuntos("2222", puntada, data.getToken());
                 call.enqueue(new Callback<RespuestaApi<Puntada>>() {
 
                     @Override
                     public void onResponse(Call<RespuestaApi<Puntada>> call, Response<RespuestaApi<Puntada>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaPuntada = response.body();
@@ -263,7 +262,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints formasPago = retrofit.create(EndPoints.class);
-                Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(497, "Bearer " +bearerToken);
+                Call<List<BranchPaymentMethod>> call = formasPago.getFormaPagos(Long.parseLong(data.getIdSucursal()), data.getToken());
 
                 call.enqueue(new Callback<List<BranchPaymentMethod>>() {
 
@@ -271,6 +270,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<BranchPaymentMethod>> call, Response<List<BranchPaymentMethod>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaListaSucursalFormasPago = response.body();
@@ -297,12 +297,13 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints datosEmpleado = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado("1111", "Bearer " +bearerToken);
+                Call<RespuestaApi<Empleado>> call = datosEmpleado.getDatosEmpleado("1111", data.getToken());
                 call.enqueue(new Callback<RespuestaApi<Empleado>>() {
 
                     @Override
                     public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiEmpleado = response.body();
@@ -327,13 +328,14 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints productosProcedencia = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<List<ProductoTarjetero>>> call = productosProcedencia.getProductosProcedencia(497,  1, "Bearer " +bearerToken);
+                Call<RespuestaApi<List<ProductoTarjetero>>> call = productosProcedencia.getProductosProcedencia(497,  1, data.getToken());
                 call.enqueue(new Callback<RespuestaApi<List<ProductoTarjetero>>>() {
 
 
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ProductoTarjetero>>> call, Response<RespuestaApi<List<ProductoTarjetero>>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiProductoTarjetero = response.body();
@@ -359,13 +361,14 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints postFinalizaVenta = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(497,1,104, "Bearer " +bearerToken);
+                Call<RespuestaApi<Transaccion>> call = postFinalizaVenta.getPostFinalizaVenta(497,1,104, data.getToken());
                 call.enqueue(new Callback<RespuestaApi<Transaccion>>() {
 
 
                     @Override
                     public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiTransaccion = response.body();
@@ -389,13 +392,14 @@ public class PruebasEndPoint extends AppCompatActivity {
                         .build();
 
                 EndPoints TicketPendienteCobro = retrofit.create(EndPoints.class);
-                Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro(497,1, "Bearer " +bearerToken);
+                Call<RespuestaApi<Boolean>> call = TicketPendienteCobro.getTicketPendienteCobro(497,1, data.getToken());
                 call.enqueue(new Callback<RespuestaApi<Boolean>>() {
 
 
                     @Override
                     public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiTicketPendienteCobro = response.body();
@@ -420,7 +424,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 EndPoints AutorizaDespacho = retrofit.create(EndPoints.class);
                 Call<RespuestaApi<Boolean>> call = AutorizaDespacho.getAutorizaDespacho(1,100049486,
-                        "Bearer " +bearerToken
+                        data.getToken()
                 );
                 call.enqueue(new Callback<RespuestaApi<Boolean>>() {
 
@@ -428,6 +432,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiAutorizaDespacho = response.body();
@@ -485,7 +490,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 EndPoints CombustiblesPorSucursalId = retrofit.create(EndPoints.class);
                 Call<RespuestaApi<List<Combustible>>> call = CombustiblesPorSucursalId.getCombustiblesPorSucursalId(497,
-                        "Bearer " +bearerToken
+                        data.getToken()
                 );
                 call.enqueue(new Callback<RespuestaApi<List<Combustible>>>() {
 
@@ -493,6 +498,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<Combustible>>> call, Response<RespuestaApi<List<Combustible>>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiCombustiblesPorSucursalId = response.body();
@@ -518,7 +524,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 EndPoints LecturaMangueraPorPosicionCargaIdLecturaMecanica = retrofit.create(EndPoints.class);
                 Call<List<LecturaManguera>> call = LecturaMangueraPorPosicionCargaIdLecturaMecanica.getLecturaMangueraPorPosicionCargaIdLecturaMecanica(497,768,2211,
-                        "Bearer " +bearerToken
+                        data.getToken()
                 );
                 call.enqueue(new Callback<List<LecturaManguera>>() {
 
@@ -526,6 +532,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<LecturaManguera>> call, Response<List<LecturaManguera>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiLecturaManguera = response.body();
@@ -551,7 +558,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 EndPoints DiferenciaPermitidaPorSucursalId = retrofit.create(EndPoints.class);
                 Call<RespuestaApi<DiferenciaPermitida>> call = DiferenciaPermitidaPorSucursalId.getDiferenciaPermitidaPorSucursalId(497,
-                        "Bearer " +bearerToken
+                        data.getToken()
                 );
                 call.enqueue(new Callback<RespuestaApi<DiferenciaPermitida>>() {
 
@@ -559,6 +566,7 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<DiferenciaPermitida>> call, Response<RespuestaApi<DiferenciaPermitida>> response) {
                         if (!response.isSuccessful()) {
+                            GlobalToken.errorToken(PruebasEndPoint.this);
                             return;
                         }
                         respuestaApiDiferenciaPermitida = response.body();
@@ -598,35 +606,6 @@ public class PruebasEndPoint extends AppCompatActivity {
 //        });
     }
 
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
 
     public void ObtenerCierreId(){
 
@@ -637,13 +616,14 @@ public class PruebasEndPoint extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerCierreId = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Cierre>> call = obtenerCierreId.getCrearCierre(497, 76, 10002026, "Bearer " +bearerToken);
+        Call<RespuestaApi<Cierre>> call = obtenerCierreId.getCrearCierre(497, 76, 10002026, data.getToken());
         call.enqueue(new Callback<RespuestaApi<Cierre>>() {
 
 
             @Override
             public void onResponse(Call<RespuestaApi<Cierre>> call, Response<RespuestaApi<Cierre>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(PruebasEndPoint.this);
                     return;
                 }
                 respuestaApiCierreCabero = response.body();

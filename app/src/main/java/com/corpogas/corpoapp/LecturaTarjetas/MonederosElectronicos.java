@@ -6,17 +6,20 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.device.scanner.configuration.Triggering;
+import android.device.PiccManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -41,11 +44,13 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.Puntada.ProductosARedimir;
+import com.corpogas.corpoapp.Puntada.SeccionTarjeta;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.ScanManagerProvides;
 import com.corpogas.corpoapp.Service.MagReadService;
 import com.corpogas.corpoapp.TanqueLleno.TanqueLlenoNip;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.ImprimePuntada;
@@ -66,6 +71,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -75,9 +82,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MonederosElectronicos extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
-
     String model;
     //Variables Escaner
     ScanManagerProvides scanManagerProvides;
@@ -94,6 +98,30 @@ public class MonederosElectronicos extends AppCompatActivity {
     DecimalFormat df;
     TextView tvMensajeDesliza;
     Button btnEscanearTarjeta;
+
+    //NFC
+    private Button bCheck;
+    private PiccManager piccReader;
+//    private Handler handler;
+    private ExecutorService exec;
+    int scanCard = -1;
+    int SNLen = -1;
+    private static final String TAG = "PiccCheck";
+    private static final int MSG_BLOCK_NO_NONE = 0;
+    private static final int MSG_BLOCK_NO_ILLEGAL = 1;
+    private static final int MSG_AUTHEN_FAIL = 2;
+    private static final int MSG_WRITE_SUCCESS = 3;
+    private static final int MSG_WRITE_FAIL = 4;
+    private static final int MSG_READ_FAIL = 5;
+    private static final int MSG_SHOW_BLOCK_DATA = 6;
+    private static final int MSG_ACTIVE_FAIL = 7;
+    private static final int MSG_APDU_FAIL = 8;
+    private static final int MSG_SHOW_APDU = 9;
+    private static final int MSG_BLOCK_DATA_NONE = 10;
+    private static final int MSG_AUTHEN_BEFORE = 11;
+    private static final int MSG_FOUND_UID = 12;
+
+
     RespuestaApi<Bin> respuestaApiBin;
     JSONArray datos = new JSONArray();
     String idformaPago, posiciondeCarga, numeroempleadosucursal, PagoPuntada, tipoTarjeta;
@@ -141,6 +169,57 @@ public class MonederosElectronicos extends AppCompatActivity {
         }
     };
 
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            switch (msg.what) {
+                case MSG_BLOCK_NO_NONE:
+                    break;
+                case MSG_BLOCK_NO_ILLEGAL:
+                    break;
+                case MSG_AUTHEN_FAIL:
+                    break;
+                case MSG_AUTHEN_BEFORE:
+                    break;
+                case MSG_WRITE_SUCCESS:
+                    break;
+                case MSG_WRITE_FAIL:
+                    break;
+                case MSG_READ_FAIL:
+                    break;
+                case MSG_APDU_FAIL:
+                    break;
+                case MSG_BLOCK_DATA_NONE:
+                    break;
+                case MSG_SHOW_BLOCK_DATA:
+////                        SoundTool.getMySound(MainActivity.this).playMusic("success");
+//                        String data = (String) msg.obj;
+//                        tvApdu.append("\n" + data);
+                    break;
+                case MSG_ACTIVE_FAIL:
+                    break;
+                case MSG_SHOW_APDU:
+                    break;
+                case MSG_FOUND_UID:
+                    String uid = (String) msg.obj;
+//                        SoundTool.getMySound(MainActivity.this).playMusic("success");
+                    Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
+                    intent.putExtra("track", uid);
+                    intent.putExtra("lugarProviene", "NFC");
+
+                    startActivity(intent);
+                    finish();
+
+
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
 
     String EstacionId, sucursalId, ipEstacion, numeroTarjetero;
     Double montoenlacanasta;
@@ -152,12 +231,13 @@ public class MonederosElectronicos extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_monederos_electronicos);
         model = Build.MODEL;
-        getToken();
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
         tvMensajeDesliza = (TextView) findViewById(R.id.tvMensajeDesliza);
 //        mNo = (EditText) findViewById(R.id.editText1);
 //        mAlertTv = (TextView) findViewById(R.id.textView1);
+        bCheck = (Button) findViewById(R.id.picc_check);
+//        bCheck.setVisibility(View.GONE);
         Enviadodesde = getIntent().getStringExtra("Enviadodesde");
         lugarProviene = getIntent().getStringExtra("lugarproviene");
         NIP = getIntent().getStringExtra("nip");
@@ -167,15 +247,13 @@ public class MonederosElectronicos extends AppCompatActivity {
         posiciondeCarga = getIntent().getStringExtra("posicioncargaid");
         idformaPago = getIntent().getStringExtra("formapagoid");
         montoenlacanasta = getIntent().getDoubleExtra("montoenlacanasta", 0);
-        data = new SQLiteBD(getApplicationContext());
         idSucursal = Long.parseLong(data.getIdSucursal());
 
         EstacionId = data.getIdEstacion();
         ipEstacion = data.getIpEstacion();
         numeroTarjetero = data.getIdTarjtero();
 
-        model = Build.MODEL;
-        {
+        model = Build.MODEL;{
             mReadService = new MagReadService(this, mHandler);
             tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
         }
@@ -185,6 +263,14 @@ public class MonederosElectronicos extends AppCompatActivity {
         df.setMaximumFractionDigits(2);
         tvMensajeDesliza.setText("Desliza la tarjeta " + tipoTarjeta);
         btnEscanearTarjeta = (Button) findViewById(R.id.btnEscanearTarjeta);
+
+        if (tipoTarjeta.equals("TanqueLleno")) {
+            bCheck.setVisibility(View.VISIBLE);
+            btnEscanearTarjeta.setVisibility(View.INVISIBLE);
+        } else {
+            bCheck.setVisibility(View.INVISIBLE);
+            btnEscanearTarjeta.setVisibility(View.VISIBLE);
+        }
 
         if (model.equals("i9000S")) {
             //PAra inicializar el escaner se debe inicilizar en el metodo OnResume
@@ -208,36 +294,71 @@ public class MonederosElectronicos extends AppCompatActivity {
             });
         }
 
-    }
-
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
+        //NFC
+        bCheck.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                exec.execute(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        byte CardType[] = new byte[2];
+                        byte Atq[] = new byte[14];
+                        char SAK = 1;
+                        byte sak[] = new byte[1];
+                        sak[0] = (byte) SAK;
+                        byte SN[] = new byte[10];
+                        scanCard = piccReader.request(CardType, Atq);
+                        if (scanCard > 0) {
+                            SNLen = piccReader.antisel(SN, sak);
+                            Log.d(TAG, "SNLen = " + SNLen);
+                            Message msg = handler.obtainMessage(MSG_FOUND_UID);
+                            msg.obj = bytesToHexString(SN, SNLen);
+                            handler.sendMessage(msg);
+                        }
+                    }
+                }, "picc check"));
             }
         });
+
+
+        piccReader = new PiccManager();
+        exec = Executors.newSingleThreadExecutor();
+        AbrirConexion();
+    }
+
+    //NFC
+    private void AbrirConexion(){
+        exec.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                int ret = piccReader.open();
+                if (ret == 0) {
+                } else {
+                    return;
+                }
+            }
+        }, "picc open"));
+
+    }
+    public static String bytesToHexString(byte[] src, int len) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        if (len <= 0) {
+            return "";
+        }
+        for (int i = 0; i < len; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
     }
 
 
@@ -355,13 +476,14 @@ public class MonederosElectronicos extends AppCompatActivity {
                 .build();
 
         EndPoints obtenNumeroTarjetero = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(idSucursal, bin, "Bearer " +bearerToken);
+        Call<RespuestaApi<Bin>> call = obtenNumeroTarjetero.getBin(idSucursal, bin, data.getToken());
         call.enqueue(new Callback<RespuestaApi<Bin>>() {
 
             @Override
             public void onResponse(Call<RespuestaApi<Bin>> call, Response<RespuestaApi<Bin>> response) {
 
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(MonederosElectronicos.this);
                     return;
                 }
                 respuestaApiBin = response.body();
@@ -534,7 +656,9 @@ public class MonederosElectronicos extends AppCompatActivity {
         String MontoenCarrito = getIntent().getStringExtra("montoenlacanasta");
         String nip = getIntent().getStringExtra("Nip");
 
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/clave/" + clave;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/clave/" + clave;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/puntadas/actualizaPuntos/clave/" + clave;
+
         StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
                     @Override
@@ -605,7 +729,8 @@ public class MonederosElectronicos extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                GlobalToken.errorToken(MonederosElectronicos.this);
             }
         }) {
             @Override
@@ -622,6 +747,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 params.put("NuTarjetero", numeroTarjetero);
                 params.put("NIP", nip);
                 params.put("Productos", sproducto);
+                params.put("Authorization", data.getToken());
 
                 String gson = new Gson().toJson(params);
 
@@ -651,7 +777,9 @@ public class MonederosElectronicos extends AppCompatActivity {
             finish();
         } else {
             SQLiteBD data = new SQLiteBD(getApplicationContext());
-            String URL = "http://" + data.getIpEstacion() + "/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+//            String URL = "http://" + data.getIpEstacion() + "/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+            String URL = "http://" + data.getIpEstacion() + "/CorpogasService_entities_token/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             final JSONObject jsonObject = new JSONObject();
 
@@ -726,14 +854,14 @@ public class MonederosElectronicos extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    onDestroy();
-                    bar.cancel();
-                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
-                    startActivity(intente);
+//                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
+//                    startActivity(intente);
+                    GlobalToken.errorTokenWithReload(MonederosElectronicos.this);
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", data.getToken());
                     return headers;
                 }
 
@@ -759,7 +887,9 @@ public class MonederosElectronicos extends AppCompatActivity {
     }
 
     private void EnviaProcesoPuntadaAcumularNew(String NumeroDeTarjeta) {
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
+
 
         StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new com.android.volley.Response.Listener<String>() {
@@ -870,7 +1000,8 @@ public class MonederosElectronicos extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                GlobalToken.errorToken(MonederosElectronicos.this);
             }
         }) {
             @Override
@@ -887,6 +1018,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 params.put("PosicionCarga", String.valueOf(posiciondeCarga));
                 params.put("Tarjeta", NumeroDeTarjeta);
                 params.put("Productos", sproducto);
+                params.put("Authorization", data.getToken());
 //                String gson = new Gson().toJson(params);
                 return params;
             }
@@ -923,7 +1055,8 @@ public class MonederosElectronicos extends AppCompatActivity {
 
             JSONArray myArray = new JSONArray();
             SQLiteBD data = new SQLiteBD(getApplicationContext());
-            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
+//            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
+            String url = "http://" + data.getIpEstacion() + "/CorpogasService_entities_token/api/puntadas/actualizaPuntos/numeroEmpleado/" + numeroempleadosucursal;
             RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 datos.put("NuTarjetero", numeroTarjetero);
@@ -1053,12 +1186,13 @@ public class MonederosElectronicos extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    bar.cancel();
+//                    Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    GlobalToken.errorToken(MonederosElectronicos.this);
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", data.getToken());
                     return headers;
                 }
 

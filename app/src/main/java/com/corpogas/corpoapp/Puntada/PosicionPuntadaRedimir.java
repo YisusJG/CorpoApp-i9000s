@@ -39,6 +39,7 @@ import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PosicionCargaTLl;
+import com.corpogas.corpoapp.Token.GlobalToken;
 import com.corpogas.corpoapp.VentaCombustible.Adaptador;
 import com.corpogas.corpoapp.VentaCombustible.IniciaVentas;
 import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
@@ -67,9 +68,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PosicionPuntadaRedimir extends AppCompatActivity {
-    String bearerToken;
-    RespuestaApi<AccesoUsuario> token;
-
     RecyclerView rcvPosicionCarga;
     String EstacionId;
     Long sucursalId;
@@ -103,7 +101,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_puntada_redimir);
         init();
-        getToken();
+        PosicionCarga(1);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rcvPosicionCarga.setLayoutManager(linearLayoutManager);
         rcvPosicionCarga.setHasFixedSize(true);
@@ -124,36 +122,6 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         });
 
 
-    }
-
-    private void getToken() {
-        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(497L, "1111");
-        call.timeout().timeout(60, TimeUnit.SECONDS);
-        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-            @Override
-            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-                if (response.isSuccessful()) {
-                    token = response.body();
-                    assert token != null;
-                    bearerToken = token.Mensaje;
-                    PosicionCarga(1);
-                } else {
-                    bearerToken = "";
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -193,9 +161,13 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
         String url;
         if (Identificador.equals(1)){
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + usuario;
+//            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + usuario;
+            url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargaEmpleadoId/sucursal/" + sucursalId + "/empleado/" + usuario;
+
         }else{
-            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+//            url = "http://" + ipEstacion + "/CorpogasService/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+            url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/posicionCargas/GetPosicionCargasEstacion/sucursal/" + sucursalId;
+
         }
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
             @Override
@@ -307,43 +279,44 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        String titulo = "Jarreo";
-                        String mensajes = errorMensaje;
-                        Modales modales = new Modales(PosicionPuntadaRedimir.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (Identificador.equals(1)) {
+                    GlobalToken.errorTokenWithReload(PosicionPuntadaRedimir.this);
+                } else {
+                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
                 }
+//                String algo = new String(error.networkResponse.data);
+//                try {
+//                    //creamos un json Object del String algo
+//                    JSONObject errorCaptado = new JSONObject(algo);
+//                    //Obtenemos el elemento ExceptionMesage del errro enviado
+//                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                    try {
+//                        String titulo = "Jarreo";
+//                        String mensajes = errorMensaje;
+//                        Modales modales = new Modales(PosicionPuntadaRedimir.this);
+//                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
+//                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                modales.alertDialog.dismiss();
+//                            }
+//                        });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
-        })
-        {
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + bearerToken);
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", db.getToken());
                 return headers;
             }
-        }
-
-
-                ;
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
@@ -366,12 +339,13 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 .build();
 
         EndPoints obtenerAccesoUsuario = retrofit.create(EndPoints.class);
-        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario, "Bearer " +bearerToken); //getAccesoUsuario
+        Call<RespuestaApi<AccesoUsuario>> call = obtenerAccesoUsuario.getAccesoUsuarionumeroempleado(sucursalId, usuario, db.getToken()); //getAccesoUsuario
         call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
 
             @Override
             public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
                 if (!response.isSuccessful()) {
+                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
                     return;
                 }
                 accesoUsuario = response.body();
@@ -595,7 +569,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             finish();
         } else {
 
-            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
+//            String url = "http://" + ipEstacion + "/CorpogasService/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
+            String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/ventaProductos/sucursal/" + sucursalId + "/posicionCargaId/" + posicionCarga;
+
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -676,32 +652,40 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    String algo = new String(error.networkResponse.data);
-                    try {
-                        //creamos un json Object del String algo
-                        JSONObject errorCaptado = new JSONObject(algo);
-                        //Obtenemos el elemento ExceptionMesage del errro enviado
-                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                        try {
-                            String titulo = "Posiciones de Carga";
-                            String mensajes = errorMensaje;
-                            Modales modales = new Modales(PosicionPuntadaRedimir.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+//                    String algo = new String(error.networkResponse.data);
+//                    try {
+//                        //creamos un json Object del String algo
+//                        JSONObject errorCaptado = new JSONObject(algo);
+//                        //Obtenemos el elemento ExceptionMesage del errro enviado
+//                        String errorMensaje = errorCaptado.getString("ExceptionMessage");
+//                        try {
+//                            String titulo = "Posiciones de Carga";
+//                            String mensajes = errorMensaje;
+//                            Modales modales = new Modales(PosicionPuntadaRedimir.this);
+//                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this, mensajes, titulo);
+//                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    modales.alertDialog.dismiss();
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", db.getToken());
+                    return headers;
+                }
+            };
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(stringRequest);
@@ -790,7 +774,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         bar.setIcon(R.drawable.redimirpuntada);
         bar.setCancelable(false);
         bar.show();
-        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+usuario;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/puntadas/actualizaPuntos/numeroEmpleado/"+usuario;
+        String url = "http://" + ipEstacion + "/CorpogasService_entities_token/api/puntadas/actualizaPuntos/numeroEmpleado/"+usuario;
 
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new com.android.volley.Response.Listener<String>() {
@@ -899,23 +884,24 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                bar.cancel();
-//                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-                String titulo = "AVISO";
-                String mensajes;
-                mensajes = "Sin conexón con la consola";
-                Modales modales = new Modales(PosicionPuntadaRedimir.this);
-                View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this,mensajes,titulo);
-                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        bar.cancel();
-                        modales.alertDialog.dismiss();
-                        Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                        startActivity(intent1);
-                        finish();
-                    }
-                });
+                GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+//                bar.cancel();
+////                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+//                String titulo = "AVISO";
+//                String mensajes;
+//                mensajes = "Sin conexón con la consola";
+//                Modales modales = new Modales(PosicionPuntadaRedimir.this);
+//                View view1 = modales.MostrarDialogoAlertaAceptar(PosicionPuntadaRedimir.this,mensajes,titulo);
+//                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        bar.cancel();
+//                        modales.alertDialog.dismiss();
+//                        Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
+//                        startActivity(intent1);
+//                        finish();
+//                    }
+//                });
             }
         }){
             @Override
@@ -931,6 +917,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 params.put("Tarjeta", numerotarjeta);
                 params.put("NIP", NipCliente);
                 params.put("Productos", sproducto);
+                params.put("Authorization", db.getToken());
 
                 String gson = new Gson().toJson(params);
 
