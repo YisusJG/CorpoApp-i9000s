@@ -58,6 +58,7 @@ import com.corpogas.corpoapp.Metas.MetasActivity
 import com.corpogas.corpoapp.Monederos.ElegirMonedero
 import com.corpogas.corpoapp.ObtenerClave.ClaveEmpleado
 import com.corpogas.corpoapp.Productos.Inventario
+import com.corpogas.corpoapp.Productos.SeccionProductos
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir
 import com.corpogas.corpoapp.Puntada.SeccionTarjeta
 import com.corpogas.corpoapp.Puntada.TarjetaPuntadaProvisional
@@ -860,7 +861,7 @@ class Menu_Principal : AppCompatActivity() {
 //                startActivity(intent)
 //            }
             R.id.btnInventario -> {
-                intent = Intent(applicationContext, Inventario::class.java)
+                intent = Intent(applicationContext, SeccionProductos::class.java) //Inventario
                 startActivity(intent)
             }
             R.id.btnImgTickets -> {

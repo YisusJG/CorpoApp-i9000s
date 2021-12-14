@@ -36,6 +36,9 @@
             android:name=".Monederos.ElegirMonedero"
             android:exported="true" />
         <activity
+            android:name=".Productos.SeccionProductos"
+            android:exported="true" />
+        <activity
             android:name=".Tickets.FormaPagoAutojarreo"
             android:exported="true" />
         <activity

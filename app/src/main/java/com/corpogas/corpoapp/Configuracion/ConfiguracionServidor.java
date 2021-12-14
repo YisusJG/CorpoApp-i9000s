@@ -483,9 +483,10 @@ public class ConfiguracionServidor extends AppCompatActivity{
                 String direccionmac =  configuracionAplicacionApi.getDireccionMac();//respons.getString("DireccionMac");
                 boolean banderaHuella = configuracionAplicacionApi.isLectorHuella(); //respons.getString("PropiedadConexion");
                 long id = configuracionAplicacionApi.getId();  //respons.getString("Id");
+                boolean lugarImprime = configuracionAplicacionApi.getImprimeLocal();
 //
                 SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
-                data.InsertarDatosNumeroTarjetero(direccionmac,String.valueOf(banderaHuella), String.valueOf(id));
+                data.InsertarDatosNumeroTarjetero(direccionmac,String.valueOf(banderaHuella), String.valueOf(id), String.valueOf(lugarImprime));
 
             }
 

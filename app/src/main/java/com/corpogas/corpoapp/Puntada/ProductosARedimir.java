@@ -727,7 +727,7 @@ public class ProductosARedimir extends AppCompatActivity {
             datos.put("NuTarjetero", numeroTarjetero); // data.getIdTarjtero());
             datos.put("Tarjeta", NumeroDeTarjeta);
             datos.put("NIP", nip);
-            if (enviadoDesde.equals("RedimirQR")){
+            if (enviadoDesde.equals("RedimirQr")){
                 datos.put("importedescuento", descuento);
             }
             datos.put("Productos", array1);

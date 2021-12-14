@@ -6,11 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".TanqueLleno.PosicionCargaTLl">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/cargaTodasPosicionesTl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/colorW"
+        android:src="@drawable/ic_baseline_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rcvPosicionCarga" />
+
     <Button
         android:id="@+id/btnCargarTodasPCTll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cargar Todas las Posciones de Carga"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/rcvPosicionCarga"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="2dp" />
@@ -18,7 +31,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvPosicionCarga"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="490dp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="186dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

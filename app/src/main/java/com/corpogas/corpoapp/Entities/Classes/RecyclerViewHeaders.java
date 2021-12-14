@@ -10,6 +10,9 @@ public class RecyclerViewHeaders implements Serializable {
     long posicioncarganumerointerno;
     long formaPagoId;
     String jarreo;
+    String ventaproductos;
+    String autojarreo;
+    String acumulapuntos;
 
     public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId) {
         this.titulo = titulo;
@@ -17,13 +20,30 @@ public class RecyclerViewHeaders implements Serializable {
         this.imagenId = imagenId;
     }
 
-    public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId, long posicionCargaId,long posicioncarganumerointerno, String jarreo) {
+    public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId, String ventaproductos) {
+        this.titulo = titulo;
+        this.subtitulo = subtitulo;
+        this.imagenId = imagenId;
+        this.ventaproductos = ventaproductos;
+    }
+
+    public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId, String ventaproductos, String acumulapuntos) {
+        this.titulo = titulo;
+        this.subtitulo = subtitulo;
+        this.imagenId = imagenId;
+        this.ventaproductos = ventaproductos;
+        this.acumulapuntos = acumulapuntos;
+    }
+
+
+    public RecyclerViewHeaders(String titulo, String subtitulo, int imagenId, long posicionCargaId,long posicioncarganumerointerno, String jarreo, String autojarreo) {
         this.titulo = titulo;
         this.subtitulo = subtitulo;
         this.imagenId = imagenId;
         this.PosicionCargaId = posicionCargaId;
         this.posicioncarganumerointerno = posicioncarganumerointerno;
         this.jarreo = jarreo;
+        this.autojarreo = autojarreo;
     }
 
     public RecyclerViewHeaders(String titulo, long formaPagoId, int imagenId) {
@@ -69,6 +89,12 @@ public class RecyclerViewHeaders implements Serializable {
     }
 
     public String getJarreo() {return  jarreo; }
+
+    public String getAutojarreo() {return autojarreo;}
+
+    public String getVentaproductos() {return ventaproductos;}
+
+    public String getAcumulapuntos() {return acumulapuntos;}
 
     public void setPosicioncarganumerointerno(long posicioncarganumerointerno) {
         this.posicioncarganumerointerno = posicioncarganumerointerno;

@@ -540,13 +540,13 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:onClick="onClickMenuPrincipal"
-                            android:src="@drawable/inventario" />
+                            android:src="@drawable/productos" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
-                            android:text="Inventario"
+                            android:text="Productos"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />

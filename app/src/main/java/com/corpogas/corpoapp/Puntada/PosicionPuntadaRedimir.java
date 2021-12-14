@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import com.corpogas.corpoapp.Entities.Accesos.Control;
 import com.corpogas.corpoapp.Entities.Accesos.Posicion;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
+import com.corpogas.corpoapp.LecturaTarjetas.MonederosElectronicos;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
@@ -42,6 +45,7 @@ import com.corpogas.corpoapp.VentaCombustible.ProcesoVenta;
 import com.corpogas.corpoapp.VentaCombustible.VentaCombustibleAceites;
 import com.corpogas.corpoapp.VentaCombustible.VentaProductos;
 import com.corpogas.corpoapp.Yena.LecturayEscaneo;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -69,12 +73,12 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     RecyclerView rcvPosicionCarga;
     String EstacionId;
     Long sucursalId;
-    String ipEstacion;
+    String ipEstacion, jarreo, autojarreo;
     String lugarproviene;
     String usuario;
     String numerotarjeta;
     String NipCliente;
-    String NipClientemd5, autoJarreo;
+    String NipClientemd5;
     long posicionCargaId;
     long numeroOperativa;
     long cargaNumeroInterno;
@@ -87,11 +91,12 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
     List<RecyclerViewHeaders> lrcvPosicionCarga;
     Button btnCargarTodasPC;
     String descuento;
-    Double descuentoPorLitro;
+    Double descuentoPorLitro, descuentoPorLitroCombustible1, descuentoPorLitroCombustible2, descuentoPorLitroCombustible3;
     ProgressDialog bar;
 
     DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
     DecimalFormat df;
+    FloatingActionButton cargarPosicionesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +115,15 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 PosicionCarga(2);
             }
         });
+        cargarPosicionesButton = findViewById(R.id.cargaTodasPosiciones);
+        cargarPosicionesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PosicionCarga(2);
+            }
+        });
+
+
     }
 
     private void getToken() {
@@ -164,6 +178,9 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
         descuento = getIntent().getStringExtra("descuento");
         descuentoPorLitro = Double.parseDouble(descuento);
+        descuentoPorLitroCombustible1 = getIntent().getDoubleExtra("descuentoCombustible1", 0.0);
+        descuentoPorLitroCombustible2 = getIntent().getDoubleExtra("descuentoCombustible2", 0.0);
+        descuentoPorLitroCombustible3 = getIntent().getDoubleExtra("descuentoCombustible3", 0.0);
 
     }
     public void PosicionCarga(Integer Identificador){
@@ -220,13 +237,13 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                             estado = posiciones.getString("Estado");
                             boolean pocioncargapendientecobro = posiciones.getBoolean("PendienteCobro");
                             String descripcionoperativa = posiciones.getString("DescripcionOperativa");
+                            jarreo = posiciones.getString("EstacionJarreo");
                             descripcion = posiciones.getString("Descripcion");
                             numeroOperativa = posiciones.getLong("Operativa");
-                            String jarreo;
                             if (numeroOperativa == 31){
-                                jarreo = "true";
+                                autojarreo = "true";
                             }else{
-                                jarreo = "false";
+                                autojarreo = "false";
                             }
 
                             Boolean banderacarga ;
@@ -251,7 +268,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                                 String subtitulo = "";//
                                                 //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                 subtitulo =descripcionoperativa;//
-                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, jarreo));//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, jarreo, autojarreo));//
                                                 banderaposicionCarga = true;
                                             }
                                         }
@@ -441,7 +458,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                                 String subtitulo = "";//
                                                 //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                 subtitulo =descripcionoperativa;//
-                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, jarreo));//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, jarreo, autojarreo));//
                                                 banderaposicionCarga = true;
                                             }
                                         }
@@ -493,7 +510,8 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             public void onClick(View v) {
                 posicionCargaId=lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getPosicionCargaId();
                 cargaNumeroInterno = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getPosicioncarganumerointerno();
-                autoJarreo = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getJarreo();
+                jarreo = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getJarreo();
+                autojarreo = lrcvPosicionCarga.get(rcvPosicionCarga.getChildAdapterPosition(v)).getAutojarreo();
                 //posicion = numeroposicioncarga;
                 //solicitarBalanceTarjeta(numeroposicioncarga);
                 switch (lugarproviene){
@@ -540,15 +558,15 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                     case "Registrar":
                         RegistraTarjeta();
                         break;
-                    case "RedimirQR":
+                    case "RedimirQr":
                     case "Redimir":
                         obtieneSaldoTarjeta(String.valueOf(posicionCargaId));
                         break;
                     case "Ventas":
-                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo, false);
+                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autojarreo, false);
                         break;
                     case "DescuentoQr":
-                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autoJarreo, true);
+                        ValidaTransaccionActiva(String.valueOf(posicionCargaId), String.valueOf(numeroOperativa), autojarreo, true);
                         break;
 
                     case "Imprimir":
@@ -694,18 +712,20 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), IniciaVentas.class); //VentaProductos
         intent.putExtra("numeroEmpleado", empleadoNumero);
         intent.putExtra("posicionCarga", posicionCarga);
-        intent.putExtra("estacionjarreo", autoJarreo);
+        intent.putExtra("estacionjarreo", jarreo);
         intent.putExtra("pcnumerointerno", cargaNumeroInterno);
         intent.putExtra("pocioncargaid", cargaNumeroInterno);
-        intent.putExtra("descuento", descuentoPorLitro);
+        intent.putExtra("Descuento", descuentoPorLitro);
+        intent.putExtra("descuentoMagna", descuentoPorLitroCombustible1);
+        intent.putExtra("descuentoPremium", descuentoPorLitroCombustible2);
+        intent.putExtra("descuentoDiesel", descuentoPorLitroCombustible3);
         intent.putExtra("lugarProviene", lugarproviene); //"ventas"
         intent.putExtra("numeroTarjeta", "");
         intent.putExtra("nip", NipCliente);
         intent.putExtra("banderaDescuento", banderaDescuento);
-
+        intent.putExtra("jarreo", autojarreo);
         startActivity(intent);
         finish();
-
     }
 
 
@@ -791,7 +811,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                                     String NipTarjeta = getIntent().getStringExtra("nip");
 
                                     switch (Proviene) {
-                                        case "RedimirQR":
+                                        case "RedimirQr":
                                         case "Redimir": //Consulta Saldo
                                             //String carga = getIntent().getStringExtra("pos");
                                             try {

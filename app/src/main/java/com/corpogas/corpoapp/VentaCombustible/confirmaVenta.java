@@ -47,7 +47,8 @@ import java.util.List;
 import java.util.Map;
 
 public class confirmaVenta extends AppCompatActivity {
-    String usuario, posicion, cadenaproductos, nombreproducto;
+    String usuario,  cadenaproductos, nombreproducto;
+    Long posicion;
     ListView list, list2;
     Double MontoTotal=0.00;
     Button Cobrar, Agregar, Eliminar;
@@ -91,7 +92,7 @@ public class confirmaVenta extends AppCompatActivity {
         txtproducto=findViewById(R.id.txtproducto);
 
         numerooperativa = getIntent().getStringExtra("numeroOperativa");
-        posicion = getIntent().getStringExtra("posicion");
+        posicion = getIntent().getLongExtra("posicion", 0);
         usuario = db.getUsuarioId();//getIntent().getStringExtra("usuario");
         cadenaproductos = getIntent().getStringExtra("cadenaproducto");
         nombreproducto = getIntent().getStringExtra("Descripcion");

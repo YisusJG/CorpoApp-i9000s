@@ -14,14 +14,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.corpogas.corpoapp.Conexion;
 import com.corpogas.corpoapp.Configuracion.SQLiteBD;
+import com.corpogas.corpoapp.Entities.Accesos.AccesoUsuario;
 import com.corpogas.corpoapp.Entities.Classes.RecyclerViewHeaders;
 import com.corpogas.corpoapp.Entities.Classes.RespuestaApi;
 import com.corpogas.corpoapp.Entities.Estaciones.BodegaProducto;
@@ -41,11 +44,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -84,6 +89,7 @@ public class Inventario extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + ipEstacion + "/CorpogasService/")
+//                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -92,8 +98,9 @@ public class Inventario extends AppCompatActivity {
         call.enqueue(new Callback<RespuestaApi<List<BodegaProducto>>>() {
 
             @Override
-            public void onResponse(Call<RespuestaApi<List<BodegaProducto>>> call, Response<RespuestaApi<List<BodegaProducto>>> response) {
+            public void onResponse(Call<RespuestaApi<List<BodegaProducto>>> call, retrofit2.Response<RespuestaApi<List<BodegaProducto>>> response) {
                 if (!response.isSuccessful()) {
+//                    GlobalToken.errorTokenWithReload(Inventario.this);
                     return;
                 }
 
@@ -103,7 +110,7 @@ public class Inventario extends AppCompatActivity {
                 }else{
                     String titulo = "AVISO";
                     Modales modales = new Modales(Inventario.this);
-                    View view1 = modales.MostrarDialogoAlertaAceptar(Inventario.this,"Ah ocurrido un error",titulo);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(Inventario.this,"Ha ocurrido un error",titulo);
                     view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

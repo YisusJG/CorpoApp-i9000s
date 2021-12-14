@@ -37,6 +37,7 @@ import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Productos.MostrarCarritoTransacciones;
+import com.corpogas.corpoapp.Productos.VentasProductos;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
@@ -64,7 +65,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PosicionCargaTickets extends AppCompatActivity {
     RecyclerView rcvPosicionCargaTicket;
-    String EstacionId,  ipEstacion, numeroTarjetero, lugarproviene, usuario, clave, operativa, jarreo, numeroEmpleadoReimprime;
+    String EstacionId,  ipEstacion, numeroTarjetero, lugarproviene, usuario, clave, operativa, jarreo, numeroEmpleadoReimprime, autojarreo;
     long posicionCargaId;
     long numeroOperativa;
     long cargaNumeroInterno;
@@ -74,6 +75,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
     Integer posicionEmpleado = 1;
     Integer posicionSucursal = 2;
     Integer posicionReimpresion = 3;
+    Integer posicionProductos = 4;
     Boolean banderaposicionCarga, pendientecobro;
     SQLiteBD data;
     RespuestaApi<AccesoUsuario> accesoUsuario;
@@ -102,7 +104,11 @@ public class PosicionCargaTickets extends AppCompatActivity {
             if (lugarproviene.equals("Reimprimir")){
                 todasposiciones(posicionReimpresion);
             }else{
-                todasposiciones(posicionSucursal);
+                if (lugarproviene.equals("OpcionProductos")){
+                    todasposiciones(posicionProductos);
+                }else{
+                    todasposiciones(posicionSucursal);
+                }
             }
         }
     }
@@ -166,6 +172,12 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                 String descripcionoperativa = posiciones.getString("DescripcionOperativa");
                                 jarreo = posiciones.getString("EstacionJarreo");
                                 numeroOperativa = posiciones.getLong("Operativa");
+                                if (numeroOperativa == 31){
+                                    autojarreo = "true";
+                                }else{
+                                    autojarreo = "false";
+                                }
+
                                 Boolean banderacarga ;
                                 banderacarga = false;
                                 if (lugarproviene.equals("Reimprimir")){
@@ -173,18 +185,31 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                     String subtitulo = "";//
                                     //    subtitulo = "Magna  |  Premium  |  Diesel";
                                     subtitulo =descripcionoperativa;//
-                                    lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo));//
+                                    lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo, autojarreo));//
                                     banderaposicionCarga = true;
                                 }else{
-                                    if (pocioncargapendientecobro == true){
-                                        String titulo = "PC " + posicionCargaNumeroInterno;
-                                        String subtitulo = "";//
-                                        //    subtitulo = "Magna  |  Premium  |  Diesel";
-                                        subtitulo =descripcionoperativa;//
-                                        lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo));//
-                                        banderaposicionCarga = true;
+                                    if (lugarproviene.equals("OpcionProductos")){
+                                        if (numeroOperativa == 5 || numeroOperativa == 6 || numeroOperativa == 16 || numeroOperativa == 21 || numeroOperativa == 30 || numeroOperativa == 31 || numeroOperativa == 41 || numeroOperativa == 95 || numeroOperativa == 96 || numeroOperativa == 99) {
+                                            // No contempla las operativas 5= TANQUELLENO TARJETA, 6=Arillos, 16=Yena, 21=Puntada Redimir, 30=JArreo, 31=Autojarreo, 41=MErcado Pago, 95=Insertado, 96=Modificado, 99= Descenocido
+                                        } else{
+                                            String titulo = "PC " + posicionCargaNumeroInterno;
+                                            String subtitulo = "";//
+                                            //    subtitulo = "Magna  |  Premium  |  Diesel";
+                                            subtitulo =descripcionoperativa;//
+                                            lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo, autojarreo));//
+                                            banderaposicionCarga = true;
+                                        }
                                     }else{
-                                        banderacarga = false;
+                                        if (pocioncargapendientecobro == true){
+                                            String titulo = "PC " + posicionCargaNumeroInterno;
+                                            String subtitulo = "";//
+                                            //    subtitulo = "Magna  |  Premium  |  Diesel";
+                                            subtitulo =descripcionoperativa;//
+                                            lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo, autojarreo));//
+                                            banderaposicionCarga = true;
+                                        }else{
+                                            banderacarga = false;
+                                        }
                                     }
                                 }
                                 if (banderacarga.equals(true)) {
@@ -203,7 +228,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                                     String subtitulo = "";//
                                                     //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                     subtitulo =descripcionoperativa;//
-                                                    lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo));//
+                                                    lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo, autojarreo));//
                                                     banderaposicionCarga = true;
                                                 }
                                             }
@@ -278,143 +303,6 @@ public class PosicionCargaTickets extends AppCompatActivity {
     }
 
 
-
-
-    private void posicionesCarga() {
-        bar = new ProgressDialog(PosicionCargaTickets.this);
-        bar.setTitle("Buscando Posiciones de Carga");
-        bar.setMessage("Ejecutando... ");
-        bar.setIcon(R.drawable.gas);
-        bar.setCancelable(false);
-        bar.show();
-
-        String url;
-        url = "http://" + ipEstacion + "/CorpogasService/api/accesoUsuarios/sucursal/" + sucursalId + "/clave/"+ data.getClave();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new com.android.volley.Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-
-                    JSONObject jsonObject = new JSONObject(response);
-                    String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
-                    JSONObject estacionjarreo = new JSONObject(ObjetoRespuesta);
-                    String jarreo = estacionjarreo.getString("EstacionJarreo");
-                    if (ObjetoRespuesta.equals("null")) {
-                        String mensaje = jsonObject.getString("Mensaje");
-                        String titulo = "AVISO";
-                        Modales modales = new Modales(PosicionCargaTickets.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTickets.this,mensaje,titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                                Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                    }else{
-                        lProcesoVenta = new ArrayList<>();
-                        banderaposicionCarga= false;
-                        boolean banderaEntro = false;
-                        JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
-                        String control = jsonObject1.getString("Controles");
-
-                        JSONArray control1 = new JSONArray(control);
-                        for (int i = 0; i < control1.length(); i++) {
-                            JSONObject posiciones = control1.getJSONObject(i);
-                            String posi = posiciones.getString("Posiciones");
-
-                            JSONArray mangue = new JSONArray(posi);
-                            for (int j = 0; j < mangue.length(); j++) {
-                                JSONObject res = mangue.getJSONObject(j);
-                                posicionCargaId = res.getLong("PosicionCargaId");
-                                long posicionCargaNumeroInterno = res.getLong("NumeroInterno");
-
-                                boolean pocioncargadisponible = res.getBoolean("Disponible");
-//                                String estado = res.getString("Estado");
-                                boolean pocioncargapendientecobro = res.getBoolean("PendienteCobro");
-                                String descripcionoperativa = res.getString("DescripcionOperativa");
-                                String descripcion = res.getString("Descripcion");
-                                numeroOperativa = res.getLong("Operativa");
-                                Boolean banderacarga ;
-                                if (pocioncargapendientecobro==true) {
-                                    String titulo = "PC " + posicionCargaNumeroInterno;
-                                    String subtitulo = "";//
-                                    subtitulo =descripcionoperativa;//
-                                    lProcesoVenta.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,numeroOperativa, jarreo));//
-                                    banderaposicionCarga = true;
-                                }
-                            }
-                        }
-                        bar.cancel();
-                        //AQUI VA EL ADAPTADOR
-                        if (banderaposicionCarga.equals(false)){
-//                        //Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
-                            String titulo = "AVISO";
-                            String mensajes="";
-                            mensajes = "No hay posiciones de carga Pendiente de Cobro";
-                            Modales modales = new Modales(PosicionCargaTickets.this);
-                            View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTickets.this,mensajes,titulo);
-                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    modales.alertDialog.dismiss();
-                                    Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
-                                    startActivity(intent1);
-                                    finish();
-                                }
-                            });
-                        }else {
-                            initializeAdapter();
-                            bar.cancel();
-                        }
-
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(PosicionCargaTickets.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    bar.cancel();
-                    e.printStackTrace();
-                }
-            }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String algo = new String(error.networkResponse.data);
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        String titulo = "Jarreo";
-                        String mensajes = errorMensaje;
-                        Modales modales = new Modales(PosicionCargaTickets.this);
-                        View view1 = modales.MostrarDialogoAlertaAceptar(PosicionCargaTickets.this, mensajes, titulo);
-                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                modales.alertDialog.dismiss();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(90000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(stringRequest);
-    }
-
-
-
-
     private void initializeAdapter() {
         RVAdapter adapter = new RVAdapter(lProcesoVenta);
         adapter.setOnClickListener(new View.OnClickListener() {
@@ -424,6 +312,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                 cargaNumeroInterno = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getPosicioncarganumerointerno();
                 operativa = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getSubtitulo();
                 jarreo = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getJarreo();
+                autojarreo = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getAutojarreo();
                 String obtieneposicion = lProcesoVenta.get(rcvPosicionCargaTicket.getChildAdapterPosition(v)).getTitulo();
                 numeroInternoPosicionCarga = Long.parseLong(obtieneposicion.substring(obtieneposicion.indexOf(" ")+1, obtieneposicion.length()));
                 if (lugarproviene.equals("Imprimir")){
@@ -458,9 +347,20 @@ public class PosicionCargaTickets extends AppCompatActivity {
                         }
                     }
                 }else{
-                    imprimirticket(Long.toString(posicionCargaId), "1", "0" );
+                    if (lugarproviene.equals("OpcionProductos")){
+                        Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
+                        intent.putExtra("numeroOperativa", operativa);
+                        intent.putExtra("cadenaproducto", "");
+                        intent.putExtra("lugarproviene", lugarproviene);
+                        intent.putExtra("lugarProviene", lugarproviene);
+                        intent.putExtra("NumeroIsla", data.getIslaId());
+                        intent.putExtra("posicionCarga", posicionCargaId);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        imprimirticket(Long.toString(posicionCargaId), "1", "0" );
+                    }
                 }
-
             }
         });
 
@@ -541,6 +441,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                         intent.putExtra("numeroTarjeta", "");
                                         intent.putExtra("descuento", 0);
                                         intent.putExtra("nipCliente", "");
+                                        intent.putExtra("jarreo", autojarreo);
 
                                         switch (IdOperativa) {
                                             case "1": //              Operativa normal

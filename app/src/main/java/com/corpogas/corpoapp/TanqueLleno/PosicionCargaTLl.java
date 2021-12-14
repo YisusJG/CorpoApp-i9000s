@@ -39,6 +39,7 @@ import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
 import com.corpogas.corpoapp.TanqueLleno.PlanchadoTarjeta.PlanchadoTanqueLleno;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -80,6 +81,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
     RespuestaApi<AccesoUsuario> accesoUsuario;
     List<RecyclerViewHeaders> lrcvPosicionCarga;
     Button btnCargarTodasPCTll;
+    FloatingActionButton cargarPosicionesButton;
 
 
     ProgressDialog bar;
@@ -102,6 +104,15 @@ public class PosicionCargaTLl extends AppCompatActivity {
                 posicionCargaFinaliza(2);
             }
         });
+
+        cargarPosicionesButton = findViewById(R.id.cargaTodasPosicionesTl);
+        cargarPosicionesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                posicionCargaFinaliza(2);
+            }
+        });
+
 
     }
 
@@ -230,7 +241,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                                 String subtitulo = "";//
                                                 //    subtitulo = "Magna  |  Premium  |  Diesel";
                                                 subtitulo =descripcionoperativa;//
-                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, "false"));//
+                                                lrcvPosicionCarga.add(new RecyclerViewHeaders(titulo,subtitulo,R.drawable.gas,posicionCargaId,posicionCargaNumeroInterno, "false", "false"));//
                                                 banderaposicionCarga = true;
                                             }
                                         }

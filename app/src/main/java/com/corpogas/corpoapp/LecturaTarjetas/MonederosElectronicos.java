@@ -2,16 +2,24 @@ package com.corpogas.corpoapp.LecturaTarjetas;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.device.scanner.configuration.Triggering;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -33,16 +41,19 @@ import com.corpogas.corpoapp.Menu_Principal;
 import com.corpogas.corpoapp.Modales.Modales;
 import com.corpogas.corpoapp.Puntada.PosicionPuntadaRedimir;
 import com.corpogas.corpoapp.Puntada.ProductosARedimir;
-import com.corpogas.corpoapp.Puntada.SeccionTarjeta;
 import com.corpogas.corpoapp.R;
 import com.corpogas.corpoapp.Interfaces.Endpoints.EndPoints;
+import com.corpogas.corpoapp.ScanManagerProvides;
 import com.corpogas.corpoapp.Service.MagReadService;
 import com.corpogas.corpoapp.TanqueLleno.TanqueLlenoNip;
+import com.corpogas.corpoapp.ValesPapel.ValesPapel;
 import com.corpogas.corpoapp.VentaCombustible.DiferentesFormasPago;
 import com.corpogas.corpoapp.VentaCombustible.ImprimePuntada;
 import com.corpogas.corpoapp.VentaPagoTarjeta;
 import com.corpogas.gogasmanagement.Entities.Helpers.CurrencyFormatter;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +79,9 @@ public class MonederosElectronicos extends AppCompatActivity {
     RespuestaApi<AccesoUsuario> token;
 
     String model;
+    //Variables Escaner
+    ScanManagerProvides scanManagerProvides;
+    String result;
 
     ProgressDialog bar;
     private MagReadService mReadService;
@@ -78,11 +92,13 @@ public class MonederosElectronicos extends AppCompatActivity {
     CurrencyFormatter numFormat;
     DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
     DecimalFormat df;
-
-
+    TextView tvMensajeDesliza;
+    Button btnEscanearTarjeta;
     RespuestaApi<Bin> respuestaApiBin;
     JSONArray datos = new JSONArray();
     String idformaPago, posiciondeCarga, numeroempleadosucursal, PagoPuntada, tipoTarjeta;
+    String numeroTarjeta, nipQr;
+    Double descuentoCombustible1, descuentoCombustible2, descuentoCombustible3;
 
     boolean pasa;
 
@@ -129,6 +145,7 @@ public class MonederosElectronicos extends AppCompatActivity {
     String EstacionId, sucursalId, ipEstacion, numeroTarjetero;
     Double montoenlacanasta;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +155,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         getToken();
         data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEstacion() + " ( EST.:" + data.getNumeroEstacion() + ")");
-
+        tvMensajeDesliza = (TextView) findViewById(R.id.tvMensajeDesliza);
 //        mNo = (EditText) findViewById(R.id.editText1);
 //        mAlertTv = (TextView) findViewById(R.id.textView1);
         Enviadodesde = getIntent().getStringExtra("Enviadodesde");
@@ -166,6 +183,30 @@ public class MonederosElectronicos extends AppCompatActivity {
         simbolos.setDecimalSeparator('.');
         df = new DecimalFormat("###,###.00", simbolos);
         df.setMaximumFractionDigits(2);
+        tvMensajeDesliza.setText("Desliza la tarjeta " + tipoTarjeta);
+        btnEscanearTarjeta = (Button) findViewById(R.id.btnEscanearTarjeta);
+
+        if (model.equals("i9000S")) {
+            //PAra inicializar el escaner se debe inicilizar en el metodo OnResume
+            scanManagerProvides = new ScanManagerProvides();
+            result = "";
+            btnEscanearTarjeta.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (view.getId() == R.id.btnEscanearTarjeta) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            if (scanManagerProvides.getTriggerMode() == Triggering.HOST) {
+                                scanManagerProvides.stopDecode();
+                            }
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            scanManagerProvides.startDecode();
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
 
     }
 
@@ -201,6 +242,61 @@ public class MonederosElectronicos extends AppCompatActivity {
 
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() != KeyEvent.KEYCODE_ENTER) { //Not Adding ENTER_KEY to barcode String
+            char pressedKey = (char) event.getUnicodeChar();
+            result += pressedKey;
+        }
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {  //Any method handling the data
+//            Toast.makeText(MonederosElectronicos.this, result, Toast.LENGTH_SHORT).show();
+            ObtieneDatosQrPuntada();
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+
+    protected void onActivityResult (int requestCode, int resulCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resulCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(getApplicationContext(), "Lectura Cancelada", Toast.LENGTH_SHORT).show();
+            } else {
+//                if (!result.getContents().contains(",")){
+//                    Toast.makeText(getApplicationContext(), "El código QR no contiene descuento asociado", Toast.LENGTH_SHORT).show();
+//                } else{
+                    ObtieneDatosQrPuntada();
+//                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resulCode, data);
+        }
+    }
+
+    private void ObtieneDatosQrPuntada(){
+        //Se envia resultado de Qr a endpoint para recuperar los datos de la tarjeta, y los descuentos por combustible
+
+        numeroTarjeta = "4000052500200001";
+        descuentoCombustible1 = 0.5;
+        descuentoCombustible2 = 0.4;
+        descuentoCombustible3 = 0.6;
+        NIP = "";
+        if (PagoPuntada.equals("si")) {
+            Intent intent = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class); //ENVIABA A SeccionTarjeta cambio a PosicionPuntadaRedimir
+            intent.putExtra("track", numeroTarjeta);
+            intent.putExtra("nip", NIP);
+            intent.putExtra("lugarproviene", lugarProviene);
+            intent.putExtra("descuento1", descuentoCombustible1);
+            intent.putExtra("descuento2", descuentoCombustible2);
+            intent.putExtra("descuento3", descuentoCombustible3);
+            startActivity(intent);
+            finish();
+        } else {
+            EnviaProcesoPuntadaAcumular(numeroTarjeta);
+        }
+    }
+
+
+    @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
@@ -221,6 +317,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         super.onResume();
         if (model.equals("i9000S")) {
             mReadService.start();
+            scanManagerProvides.initScan(MonederosElectronicos.this);
         }
     }
 
@@ -292,13 +389,43 @@ public class MonederosElectronicos extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            Intent intent = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class); //ENVIABA A SeccionTarjeta cambio a PosicionPuntadaRedimir
-                            intent.putExtra("track", mesanje);
-                            intent.putExtra("nip", NIP);
-                            intent.putExtra("lugarproviene", lugarProviene);
-                            intent.putExtra("descuento", "0");
-                            startActivity(intent);
-                            finish();
+                            String titulo = "PUNTADA";
+                            String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
+                            Modales modales = new Modales(MonederosElectronicos.this);
+                            View viewLectura = modales.MostrarDialogoInsertaDato(MonederosElectronicos.this, mensaje, titulo);
+                            EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String cantidad = edtProductoCantidad.getText().toString();
+                                    if (cantidad.isEmpty()){
+                                        edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
+                                    }else {
+                                        String NIP = cantidad;
+                                        Intent intent = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class); //ENVIABA A SeccionTarjeta cambio a PosicionPuntadaRedimir
+                                        intent.putExtra("track", mesanje);
+                                        intent.putExtra("nip", NIP);
+                                        intent.putExtra("lugarproviene", lugarProviene);
+                                        intent.putExtra("descuento", "0");
+                                        intent.putExtra("descuento1", 0.0);
+                                        intent.putExtra("descuento2", 0.0);
+                                        intent.putExtra("descuento3", 0.0);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }
+                                }
+                            });
+                            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    modales.alertDialog.dismiss();
+                                    Intent intent = new Intent(getApplicationContext(), Menu_Principal.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
                         }
 
 //                        if (PagoPuntada.equals("si")){
@@ -315,24 +442,40 @@ public class MonederosElectronicos extends AppCompatActivity {
 //                        startActivity(intent);
 //                        finish();
                     } else {
-                        if (idMonedero == 2 && formaPagoId == 11) { //TANQUE LLENO CENTRO
-//                            Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
-                            intent.putExtra("track", mesanje);
-                            intent.putExtra("lugarProviene", Enviadodesde);
-                            startActivity(intent);
-                            finish();
-                        }
-                        if (idMonedero == 3 && formaPagoId == 11) { //TANQUE LLENO SURESTE
-                            Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
+                        if (!tipoTarjeta.equals("TanqueLleno")) {
+                            String titulo = "AVISO";
+                            String mensaje = "Tarjeta inválida, NO ES TARJETA PUNTADA";
+                            Modales modales = new Modales(MonederosElectronicos.this);
+                            View view1 = modales.MostrarDialogoAlertaAceptar(MonederosElectronicos.this, mensaje, titulo);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+//                                    onDestroy();
+                                    modales.alertDialog.dismiss();
+                                    Intent intent = new Intent(MonederosElectronicos.this, Menu_Principal.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                        } else {
+                            if (idMonedero == 2 && formaPagoId == 11) { //TANQUE LLENO CENTRO
+    //                            Toast.makeText(getApplicationContext(), "A qui va tanque lleno", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
+                                intent.putExtra("track", mesanje);
+                                intent.putExtra("lugarProviene", Enviadodesde);
+                                startActivity(intent);
+                                finish();
+                            }
+                            if (idMonedero == 3 && formaPagoId == 11) { //TANQUE LLENO SURESTE
+                                Toast.makeText(getApplicationContext(), "Aqui va tanque lleno Sureste", Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
-                            intent.putExtra("lugarProviene", Enviadodesde);
-                            intent.putExtra("track", mesanje);
-                            startActivity(intent);
-                            finish();
+                                Intent intent = new Intent(getApplicationContext(), TanqueLlenoNip.class);  //seccionTanqueLleno
+                                intent.putExtra("lugarProviene", Enviadodesde);
+                                intent.putExtra("track", mesanje);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
-
                     }
                 } else {
                     String titulo = "AVISO";
@@ -493,6 +636,13 @@ public class MonederosElectronicos extends AppCompatActivity {
 
 
     private void CompararTarjetasPuntada(final String tk1, final String tk2, final String tk3) {
+        bar = new ProgressDialog(MonederosElectronicos.this);
+        bar.setTitle("Conectando con Puntada");
+        bar.setMessage("Ejecutando... ");
+        bar.setIcon(R.drawable.registrarpuntada);
+        bar.setCancelable(false);
+        bar.show();
+
         if (!Conexion.compruebaConexion(this)) {
             Toast.makeText(getBaseContext(), "Sin conexión a la red ", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), Menu_Principal.class);
@@ -577,6 +727,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     onDestroy();
+                    bar.cancel();
                     Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
                     startActivity(intente);
                 }
@@ -755,6 +906,13 @@ public class MonederosElectronicos extends AppCompatActivity {
             startActivity(intent1);
             finish();
         } else {
+            bar = new ProgressDialog(MonederosElectronicos.this);
+            bar.setTitle("Acumulando Puntada");
+            bar.setMessage("Ejecutando... ");
+            bar.setIcon(R.drawable.registrarpuntada);
+            bar.setCancelable(false);
+            bar.show();
+
             JSONObject datos = new JSONObject();
 
             String idusuario = getIntent().getStringExtra("idusuario");
@@ -790,6 +948,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                         mensaje = response.getString("Mensaje");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        bar.cancel();
                     }
                     if (estado.equals("true")) {
                         if (Enviadodesde.equals("formaspago")) {
@@ -833,17 +992,28 @@ public class MonederosElectronicos extends AppCompatActivity {
                                     startActivity(intentVisa);
                                     finish();
                                 } else {
-                                    Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
-                                    Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
-                                    intente.putExtra("posicioncarga", posiciondeCarga);
-                                    intente.putExtra("idoperativa", idoperativa);
-                                    intente.putExtra("idformapago", numpago);
-                                    intente.putExtra("nombrepago", nombrepago);
-                                    intente.putExtra("montoencanasta", MontoenCarrito);
-                                    intente.putExtra("lugarProviene", "FormasPago");
-                                    intente.putExtra("lugarProviene2", "");
-                                    startActivity(intente);
-                                    finish();
+                                    if (idformaPago.equals("2")){
+                                        Intent intentVale = new Intent(getApplicationContext(), ValesPapel.class);
+                                        intentVale.putExtra("Enviadodesde", "formaspago");
+                                        intentVale.putExtra("posicioncarga", posiciondeCarga);
+                                        intentVale.putExtra("idoperativa", idoperativa);
+                                        intentVale.putExtra("formapagoid", "2");
+                                        intentVale.putExtra("montoencanasta", montoenlacanasta);
+                                        startActivity(intentVale);
+                                        finish();
+                                    }else{
+                                        Double MontoenCarrito = getIntent().getDoubleExtra("montoenlacanasta", 0);
+                                        Intent intente = new Intent(getApplicationContext(), ImprimePuntada.class);
+                                        intente.putExtra("posicioncarga", posiciondeCarga);
+                                        intente.putExtra("idoperativa", idoperativa);
+                                        intente.putExtra("idformapago", numpago);
+                                        intente.putExtra("nombrepago", nombrepago);
+                                        intente.putExtra("montoencanasta", MontoenCarrito);
+                                        intente.putExtra("lugarProviene", "FormasPago");
+                                        intente.putExtra("lugarProviene2", "");
+                                        startActivity(intente);
+                                        finish();
+                                    }
                                 }
                             }
                         } else {
@@ -876,7 +1046,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
-
+                            bar.cancel();
                         }
                     }
                 }
@@ -884,7 +1054,7 @@ public class MonederosElectronicos extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
-
+                    bar.cancel();
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {

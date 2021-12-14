@@ -61,13 +61,13 @@ import java.util.Map;
 
 public class IniciaVentas extends AppCompatActivity {
     SQLiteBD data;
-    String EstacionId, ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, posicionCarga, usuarioid, numerodispositivo, correcto, mensaje;
+    String EstacionId, ipEstacion, lugarproviene, idUsuario, sucursalId, poscicionCarga, estacionJarreo, jarreo, posicionCarga, usuarioid, numerodispositivo, correcto, mensaje;
     long numeroInternoPosicionCarga, posicioncargaid;
     JSONArray myArray = new JSONArray();
     TextView tvTituloIniciaVenta, tvPredeterminadoCantidad, tvAutojarreo;
     Spinner spCombustible;
     RecyclerView rvPredeterminado;
-    Double descuento, descuentoMagnaYena, descuentoPremiumYena, descuentoDieselYena;
+    Double descuento, descuentoMagna, descuentoPremium, descuentoDiesel;
     String claveProducto, descripcioncombustible, precio, numeroTarjeta, claveTarjeta, nipCliente;
 
     List<RecyclerViewHeaders> lrecyclerViewHeaders;
@@ -120,7 +120,7 @@ public class IniciaVentas extends AppCompatActivity {
                 intent.putExtra("lugarProviene", lugarproviene);
                 intent.putExtra("NumeroIsla", data.getIslaId());
                 intent.putExtra("NumeroEmpleado", usuarioid);
-                intent.putExtra("posicionCarga", poscicionCarga);
+                intent.putExtra("posicionCarga", Long.parseLong(poscicionCarga));
                 startActivity(intent);
 
             }
@@ -181,7 +181,7 @@ public class IniciaVentas extends AppCompatActivity {
                                             }
                                             if (MontoenCanasta.equals(0.00)) {
 //                                                Reintenta();
-                                                Toast.makeText(IniciaVentas.this, "Monto en CERO", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(IniciaVentas.this, "Espera, procesando... ", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 if (estacionJarreo.equals("true")){
                                                     Intent intent1 = new Intent(getApplicationContext(), FormaPagoAutojarreo.class);
@@ -204,7 +204,7 @@ public class IniciaVentas extends AppCompatActivity {
                                                     intent.putExtra("lugarProviene", lugarproviene);
                                                     intent.putExtra("nipCliente", nipCliente);
                                                     intent.putExtra("IdOperativa", "0");
-                                                    intent.putExtra("estacionjarreo", "true");
+                                                    intent.putExtra("estacionjarreo", jarreo);
                                                     startActivity(intent);
                                                     finish();
                                                 }
@@ -341,15 +341,16 @@ public class IniciaVentas extends AppCompatActivity {
         poscicionCarga = getIntent().getStringExtra("posicionCarga");
         posicioncargaid = getIntent().getLongExtra("pocioncargaid", 0);
         idUsuario = data.getNumeroEmpleado();//getIntent().getStringExtra("numeroEmpleado");
-        estacionJarreo = getIntent().getStringExtra("estacionjarreo");
+        jarreo = getIntent().getStringExtra("estacionjarreo");
+        estacionJarreo = getIntent().getStringExtra("jarreo");
         numeroInternoPosicionCarga = getIntent().getLongExtra("pcnumerointerno", 0);
         numerodispositivo = data.getIdTarjtero();
         lugarproviene = getIntent().getStringExtra("lugarProviene");
         descuento = getIntent().getDoubleExtra("Descuento", 0);
 
-        descuentoMagnaYena = getIntent().getDoubleExtra("descuentoMagna", 0);
-        descuentoPremiumYena = getIntent().getDoubleExtra("descuentoPremium", 0);
-        descuentoDieselYena = getIntent().getDoubleExtra("descuentoDiesel", 0);
+        descuentoMagna = getIntent().getDoubleExtra("descuentoMagna", 0);
+        descuentoPremium = getIntent().getDoubleExtra("descuentoPremium", 0);
+        descuentoDiesel = getIntent().getDoubleExtra("descuentoDiesel", 0);
 
 
         numeroTarjeta = getIntent().getStringExtra("numeroTarjeta");
@@ -665,22 +666,32 @@ public class IniciaVentas extends AppCompatActivity {
                 datos.put("Descripcion", descripcioncombustible);
                 datos.put("Cantidad", cantidadpredeterminar);
                 datos.put("Precio", precio);
-                if (lugarproviene.equals("puntadaAcumularQr")) {
-                    datos.put("importedescuento", descuento);
+                if (lugarproviene.equals("puntadaAcumularQr") || lugarproviene.equals("DescuentoQr")) {
+//                    datos.put("importedescuento", descuento);
+                    switch (claveProducto) {
+                        case "1":
+                            datos.put("importedescuento",  descuentoMagna);
+                            break;
+                        case "2":
+                            datos.put("importedescuento", descuentoPremium);
+                            break;
+                        case "3":
+                            datos.put("importedescuento", descuentoDiesel);
+                            break;
+                    }
                 } else if (lugarproviene.equals("descuentoYena")) {
                     switch (claveProducto) {
                         case "1":
-                            datos.put("importedescuento",  descuentoMagnaYena);
+                            datos.put("importedescuento",  descuentoMagna);
                             break;
                         case "2":
-                            datos.put("importedescuento", descuentoPremiumYena);
+                            datos.put("importedescuento", descuentoPremium);
                             break;
                         case "3":
-                            datos.put("importedescuento", descuentoDieselYena);
+                            datos.put("importedescuento", descuentoDiesel);
                             break;
                     }
                 }
-
                 myArray.put(datos);
                 //datos.put("Precio", litros);
                 if (identificador.equals("LITROS")) {

@@ -54,8 +54,8 @@ public class SeccionTarjeta extends AppCompatActivity {
 
     private void initializeData() {
         lrecyclerViewHeaders = new ArrayList<>();
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pago con Puntos","Redimir",R.drawable.redimirpuntada));
-        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pago con Puntos QR","Redimir con QR",R.drawable.redimirpuntada));
+        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pago con Puntos","Redimir / Redimir QR",R.drawable.redimirpuntada));
+//        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Pago con Puntos QR","Redimir con QR",R.drawable.redimirpuntada));
         lrecyclerViewHeaders.add(new RecyclerViewHeaders("Descuento QR","Lee QR para descuento",R.drawable.redimirpuntada));
 
         //        lrecyclerViewHeaders.add(new RecyclerViewHeaders("Puntada Registrar","Registrar Tarjeta Puntada",R.drawable.registrarpuntada));
@@ -105,34 +105,43 @@ public class SeccionTarjeta extends AppCompatActivity {
     private void RedencionConsultaPuntada(String ProcesoARealizar){
         String proceso = ProcesoARealizar;
         try {
-            String titulo = "PUNTADA";
-            String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
-            Modales modales = new Modales(SeccionTarjeta.this);
-            View viewLectura = modales.MostrarDialogoInsertaDato(SeccionTarjeta.this, mensaje, titulo);
-            EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
-            edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String cantidad = edtProductoCantidad.getText().toString();
-                    if (cantidad.isEmpty()){
-                        edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
-                    }else {
-                        String NIPCliente = cantidad;
+            if (PuntadaProceso.equals("RedimirQr") || PuntadaProceso.equals("Redimir") ){
+                Intent intentMonedero = new Intent(getApplicationContext(), MonederosElectronicos.class);
+                intentMonedero.putExtra("Enviadodesde", "menuprincipal");
+                intentMonedero.putExtra("tipoTarjeta", "Puntada");
+                intentMonedero.putExtra("lugarproviene", PuntadaProceso);
+                intentMonedero.putExtra("nip", "");
+                startActivity(intentMonedero);
+                finish();
+            }else{
+                String titulo = "PUNTADA";
+                String mensaje = "Ingresa el NIP de la tarjeta Puntada" ;
+                Modales modales = new Modales(SeccionTarjeta.this);
+                View viewLectura = modales.MostrarDialogoInsertaDato(SeccionTarjeta.this, mensaje, titulo);
+                EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+                edtProductoCantidad.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String cantidad = edtProductoCantidad.getText().toString();
+                        if (cantidad.isEmpty()){
+                            edtProductoCantidad.setError("Ingresa el NIP de la tarjeta Puntada");
+                        }else {
+                            String NIPCliente = cantidad;
 //                        Intent intent4 = new Intent(getApplicationContext(), PosicionPuntadaRedimir.class);
 //                        intent4.putExtra("track", NumeroTarjeta);
 //                        intent4.putExtra("nip", NIPCliente);
 //                        intent4.putExtra("lugarproviene", PuntadaProceso);
 //                        startActivity(intent4);
 //                        finish();
-                        if (PuntadaProceso.equals("RedimirQr")){
-                            Intent intentQr = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
-                            intentQr.putExtra("nip", NIPCliente);
-                            intentQr.putExtra("lugarProviene", "Redimir");
-
-                            startActivity(intentQr);
-                            finish();
-                        }else{
+//                        if (PuntadaProceso.equals("RedimirQr")){
+//                            Intent intentQr = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
+//                            intentQr.putExtra("nip", NIPCliente);
+//                            intentQr.putExtra("lugarProviene", "RedimirQr");
+//
+//                            startActivity(intentQr);
+//                            finish();
+//                        }else{
                             if (PuntadaProceso.equals("DescuentoQr")){
                                 Intent intentQr = new Intent(getApplicationContext(), PuntadaRedimirQr.class);
                                 intentQr.putExtra("nip", NIPCliente);
@@ -148,16 +157,17 @@ public class SeccionTarjeta extends AppCompatActivity {
                                 startActivity(intentMonedero);
                                 finish();
                             }
+//                        }
                         }
                     }
-                }
-            });
-            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    modales.alertDialog.dismiss();
-                }
-            });
+                });
+                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

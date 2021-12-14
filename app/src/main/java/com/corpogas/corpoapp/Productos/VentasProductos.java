@@ -94,7 +94,8 @@
         String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
         ListView list;
         Integer ProductosAgregados = 0;
-        String posicion, usuario;
+        String usuario;
+        Long posicion;
         String transaccionId;
         TextView txtproductos;
         String cadenaproducto = "";
@@ -175,7 +176,7 @@
             empleado=findViewById(R.id.empleado);
             empleado.setText(getIntent().getStringExtra("NumeroEmpleado"));
 
-            posicion = getIntent().getStringExtra("posicionCarga");
+            posicion = getIntent().getLongExtra("posicionCarga",0);
             usuario = getIntent().getStringExtra("NumeroEmpleado");
 
 
@@ -249,7 +250,7 @@
                             intent.putExtra("posicion", posicion);
                             intent.putExtra("usuario", usuario);
                             intent.putExtra("cadenaproducto", myArrayPaso.toString());
-                            intent.putExtra("lugarproviene", lugarproviene);
+                            intent.putExtra("lugarproviene", lugarProviene);
 //                        intent.putExtra("numeroOpertativa", numerooperativa);
                             intent.putExtra("numeroisla", islaId);
 //                        intent.putExtra("numeroempleado", NumeroEmpleado);
@@ -398,7 +399,7 @@
                     @Override
                     public void onClick(View view) {
                         Producto.setText("");
-                        Producto.clearFocus();
+//                        Producto.clearFocus();
                         IntentIntegrator integrator = new IntentIntegrator(VentasProductos.this);
                         integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
                         integrator.setPrompt("Lector - CDP");
@@ -406,7 +407,7 @@
                         integrator.setBeepEnabled(true);
                         integrator.setBarcodeImageEnabled(true);
                         integrator.initiateScan();
-                        Producto.requestFocus();
+                        Producto.setFocusable(true); //.requestFocus();
                     }
                 });
             }
