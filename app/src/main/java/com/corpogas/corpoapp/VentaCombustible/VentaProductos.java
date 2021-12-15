@@ -238,7 +238,11 @@ public class VentaProductos extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorToken(VentaProductos.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(VentaProductos.this);
+                    } else {
+                        Toast.makeText(VentaProductos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override
@@ -322,7 +326,11 @@ public class VentaProductos extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                    GlobalToken.errorToken(VentaProductos.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(VentaProductos.this);
+                    } else {
+                        Toast.makeText(VentaProductos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override
@@ -395,7 +403,7 @@ public class VentaProductos extends AppCompatActivity {
         } else {
             Retrofit retrofit = new Retrofit.Builder()
 //                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                    .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
@@ -407,7 +415,11 @@ public class VentaProductos extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Isla> call, retrofit2.Response<Isla> response) {
                     if (!response.isSuccessful()) {
-                        GlobalToken.errorToken(VentaProductos.this);
+                        if (response.code() == 401) {
+                            GlobalToken.errorToken(VentaProductos.this);
+                        } else {
+                            Toast.makeText(VentaProductos.this, response.message(), Toast.LENGTH_SHORT).show();
+                        }
                         return;
                     }
                     respuestaApiPosicionCargaProductosSucursal = response.body();
@@ -564,7 +576,11 @@ public class VentaProductos extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-                GlobalToken.errorTokenWithReload(VentaProductos.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(VentaProductos.this);
+                } else {
+                    Toast.makeText(VentaProductos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override

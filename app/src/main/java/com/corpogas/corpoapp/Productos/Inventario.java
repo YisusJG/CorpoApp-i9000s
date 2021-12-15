@@ -101,7 +101,11 @@ public class Inventario extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<List<BodegaProducto>>> call, retrofit2.Response<RespuestaApi<List<BodegaProducto>>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(Inventario.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(Inventario.this);
+                    } else {
+                        Toast.makeText(Inventario.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
 

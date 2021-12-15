@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.security.identity.UnknownAuthenticationKeyException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -59,6 +61,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -287,7 +290,11 @@ public class PosicionCargaTickets extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorTokenWithReload(PosicionCargaTickets.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PosicionCargaTickets.this);
+                    } else {
+                        Toast.makeText(PosicionCargaTickets.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    bar.cancel();
 //                    String algo = new String(error.networkResponse.data);
 //                    try {
@@ -565,7 +572,11 @@ public class PosicionCargaTickets extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
 //                    bar.cancel();
-                    GlobalToken.errorToken(PosicionCargaTickets.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PosicionCargaTickets.this);
+                    } else {
+                        Toast.makeText(PosicionCargaTickets.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override
@@ -627,9 +638,10 @@ public class PosicionCargaTickets extends AppCompatActivity {
                 datos.put("IdUsuario", numeroEmpleadoReimprime); // getIntent().getStringExtra("numeroEmpleado")
             }else{
                 datos.put("IdUsuario", data.getNumeroEmpleado());
+                datos.put("IdFormasPago", FormasPagoArreglo);
             }
             datos.put("SucursalId", sucursalId);
-            datos.put("IdFormasPago", FormasPagoArreglo);
+//            datos.put("IdFormasPago", FormasPagoArreglo);
             datos.put("ConfiguracionAplicacionId", data.getIdTarjtero());
 
         } catch (JSONException e) {
@@ -640,7 +652,6 @@ public class PosicionCargaTickets extends AppCompatActivity {
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url,  datos, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
                 String detalle = "";
                 try {
                     detalle = response.getString("Detalle");
@@ -678,9 +689,7 @@ public class PosicionCargaTickets extends AppCompatActivity {
                                 modales.alertDialog.dismiss();
                             }
                         });
-
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -689,7 +698,13 @@ public class PosicionCargaTickets extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(PosicionCargaTickets.this, error.toString(), Toast.LENGTH_SHORT).show();
-                GlobalToken.errorToken(PosicionCargaTickets.this);
+//                GlobalToken.errorToken(PosicionCargaTickets.this); // com.android.volley.AuthFailureError
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(PosicionCargaTickets.this);
+                } else {
+                    Toast.makeText(PosicionCargaTickets.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
+                return;
             }
         }){
             public Map<String,String> getHeaders() throws AuthFailureError {

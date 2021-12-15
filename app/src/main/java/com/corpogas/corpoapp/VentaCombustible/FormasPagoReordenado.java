@@ -258,7 +258,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                GlobalToken.errorTokenWithReload(FormasPagoReordenado.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(FormasPagoReordenado.this);
+                } else {
+                    Toast.makeText(FormasPagoReordenado.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override
@@ -1206,7 +1210,7 @@ public class FormasPagoReordenado extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         EndPoints yenaSaldo = retrofit.create(EndPoints.class);
@@ -1215,7 +1219,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, retrofit2.Response<RespuestaApi<Boolean>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(FormasPagoReordenado.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(FormasPagoReordenado.this);
+                    } else {
+                        Toast.makeText(FormasPagoReordenado.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 RespuestaApi<Boolean> yenaResponse = response.body();
@@ -1487,7 +1495,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                    GlobalToken.errorToken(FormasPagoReordenado.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(FormasPagoReordenado.this);
+                    } else {
+                        Toast.makeText(FormasPagoReordenado.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override
@@ -1579,7 +1591,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(FormasPagoReordenado.this, "error", Toast.LENGTH_SHORT).show();
-                GlobalToken.errorToken(FormasPagoReordenado.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(FormasPagoReordenado.this);
+                } else {
+                    Toast.makeText(FormasPagoReordenado.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1643,7 +1659,11 @@ public class FormasPagoReordenado extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                GlobalToken.errorToken(FormasPagoReordenado.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(FormasPagoReordenado.this);
+                } else {
+                    Toast.makeText(FormasPagoReordenado.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override

@@ -57,35 +57,6 @@ public class LoginActivity extends AppCompatActivity {
         txtNumeroDispositivoLogin.setText("No. Dispositivo: " + db.getIdTarjtero());
     }
 
-//    private void getToken() {
-//        Retrofit retrofit = new Retrofit.Builder()
-////                .baseUrl("http://"+ip2+"/CorpogasService/") //anterior
-//                .baseUrl("http://"+ipEstacion+"/CorpogasService_entities_token/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        EndPoints obtenerToken = retrofit.create(EndPoints.class);
-//        Call<RespuestaApi<AccesoUsuario>> call = obtenerToken.getAccesoUsuario(Long.parseLong(db.getIdSucursal()), db.getClave());
-//        call.timeout().timeout(60, TimeUnit.SECONDS);
-//        call.enqueue(new Callback<RespuestaApi<AccesoUsuario>>() {
-//            @Override
-//            public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
-//                if (response.isSuccessful()) {
-//                    token = response.body();
-//                    assert token != null;
-//                    bearerToken = token.Mensaje;
-//                } else {
-//                    bearerToken = "";
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<RespuestaApi<AccesoUsuario>> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
 
 
     //BORRAR PARA PRUEBA ESTE COMENTARIO
@@ -115,14 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                                      nombreCompletoApi, idApi, claveApi, activoApi, correoApi, numeroEmpleadoApi,rolDescripcionApi,islaId);
 
             GlobalToken.getToken(LoginActivity.this);
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            Intent intent = new Intent(LoginActivity.this, Menu_Principal.class);
-//            startActivity(intent);
-//            finish();
+
         } else {
             edtNip.setError(respuestaApiEmpleado.Mensaje);
         }

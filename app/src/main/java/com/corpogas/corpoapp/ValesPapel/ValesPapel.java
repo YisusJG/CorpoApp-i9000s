@@ -563,7 +563,11 @@ public class ValesPapel extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(ValesPapel.this, "error", Toast.LENGTH_SHORT).show();
-                    GlobalToken.errorToken(ValesPapel.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(ValesPapel.this);
+                    } else {
+                        Toast.makeText(ValesPapel.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }){
                 public Map<String,String> getHeaders() throws AuthFailureError {
@@ -672,7 +676,11 @@ public class ValesPapel extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-                GlobalToken.errorTokenWithReload(ValesPapel.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorTokenWithReload(ValesPapel.this);
+                } else {
+                    Toast.makeText(ValesPapel.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override

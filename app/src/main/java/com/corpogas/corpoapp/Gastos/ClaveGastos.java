@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.security.identity.UnknownAuthenticationKeyException;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -144,7 +145,7 @@ public class ClaveGastos extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -155,7 +156,11 @@ public class ClaveGastos extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(ClaveGastos.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(ClaveGastos.this);
+                    } else {
+                        Toast.makeText(ClaveGastos.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiEmpleado = response.body();

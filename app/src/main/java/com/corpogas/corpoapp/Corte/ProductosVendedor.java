@@ -212,7 +212,11 @@ public class ProductosVendedor extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                GlobalToken.errorTokenWithReload(ProductosVendedor.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorTokenWithReload(ProductosVendedor.this);
+                } else {
+                    Toast.makeText(ProductosVendedor.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
                 //asiganmos a una variable el error para desplegar la descripcion de Tickets no asignados a la terminal
 //                String algo = new String(error.networkResponse.data);
 //                try {

@@ -254,7 +254,11 @@ public class PosicionCargaTLl extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                GlobalToken.errorTokenWithReload(PosicionCargaTLl.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(PosicionCargaTLl.this);
+                } else {
+                    Toast.makeText(PosicionCargaTLl.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
 //                String algo = new String(error.networkResponse.data);
 //                try {
 //                    //creamos un json Object del String algo
@@ -364,7 +368,11 @@ public class PosicionCargaTLl extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                GlobalToken.errorToken(PosicionCargaTLl.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(PosicionCargaTLl.this);
+                } else {
+                    Toast.makeText(PosicionCargaTLl.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override
@@ -403,7 +411,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -414,7 +422,11 @@ public class PosicionCargaTLl extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaTanqueLleno> call, Response<RespuestaTanqueLleno> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(PosicionCargaTLl.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(PosicionCargaTLl.this);
+                    } else {
+                        Toast.makeText(PosicionCargaTLl.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaTanqueLleno = response.body();
@@ -755,7 +767,11 @@ public class PosicionCargaTLl extends AppCompatActivity {
                     }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorToken(PosicionCargaTLl.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PosicionCargaTLl.this);
+                    } else {
+                        Toast.makeText(PosicionCargaTLl.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    bar.cancel();
 //                    //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
 //                    String titulo = "AVISO";

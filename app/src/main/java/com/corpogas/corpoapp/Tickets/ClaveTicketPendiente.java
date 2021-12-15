@@ -224,7 +224,11 @@ public class ClaveTicketPendiente extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorToken(ClaveTicketPendiente.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(ClaveTicketPendiente.this);
+                    } else {
+                        Toast.makeText(ClaveTicketPendiente.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
 //                    //VolleyLog.e("Error: ", volleyError.getMessage());
 //                    String algo = new String(error.networkResponse.data) ;
@@ -401,7 +405,11 @@ public class ClaveTicketPendiente extends AppCompatActivity {
                 String PruebaError;
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorToken(ClaveTicketPendiente.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(ClaveTicketPendiente.this);
+                    } else {
+                        Toast.makeText(ClaveTicketPendiente.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                     //asiganmos a una variable el error para desplegar la descripcion de Tickets no asignados a la terminal
 //                    String algo = new String(error.networkResponse.data) ;
 //                    try {

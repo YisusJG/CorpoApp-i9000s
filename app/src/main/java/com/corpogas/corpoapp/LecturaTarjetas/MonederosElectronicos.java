@@ -262,7 +262,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         df = new DecimalFormat("###,###.00", simbolos);
         df.setMaximumFractionDigits(2);
         tvMensajeDesliza.setText("Desliza la tarjeta " + tipoTarjeta);
-        btnEscanearTarjeta = (Button) findViewById(R.id.btnEscanearTarjeta);
+        btnEscanearTarjeta = findViewById(R.id.btnEscanearTarjeta);
 
         if (tipoTarjeta.equals("TanqueLleno")) {
             bCheck.setVisibility(View.VISIBLE);
@@ -471,7 +471,7 @@ public class MonederosElectronicos extends AppCompatActivity {
         Bin bin = new Bin(pistas);
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -483,7 +483,11 @@ public class MonederosElectronicos extends AppCompatActivity {
             public void onResponse(Call<RespuestaApi<Bin>> call, Response<RespuestaApi<Bin>> response) {
 
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(MonederosElectronicos.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(MonederosElectronicos.this);
+                    } else {
+                        Toast.makeText(MonederosElectronicos.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiBin = response.body();
@@ -730,7 +734,11 @@ public class MonederosElectronicos extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                GlobalToken.errorToken(MonederosElectronicos.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(MonederosElectronicos.this);
+                } else {
+                    Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override
@@ -856,7 +864,11 @@ public class MonederosElectronicos extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
 //                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
 //                    startActivity(intente);
-                    GlobalToken.errorTokenWithReload(MonederosElectronicos.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(MonederosElectronicos.this);
+                    } else {
+                        Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -1001,7 +1013,11 @@ public class MonederosElectronicos extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                GlobalToken.errorToken(MonederosElectronicos.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(MonederosElectronicos.this);
+                } else {
+                    Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override
@@ -1187,7 +1203,11 @@ public class MonederosElectronicos extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    GlobalToken.errorToken(MonederosElectronicos.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(MonederosElectronicos.this);
+                    } else {
+                        Toast.makeText(MonederosElectronicos.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {

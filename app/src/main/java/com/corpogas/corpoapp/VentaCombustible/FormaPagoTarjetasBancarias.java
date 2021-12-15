@@ -205,9 +205,17 @@ public class FormaPagoTarjetasBancarias extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if (identificador == 1) {
-                        GlobalToken.errorTokenWithReload(FormaPagoTarjetasBancarias.this);
+                        if (error.networkResponse.statusCode == 401) {
+                            GlobalToken.errorTokenWithReload(FormaPagoTarjetasBancarias.this);
+                        } else {
+                            Toast.makeText(FormaPagoTarjetasBancarias.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        GlobalToken.errorToken(FormaPagoTarjetasBancarias.this);
+                        if (error.networkResponse.statusCode == 401) {
+                            GlobalToken.errorToken(FormaPagoTarjetasBancarias.this);
+                        } else {
+                            Toast.makeText(FormaPagoTarjetasBancarias.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                 }

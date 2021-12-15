@@ -214,9 +214,13 @@ public class ProductosJefeIsla extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //asiganmos a una variable el error para desplegar la descripcion de Tickets no asignados a la terminal
-                String algo = new String(error.networkResponse.data);
+//                String algo = new String(error.networkResponse.data);
                 //creamos un json Object del String algo
-                GlobalToken.errorTokenWithReload(ProductosJefeIsla.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorTokenWithReload(ProductosJefeIsla.this);
+                } else {
+                    Toast.makeText(ProductosJefeIsla.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
 //                    JSONObject errorCaptado = new JSONObject(algo);
                 //Obtenemos el elemento ExceptionMesage del error enviado
 //                    String errorMensaje = errorCaptado.getString("ExceptionMessage");

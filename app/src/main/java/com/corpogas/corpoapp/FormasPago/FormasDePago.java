@@ -103,7 +103,7 @@ public class FormasDePago extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -115,7 +115,11 @@ public class FormasDePago extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<BranchPaymentMethod>> call, Response<List<BranchPaymentMethod>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(FormasDePago.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(FormasDePago.this);
+                    } else {
+                        Toast.makeText(FormasDePago.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaListaSucursalFormasPago = response.body();
@@ -237,7 +241,7 @@ public class FormasDePago extends AppCompatActivity {
                 modales.alertDialog.dismiss();
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -249,7 +253,11 @@ public class FormasDePago extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(FormasDePago.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(FormasDePago.this);
+                            } else {
+                                Toast.makeText(FormasDePago.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiTransaccion = response.body();
@@ -316,7 +324,7 @@ public class FormasDePago extends AppCompatActivity {
         try {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -329,7 +337,11 @@ public class FormasDePago extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Ticket> call, Response<Ticket> response) {
                     if (!response.isSuccessful()) {
-                        GlobalToken.errorToken(FormasDePago.this);
+                        if (response.code() == 401) {
+                            GlobalToken.errorToken(FormasDePago.this);
+                        } else {
+                            Toast.makeText(FormasDePago.this, response.message(), Toast.LENGTH_SHORT).show();
+                        }
                         return;
                     }
                     respuestaTicketRequest = response.body();

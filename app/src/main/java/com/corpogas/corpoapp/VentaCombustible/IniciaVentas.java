@@ -260,7 +260,11 @@ public class IniciaVentas extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                    GlobalToken.errorToken(IniciaVentas.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(IniciaVentas.this);
+                    } else {
+                        Toast.makeText(IniciaVentas.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override
@@ -344,7 +348,11 @@ public class IniciaVentas extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                    GlobalToken.errorToken(IniciaVentas.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(IniciaVentas.this);
+                    } else {
+                        Toast.makeText(IniciaVentas.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override
@@ -435,7 +443,11 @@ public class IniciaVentas extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
 //                bar.cancel();
-                GlobalToken.errorTokenWithReload(IniciaVentas.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorTokenWithReload(IniciaVentas.this);
+                } else {
+                    Toast.makeText(IniciaVentas.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override
@@ -793,7 +805,11 @@ public class IniciaVentas extends AppCompatActivity {
                     }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    GlobalToken.errorToken(IniciaVentas.this);
+                    if (volleyError.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(IniciaVentas.this);
+                    } else {
+                        Toast.makeText(IniciaVentas.this, volleyError.toString(), Toast.LENGTH_SHORT).show();
+                    }
                     //VolleyLog.e("Error: ", volleyError.getMessage());
 //                    String algo = new String(volleyError.networkResponse.data);
 //                    try {
@@ -944,7 +960,11 @@ public class IniciaVentas extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                GlobalToken.errorToken(IniciaVentas.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(IniciaVentas.this);
+                } else {
+                    Toast.makeText(IniciaVentas.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
 //                bar.cancel();
 //                String algo = new String(error.networkResponse.data);
 //                try {

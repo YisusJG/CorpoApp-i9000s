@@ -381,7 +381,11 @@ public class DiferentesFormasPago extends AppCompatActivity {
 //                    Toast.makeText(DiferentesFormasPago.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 //                    bar.cancel();
 //                    botonEnviar.setClickable(true);
-                    GlobalToken.errorToken(DiferentesFormasPago.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(DiferentesFormasPago.this);
+                    } else {
+                        Toast.makeText(DiferentesFormasPago.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -431,7 +435,11 @@ public class DiferentesFormasPago extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                    GlobalToken.errorTokenWithReload(DiferentesFormasPago.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorTokenWithReload(DiferentesFormasPago.this);
+                    } else {
+                        Toast.makeText(DiferentesFormasPago.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override

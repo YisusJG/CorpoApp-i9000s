@@ -274,7 +274,11 @@ public class eligeCombustibleTL extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
 //                    String error1 = error.networkResponse.data.toString();
 //                    Toast.makeText(eligeCombustibleTL.this, "error: "+error1, Toast.LENGTH_SHORT).show();
-                    GlobalToken.errorToken(eligeCombustibleTL.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(eligeCombustibleTL.this);
+                    } else {
+                        Toast.makeText(eligeCombustibleTL.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    pasa = false;
                 }
             }) {
@@ -332,7 +336,7 @@ public class eligeCombustibleTL extends AppCompatActivity {
         } else {
             Retrofit retrofit = new Retrofit.Builder()
 //                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                    .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
@@ -344,7 +348,11 @@ public class eligeCombustibleTL extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Isla> call, Response<Isla> response) {
                     if (!response.isSuccessful()) {
-                        GlobalToken.errorTokenWithReload(eligeCombustibleTL.this);
+                        if (response.code() == 401) {
+                            GlobalToken.errorToken(eligeCombustibleTL.this);
+                        } else {
+                            Toast.makeText(eligeCombustibleTL.this, response.message(), Toast.LENGTH_SHORT).show();
+                        }
                         return;
                     }
                     respuestaApiPosicionCargaProductosSucursal = response.body();

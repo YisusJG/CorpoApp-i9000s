@@ -149,7 +149,7 @@ public class ClaveEmpleado extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -160,7 +160,11 @@ public class ClaveEmpleado extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(ClaveEmpleado.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(ClaveEmpleado.this);
+                    } else {
+                        Toast.makeText(ClaveEmpleado.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiEmpleado = response.body();

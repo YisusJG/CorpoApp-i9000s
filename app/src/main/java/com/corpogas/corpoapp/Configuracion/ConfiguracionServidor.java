@@ -68,13 +68,12 @@ public class ConfiguracionServidor extends AppCompatActivity{
         this.setTitle("Configuracion Inicial Servidor");
         getMacAddress();
         data = new SQLiteBD(getApplicationContext());
-//        getToken();
         boolean verdad = data.checkDataBase("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db");
         if(verdad){
             String tipo = data.getTipoEstacion();
             if (tipo.equals("CORPOGAS")){
                 Intent intent = new Intent(getApplicationContext(), Splash.class);
-                startActivity(intent);//h
+                startActivity(intent);
                 finish();
             }else{
                 if (tipo.equals("GULF")){

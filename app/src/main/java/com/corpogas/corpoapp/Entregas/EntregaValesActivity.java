@@ -83,7 +83,7 @@ public class EntregaValesActivity extends AppCompatActivity {
     private void insertarValesPapelSqlite() {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -94,7 +94,11 @@ public class EntregaValesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<PaperVoucherType>> call, Response<List<PaperVoucherType>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(EntregaValesActivity.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(EntregaValesActivity.this);
+                    } else {
+                        Toast.makeText(EntregaValesActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 paperVoucherType = response.body();
@@ -282,7 +286,11 @@ public class EntregaValesActivity extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
                                         if (!response.isSuccessful()) {
-                                            GlobalToken.errorToken(EntregaValesActivity.this);
+                                            if (response.code() == 401) {
+                                                GlobalToken.errorToken(EntregaValesActivity.this);
+                                            } else {
+                                                Toast.makeText(EntregaValesActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                                            }
                                             return;
                                         }
                                         respuestaGuardaVales = response.body();
@@ -395,7 +403,11 @@ public class EntregaValesActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<RespuestaApi<List<ResumenVale>>> call, Response<RespuestaApi<List<ResumenVale>>> response) {
                                 if (!response.isSuccessful()) {
-                                    GlobalToken.errorToken(EntregaValesActivity.this);
+                                    if (response.code() == 401) {
+                                        GlobalToken.errorToken(EntregaValesActivity.this);
+                                    } else {
+                                        Toast.makeText(EntregaValesActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                                    }
                                     return;
                                 }
                                 respuestaGuardaVales = response.body();

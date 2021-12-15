@@ -124,7 +124,7 @@ public class EntregaPicosActivity extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + ipEstacion + "/corpogasService/")
 
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -135,7 +135,11 @@ public class EntregaPicosActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<CierreVariables>> call, Response<RespuestaApi<CierreVariables>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(EntregaPicosActivity.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(EntregaPicosActivity.this);
+                    } else {
+                        Toast.makeText(EntregaPicosActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 RespuestaApi<CierreVariables> respuestaApiCierreVariables = response.body();
@@ -180,7 +184,11 @@ public class EntregaPicosActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(EntregaPicosActivity.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(EntregaPicosActivity.this);
+                    } else {
+                        Toast.makeText(EntregaPicosActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 RespuestaApi<Empleado> respuestaApi = response.body();
@@ -207,7 +215,11 @@ public class EntregaPicosActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call2, Response<RespuestaApi<List<ResumenFajilla>>> response) {
                                 if (!response.isSuccessful()) {
-                                    GlobalToken.errorToken(EntregaPicosActivity.this);
+                                    if (response.code() == 401) {
+                                        GlobalToken.errorToken(EntregaPicosActivity.this);
+                                    } else {
+                                        Toast.makeText(EntregaPicosActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                                    }
                                     return;
                                 }
                                 RespuestaApi<List<ResumenFajilla>> respuestaApi = response.body();

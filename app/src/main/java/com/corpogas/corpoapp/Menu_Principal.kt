@@ -1,6 +1,7 @@
 package com.corpogas.corpoapp
 
 import android.Manifest
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -38,7 +39,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.provider.Settings.Secure;
+import android.security.identity.UnknownAuthenticationKeyException
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import com.corpogas.corpoapp.Cofre.CofreActivity
 import com.corpogas.corpoapp.Configuracion.SQLiteBD.SQL_DELETE_TBL_EMPLEADO
@@ -239,7 +242,7 @@ class Menu_Principal : AppCompatActivity() {
 //        val data = SQLiteBD(applicationContext)
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -249,9 +252,12 @@ class Menu_Principal : AppCompatActivity() {
         call.enqueue(object : Callback<RespuestaApi<Double>> {
             override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
                 if (!response.isSuccessful) {
-                    GlobalToken.errorTokenWithReload(this@Menu_Principal)
-//                    mJsonTxtView.setText("Codigo: "+ response.code());
-                    return
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(this@Menu_Principal);
+                    } else {
+                        Toast.makeText(this@Menu_Principal, response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 }
                 respuestaApiEfectivoNoEntregado = response.body()
                 if(respuestaApiEfectivoNoEntregado?.objetoRespuesta!! >= data.maximoEfectivo){
@@ -283,7 +289,7 @@ class Menu_Principal : AppCompatActivity() {
         val data = SQLiteBD(applicationContext)
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -293,9 +299,12 @@ class Menu_Principal : AppCompatActivity() {
         call.enqueue(object : Callback<RespuestaApi<List<Arqueo>>> {
             override fun onResponse(call: Call<RespuestaApi<List<Arqueo>>>, response: Response<RespuestaApi<List<Arqueo>>> ) {
                 if (!response.isSuccessful) {
-                    GlobalToken.errorToken(this@Menu_Principal)
-//                    mJsonTxtView.setText("Codigo: "+ response.code());
-                    return
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(this@Menu_Principal);
+                    } else {
+                        Toast.makeText(this@Menu_Principal, response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 }
                 respuestaApiArqueo = response.body()
                 if(respuestaApiArqueo?.isCorrecto == true){
@@ -313,12 +322,11 @@ class Menu_Principal : AppCompatActivity() {
                         }
                         viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener {
                             modales.alertDialog.dismiss()
-
                         }
-                    }else{
+                    } else {
                         deleteDatos()
                     }
-                }else{
+                } else {
                     if(respuestaApiArqueo?.isCorrecto == false){
                         val titulo = "AVISO"
                         val mensaje = respuestaApiArqueo?.Mensaje!!
@@ -407,7 +415,7 @@ class Menu_Principal : AppCompatActivity() {
         }
 
     private fun formaAutenticacion() {
-        val mensaje = "Qué forma de Autenticación desea utilizar?"
+        val mensaje = "¿Qué forma de Autenticación desea utilizar?"
         val modales = Modales(this@Menu_Principal)
         val viewLectura = modales.MostrarDialogoAlerta(this@Menu_Principal, mensaje, "Huella", "Clave")
         viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
@@ -498,73 +506,73 @@ class Menu_Principal : AppCompatActivity() {
         drawerLayout!!.openDrawer(GravityCompat.START)
     }
 
-    fun ClickLogo(view: View?) {
-        closeDrawer(drawerLayout)
-    }
-
-    fun ClickHome(view: View?) {
-        recreate()
-    }
-
-    fun ClickHuella(view: View?) {
-        formaAutenticacion()
-    }
-
-    fun ClickCerrarSesion(view: View?) {
-//        Toast.makeText(this, "Cerrar Sesión", Toast.LENGTH_SHORT).show();
-//        recreate();
-        if (!ComprobarConexionInternet.compruebaConexion(this)) {
-            Toast.makeText(baseContext, "Necesaria conexión a internet ", Toast.LENGTH_SHORT).show()
-        }else{
-            val titulo = "Reconfiguración"
-            val mensajes = "Se eliminarán los datos de la Estación en éste dispositivo,  \n \n ESTAS SEGURO DE REINICIALIZAR LA APLICACION? "
-            val modales = Modales(this)
-            val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
-            viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
-                val intent: Intent
-                //File dir = getFilesDir();
-                //val file = File("data/data/com.szzcs.corpoapp/databases/ConfiguracionEstacion.db")
-                val file = File("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db")
-                val FileDeleted = file.delete()
-                if (FileDeleted) {
-                    Toast.makeText(this@Menu_Principal, "Base de Datos Inicializada", Toast.LENGTH_SHORT).show()
-                    intent = Intent(applicationContext, ConfiguracionServidor::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this@Menu_Principal, "Archivo de Base de Datos no Encontrado", Toast.LENGTH_SHORT).show()
-                }
-                modales.alertDialog.dismiss()
-            }
-            viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
-        }
-    }
-
-    fun ClickSalir(view: View?) {
-        LogOut(this)
-    }
-
-    fun ClickCambiar(view: View?) {
-        ImageDisplay = if (ImageDisplay!!) {
-            imagen!!.setImageResource(R.drawable.corpogas1)
-            false
-        } else {
-            imagen!!.setImageResource(R.drawable.gasolinera)
-            true
-        }
-    }
-
-    fun ClickDashboard(view: View?) {
-//        redirectActivity(this, NuevaClas.class);
-    }
-
-    fun cargarImagen() {
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//    fun ClickLogo(view: View?) {
+//        closeDrawer(drawerLayout)
+//    }
 //
-//        intent.setType("image/");
-//        startActivityForResult(intent.createChooser(intent, "Seleccione la Aplicación"), 10);
-        imagen!!.setImageResource(R.drawable.gasolinera)
-    }
+//    fun ClickHome(view: View?) {
+//        recreate()
+//    }
+//
+//    fun ClickHuella(view: View?) {
+//        formaAutenticacion()
+//    }
+//
+//    fun ClickCerrarSesion(view: View?) {
+////        Toast.makeText(this, "Cerrar Sesión", Toast.LENGTH_SHORT).show();
+////        recreate();
+//        if (!ComprobarConexionInternet.compruebaConexion(this)) {
+//            Toast.makeText(baseContext, "Necesaria conexión a internet ", Toast.LENGTH_SHORT).show()
+//        }else{
+//            val titulo = "Reconfiguración"
+//            val mensajes = "Se eliminarán los datos de la Estación en éste dispositivo,  \n \n ESTAS SEGURO DE REINICIALIZAR LA APLICACION? "
+//            val modales = Modales(this)
+//            val viewLectura = modales.MostrarDialogoAlerta(this, mensajes, "SI", "NO")
+//            viewLectura.findViewById<View>(R.id.buttonYes).setOnClickListener {
+//                val intent: Intent
+//                //File dir = getFilesDir();
+//                //val file = File("data/data/com.szzcs.corpoapp/databases/ConfiguracionEstacion.db")
+//                val file = File("/data/data/com.corpogas.corpoapp/databases/ConfiguracionEstacion.db")
+//                val FileDeleted = file.delete()
+//                if (FileDeleted) {
+//                    Toast.makeText(this@Menu_Principal, "Base de Datos Inicializada", Toast.LENGTH_SHORT).show()
+//                    intent = Intent(applicationContext, ConfiguracionServidor::class.java)
+//                    startActivity(intent)
+//                    finish()
+//                } else {
+//                    Toast.makeText(this@Menu_Principal, "Archivo de Base de Datos no Encontrado", Toast.LENGTH_SHORT).show()
+//                }
+//                modales.alertDialog.dismiss()
+//            }
+//            viewLectura.findViewById<View>(R.id.buttonNo).setOnClickListener { modales.alertDialog.dismiss() }
+//        }
+//    }
+//
+//    fun ClickSalir(view: View?) {
+//        LogOut(this)
+//    }
+//
+//    fun ClickCambiar(view: View?) {
+//        ImageDisplay = if (ImageDisplay!!) {
+//            imagen!!.setImageResource(R.drawable.corpogas1)
+//            false
+//        } else {
+//            imagen!!.setImageResource(R.drawable.gasolinera)
+//            true
+//        }
+//    }
+//
+//    fun ClickDashboard(view: View?) {
+////        redirectActivity(this, NuevaClas.class);
+//    }
+//
+//    fun cargarImagen() {
+////        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+////
+////        intent.setType("image/");
+////        startActivityForResult(intent.createChooser(intent, "Seleccione la Aplicación"), 10);
+//        imagen!!.setImageResource(R.drawable.gasolinera)
+//    }
 
     fun LogOut(mainActivity: Menu_Principal) {
         val mensaje = "Estas seguro de Salir de la aplicación ?"
@@ -728,7 +736,7 @@ class Menu_Principal : AppCompatActivity() {
                 val data = SQLiteBD(applicationContext)
                 val retrofit = Retrofit.Builder()
 //                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService/")
-                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                    .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
 
@@ -738,7 +746,11 @@ class Menu_Principal : AppCompatActivity() {
                 call.enqueue(object : Callback<RespuestaApi<Double>> {
                     override fun onResponse(call: Call<RespuestaApi<Double>>, response: Response<RespuestaApi<Double>>) {
                         if (!response.isSuccessful) {
-                            GlobalToken.errorToken(this@Menu_Principal)
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(this@Menu_Principal)
+                            } else {
+                                Toast.makeText(this@Menu_Principal, response.message(), Toast.LENGTH_SHORT).show()
+                            }
                             return
                         }
                         respuestaApiEfectivoNoEntregado = response.body()

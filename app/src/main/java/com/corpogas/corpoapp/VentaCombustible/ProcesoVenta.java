@@ -239,9 +239,17 @@ public class ProcesoVenta extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (Identificador == 1) {
-                    GlobalToken.errorTokenWithReload(ProcesoVenta.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorTokenWithReload(ProcesoVenta.this);
+                    } else {
+                        Toast.makeText(ProcesoVenta.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 } else  {
-                    GlobalToken.errorToken(ProcesoVenta.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(ProcesoVenta.this);
+                    } else {
+                        Toast.makeText(ProcesoVenta.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
 //                String algo = new String(error.networkResponse.data);
 //                try {
@@ -600,7 +608,7 @@ public class ProcesoVenta extends AppCompatActivity {
     private void solicitadespacho() {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -612,7 +620,11 @@ public class ProcesoVenta extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(ProcesoVenta.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(ProcesoVenta.this);
+                    } else {
+                        Toast.makeText(ProcesoVenta.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiAutorizaDespacho = response.body();
@@ -664,7 +676,7 @@ public class ProcesoVenta extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -676,7 +688,11 @@ public class ProcesoVenta extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(ProcesoVenta.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(ProcesoVenta.this);
+                    } else {
+                        Toast.makeText(ProcesoVenta.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiTicketPendienteCobro = response.body();
@@ -713,7 +729,7 @@ public class ProcesoVenta extends AppCompatActivity {
     private void finalizaventa(long posicionCargaId) {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -725,7 +741,11 @@ public class ProcesoVenta extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(ProcesoVenta.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(ProcesoVenta.this);
+                    } else {
+                        Toast.makeText(ProcesoVenta.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiTransaccion = response.body();

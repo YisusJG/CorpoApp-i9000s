@@ -122,7 +122,11 @@ public class ClienteFacturas extends Activity {
             @Override
             public void onResponse(Call<RespuestaApi<List<RespuestaRFC>>> call, Response<RespuestaApi<List<RespuestaRFC>>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(ClienteFacturas.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(ClienteFacturas.this);
+                    } else {
+                        Toast.makeText(ClienteFacturas.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiRfc = response.body();

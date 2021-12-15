@@ -64,7 +64,7 @@ public class MetasActivity extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -74,7 +74,11 @@ public class MetasActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<List<Metas>>> call, Response<RespuestaApi<List<Metas>>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(MetasActivity.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(MetasActivity.this);
+                    } else {
+                        Toast.makeText(MetasActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
 

@@ -271,7 +271,11 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
 //                    onDestroy();
 //                    Intent intente = new Intent(getApplicationContext(), Menu_Principal.class);
 //                    startActivity(intente);
-                    GlobalToken.errorToken(PlanchadoTanqueLleno.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PlanchadoTanqueLleno.this);
+                    } else {
+                        Toast.makeText(PlanchadoTanqueLleno.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -326,7 +330,7 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
         } else {
             Retrofit retrofit = new Retrofit.Builder()
 //                    .baseUrl("http://" + ipEstacion + "/CorpogasService/")
-                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                    .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
@@ -338,7 +342,11 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
                 @Override
                 public void onResponse(Call<Isla> call, Response<Isla> response) {
                     if (!response.isSuccessful()) {
-                        GlobalToken.errorTokenWithReload(PlanchadoTanqueLleno.this);
+                        if (response.code() == 401) {
+                            GlobalToken.errorTokenWithReload(PlanchadoTanqueLleno.this);
+                        } else {
+                            Toast.makeText(PlanchadoTanqueLleno.this, response.message(), Toast.LENGTH_SHORT).show();
+                        }
                         return;
                     }
                     respuestaApiPosicionCargaProductosSucursal = response.body();
@@ -552,7 +560,11 @@ public class PlanchadoTanqueLleno extends AppCompatActivity implements View.OnCl
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorToken(PlanchadoTanqueLleno.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PlanchadoTanqueLleno.this);
+                    } else {
+                        Toast.makeText(PlanchadoTanqueLleno.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    String error1 = error.networkResponse.data.toString();
 ////                    Toast.makeText(PlanchadoTanqueLleno.this, "error: "+error1, Toast.LENGTH_SHORT).show();
 //                    String titulo = "TARJETA TANQUELLENO";

@@ -535,7 +535,11 @@ public class AutorizaFajillas extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                     //VolleyLog.e("Error: ", volleyError.getMessage());
-                    GlobalToken.errorToken(AutorizaFajillas.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(AutorizaFajillas.this);
+                    } else {
+                        Toast.makeText(AutorizaFajillas.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    String algo = new String(error.networkResponse.data);
 //                    try {
 //                        //creamos un json Object del String algo
@@ -625,7 +629,7 @@ public class AutorizaFajillas extends AppCompatActivity {
 
             Retrofit retrofit = new Retrofit.Builder()
 //                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                    .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
@@ -636,7 +640,11 @@ public class AutorizaFajillas extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(AutorizaFajillas.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(AutorizaFajillas.this);
+                            } else {
+                                Toast.makeText(AutorizaFajillas.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiResumenFajilla = response.body();
@@ -696,7 +704,11 @@ public class AutorizaFajillas extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call, retrofit2.Response<RespuestaApi<List<ResumenFajilla>>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(AutorizaFajillas.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(AutorizaFajillas.this);
+                            } else {
+                                Toast.makeText(AutorizaFajillas.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiResumenFajilla = response.body();

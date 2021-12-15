@@ -185,7 +185,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" +  data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -196,7 +196,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Puntada>> call, Response<RespuestaApi<Puntada>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaPuntada = response.body();
@@ -257,7 +261,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -270,7 +274,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<BranchPaymentMethod>> call, Response<List<BranchPaymentMethod>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaListaSucursalFormasPago = response.body();
@@ -292,7 +300,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -303,7 +311,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Empleado>> call, Response<RespuestaApi<Empleado>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiEmpleado = response.body();
@@ -323,7 +335,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -335,7 +347,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<ProductoTarjetero>>> call, Response<RespuestaApi<List<ProductoTarjetero>>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiProductoTarjetero = response.body();
@@ -356,7 +372,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -368,7 +384,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Transaccion>> call, Response<RespuestaApi<Transaccion>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiTransaccion = response.body();
@@ -387,7 +407,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -399,7 +419,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiTicketPendienteCobro = response.body();
@@ -418,7 +442,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -432,7 +456,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<Boolean>> call, Response<RespuestaApi<Boolean>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiAutorizaDespacho = response.body();
@@ -484,7 +512,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -498,7 +526,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<List<Combustible>>> call, Response<RespuestaApi<List<Combustible>>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiCombustiblesPorSucursalId = response.body();
@@ -518,7 +550,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -532,7 +564,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<List<LecturaManguera>> call, Response<List<LecturaManguera>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiLecturaManguera = response.body();
@@ -552,7 +588,7 @@ public class PruebasEndPoint extends AppCompatActivity {
             public void onClick(View view) {
                 Retrofit retrofit = new Retrofit.Builder()
 //                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_Entities/")
-                        .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                        .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -566,7 +602,11 @@ public class PruebasEndPoint extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RespuestaApi<DiferenciaPermitida>> call, Response<RespuestaApi<DiferenciaPermitida>> response) {
                         if (!response.isSuccessful()) {
-                            GlobalToken.errorToken(PruebasEndPoint.this);
+                            if (response.code() == 401) {
+                                GlobalToken.errorToken(PruebasEndPoint.this);
+                            } else {
+                                Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
                         respuestaApiDiferenciaPermitida = response.body();
@@ -611,7 +651,7 @@ public class PruebasEndPoint extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://"+ data.getIpEstacion()  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + data.getIpEstacion() + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -623,7 +663,11 @@ public class PruebasEndPoint extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<Cierre>> call, Response<RespuestaApi<Cierre>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(PruebasEndPoint.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(PruebasEndPoint.this);
+                    } else {
+                        Toast.makeText(PruebasEndPoint.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiCierreCabero = response.body();

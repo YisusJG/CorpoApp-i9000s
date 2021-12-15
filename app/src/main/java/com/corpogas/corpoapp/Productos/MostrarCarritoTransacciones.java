@@ -240,7 +240,11 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                             }, new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            GlobalToken.errorToken(MostrarCarritoTransacciones.this);
+                            if (error.networkResponse.statusCode == 401) {
+                                GlobalToken.errorToken(MostrarCarritoTransacciones.this);
+                            } else {
+                                Toast.makeText(MostrarCarritoTransacciones.this, error.toString(), Toast.LENGTH_SHORT).show();
+                            }
                             //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                             //VolleyLog.e("Error: ", volleyError.getMessage());
 //                            String algo = new String(error.networkResponse.data);
@@ -368,7 +372,11 @@ public class MostrarCarritoTransacciones extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
 //                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                            GlobalToken.errorToken(MostrarCarritoTransacciones.this);
+                            if (error.networkResponse.statusCode == 401) {
+                                GlobalToken.errorToken(MostrarCarritoTransacciones.this);
+                            } else {
+                                Toast.makeText(MostrarCarritoTransacciones.this, error.toString(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }) {
                         @Override

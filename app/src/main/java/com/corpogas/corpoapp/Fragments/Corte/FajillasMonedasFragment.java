@@ -136,7 +136,7 @@ public class FajillasMonedasFragment extends Fragment {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -149,7 +149,11 @@ public class FajillasMonedasFragment extends Fragment {
             @Override
             public void onResponse(Call<RespuestaApi<List<CierreFajilla>>> call, Response<RespuestaApi<List<CierreFajilla>>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(requireActivity());
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(requireActivity());
+                    } else {
+                        Toast.makeText(requireActivity(), response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiCierreFajilla = response.body();

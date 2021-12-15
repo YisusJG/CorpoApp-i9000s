@@ -280,9 +280,17 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (Identificador.equals(1)) {
-                    GlobalToken.errorTokenWithReload(PosicionPuntadaRedimir.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorTokenWithReload(PosicionPuntadaRedimir.this);
+                    } else {
+                        Toast.makeText(PosicionPuntadaRedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                    } else {
+                        Toast.makeText(PosicionPuntadaRedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
 //                String algo = new String(error.networkResponse.data);
 //                try {
@@ -334,7 +342,7 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -345,7 +353,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<AccesoUsuario>> call, Response<RespuestaApi<AccesoUsuario>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                    } else {
+                        Toast.makeText(PosicionPuntadaRedimir.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 accesoUsuario = response.body();
@@ -652,7 +664,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                    } else {
+                        Toast.makeText(PosicionPuntadaRedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
 //                    String algo = new String(error.networkResponse.data);
 //                    try {
 //                        //creamos un json Object del String algo
@@ -884,7 +900,11 @@ public class PosicionPuntadaRedimir extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(PosicionPuntadaRedimir.this);
+                } else {
+                    Toast.makeText(PosicionPuntadaRedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
 //                bar.cancel();
 ////                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
 //                String titulo = "AVISO";

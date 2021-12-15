@@ -503,7 +503,7 @@ public class ResumenActivity extends AppCompatActivity {
     private void obtenerResumenCorte(){
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + ipEstacion + "/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -515,7 +515,11 @@ public class ResumenActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<CierreTicket>> call, Response<RespuestaApi<CierreTicket>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(ResumenActivity.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(ResumenActivity.this);
+                    } else {
+                        Toast.makeText(ResumenActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiCierreTicket = response.body();

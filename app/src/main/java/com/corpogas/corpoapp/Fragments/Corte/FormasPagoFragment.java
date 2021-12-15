@@ -97,7 +97,7 @@ public class FormasPagoFragment extends Fragment {
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -109,7 +109,11 @@ public class FormasPagoFragment extends Fragment {
             @Override
             public void onResponse(Call<RespuestaApi<List<CierreFormaPago>>> call, Response<RespuestaApi<List<CierreFormaPago>>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(requireActivity());
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(requireActivity());
+                    } else {
+                        Toast.makeText(requireActivity(), response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiCierreFormaPago = response.body();

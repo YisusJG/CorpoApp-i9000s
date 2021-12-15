@@ -372,7 +372,11 @@ public class EntregaFajillas extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 //                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-                    GlobalToken.errorTokenWithReload(EntregaFajillas.this);
+                    if (error.networkResponse.statusCode == 401) {
+                        GlobalToken.errorTokenWithReload(EntregaFajillas.this);
+                    } else {
+                        Toast.makeText(EntregaFajillas.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }) {
                 @Override

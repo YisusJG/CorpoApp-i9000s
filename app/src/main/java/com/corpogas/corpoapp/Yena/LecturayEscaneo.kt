@@ -256,7 +256,7 @@ class LecturayEscaneo : AppCompatActivity() {
     private fun sendToRedencion(claveTarjeta: String, numeroTarjeta: String, tk3: String) {
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
@@ -267,8 +267,12 @@ class LecturayEscaneo : AppCompatActivity() {
                 response: Response<RespuestaApi<YenaResponse>>
             ) {
                 if (!response.isSuccessful) {
-                    GlobalToken.errorToken(this@LecturayEscaneo)
-                    return
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(this@LecturayEscaneo);
+                    } else {
+                        Toast.makeText(this@LecturayEscaneo, response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 } else {
                     val yenaResponse = response.body()
                     if (yenaResponse!!.isCorrecto) {
@@ -310,7 +314,7 @@ class LecturayEscaneo : AppCompatActivity() {
     private fun sendToAcumulacion(claveTarjeta: String, numeroTarjeta: String, tk3: String) {
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
@@ -320,8 +324,12 @@ class LecturayEscaneo : AppCompatActivity() {
         call.enqueue(object : Callback<RespuestaApi<Boolean>> {
             override fun onResponse(call: Call<RespuestaApi<Boolean>>, response: Response<RespuestaApi<Boolean>>) {
                 if (!response.isSuccessful) {
-                    GlobalToken.errorToken(this@LecturayEscaneo)
-                    return
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(this@LecturayEscaneo);
+                    } else {
+                        Toast.makeText(this@LecturayEscaneo, response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 } else {
                     val yenaResponse = response.body()
                     if (yenaResponse!!.isCorrecto) {
@@ -428,7 +436,7 @@ class LecturayEscaneo : AppCompatActivity() {
     private fun getSaldo(numeroTarjeta: String) {
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
@@ -441,8 +449,12 @@ class LecturayEscaneo : AppCompatActivity() {
                 response: Response<RespuestaApi<YenaResponse>>
             ) {
                 if (!response.isSuccessful) {
-                    GlobalToken.errorToken(this@LecturayEscaneo)
-                    return
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(this@LecturayEscaneo);
+                    } else {
+                        Toast.makeText(this@LecturayEscaneo, response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 } else {
                     val yenaResponse = response.body()
                     if (yenaResponse!!.isCorrecto) {
@@ -523,7 +535,7 @@ class LecturayEscaneo : AppCompatActivity() {
     private fun getSaldoparaDesc(numeroTarjeta: String, claveTarjeta: String) {
         val retrofit = Retrofit.Builder()
 //            .baseUrl("http://" + db.ipEstacion + "/CorpogasService/")
-            .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+            .baseUrl("http://" + data.ipEstacion + "/CorpogasService_entities_token/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val yenaSaldo = retrofit.create(EndPoints::class.java)
@@ -536,8 +548,12 @@ class LecturayEscaneo : AppCompatActivity() {
                 response: Response<RespuestaApi<YenaResponse>>
             ) {
                 if (!response.isSuccessful) {
-                    GlobalToken.errorToken(this@LecturayEscaneo)
-                    return
+                    if (response.code() == 401) {
+                        GlobalToken.errorToken(this@LecturayEscaneo);
+                    } else {
+                        Toast.makeText(this@LecturayEscaneo, response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                    return;
                 } else {
                     val yenaResponse = response.body()
                     if (yenaResponse!!.isCorrecto) {

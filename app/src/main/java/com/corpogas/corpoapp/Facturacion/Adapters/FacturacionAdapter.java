@@ -285,7 +285,7 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
 
                             Retrofit retrofit = new Retrofit.Builder()
 //                                    .baseUrl("http://"+ ipEstacion  +"/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
-                                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                                    .baseUrl("http://" + ipEstacion + "/CorpogasService_entities_token/")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
 
@@ -296,7 +296,11 @@ public class FacturacionAdapter extends RecyclerView.Adapter<FacturacionAdapter.
                                 @Override
                                 public void onResponse(Call<RespuestaApi<RespuestaSolicitudFactura>> call, Response<RespuestaApi<RespuestaSolicitudFactura>> response) {
                                     if (!response.isSuccessful()) {
-                                        GlobalToken.errorToken(activity);
+                                        if (response.code() == 401) {
+                                            GlobalToken.errorToken(activity);
+                                        } else {
+                                            Toast.makeText(activity, response.message(), Toast.LENGTH_SHORT).show();
+                                        }
                                         return;
                                     }
                                     respuestaCFDI = response.body();

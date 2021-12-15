@@ -619,7 +619,11 @@ public class ProductosARedimir extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-                GlobalToken.errorToken(ProductosARedimir.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(ProductosARedimir.this);
+                } else {
+                    Toast.makeText(ProductosARedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             @Override
@@ -820,7 +824,11 @@ public class ProductosARedimir extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
-                GlobalToken.errorToken(ProductosARedimir.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(ProductosARedimir.this);
+                } else {
+                    Toast.makeText(ProductosARedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -931,7 +939,11 @@ public class ProductosARedimir extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 //                Toast.makeText(ProductosARedimir.this, "error", Toast.LENGTH_SHORT).show();
 //                startActivity(new Intent(ProductosARedimir.this, Menu_Principal.class));
-                GlobalToken.errorToken(ProductosARedimir.this);
+                if (error.networkResponse.statusCode == 401) {
+                    GlobalToken.errorToken(ProductosARedimir.this);
+                } else {
+                    Toast.makeText(ProductosARedimir.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }) {
             public Map<String, String> getHeaders() throws AuthFailureError {

@@ -127,7 +127,7 @@ public class EntregaPicos extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://" + ipEstacion + "/corpogasService/")//http://" + data.getIpEstacion() + "/corpogasService_Entities_token/
 
-                .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService_entities_token/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -138,7 +138,11 @@ public class EntregaPicos extends AppCompatActivity {
             @Override
             public void onResponse(Call<RespuestaApi<CierreVariables>> call, Response<RespuestaApi<CierreVariables>> response) {
                 if (!response.isSuccessful()) {
-                    GlobalToken.errorTokenWithReload(EntregaPicos.this);
+                    if (response.code() == 401) {
+                        GlobalToken.errorTokenWithReload(EntregaPicos.this);
+                    } else {
+                        Toast.makeText(EntregaPicos.this, response.message(), Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 respuestaApiCierreVariables = response.body();
@@ -322,7 +326,11 @@ public class EntregaPicos extends AppCompatActivity {
                                             @Override
                                             public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call2, Response<RespuestaApi<List<ResumenFajilla>>> response) {
                                                 if (!response.isSuccessful()) {
-                                                    GlobalToken.errorToken(EntregaPicos.this);
+                                                    if (response.code() == 401) {
+                                                        GlobalToken.errorToken(EntregaPicos.this);
+                                                    } else {
+                                                        Toast.makeText(EntregaPicos.this, response.message(), Toast.LENGTH_SHORT).show();
+                                                    }
                                                     return;
                                                 }
                                                 respuestaApiPicosBilletes = response.body();
@@ -518,7 +526,7 @@ public class EntregaPicos extends AppCompatActivity {
 
                                             Retrofit retrofit = new Retrofit.Builder()
 //                                                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService/")
-                                                    .baseUrl("http://10.0.1.40/CorpogasService_entities_token/")
+                                                    .baseUrl("http://" + db.getIpEstacion() + "/CorpogasService_entities_token/")
                                                     .addConverterFactory(GsonConverterFactory.create())
                                                     .build();
 
@@ -532,7 +540,11 @@ public class EntregaPicos extends AppCompatActivity {
                                                 @Override
                                                 public void onResponse(Call<RespuestaApi<List<ResumenFajilla>>> call2, Response<RespuestaApi<List<ResumenFajilla>>> response) {
                                                     if (!response.isSuccessful()) {
-                                                        GlobalToken.errorToken(EntregaPicos.this);
+                                                        if (response.code() == 401) {
+                                                            GlobalToken.errorToken(EntregaPicos.this);
+                                                        } else {
+                                                            Toast.makeText(EntregaPicos.this, response.message(), Toast.LENGTH_SHORT).show();
+                                                        }
                                                         return;
                                                     }
                                                     respuestaApiPicosMorralla = response.body();
